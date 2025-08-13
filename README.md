@@ -1,29 +1,79 @@
-# AI One Stop Shop 🚀
+# 🤖 AI One Stop Shop
 
-The ultimate AI storefront for tools, knowledge, and community. Your one-stop destination for everything AI.
+**The Ultimate AI Storefront for Tools, Knowledge, and Community**
 
-## 🌟 Features
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/AiOneStopShop/ai-one-stop-shop)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- **AI Tools Directory**: Curated collection of the best AI tools with affiliate links
-- **Knowledge Hub**: Expert tutorials, guides, and learning resources
-- **Community Platform**: Connect with AI enthusiasts and experts
-- **Modern UI/UX**: Beautiful, responsive design with dark mode support
-- **Performance Optimized**: Built with Next.js 14 and optimized for speed
+## 🚀 Live Demo
 
-## 🛠️ Tech Stack
+**Coming Soon** - Deploy to Vercel for instant access!
+
+## ✨ Features
+
+### 🛠️ **AI Tools Directory**
+- **500+ Curated AI Tools** across all categories
+- **Advanced Search & Filtering** by category, price, difficulty, and features
+- **Detailed Tool Profiles** with ratings, pricing, and affiliate links
+- **User Reviews & Ratings** for informed decisions
+
+### 🤖 **AI Agents Marketplace**
+- **Autonomous Agents** that work independently
+- **Reasoning Agents** for complex problem-solving
+- **Agent Builders** for custom automation
+- **Deployment Platforms** for scalable AI solutions
+
+### 💰 **Budget-Based Toolkit Builder**
+- **4 Creative Pricing Tiers**: AI Explorer ($50), AI Innovator ($150), AI Master ($500), AI Legend ($1000)
+- **Interactive Budget Tracker** with real-time calculations
+- **Smart Recommendations** based on budget and needs
+- **Custom Toolkit Generation** with implementation guides
+
+### 👥 **User Persona System**
+- **Tech-Savvy Sarah**: Innovation seeker with advanced needs
+- **Startup Steve**: Growth-focused founder with budget constraints
+- **Corporate Claire**: Enterprise security specialist
+- **Freelance Fred**: Productivity-focused freelancer
+
+### 📚 **Knowledge Hub**
+- **Expert Articles** and tutorials
+- **Video Courses** and webinars
+- **Community Resources** and guides
+- **Latest AI Trends** and insights
+
+### 🌟 **Community Platform**
+- **User Forums** and discussions
+- **Expert Q&A** sessions
+- **Success Stories** and case studies
+- **Networking Events** and meetups
+
+## 🎯 **Monetization Strategy**
+
+### Primary Revenue Streams
+1. **Affiliate Commissions** from tool subscriptions
+2. **Implementation Services** for toolkit deployment
+3. **Consultation Calls** for AI strategy
+4. **Premium Guides** and documentation
+
+### Secondary Opportunities
+- **Custom Agent Development**
+- **Training Programs**
+- **Community Access** (premium tier)
+- **Beta Access** to new tools
+
+## 🛠️ **Tech Stack**
 
 - **Frontend**: Next.js 14, React 18, TypeScript
 - **Styling**: Tailwind CSS, Framer Motion
 - **Icons**: Heroicons, Lucide React
-- **Deployment**: Vercel (recommended)
-- **Database**: Airtable (for content management)
+- **Deployment**: Vercel
+- **Content Management**: Airtable (planned)
 - **Version Control**: GitHub
 - **Containerization**: Docker
 
-## 🚀 Quick Start
+## 🚀 **Quick Start**
 
 ### Prerequisites
-
 - Node.js 18+ 
 - npm or yarn
 - Git
@@ -32,7 +82,7 @@ The ultimate AI storefront for tools, knowledge, and community. Your one-stop de
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/ai-one-stop-shop.git
+   git clone https://github.com/AiOneStopShop/ai-one-stop-shop.git
    cd ai-one-stop-shop
    ```
 
@@ -41,7 +91,7 @@ The ultimate AI storefront for tools, knowledge, and community. Your one-stop de
    npm install
    ```
 
-3. **Run the development server**
+3. **Run development server**
    ```bash
    npm run dev
    ```
@@ -49,123 +99,89 @@ The ultimate AI storefront for tools, knowledge, and community. Your one-stop de
 4. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 📁 Project Structure
+### Build for Production
+
+```bash
+npm run build
+npm start
+```
+
+## 🐳 **Docker Deployment**
+
+```bash
+# Build the Docker image
+npm run docker:build
+
+# Run the container
+npm run docker:run
+```
+
+## 🌐 **Vercel Deployment**
+
+1. **Connect to Vercel**
+   - Go to [vercel.com](https://vercel.com)
+   - Import your GitHub repository
+   - Vercel will automatically detect Next.js settings
+
+2. **Environment Variables** (if needed)
+   ```env
+   CUSTOM_KEY=your_custom_key
+   ```
+
+3. **Deploy**
+   - Vercel will automatically deploy on every push to main branch
+
+## 📁 **Project Structure**
 
 ```
 ai-one-stop-shop/
 ├── app/                    # Next.js 14 App Router
+│   ├── agents/            # AI Agents page
+│   ├── tools/             # AI Tools directory
+│   ├── toolkit/           # Budget builder
 │   ├── globals.css        # Global styles
 │   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Homepage
-│   └── tools/             # Tools page
+│   └── page.tsx           # Homepage
 ├── components/            # React components
-│   ├── Header.tsx         # Navigation header
+│   ├── BudgetBuilder.tsx  # Toolkit builder
+│   ├── FeaturedAgents.tsx # Featured agents
+│   ├── FeaturedTools.tsx  # Featured tools
+│   ├── Header.tsx         # Navigation
 │   ├── Hero.tsx           # Hero section
-│   ├── FeaturedTools.tsx  # Featured tools showcase
-│   ├── Categories.tsx     # Tool categories
-│   ├── KnowledgeHub.tsx   # Learning resources
-│   ├── Community.tsx      # Community features
-│   ├── Newsletter.tsx     # Email signup
-│   └── Loading.tsx        # Loading component
+│   ├── PersonaGuide.tsx   # User personas
+│   └── ...                # Other components
+├── types/                 # TypeScript types
 ├── public/                # Static assets
-├── package.json           # Dependencies and scripts
 ├── tailwind.config.js     # Tailwind configuration
-├── tsconfig.json          # TypeScript configuration
 ├── next.config.js         # Next.js configuration
-├── Dockerfile             # Docker configuration
-└── README.md              # Project documentation
+└── package.json           # Dependencies
 ```
 
-## 🎨 Customization
+## 🎨 **Brand Colors**
 
-### Colors and Theme
+- **Deep Tech Blue**: `#2A4494`
+- **Innovation Purple**: `#7B4DFF`
+- **AI Silver**: `#E6E6E6`
+- **Smart Orange**: `#FF6B2B`
 
-The project uses a custom color palette defined in `tailwind.config.js`:
-
-- **Primary**: Blue shades for main actions
-- **AI**: Cyan/blue shades for AI-specific elements
-- **Dark**: Gray shades for dark mode
+## 🔧 **Customization**
 
 ### Adding New Tools
+1. Update the tools array in `app/tools/page.tsx`
+2. Add tool images to `public/` directory
+3. Update categories and filters as needed
 
-1. Update the `featuredTools` array in `components/FeaturedTools.tsx`
-2. Add tool images to the `public/` directory
-3. Update affiliate links as needed
+### Adding New Agents
+1. Update the agents array in `app/agents/page.tsx`
+2. Add agent-specific properties to the Tool interface
+3. Update agent categories and capabilities
 
-### Content Management
+### Modifying Budget Tiers
+1. Edit the `budgetTiers` array in `components/BudgetBuilder.tsx`
+2. Adjust pricing, features, and tool limits
+3. Update tier descriptions and recommendations
 
-For production, consider integrating with:
-- **Airtable**: For managing tools, categories, and content
-- **CMS**: For blog posts and knowledge articles
-- **Database**: For user accounts and community features
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. **Connect your GitHub repository to Vercel**
-2. **Configure environment variables** (if needed)
-3. **Deploy automatically** on every push
-
-### Docker Deployment
-
-1. **Build the Docker image**
-   ```bash
-   npm run docker:build
-   ```
-
-2. **Run the container**
-   ```bash
-   npm run docker:run
-   ```
-
-### Environment Variables
-
-Create a `.env.local` file for local development:
-
-```env
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_AIRTABLE_API_KEY=your_airtable_key
-NEXT_PUBLIC_AIRTABLE_BASE_ID=your_base_id
-```
-
-## 📈 Monetization Strategy
-
-### Affiliate Marketing
-- Partner with AI tool providers
-- Earn commissions on tool subscriptions
-- Track conversions and optimize
-
-### Premium Features
-- Advanced tool comparisons
-- Exclusive community access
-- Premium content and courses
-
-### Sponsored Content
-- Featured tool placements
-- Sponsored articles and reviews
-- Newsletter sponsorships
-
-## 🔧 Development
-
-### Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run docker:build` - Build Docker image
-- `npm run docker:run` - Run Docker container
-
-### Code Style
-
-- Use TypeScript for type safety
-- Follow ESLint configuration
-- Use Tailwind CSS for styling
-- Implement responsive design
-- Add proper accessibility attributes
-
-## 🤝 Contributing
+## 🤝 **Contributing**
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -173,21 +189,37 @@ NEXT_PUBLIC_AIRTABLE_BASE_ID=your_base_id
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## 📄 **License**
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🆘 **Support**
 
-- Built with [Next.js](https://nextjs.org/)
-- Styled with [Tailwind CSS](https://tailwindcss.com/)
-- Icons from [Heroicons](https://heroicons.com/)
-- Animations with [Framer Motion](https://www.framer.com/motion/)
+- **Documentation**: [DEPLOYMENT.md](DEPLOYMENT.md)
+- **Issues**: [GitHub Issues](https://github.com/AiOneStopShop/ai-one-stop-shop/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/AiOneStopShop/ai-one-stop-shop/discussions)
 
-## 📞 Support
+## 🚀 **Roadmap**
 
-For support, email support@aionestopshop.com or join our community.
+- [ ] **Airtable Integration** for content management
+- [ ] **User Authentication** and profiles
+- [ ] **Advanced Analytics** and insights
+- [ ] **Mobile App** development
+- [ ] **API Development** for third-party integrations
+- [ ] **AI-Powered Recommendations** engine
+- [ ] **Community Features** (forums, events)
+- [ ] **Premium Content** and courses
+
+## 🙏 **Acknowledgments**
+
+- **Next.js** team for the amazing framework
+- **Vercel** for seamless deployment
+- **Tailwind CSS** for beautiful styling
+- **Framer Motion** for smooth animations
+- **Heroicons** and **Lucide** for beautiful icons
 
 ---
 
-**Made with ❤️ for the AI community**
+**Built with ❤️ by the AI One Stop Shop team**
+
+*Transform your AI journey with the ultimate toolkit builder and community platform.*

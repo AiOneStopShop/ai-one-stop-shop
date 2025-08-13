@@ -35,6 +35,14 @@
       "destination": "/tools"
     },
     {
+      "source": "/agents",
+      "destination": "/agents"
+    },
+    {
+      "source": "/toolkit",
+      "destination": "/toolkit"
+    },
+    {
       "source": "/knowledge",
       "destination": "/knowledge"
     },
@@ -42,5 +50,9 @@
       "source": "/community",
       "destination": "/community"
     }
+  ],
+  "domains": [
+    "aionestop.shop",
+    "www.aionestop.shop"
   ]
 }

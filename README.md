@@ -9,6 +9,8 @@
 
 **Coming Soon** - Deploy to Vercel for instant access!
 
+**Custom Domain**: [aionestop.shop](https://aionestop.shop)
+
 ## ✨ Features
 
 ### 🛠️ **AI Tools Directory**
@@ -123,13 +125,35 @@ npm run docker:run
    - Import your GitHub repository
    - Vercel will automatically detect Next.js settings
 
-2. **Environment Variables** (if needed)
+2. **Custom Domain Setup**
+   - Add your custom domain: `aionestop.shop`
+   - Configure DNS settings (see DNS Configuration below)
+   - Enable HTTPS automatically
+
+3. **Environment Variables** (if needed)
    ```env
    CUSTOM_KEY=your_custom_key
+   NEXT_PUBLIC_SITE_URL=https://aionestop.shop
    ```
 
-3. **Deploy**
+4. **Deploy**
    - Vercel will automatically deploy on every push to main branch
+
+### **DNS Configuration**
+
+Add these DNS records to your domain provider:
+
+```
+Type: A
+Name: @
+Value: 76.76.19.19
+
+Type: CNAME
+Name: www
+Value: cname.vercel-dns.com
+```
+
+**Note**: Vercel will provide specific DNS settings during domain setup.
 
 ## 📁 **Project Structure**
 

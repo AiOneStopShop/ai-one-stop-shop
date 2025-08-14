@@ -12,6 +12,7 @@ import Categories from '@/components/Categories'
 import KnowledgeHub from '@/components/KnowledgeHub'
 import Community from '@/components/Community'
 import Newsletter from '@/components/Newsletter'
+import Footer from '@/components/Footer'
 import Loading from '@/components/Loading'
 
 export default function Home() {
@@ -70,6 +71,7 @@ export default function Home() {
         
         <Community />
         <Newsletter />
+        <Footer />
       </main>
     </>
   )

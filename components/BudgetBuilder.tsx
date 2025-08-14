@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { StarIcon, SparklesIcon, RocketLaunchIcon } from '@heroicons/react/24/outline'
 import { ExternalLink, Zap, Brain, Users, Shield, Target, TrendingUp } from 'lucide-react'
 import { Tool } from '@/types'
+import { useVisitorTracking } from '@/hooks/useVisitorTracking'
 
 interface BudgetTier {
   id: string
@@ -109,6 +110,7 @@ export default function BudgetBuilder({ tools, onToolkitGenerated }: BudgetBuild
   const [selectedTier, setSelectedTier] = useState<BudgetTier | null>(null)
   const [selectedTools, setSelectedTools] = useState<Tool[]>([])
   const [showToolkit, setShowToolkit] = useState(false)
+  const { trackEvent } = useVisitorTracking()
 
   const availableTools = useMemo(() => {
     if (!selectedTier) return []
@@ -134,6 +136,22 @@ export default function BudgetBuilder({ tools, onToolkitGenerated }: BudgetBuild
     
     if (currentTotal + toolPrice <= selectedTier!.budget) {
       setSelectedTools(prev => [...prev, tool])
+      
+      // Track tool addition to budget builder
+      trackEvent({
+        event_type: 'budget_builder',
+        event_name: 'Add Tool to Budget',
+        element_id: 'budget-builder',
+        custom_data: {
+          tool_name: tool.name,
+          tool_category: tool.category,
+          tool_price: tool.price,
+          budget_tier: selectedTier!.name,
+          tier_budget: selectedTier!.budget,
+          current_total: currentTotal + toolPrice,
+          tools_count: selectedTools.length + 1
+        }
+      })
     }
   }
 
@@ -145,6 +163,21 @@ export default function BudgetBuilder({ tools, onToolkitGenerated }: BudgetBuild
     if (selectedTier && selectedTools.length > 0) {
       onToolkitGenerated(selectedTools, selectedTier)
       setShowToolkit(true)
+      
+      // Track toolkit generation
+      trackEvent({
+        event_type: 'budget_builder',
+        event_name: 'Generate Toolkit',
+        element_id: 'budget-builder',
+        custom_data: {
+          budget_tier: selectedTier.name,
+          tier_budget: selectedTier.budget,
+          total_tools: selectedTools.length,
+          total_cost: toolkitTotal,
+          tools_list: selectedTools.map(t => t.name),
+          categories: [...new Set(selectedTools.map(t => t.category))]
+        }
+      })
     }
   }
 
@@ -183,7 +216,21 @@ export default function BudgetBuilder({ tools, onToolkitGenerated }: BudgetBuild
                   ? 'ring-2 ring-brand-purple bg-gradient-to-br ' + tier.bgGradient
                   : 'hover:scale-105'
               }`}
-              onClick={() => setSelectedTier(tier)}
+              onClick={() => {
+                setSelectedTier(tier)
+                // Track tier selection
+                trackEvent({
+                  event_type: 'budget_builder',
+                  event_name: 'Select Budget Tier',
+                  element_id: 'budget-builder',
+                  custom_data: {
+                    tier_name: tier.name,
+                    tier_budget: tier.budget,
+                    tier_category: tier.category,
+                    max_tools: tier.maxTools
+                  }
+                })
+              }}
             >
               <div className={`w-16 h-16 bg-gradient-to-r ${tier.bgGradient.replace('/20', '')} rounded-full flex items-center justify-center mx-auto mb-4`}>
                 <tier.icon className={`w-8 h-8 ${tier.color}`} />

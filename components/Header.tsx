@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Bars3Icon, XMarkIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { Twitter, Linkedin, Instagram } from 'lucide-react'
 
 const navigation = [
   { name: 'Tools', href: '/tools' },
@@ -48,14 +49,44 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <button className="btn-secondary">
-              Sign In
-            </button>
-            <button className="btn-primary">
-              Get Started
-            </button>
-          </div>
+                          <div className="hidden md:flex items-center space-x-4">
+                  {/* Social Media Links */}
+                  <div className="flex items-center space-x-3 mr-4">
+                    <a
+                      href="https://twitter.com/yourusername"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-600 hover:text-blue-400 transition-colors"
+                      aria-label="Twitter"
+                    >
+                      <Twitter className="w-5 h-5" />
+                    </a>
+                    <a
+                      href="https://linkedin.com/in/yourusername"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-600 hover:text-blue-600 transition-colors"
+                      aria-label="LinkedIn"
+                    >
+                      <Linkedin className="w-5 h-5" />
+                    </a>
+                    <a
+                      href="https://instagram.com/yourusername"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-600 hover:text-pink-500 transition-colors"
+                      aria-label="Instagram"
+                    >
+                      <Instagram className="w-5 h-5" />
+                    </a>
+                  </div>
+                  <button className="btn-secondary">
+                    Sign In
+                  </button>
+                  <button className="btn-primary">
+                    Get Started
+                  </button>
+                </div>
 
           <div className="md:hidden">
             <button

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { UserIcon, SparklesIcon, RocketLaunchIcon, ChartBarIcon, LightBulbIcon } from '@heroicons/react/24/outline'
+import { useVisitorTracking } from '@/hooks/useVisitorTracking'
 
 interface Persona {
   id: string
@@ -80,6 +81,25 @@ interface PersonaGuideProps {
 
 export default function PersonaGuide({ onPersonaSelect, selectedPersona }: PersonaGuideProps) {
   const [showDetails, setShowDetails] = useState<string | null>(null)
+  const { trackEvent } = useVisitorTracking()
+
+  const handlePersonaSelect = (persona: Persona) => {
+    onPersonaSelect(persona)
+    
+    // Track persona selection
+    trackEvent({
+      event_type: 'persona_selection',
+      event_name: 'Persona Selected',
+      element_id: persona.name,
+      custom_data: {
+        persona_name: persona.name,
+        persona_title: persona.title,
+        persona_budget: persona.budget,
+        persona_interests: persona.interests,
+        recommended_tools: persona.recommendedTools
+      }
+    })
+  }
 
   return (
     <section className="py-20 bg-gradient-to-br from-neutral-50 to-white dark:from-dark-900 dark:to-dark-800">
@@ -115,7 +135,7 @@ export default function PersonaGuide({ onPersonaSelect, selectedPersona }: Perso
                     ? 'ring-2 ring-brand-purple bg-gradient-to-br from-brand-purple/5 to-transparent' 
                     : 'hover:scale-105'
                 }`}
-                onClick={() => onPersonaSelect(persona)}
+                onClick={() => handlePersonaSelect(persona)}
               >
                 <div className={`w-16 h-16 bg-gradient-to-r ${persona.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
                   <persona.icon className="w-8 h-8 text-white" />

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { StarIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import { ExternalLink } from 'lucide-react'
+import { useVisitorTracking } from '@/hooks/useVisitorTracking'
 
 const featuredTools = [
   {
@@ -52,6 +53,17 @@ const featuredTools = [
 ]
 
 export default function FeaturedTools() {
+  const { trackToolInteraction } = useVisitorTracking()
+
+  const handleToolClick = (tool: any) => {
+    trackToolInteraction(tool.name, 'click', {
+      category: tool.category,
+      price: tool.price,
+      rating: tool.rating,
+      source: 'featured_tools'
+    })
+  }
+
   return (
     <section className="py-20 bg-gray-50 dark:bg-dark-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -128,6 +140,7 @@ export default function FeaturedTools() {
                 href={tool.affiliateLink}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => handleToolClick(tool)}
                 className="btn-primary w-full flex items-center justify-center group"
               >
                 <SparklesIcon className="w-4 h-4 mr-2" />

@@ -6,6 +6,8 @@ import Header from '@/components/Header'
 import BudgetBuilder from '@/components/BudgetBuilder'
 import { Tool } from '@/types'
 
+import aiTools from '@/data/aiTools'
+
 // Combined tools and agents dataset
 const allTools: Tool[] = [
   // AI Tools

@@ -79,7 +79,7 @@ export default async function ComparePage({
                 ← Back to tools
               </Link>
             </nav>
-            <h1 className="heading-1">
+            <h1 className="heading-1 mb-6">
               Compare {tools.map((t: any) => t.name).join(' vs ')}
             </h1>
           </div>

@@ -1,7 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { apiRateLimit } from '@/lib/rate-limit';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Rate limiting
+  const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || 'unknown';
+  const { success } = await apiRateLimit.limit(`api-categories-${ip}`);
+  
+  if (!success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  }
   try {
     const { data, error } = await supabase
       .from('categories')

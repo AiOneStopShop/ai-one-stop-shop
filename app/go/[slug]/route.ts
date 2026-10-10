@@ -1,26 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
+import { affiliateRedirectRateLimit } from '@/lib/rate-limit';
 import crypto from 'crypto';
-
-// Rate limiting helper (basic in-memory - use Upstash Redis in production)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function rateLimit(ipHash: string, limit: number = 10, windowMs: number = 60000): boolean {
-  const now = Date.now();
-  const record = rateLimitMap.get(ipHash);
-
-  if (!record || now > record.resetAt) {
-    rateLimitMap.set(ipHash, { count: 1, resetAt: now + windowMs });
-    return true;
-  }
-
-  if (record.count >= limit) {
-    return false;
-  }
-
-  record.count++;
-  return true;
-}
 
 // Hash IP address for privacy
 function hashIP(ip: string): string {
@@ -44,6 +25,22 @@ export async function GET(
 ) {
   const { slug } = params;
 
+  // Rate limiting with Upstash
+  const ip = request.ip || request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || 'unknown';
+  const { success: rateLimitOk } = await affiliateRedirectRateLimit.limit(ip);
+  
+  if (!rateLimitOk) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  }
+
+  // Verify secret parameter
+  const { searchParams } = new URL(request.url);
+  const secret = searchParams.get('s');
+
+  if (!secret || secret !== process.env.AFFILIATE_CLICK_SECRET) {
+    return NextResponse.json({ error: 'Invalid or missing secret' }, { status: 403 });
+  }
+
   try {
     const supabase = getServiceSupabase();
 
@@ -66,19 +63,10 @@ export async function GET(
       return NextResponse.redirect(new URL('/', request.url), 302);
     }
 
-    // Get IP and user agent for logging
-    const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+    // Get user agent for logging
     const userAgent = request.headers.get('user-agent');
     const ipHash = hashIP(ip);
     const botDetected = isBot(userAgent);
-
-    // Rate limiting
-    if (!rateLimit(ipHash)) {
-      return NextResponse.json(
-        { error: 'Rate limit exceeded' },
-        { status: 429 }
-      );
-    }
 
     // Log the click (async, don't wait)
     const referrer = request.headers.get('referer') || '';

@@ -16,7 +16,7 @@ export default function OurKitsPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbs) }}
       />
 
       <div id="main-content" className="scroll-mt-16">

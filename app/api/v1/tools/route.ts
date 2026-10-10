@@ -1,59 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-
-// In-memory rate limiting (use Upstash Redis in production)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function rateLimit(key: string, limit: number = 60, windowMs: number = 60000): boolean {
-  const now = Date.now();
-  const record = rateLimitMap.get(key);
-
-  if (!record || now > record.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + windowMs });
-    return true;
-  }
-
-  if (record.count >= limit) {
-    return false;
-  }
-
-  record.count++;
-  return true;
-}
+import { apiRateLimit } from '@/lib/rate-limit';
 
 // Get client IP safely
 function getClientIP(request: NextRequest): string {
-  // Use Vercel's x-real-ip header or request.ip
   return request.headers.get('x-real-ip') || request.ip || 'unknown';
 }
 
-// Sanitize search query (remove special characters that could affect SQL)
-function sanitizeSearch(input: string): string {
-  // Remove percent signs and underscores (SQL wildcards)
-  // Keep only alphanumeric, spaces, and common punctuation
-  return input.replace(/[%_]/g, '').substring(0, 100);
+// Escape SQL LIKE wildcards
+function escapeLikePattern(input: string): string {
+  return input
+    .replace(/\\/g, '\\\\')
+    .replace(/%/g, '\\%')
+    .replace(/_/g, '\\_')
+    .substring(0, 100);
 }
 
 export async function GET(request: NextRequest) {
   // Rate limiting
-  const clientIP = getClientIP(request);
-  if (!rateLimit(clientIP, 60)) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded' },
-      { status: 429, headers: { 'Retry-After': '60' } }
-    );
+  const ip = getClientIP(request);
+  const { success } = await apiRateLimit.limit(`api-tools-${ip}`);
+  
+  if (!success) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
 
-  const searchParams = request.nextUrl.searchParams;
-  const category = searchParams.get('category');
-  const rawSearch = searchParams.get('q');
-  const search = rawSearch ? sanitizeSearch(rawSearch) : null;
-  
-  // Clamp limit to max 50
-  const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '50')), 50);
-  const offset = Math.max(0, parseInt(searchParams.get('offset') || '0'));
-
   try {
+    const { searchParams } = new URL(request.url);
+    const category = searchParams.get('category');
+    const rawSearch = searchParams.get('q');
+    const search = rawSearch ? escapeLikePattern(rawSearch) : null;
+    
+    // Clamp limit to max 50
+    const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '50')), 50);
+    const offset = Math.max(0, parseInt(searchParams.get('offset') || '0'));
+
     let query = supabase
       .from('tools')
       .select(`
@@ -77,19 +58,61 @@ export async function GET(request: NextRequest) {
           categories(id, slug, name, icon)
         )
       `, { count: 'exact' })
-      .eq('status', 'published')
+      .eq('status', 'published');
+
+    // Category filter
+    if (category) {
+      query = query.eq('tool_categories.categories.slug', category);
+    }
+
+    // Search filter using separate ilike calls (not building .or() from user input)
+    if (search && search.length > 0) {
+      const pattern = `%${search}%`;
+      // Use three separate queries and combine results to avoid building SQL from user input
+      const [nameResults, taglineResults, descResults] = await Promise.all([
+        supabase.from('tools').select('id').eq('status', 'published').ilike('name', pattern).limit(limit * 3),
+        supabase.from('tools').select('id').eq('status', 'published').ilike('tagline', pattern).limit(limit * 3),
+        supabase.from('tools').select('id').eq('status', 'published').ilike('description', pattern).limit(limit * 3),
+      ]);
+
+      const matchingIds = new Set([
+        ...(nameResults.data || []).map((t: any) => t.id),
+        ...(taglineResults.data || []).map((t: any) => t.id),
+        ...(descResults.data || []).map((t: any) => t.id),
+      ]);
+
+      if (matchingIds.size > 0) {
+        query = query.in('id', Array.from(matchingIds));
+      } else {
+        // No matches, return empty
+        return NextResponse.json({
+          tools: [],
+          pagination: {
+            total: 0,
+            limit,
+            offset,
+            hasMore: false,
+          },
+        }, {
+          headers: {
+            'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          },
+        });
+      }
+    }
+
+    query = query
       .order('editorial_score', { ascending: false, nullsFirst: false })
       .range(offset, offset + limit - 1);
 
-    // Add search filter if provided (using safe parameterized queries)
-    if (search && search.length > 0) {
-      // Use textSearch for safer full-text search, or individual ilike calls
-      query = query.or(`name.ilike.%${search}%,tagline.ilike.%${search}%,description.ilike.%${search}%`);
-    }
-
     const { data, error, count } = await query;
 
-    if (error) throw error;
+    if (error) {
+      console.error('API tools query error:', error);
+      throw error;
+    }
 
     // Transform the data to flatten categories
     const tools = (data || []).map((tool: any) => ({
@@ -114,6 +137,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
+    console.error('Failed to fetch tools:', error);
     return NextResponse.json(
       { error: 'Failed to fetch tools' },
       { status: 500 }

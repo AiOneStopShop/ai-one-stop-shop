@@ -25,7 +25,12 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    
+    if (error) {
+      // Redirect to login with error if exchange fails
+      return NextResponse.redirect(new URL('/admin/login?error=auth', requestUrl.origin));
+    }
   }
 
   // Redirect to admin after successful auth

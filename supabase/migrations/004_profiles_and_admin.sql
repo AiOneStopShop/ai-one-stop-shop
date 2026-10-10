@@ -1,17 +1,66 @@
 -- Migration: Profiles table with role-based access control
 -- Purpose: Secure admin authentication with RLS
 
--- Create profiles table (replaces stub from 001)
-CREATE TABLE profiles (
-  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin')),
-  stripe_customer_id TEXT UNIQUE,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+-- Create profiles table (idempotent for databases that already ran old 001)
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY,
+  role TEXT DEFAULT 'user',
+  stripe_customer_id TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Create index on role for fast admin lookups
-CREATE INDEX idx_profiles_role ON profiles(role) WHERE role = 'admin';
+-- Add constraints if they don't exist (for migration from old schema)
+DO $$ 
+BEGIN
+  -- Add foreign key constraint if not exists
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'profiles_id_fkey'
+  ) THEN
+    ALTER TABLE profiles ADD CONSTRAINT profiles_id_fkey 
+      FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE;
+  END IF;
+
+  -- Add role NOT NULL constraint if column allows NULL
+  BEGIN
+    ALTER TABLE profiles ALTER COLUMN role SET NOT NULL;
+  EXCEPTION WHEN OTHERS THEN
+    NULL; -- Already NOT NULL
+  END;
+
+  -- Add role check constraint if not exists
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'profiles_role_check'
+  ) THEN
+    ALTER TABLE profiles ADD CONSTRAINT profiles_role_check 
+      CHECK (role IN ('user', 'admin'));
+  END IF;
+
+  -- Add stripe_customer_id unique constraint if not exists
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'profiles_stripe_customer_id_key'
+  ) THEN
+    ALTER TABLE profiles ADD CONSTRAINT profiles_stripe_customer_id_key 
+      UNIQUE (stripe_customer_id);
+  END IF;
+
+  -- Add created_at NOT NULL constraint if column allows NULL
+  BEGIN
+    ALTER TABLE profiles ALTER COLUMN created_at SET NOT NULL;
+  EXCEPTION WHEN OTHERS THEN
+    NULL; -- Already NOT NULL
+  END;
+
+  -- Add updated_at NOT NULL constraint if column allows NULL
+  BEGIN
+    ALTER TABLE profiles ALTER COLUMN updated_at SET NOT NULL;
+  EXCEPTION WHEN OTHERS THEN
+    NULL; -- Already NOT NULL
+  END;
+END $$;
+
+-- Create index on role for fast admin lookups (idempotent)
+CREATE INDEX IF NOT EXISTS idx_profiles_role ON profiles(role) WHERE role = 'admin';
 
 -- Enable RLS
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;

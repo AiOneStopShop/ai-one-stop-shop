@@ -176,11 +176,16 @@ export default async function ComparePage(props: {
 
                 <tr>
                   <th scope="row" className="text-left p-4 border border-[#E5E1DC] font-medium text-[#5B657B]">
-                    Added to Directory
+                    Last Updated
                   </th>
                   {tools.map((tool: any) => (
                     <td key={tool.id} className="p-4 border border-[#E5E1DC]">
-                      {tool.created_at ? new Date(tool.created_at).toLocaleDateString('en-US', {
+                      {tool.updated_at ? new Date(tool.updated_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        timeZone: 'UTC'
+                      }) : tool.created_at ? new Date(tool.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric',

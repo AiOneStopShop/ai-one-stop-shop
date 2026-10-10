@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import { ArrowRight, Search, CheckCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import type { Tool, Category } from '@/types/database';
+import type { Tool } from '@/types/database';
+import { fallbackTools } from '@/lib/fallback-data';
 import { generateOrganizationSchema, generateWebSiteSchema, safeJsonLd } from '@/lib/json-ld';
 
 async function getToolsCount(): Promise<number> {
@@ -13,15 +15,28 @@ async function getToolsCount(): Promise<number> {
 }
 
 async function getFeaturedTools(): Promise<Tool[]> {
-  const { data } = await supabase
+  // Featured tools (has editorial score and >= 85, or most recently updated)
+  const { data: featured } = await supabase
     .from('tools')
     .select('*')
     .eq('status', 'published')
+    .not('editorial_score', 'is', null)
     .gte('editorial_score', 85)
     .order('editorial_score', { ascending: false })
     .limit(6);
   
-  return data || [];
+  // If we don't have enough featured tools with real scores, fill with recent
+  if (!featured || featured.length < 6) {
+    const { data: recent } = await supabase
+      .from('tools')
+      .select('*')
+      .eq('status', 'published')
+      .order('updated_at', { ascending: false })
+      .limit(6);
+    return recent || fallbackTools.slice(0, 6);
+  }
+  
+  return featured || [];
 }
 
 export const metadata = {
@@ -37,7 +52,7 @@ export default async function HomePage() {
   const websiteSchema = generateWebSiteSchema();
 
   return (
-    <>
+    <div id="main-content" className="scroll-mt-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(organizationSchema) }}
@@ -47,120 +62,112 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: safeJsonLd(websiteSchema) }}
       />
 
-      <div id="main-content" className="scroll-mt-16">
-        {/* Hero Section */}
-        <section className="section-spacing bg-white">
-          <div className="container-max">
-            <div className="max-w-4xl">
-              <h1 className="heading-display mb-6">
-                Find the AI tool that fits your work, without the noise.
-              </h1>
-              <p className="text-lead mb-8 max-w-2xl">
-                We check each tool by hand: what it's built for, what it costs, and how it fits. Right now that's {toolsCount} tools, and we'd rather add more carefully than pad the list. You stay in charge of the choice.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link 
-                  href="/tools" 
-                  className="btn-primary"
-                >
-                  See all {toolsCount} tools
-                </Link>
-                <Link 
-                  href="/how-we-rank" 
-                  className="btn-secondary"
-                >
-                  How we rank tools
-                </Link>
+      {/* Hero Section */}
+      <section className="section-spacing bg-gradient-to-b from-[#F9F8F5] to-white">
+        <div className="container-max text-center">
+          <h1 className="heading-hero mb-6">
+            Find the Right AI Tool
+          </h1>
+          <p className="text-xl text-[#5B657B] max-w-2xl mx-auto mb-8">
+            {toolsCount} AI tools, all checked by hand. No fake ratings, no paid rankings. Find tools that actually help.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/tools" className="btn-primary">
+              Browse all tools
+              <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+            </Link>
+            <Link href="/finder" className="btn-secondary">
+              <Search className="mr-2 h-5 w-5" aria-hidden="true" />
+              AI Tool Finder
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Value Props */}
+      <section className="section-spacing bg-white">
+        <div className="container-max">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3EFFF] text-[#6C39EF] mb-4">
+                <CheckCircle className="h-6 w-6" aria-hidden="true" />
               </div>
-              <p className="text-sm text-[#5B657B] mt-4">
-                Free to browse. No account needed.
+              <h2 className="heading-3 mb-2">Actually Reviewed</h2>
+              <p className="text-[#5B657B]">
+                Every tool checked by humans. No fake AI-generated ratings.
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3EFFF] text-[#6C39EF] mb-4">
+                <span className="text-2xl">💰</span>
+              </div>
+              <h2 className="heading-3 mb-2">Real Pricing</h2>
+              <p className="text-[#5B657B]">
+                Current prices verified regularly. No surprises when you click through.
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3EFFF] text-[#6C39EF] mb-4">
+                <span className="text-2xl">🔍</span>
+              </div>
+              <h2 className="heading-3 mb-2">Never Paid Rankings</h2>
+              <p className="text-[#5B657B]">
+                Tools don't pay to move up. Our reviews stay honest.{' '}
+                <Link href="/how-we-rank" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                  See how
+                </Link>
               </p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Featured Tools */}
-        {featuredTools.length > 0 && (
-          <section className="section-spacing">
-            <div className="container-max">
-              <h2 className="heading-2 mb-8">Tools we'd suggest to a friend</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredTools.map((tool) => (
-                  <Link
-                    key={tool.id}
-                    href={`/tools/${tool.slug}`}
-                    className="card group"
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="heading-3 group-hover:text-[#6C39EF] transition-colors">
-                        {tool.name}
-                      </h3>
-                      {tool.has_free_tier === true && (
-                        <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">
-                          Free tier
-                        </span>
-                      )}
-                    </div>
-                    {tool.tagline && (
-                      <p className="text-[#5B657B] mb-3">{tool.tagline}</p>
-                    )}
-                    {tool.pricing_summary && (
-                      <p className="text-sm font-medium text-[#171C26]">
-                        From {tool.pricing_summary}
-                      </p>
-                    )}
-                  </Link>
-                ))}
-              </div>
-              <div className="mt-8 text-center">
-                <Link href="/tools" className="btn-secondary">
-                  View all tools
-                </Link>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Value Props */}
-        <section className="section-spacing bg-[#4A2D86] text-white">
-          <div className="container-max">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="heading-2 mb-6">How we make money</h2>
-              <div className="space-y-4 text-lg">
-                <p>
-                  Some links are paid (affiliate) links. If you sign up through one, we may earn a commission at no extra cost to you.
-                </p>
-                <p>
-                  Some tool makers pay for a clearly labeled <strong>Sponsored</strong> spot. Sponsored spots are kept separate from our ranked picks.
-                </p>
-                <p>
-                  <strong>Money never changes our ranking.</strong> A tool doesn't move up because it pays us.
-                </p>
-              </div>
-              <div className="mt-8">
-                <Link href="/disclosure" className="inline-block px-6 py-3 bg-white text-[#4A2D86] rounded-lg font-medium hover:bg-gray-100 transition-colors focus-ring">
-                  Read our full disclosure
-                </Link>
-              </div>
-            </div>
+      {/* Featured Tools */}
+      <section className="section-spacing bg-[#F9F8F5]">
+        <div className="container-max">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="heading-2">Featured Tools</h2>
+            <Link href="/tools" className="text-[#6C39EF] hover:underline focus-ring rounded">
+              View all →
+            </Link>
           </div>
-        </section>
-
-        {/* CTA */}
-        <section className="section-spacing">
-          <div className="container-max">
-            <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-2xl p-8 md:p-12 text-center">
-              <h2 className="heading-2 mb-4">Start exploring</h2>
-              <p className="text-lead mb-8 max-w-2xl mx-auto">
-                Browse our hand-checked catalog of AI tools. Every tool includes what it does, who it's for, real pricing, and when we last verified it.
-              </p>
-              <Link href="/tools" className="btn-primary">
-                Browse all {toolsCount} tools
+          
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {featuredTools.map((tool) => (
+              <Link
+                key={tool.id}
+                href={`/tools/${tool.slug}`}
+                className="card hover:shadow-lg transition-shadow group"
+              >
+                <h3 className="heading-3 mb-2 group-hover:text-[#6C39EF] transition-colors">
+                  {tool.name}
+                </h3>
+                <p className="text-[#5B657B] mb-4 line-clamp-3">
+                  {tool.description || tool.tagline}
+                </p>
+                {tool.pricing_summary && (
+                  <p className="text-sm text-[#6C39EF] font-medium">
+                    {tool.pricing_summary}
+                  </p>
+                )}
               </Link>
-            </div>
+            ))}
           </div>
-        </section>
-      </div>
-    </>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="section-spacing bg-white">
+        <div className="container-max max-w-3xl text-center">
+          <h2 className="heading-2 mb-4">Can't find what you need?</h2>
+          <p className="text-lead mb-8">
+            Suggest a tool and we'll review it
+          </p>
+          <Link href="/submit" className="btn-primary">
+            Submit a tool
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }

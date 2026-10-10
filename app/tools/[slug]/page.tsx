@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Tool, Category } from '@/types/database';
-import { generateToolSchema, generateBreadcrumbSchema } from '@/lib/json-ld';
+import { generateToolSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { ExternalLink } from 'lucide-react';
 
 async function getTool(slug: string) {
@@ -79,7 +79,7 @@ export default async function ToolPage({ params }: { params: { slug: string } })
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(toolSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(toolSchema) }}
       />
 
       <div id="main-content" className="scroll-mt-16">

@@ -24,7 +24,10 @@ function rateLimit(ipHash: string, limit: number = 10, windowMs: number = 60000)
 
 // Hash IP address for privacy
 function hashIP(ip: string): string {
-  const secret = process.env.AFFILIATE_CLICK_SECRET || 'default-secret-change-me';
+  const secret = process.env.AFFILIATE_CLICK_SECRET;
+  if (!secret) {
+    throw new Error('AFFILIATE_CLICK_SECRET not configured');
+  }
   return crypto.createHmac('sha256', secret).update(ip).digest('hex');
 }
 
@@ -44,12 +47,19 @@ export async function GET(
   try {
     const supabase = getServiceSupabase();
 
-    // Look up the affiliate link
+    // Look up the affiliate link and ensure tool is published
     const { data: link, error } = await supabase
       .from('affiliate_links')
-      .select('id, tool_id, destination_url, is_active')
+      .select(`
+        id,
+        tool_id,
+        destination_url,
+        is_active,
+        tools!inner(status)
+      `)
       .eq('go_slug', slug)
       .eq('is_active', true)
+      .eq('tools.status', 'published')
       .single();
 
     if (error || !link) {

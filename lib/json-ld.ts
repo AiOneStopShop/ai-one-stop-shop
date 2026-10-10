@@ -3,6 +3,21 @@ import type { Tool, Category } from '@/types/database';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aionestop.shop';
 const SITE_NAME = 'AI One Stop Shop';
 
+/**
+ * Safely serialize JSON-LD to prevent XSS attacks
+ * Escapes <, >, &, and U+2028/U+2029 line/paragraph separators
+ */
+export function safeJsonLd(obj: any): string {
+  const json = JSON.stringify(obj);
+  
+  return json
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
 export function generateOrganizationSchema() {
   return {
     '@context': 'https://schema.org',

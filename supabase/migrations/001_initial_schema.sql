@@ -16,25 +16,25 @@ CREATE TABLE IF NOT EXISTS categories (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Tools table
+-- Tools table with length limits
 CREATE TABLE IF NOT EXISTS tools (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  slug TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  tagline TEXT,
-  description TEXT,
-  website_url TEXT NOT NULL,
-  pricing_summary TEXT,
+  slug TEXT UNIQUE NOT NULL CHECK (char_length(slug) <= 100),
+  name TEXT NOT NULL CHECK (char_length(name) <= 200),
+  tagline TEXT CHECK (char_length(tagline) <= 255),
+  description TEXT CHECK (char_length(description) <= 5000),
+  website_url TEXT NOT NULL CHECK (char_length(website_url) <= 500),
+  pricing_summary TEXT CHECK (char_length(pricing_summary) <= 255),
   pricing_model TEXT CHECK (pricing_model IN ('free', 'freemium', 'subscription', 'one-time', 'usage-based', 'contact')),
   has_free_tier BOOLEAN DEFAULT false,
   platforms TEXT[] DEFAULT ARRAY[]::TEXT[],
   features TEXT[] DEFAULT ARRAY[]::TEXT[],
-  logo_url TEXT,
+  logo_url TEXT CHECK (char_length(logo_url) <= 500),
   editorial_score INTEGER CHECK (editorial_score >= 1 AND editorial_score <= 100),
-  editorial_why TEXT,
-  source_url TEXT,
+  editorial_why TEXT CHECK (char_length(editorial_why) <= 2000),
+  source_url TEXT CHECK (char_length(source_url) <= 500),
   last_verified_at TIMESTAMPTZ,
-  status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
+  status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived', 'needs_review', 'pending')),
   is_sponsored BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()

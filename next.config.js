@@ -53,6 +53,31 @@ const nextConfig = {
     unoptimized: process.env.NODE_ENV === 'production',
     remotePatterns: [],
   },
+
+  async redirects() {
+    return [
+      {
+        source: '/agents',
+        destination: '/tools',
+        permanent: true,
+      },
+      {
+        source: '/toolkit',
+        destination: '/finder',
+        permanent: true,
+      },
+      {
+        source: '/faq',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/get-started',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

@@ -102,8 +102,8 @@ export default function FinderPage() {
         });
       }
       recommendations.push({
-        name: 'ChatGPT',
-        slug: 'chatgpt',
+        name: 'ChatGPT Plus',
+        slug: 'chatgpt-plus',
         why: 'Versatile AI assistant for various tasks'
       });
     }
@@ -111,13 +111,13 @@ export default function FinderPage() {
     // General recommendations
     if (recommendations.length === 0) {
       recommendations.push({
-        name: 'ChatGPT',
-        slug: 'chatgpt',
+        name: 'ChatGPT Plus',
+        slug: 'chatgpt-plus',
         why: 'Versatile AI assistant good for most tasks'
       });
       recommendations.push({
-        name: 'Claude',
-        slug: 'claude',
+        name: 'Claude Pro',
+        slug: 'claude-pro',
         why: 'Strong at analysis and long-form content'
       });
     }

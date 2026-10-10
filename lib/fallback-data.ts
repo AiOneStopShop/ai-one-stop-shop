@@ -383,7 +383,7 @@ export const fallbackTools = [
     "editorial_score": 70,
     "editorial_why": null,
     "is_sponsored": false,
-    "status": "published",
+    "status": "needs_review",
     "last_verified_at": "2026-10-10T00:00:00Z",
     "created_at": "2026-10-10T00:00:00Z",
     "updated_at": "2026-10-10T00:00:00Z",

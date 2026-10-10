@@ -121,6 +121,19 @@ npm start           # ✅ Serves production build
 10. [x] .gitignore covers all env files
 11. [x] Legacy files with tokens removed (tokens must be revoked by owner)
 
+## ⚖️ Legal & Compliance Status
+
+### All Legal Review Items Fixed ✅
+1. [x] Softened testing claims: 'We check each tool by hand' (not 'tried every tool')
+2. [x] Removed auto-generated ratings from /compare (showed facts only)
+3. [x] No fake dates: removed today's date, hide empty 'why' text, show real last_verified_at only
+4. [x] Privacy page rewritten to match code (no analytics, hashed IPs, 90-day retention, under-13, postal address placeholder)
+5. [x] Click logging: no fallback secret, supports key rotation, 90-day retention SQL added
+6. [x] Cookie consent banner added (essential cookies only, loads future analytics after Accept)
+7. [x] Waitlist copy updated (what you get, frequency, unsubscribe, where stored, CAN-SPAM placeholder)
+8. [x] How-we-rank: ApproveGate disclosure added (owner's product, never ranked, kept separate)
+9. [x] No HatchboxAI mentions anywhere
+
 ### Production Environment Variables Required
 - `AFFILIATE_CLICK_SECRET` (required for /go redirects)
 - `SUPABASE_SERVICE_ROLE_KEY` (required for admin actions)

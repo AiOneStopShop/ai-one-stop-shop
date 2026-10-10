@@ -14,17 +14,46 @@ async function getCategory(slug: string) {
 }
 
 async function getCategoryTools(categoryId: string) {
-  const { data } = await supabase
-    .from('tools')
-    .select(`
-      *,
-      tool_categories!inner(category_id)
-    `)
-    .eq('status', 'published')
-    .eq('tool_categories.category_id', categoryId)
-    .order('editorial_score', { ascending: false, nullsFirst: false });
+  try {
+    const { data: tools, error } = await supabase
+      .from('tools')
+      .select(`
+        *,
+        tool_categories!inner(category_id)
+      `)
+      .eq('status', 'published')
+      .eq('tool_categories.category_id', categoryId)
+      .order('editorial_score', { ascending: false, nullsFirst: false });
 
-  return data || [];
+    if (error) {
+      console.error('Supabase error fetching category tools:', error);
+    }
+
+    // If Supabase fails or returns empty, use fallback data
+    if (!tools || tools.length === 0) {
+      const { fallbackTools, fallbackToolCategories } = await import('@/lib/fallback-data');
+      
+      // Find tool IDs in this category
+      const toolIdsInCategory = fallbackToolCategories
+        .filter((tc: any) => tc.category_id === categoryId)
+        .map((tc: any) => tc.tool_id);
+      
+      // Filter tools by category and published status
+      const categoryTools = fallbackTools
+        .filter((tool: any) => 
+          toolIdsInCategory.includes(tool.id) && 
+          tool.status === 'published'
+        )
+        .sort((a: any, b: any) => (b.editorial_score || 0) - (a.editorial_score || 0));
+      
+      return categoryTools;
+    }
+
+    return tools || [];
+  } catch (err) {
+    console.error('Error in getCategoryTools:', err);
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {

@@ -1,10 +1,11 @@
 -- Migration: Profiles table with role-based access control
 -- Purpose: Secure admin authentication with RLS
 
--- Create profiles table
-CREATE TABLE IF NOT EXISTS profiles (
+-- Create profiles table (replaces stub from 001)
+CREATE TABLE profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'admin')),
+  stripe_customer_id TEXT UNIQUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -73,8 +74,13 @@ CREATE TRIGGER on_auth_user_created
 COMMENT ON TABLE profiles IS 'User profiles with role-based access. Role can only be changed via direct SQL by service_role.';
 COMMENT ON COLUMN profiles.role IS 'User role: user or admin. Cannot be updated from client; use SQL with service_role to grant admin.';
 
+-- IMPORTANT: Disable public signups in Supabase Auth settings
+-- Go to Authentication > Settings and set "Disable signups" to ON
+-- Admin accounts must be created manually:
+
 -- Instructions for granting admin role:
 -- To grant Kati (or any user) admin role:
--- 1. Get the user's UUID from auth.users: SELECT id, email FROM auth.users WHERE email = 'kati@example.com';
--- 2. Update their role: UPDATE profiles SET role = 'admin' WHERE id = '<user-uuid>';
--- 3. Verify: SELECT p.role, u.email FROM profiles p JOIN auth.users u ON p.id = u.id WHERE u.email = 'kati@example.com';
+-- 1. Create user manually in Supabase Dashboard (or use magic link with shouldCreateUser:false in code)
+-- 2. Get the user's UUID from auth.users: SELECT id, email FROM auth.users WHERE email = 'kati@example.com';
+-- 3. Update their role: UPDATE profiles SET role = 'admin' WHERE id = '<user-uuid>';
+-- 4. Verify: SELECT p.role, u.email FROM profiles p JOIN auth.users u ON p.id = u.id WHERE u.email = 'kati@example.com';

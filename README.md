@@ -43,9 +43,11 @@ AFFILIATE_CLICK_SECRET=random-secret-string
 NEXT_PUBLIC_SITE_CONTACT_EMAIL=hello@aionestop.shop
 NEXT_PUBLIC_SITE_POSTAL_ADDRESS="123 Main St\nSan Francisco, CA 94102\nUnited States"
 
-# Optional
-NEXT_PUBLIC_TURNSTILE_SITE_KEY=your-site-key
-TURNSTILE_SECRET_KEY=your-secret-key
+# Optional (DO NOT SET until wired)
+# Turnstile (Cloudflare CAPTCHA) - NOT YET WIRED TO SUBMIT FORM
+# Leave UNSET at launch. API accepts turnstileToken but form doesn't send it.
+# NEXT_PUBLIC_TURNSTILE_SITE_KEY=your-site-key
+# TURNSTILE_SECRET_KEY=your-secret-key
 NEXT_PUBLIC_SITE_URL=https://aionestop.shop
 ```
 

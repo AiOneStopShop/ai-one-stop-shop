@@ -34,14 +34,6 @@ export async function GET(
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
 
-  // Verify secret parameter
-  const { searchParams } = new URL(request.url);
-  const secret = searchParams.get('s');
-
-  if (!secret || secret !== process.env.AFFILIATE_CLICK_SECRET) {
-    return NextResponse.json({ error: 'Invalid or missing secret' }, { status: 403 });
-  }
-
   try {
     const supabase = getServiceSupabase();
 

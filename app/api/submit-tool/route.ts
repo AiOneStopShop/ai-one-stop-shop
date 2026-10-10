@@ -23,6 +23,9 @@ function getClientIP(request: NextRequest): string {
 
 async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
+  // IMPORTANT: Turnstile is NOT wired to the submit form yet.
+  // Leave TURNSTILE_SECRET_KEY unset at launch. Verification is skipped when unset.
+  // Form does not send turnstileToken. Wire Turnstile widget to form before setting keys.
   if (!secret) return false;
 
   try {

@@ -81,7 +81,8 @@ export default function AdminLoginPage() {
       const { error: magicError } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/admin/review`,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          shouldCreateUser: false, // Disable signups - admin accounts must exist
         },
       });
 

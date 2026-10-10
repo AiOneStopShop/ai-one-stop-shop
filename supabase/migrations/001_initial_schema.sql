@@ -73,17 +73,12 @@ CREATE TABLE IF NOT EXISTS affiliate_clicks (
   is_bot BOOLEAN DEFAULT false
 );
 
--- User profiles (for future use with auth)
-CREATE TABLE IF NOT EXISTS profiles (
-  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  stripe_customer_id TEXT UNIQUE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+-- User profiles removed from this migration (see 004_profiles_and_admin.sql for full schema)
 
 -- Subscriptions (for future use)
 CREATE TABLE IF NOT EXISTS subscriptions (
   stripe_subscription_id TEXT PRIMARY KEY,
-  user_id UUID REFERENCES profiles(user_id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   stripe_customer_id TEXT NOT NULL,
   price_id TEXT NOT NULL,
   plan TEXT CHECK (plan IN ('member', 'power')),
@@ -171,12 +166,9 @@ CREATE POLICY "Users can read own profile"
 -- Subscriptions: users can read only their own
 CREATE POLICY "Users can read own subscriptions"
   ON subscriptions FOR SELECT
-  USING (user_id IN (SELECT user_id FROM profiles WHERE user_id = auth.uid()));
+  USING (user_id = auth.uid());
 
--- Tool submissions: allow public insert
-CREATE POLICY "Anyone can submit tools"
-  ON tool_submissions FOR INSERT
-  WITH CHECK (true);
+-- Tool submissions: RLS policies added in migration 003
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()

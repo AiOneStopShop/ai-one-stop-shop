@@ -3,11 +3,13 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 const pages = [
-  { url: 'http://localhost:3000/', name: 'home' },
-  { url: 'http://localhost:3000/tools', name: 'tools' },
-  { url: 'http://localhost:3000/tools/chatgpt-plus', name: 'tool-detail' },
-  { url: 'http://localhost:3000/finder', name: 'finder' },
-  { url: 'http://localhost:3000/our-kits', name: 'our-kits' },
+  { url: 'http://localhost:3100/', name: 'home' },
+  { url: 'http://localhost:3100/tools', name: 'tools' },
+  { url: 'http://localhost:3100/tools/chatgpt-plus', name: 'tool-detail' },
+  { url: 'http://localhost:3100/compare', name: 'compare' },
+  { url: 'http://localhost:3100/category/llm-large-language-model', name: 'category' },
+  { url: 'http://localhost:3100/finder', name: 'finder' },
+  { url: 'http://localhost:3100/our-kits', name: 'our-kits' },
 ];
 
 const widths = [

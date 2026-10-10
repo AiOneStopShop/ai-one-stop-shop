@@ -136,14 +136,15 @@
 ## Known Issues / TODO
 
 ### Compare Page
-- ⚠️ `/compare` returns 500 when using fallback data (mock Supabase `.in().eq()` chaining issue)
+- ⚠️ `/compare` returns 500 when using fallback data due to mock Supabase limitations
 - Works correctly with real Supabase database
-- Workaround: Use production Supabase credentials
+- Workaround: Configure Supabase environment variables for production
+- See `COMPARE_STATUS.md` for technical details
 
 ### Admin Features
-- 🔨 Approve/Reject buttons in `/admin/review` not wired to actions (UI only)
-- 🔨 Supabase Auth integration needed for real admin role checking
-- 🔨 Service role key required for approve/reject operations
+- ✅ Approve/Reject buttons now wired to server actions
+- ✅ Updates Supabase when configured, or local `draft-tools.json` as fallback
+- 🔨 Supabase Auth integration needed for real admin role checking (currently placeholder)
 
 ### Future Enhancements
 - 📋 Scheduled enrichment job to verify links and update metadata

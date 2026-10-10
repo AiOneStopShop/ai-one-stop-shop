@@ -36,7 +36,7 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#6C39EF] text-xl">✓</span>
-                    <span>Honest reviews from people who've tried them</span>
+                    <span>Hand-reviewed tools (no fake ratings)</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#6C39EF] text-xl">✓</span>
@@ -68,7 +68,7 @@ export default function PricingPage() {
                   Right now, no. The directory is free.
                 </p>
                 <p className="mt-3">
-                  In the future, we might add optional paid features for power users (like advanced filters or saved lists). But the core directory will always be free to browse.
+                  The core directory will always be free to browse. We have no plans to add paid features.
                 </p>
               </div>
 

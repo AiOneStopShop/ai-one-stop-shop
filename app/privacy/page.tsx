@@ -20,9 +20,15 @@ export default function PrivacyPage() {
               <p>
                 AI One Stop Shop is operated by <strong>oneTomorrow</strong>, located in Washington State, United States.
               </p>
-              <p className="bg-yellow-50 border border-yellow-200 rounded px-4 py-3 text-sm">
-                <strong>Contact:</strong> [POSTAL ADDRESS PLACEHOLDER - owner must add physical mailing address before launch]
-              </p>
+              {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS ? (
+                <p className="bg-blue-50 border border-blue-200 rounded px-4 py-3 text-sm whitespace-pre-line">
+                  <strong>Contact:</strong> {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS}
+                </p>
+              ) : (
+                <p className="bg-yellow-50 border border-yellow-200 rounded px-4 py-3 text-sm">
+                  <strong>Contact:</strong> Contact information will be added before any marketing emails are sent.
+                </p>
+              )}
             </div>
 
             <div>

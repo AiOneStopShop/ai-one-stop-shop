@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, X } from 'lucide-react';
+import { CompareCheckbox } from './CompareCheckbox';
 
 type Tool = any;
 type Category = any;
@@ -48,15 +49,16 @@ export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
 
       // Price filter
       if (priceFilter !== 'all') {
-        const pricingModel = tool.pricing_model || '';
-        if (priceFilter === 'free' && pricingModel !== 'free') return false;
-        if (priceFilter === 'subscription' && pricingModel !== 'subscription') return false;
-        if (priceFilter === 'one-time' && pricingModel !== 'one-time') return false;
+        if (priceFilter === 'free' && tool.pricing_model !== 'free') return false;
+        if (priceFilter === 'subscription' && tool.pricing_model !== 'subscription') return false;
+        if (priceFilter === 'one-time' && tool.pricing_model !== 'one-time') return false;
       }
 
       return true;
     });
   }, [initialTools, searchQuery, selectedCategory, priceFilter, hasFreeTier]);
+
+  const hasActiveFilters = searchQuery || selectedCategory !== 'all' || priceFilter !== 'all' || hasFreeTier;
 
   const clearFilters = () => {
     setSearchQuery('');
@@ -65,15 +67,13 @@ export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
     setHasFreeTier(false);
   };
 
-  const hasActiveFilters = searchQuery || selectedCategory !== 'all' || priceFilter !== 'all' || hasFreeTier;
-
   return (
-    <div>
+    <>
       {/* Search and Filters */}
       <div className="mb-8 space-y-4">
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#5B657B] h-5 w-5" aria-hidden="true" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#5B657B]" aria-hidden="true" />
           <input
             type="search"
             placeholder="Search tools by name or description..."
@@ -127,6 +127,7 @@ export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
               checked={hasFreeTier}
               onChange={(e) => setHasFreeTier(e.target.checked)}
               className="w-4 h-4 text-[#6C39EF] focus-ring rounded"
+              aria-label="Filter tools with free tier"
             />
             <span className="text-sm">Has free tier</span>
           </label>
@@ -157,9 +158,13 @@ export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
             const primaryCategory = tool.tool_categories?.find((tc: any) => tc.is_primary)?.categories;
             
             return (
-              <article key={tool.id} className="card group">
-                <div className="flex items-start justify-between mb-3">
-                  <h2 className="heading-3">
+              <article key={tool.id} className="card group relative">
+                <div className="absolute top-4 right-4 z-10">
+                  <CompareCheckbox toolSlug={tool.slug} />
+                </div>
+                
+                <div className="flex flex-col h-full pr-24">
+                  <h2 className="heading-3 mb-2">
                     <Link 
                       href={`/tools/${tool.slug}`}
                       className="group-hover:text-[#6C39EF] transition-colors focus-ring rounded"
@@ -168,67 +173,49 @@ export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
                     </Link>
                   </h2>
                   {tool.is_sponsored && (
-                    <span className="badge-sponsored text-xs">Sponsored</span>
+                    <span className="badge-sponsored text-xs mb-2">Sponsored</span>
+                  )}
+
+                  {tool.tagline && (
+                    <p className="text-[#5B657B] mb-3 line-clamp-2">{tool.tagline}</p>
+                  )}
+
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {primaryCategory && (
+                      <span className="badge-category text-xs">
+                        {primaryCategory.icon} {primaryCategory.name}
+                      </span>
+                    )}
+                    {tool.has_free_tier && (
+                      <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">
+                        Free tier
+                      </span>
+                    )}
+                  </div>
+
+                  {tool.pricing_summary && (
+                    <p className="text-sm text-[#6C39EF] font-medium mt-auto">
+                      {tool.pricing_summary}
+                    </p>
                   )}
                 </div>
-
-                {tool.tagline && (
-                  <p className="text-[#5B657B] mb-3 line-clamp-2">{tool.tagline}</p>
-                )}
-
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {tool.has_free_tier === true && (
-                    <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">
-                      Free tier
-                    </span>
-                  )}
-                  {primaryCategory && (
-                    <span className="badge bg-blue-50 text-blue-700 border border-blue-200 text-xs">
-                      {primaryCategory.name}
-                    </span>
-                  )}
-                </div>
-
-                {tool.pricing_summary && (
-                  <p className="text-sm font-medium text-[#171C26] mb-4">
-                    From {tool.pricing_summary}
-                  </p>
-                )}
-
-                {tool.last_verified_at && (
-                  <p className="text-xs text-[#5B657B] mb-4">
-                    Last checked {new Date(tool.last_verified_at).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                      timeZone: 'UTC'
-                    })}
-                  </p>
-                )}
-
-                <Link 
-                  href={`/tools/${tool.slug}`}
-                  className="btn-secondary w-full"
-                >
-                  View details
-                </Link>
               </article>
             );
           })}
         </div>
       ) : (
-        <div className="text-center py-12 bg-[#F9F8F5] rounded-xl">
-          <p className="text-lg text-[#5B657B] mb-4">
-            No tools match your filters.
+        <div className="text-center py-12">
+          <p className="text-[#5B657B] mb-4">
+            No tools found matching your filters
           </p>
           <button
             onClick={clearFilters}
-            className="text-[#6C39EF] hover:underline focus-ring rounded"
+            className="btn-secondary"
           >
-            Clear filters to see all tools
+            Clear all filters
           </button>
         </div>
       )}
-    </div>
+    </>
   );
 }

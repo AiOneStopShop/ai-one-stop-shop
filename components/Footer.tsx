@@ -13,16 +13,18 @@ export function Footer() {
             <p className="text-sm text-gray-300 mb-4">
               Hand-checked AI tools directory. No fake ratings, no paid rankings.
             </p>
-            <p className="text-xs text-gray-400">
-              [CAN-SPAM POSTAL ADDRESS PLACEHOLDER - owner must add physical mailing address]
-            </p>
+            {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS && (
+              <p className="text-xs text-gray-400 whitespace-pre-line">
+                {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS}
+              </p>
+            )}
           </div>
 
           {/* Tools */}
           <div>
-            <h3 className="font-dm-sans font-semibold text-base mb-4">
+            <p className="font-dm-sans font-semibold text-base mb-4">
               Discover
-            </h3>
+            </p>
             <ul className="space-y-2">
               <li>
                 <Link 
@@ -53,9 +55,9 @@ export function Footer() {
 
           {/* Trust */}
           <div>
-            <h3 className="font-dm-sans font-semibold text-base mb-4">
+            <p className="font-dm-sans font-semibold text-base mb-4">
               Trust
-            </h3>
+            </p>
             <ul className="space-y-2">
               <li>
                 <Link 

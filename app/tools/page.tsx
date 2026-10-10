@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import type { Tool, Category } from '@/types/database';
 import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { ToolsClient } from './ToolsClient';
+import { StickyCompareButton } from './CompareCheckbox';
 
 async function getTools() {
   const { data: tools } = await supabase

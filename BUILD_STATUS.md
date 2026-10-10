@@ -53,7 +53,7 @@
 
 ## ✅ CRITICAL: All SQL Migration Issues Fixed
 
-**All 6 Secura SQL issues resolved:**
+**All 7 Secura SQL issues resolved:**
 
 1. ✅ **001 line 110:** `reviewed_by` now REFERENCES `auth.users(id)`
 2. ✅ **001 lines 128, 161-167:** Removed all leftover profiles references
@@ -61,6 +61,10 @@
 4. ✅ **003 line 26:** Removed `review_notes` from trigger (column added to 001 instead)
 5. ✅ **001 line 5:** Deleted `ALTER DATABASE app.jwt_secret` line
 6. ✅ **Admin drafts query:** Now uses service_role after auth check
+7. ✅ **003 lines 47-48:** Removed premature policy comment (commit `688cd3f`)
+   - Comment referenced policy from 005 that doesn't exist yet
+   - Caused entire 003 transaction to roll back silently
+   - Also added `NEW.review_notes := NULL` to trigger
 
 **Plus:**
 - ✅ Removed `/supabase/.temp/cli-latest`

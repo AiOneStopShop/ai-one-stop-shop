@@ -139,6 +139,7 @@ export default async function ToolsPage() {
             </div>
           </div>
         </section>
+        <StickyCompareButton />
       </div>
     </>
   );

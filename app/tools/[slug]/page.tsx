@@ -230,6 +230,14 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                       <ExternalLink className="h-4 w-4" aria-hidden="true" />
                     </a>
 
+                    {/* Compare Button */}
+                    <Link
+                      href={`/compare?tools=${tool.slug}`}
+                      className="btn-secondary w-full block text-center mt-3"
+                    >
+                      Compare with...
+                    </Link>
+
                     {isAffiliate && (
                       <p className="text-xs text-[#5B657B] mt-3 flex items-start gap-1">
                         <span className="font-medium text-[#C62810]">Paid link:</span>

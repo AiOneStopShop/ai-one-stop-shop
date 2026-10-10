@@ -88,9 +88,9 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="font-dm-sans font-semibold text-base mb-4">
+            <p className="font-dm-sans font-semibold text-base mb-4">
               Legal
-            </h3>
+            </p>
             <ul className="space-y-2">
               <li>
                 <Link 

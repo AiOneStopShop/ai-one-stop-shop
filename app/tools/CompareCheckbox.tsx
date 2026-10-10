@@ -7,33 +7,47 @@ const MAX_COMPARE = 3;
 
 export function CompareCheckbox({ toolSlug }: { toolSlug: string }) {
   const [selected, setSelected] = useState(false);
-  const [compareList, setCompareList] = useState<string[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
-    const stored = localStorage.getItem('compareList');
-    const list = stored ? JSON.parse(stored) : [];
-    setCompareList(list);
-    setSelected(list.includes(toolSlug));
+    const updateFromStorage = () => {
+      const stored = localStorage.getItem('compareList');
+      const list = stored ? JSON.parse(stored) : [];
+      setSelected(list.includes(toolSlug));
+    };
+
+    updateFromStorage();
+    window.addEventListener('storage', updateFromStorage);
+    window.addEventListener('compareListChanged', updateFromStorage);
+
+    return () => {
+      window.removeEventListener('storage', updateFromStorage);
+      window.removeEventListener('compareListChanged', updateFromStorage);
+    };
   }, [toolSlug]);
 
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
+    const stored = localStorage.getItem('compareList');
+    const currentList: string[] = stored ? JSON.parse(stored) : [];
     let newList: string[];
 
     if (checked) {
-      if (compareList.length >= MAX_COMPARE) {
+      if (currentList.length >= MAX_COMPARE) {
         alert(`You can only compare up to ${MAX_COMPARE} tools at once`);
+        e.preventDefault();
         return;
       }
-      newList = [...compareList, toolSlug];
+      if (!currentList.includes(toolSlug)) {
+        newList = [...currentList, toolSlug];
+      } else {
+        newList = currentList;
+      }
     } else {
-      newList = compareList.filter(s => s !== toolSlug);
+      newList = currentList.filter(s => s !== toolSlug);
     }
 
-    setCompareList(newList);
-    setSelected(checked);
     localStorage.setItem('compareList', JSON.stringify(newList));
+    setSelected(checked);
     
     // Dispatch event for sticky button
     window.dispatchEvent(new CustomEvent('compareListChanged', { detail: newList }));

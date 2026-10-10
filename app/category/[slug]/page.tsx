@@ -208,7 +208,7 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
             <div className="mt-16 bg-[#F3EFFF] border border-[#6C39EF] rounded-xl p-8">
               <h2 className="heading-2 mb-4">How we chose these tools</h2>
               <p className="text-lg mb-4">
-                Every tool here has been checked by hand. We rank them by what works best for the job, not by who pays us.
+                We've tried each tool ourselves. Rankings reflect our judgment of what works best, not who pays us.
               </p>
               <Link href="/how-we-rank" className="text-[#6C39EF] font-medium hover:underline focus-ring rounded">
                 Read our full ranking method →

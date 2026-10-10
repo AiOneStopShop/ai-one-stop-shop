@@ -32,11 +32,11 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#6C39EF] text-xl">✓</span>
-                    <span>Real pricing info (checked regularly)</span>
+                    <span>Real pricing info (last updated Oct 2026)</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#6C39EF] text-xl">✓</span>
-                    <span>Hand-reviewed tools (no fake ratings)</span>
+                    <span>Hand-checked tools (no fake ratings)</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#6C39EF] text-xl">✓</span>
@@ -65,10 +65,10 @@ export default function PricingPage() {
               <div>
                 <h3 className="heading-3 mb-3">Will you ever charge?</h3>
                 <p>
-                  Right now, no. The directory is free.
+                  The directory is free to use. No account required.
                 </p>
                 <p className="mt-3">
-                  The core directory will always be free to browse. We have no plans to add paid features.
+                  We may offer optional paid features in the future, but the core directory will remain free.
                 </p>
               </div>
 

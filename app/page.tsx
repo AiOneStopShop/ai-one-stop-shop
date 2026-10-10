@@ -94,9 +94,9 @@ export default async function HomePage() {
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3EFFF] text-[#6C39EF] mb-4">
                 <CheckCircle className="h-6 w-6" aria-hidden="true" />
               </div>
-              <h2 className="heading-3 mb-2">Actually Reviewed</h2>
+              <h2 className="heading-3 mb-2">Hand-Checked</h2>
               <p className="text-[#5B657B]">
-                Every tool checked by humans. No fake AI-generated ratings.
+                We try each tool ourselves. No fake AI-generated ratings.
               </p>
             </div>
             <div className="text-center">
@@ -105,7 +105,7 @@ export default async function HomePage() {
               </div>
               <h2 className="heading-3 mb-2">Real Pricing</h2>
               <p className="text-[#5B657B]">
-                Current prices verified regularly. No surprises when you click through.
+                Pricing shown as found on vendor sites. Last updated Oct 2026.
               </p>
             </div>
             <div className="text-center">

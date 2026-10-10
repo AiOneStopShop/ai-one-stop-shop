@@ -58,7 +58,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   const itemList = generateItemListSchema(
     `Best ${category.name} AI Tools`,
     category.description || '',
-    tools.map(tool => ({
+    tools.map((tool: any) => ({
       name: tool.name,
       url: `/tools/${tool.slug}`,
       description: tool.tagline || ''
@@ -116,7 +116,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
             {/* Tools Grid */}
             {tools.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {tools.map((tool, index) => (
+                {tools.map((tool: any, index: number) => (
                   <article key={tool.id} className="card">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">

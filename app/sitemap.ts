@@ -37,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Tool pages
-  const toolPages = (tools || []).map(tool => ({
+  const toolPages = (tools || []).map((tool: any) => ({
     url: `${siteUrl}/tools/${tool.slug}`,
     lastModified: new Date(tool.last_verified_at || tool.updated_at),
     changeFrequency: 'monthly' as const,
@@ -45,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Category pages
-  const categoryPages = (categories || []).map(cat => ({
+  const categoryPages = (categories || []).map((cat: any) => ({
     url: `${siteUrl}/category/${cat.slug}`,
     lastModified: new Date(cat.updated_at),
     changeFrequency: 'weekly' as const,

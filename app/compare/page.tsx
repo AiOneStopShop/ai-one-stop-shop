@@ -3,19 +3,33 @@ import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
 async function getToolsForComparison(slugs: string[]) {
-  const { data } = await supabase
-    .from('tools')
-    .select(`
-      *,
-      tool_categories(
-        is_primary,
-        categories(*)
-      )
-    `)
-    .in('slug', slugs)
-    .eq('status', 'published');
+  try {
+    // Fetch all tools and filter client-side to work with fallback mock
+    const { data, error } = await supabase
+      .from('tools')
+      .select(`
+        *,
+        tool_categories(
+          is_primary,
+          categories(*)
+        )
+      `);
 
-  return data || [];
+    if (error) {
+      console.error('Supabase error in compare:', error);
+      return [];
+    }
+    
+    // Filter to requested slugs and published status
+    const filtered = (data || []).filter((tool: any) => 
+      slugs.includes(tool.slug) && tool.status === 'published'
+    );
+    
+    return filtered;
+  } catch (error) {
+    console.error('Exception in getToolsForComparison:', error);
+    return [];
+  }
 }
 
 export default async function ComparePage({

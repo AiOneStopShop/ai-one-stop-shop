@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { AdminActions } from './AdminActions';
 
 // Server-side auth check
 async function checkAdminAccess() {
@@ -150,14 +151,7 @@ export default async function AdminReviewPage() {
                             )}
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          <button className="px-4 py-2 bg-[#6C39EF] text-white font-medium rounded-lg hover:bg-[#5A2FD0] transition-colors">
-                            Approve
-                          </button>
-                          <button className="px-4 py-2 border-2 border-[#E5E1DC] text-[#5B657B] font-medium rounded-lg hover:bg-[#F9F8F5] transition-colors">
-                            Reject
-                          </button>
-                        </div>
+                        <AdminActions tool={tool} />
                       </div>
                     </div>
                   ))}

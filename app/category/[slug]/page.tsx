@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { generateItemListSchema, generateBreadcrumbSchema } from '@/lib/json-ld';
+import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 
 async function getCategory(slug: string) {
   const { data } = await supabase
@@ -69,11 +69,11 @@ export default async function CategoryPage({ params }: { params: { slug: string 
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbs) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(itemList) }}
       />
 
       <div id="main-content" className="scroll-mt-16">
@@ -109,7 +109,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
                 <p className="text-lead">{category.description}</p>
               )}
               <p className="text-[#5B657B] mt-2">
-                {tools.length} {tools.length === 1 ? 'tool' : 'tools'} · Last checked {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                {tools.length} {tools.length === 1 ? 'tool' : 'tools'}
               </p>
             </div>
 
@@ -141,7 +141,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
                       <p className="text-[#5B657B] mb-3 line-clamp-2">{tool.tagline}</p>
                     )}
 
-                    {tool.editorial_why && (
+                    {tool.editorial_why && tool.editorial_why.trim().length > 0 && (
                       <p className="text-sm text-[#171C26] mb-4 italic">
                         "{tool.editorial_why}"
                       </p>
@@ -177,7 +177,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
             <div className="mt-16 bg-[#F3EFFF] border border-[#6C39EF] rounded-xl p-8">
               <h2 className="heading-2 mb-4">How we chose these tools</h2>
               <p className="text-lg mb-4">
-                Every tool here has been tried hands-on. We rank them by what works best for the job, not by who pays us.
+                Every tool here has been checked by hand. We rank them by what works best for the job, not by who pays us.
               </p>
               <Link href="/how-we-rank" className="text-[#6C39EF] font-medium hover:underline focus-ring rounded">
                 Read our full ranking method →

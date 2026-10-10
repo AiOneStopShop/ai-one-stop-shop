@@ -13,11 +13,11 @@ export async function GET() {
 
 ## What this site is
 
-AI One Stop Shop is a hand-checked directory of AI tools. We try tools ourselves and explain what each one does, who it's for, and what it really costs. Right now we have ${count || 0} published tools.
+AI One Stop Shop is a hand-checked directory of AI tools. We check each tool by hand: what it's built for, what it costs, and how it fits. Right now we have ${count || 0} published tools.
 
 ## Who runs it
 
-Kati Bartolec runs AI One Stop Shop from Washington State. It's a oneTomorrow venture. Tools are tested hands-on and ranked editorially.
+Kati Bartolec runs AI One Stop Shop from Washington State. It's a oneTomorrow venture. Tools are checked by hand and ranked editorially.
 
 ## How we earn money
 

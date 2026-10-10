@@ -15,12 +15,6 @@ export default function TermsPage() {
               Last updated: October 10, 2026
             </p>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <p>
-                <strong>Note:</strong> These are basic terms. Consult with a legal professional before deploying to production.
-              </p>
-            </div>
-
             <div>
               <h2 className="heading-2 mb-4">Acceptance of terms</h2>
               <p>
@@ -31,14 +25,14 @@ export default function TermsPage() {
             <div>
               <h2 className="heading-2 mb-4">What this site provides</h2>
               <p>
-                AI One Stop Shop is an informational directory. We provide reviews and links to third-party tools. We don't sell the tools ourselves, and we're not responsible for the tools or their makers.
+                AI One Stop Shop is an informational directory. We provide information and links to third-party tools. We are not the seller or maker of the tools listed here, and we're not responsible for those tools or their makers.
               </p>
             </div>
 
             <div>
               <h2 className="heading-2 mb-4">Accuracy of information</h2>
               <p>
-                We try to keep information accurate and up to date, but tools change frequently. Always verify pricing and features on the tool maker's own site before purchasing.
+                We work to keep information accurate and up to date, but tools change frequently. Always verify pricing and features on the tool maker's own site before purchasing.
               </p>
             </div>
 

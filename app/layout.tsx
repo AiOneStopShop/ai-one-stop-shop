@@ -3,6 +3,7 @@ import { DM_Sans, Inter } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { CookieConsent } from '@/components/CookieConsent';
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     default: 'AI One Stop Shop - Honest AI Tools Directory',
     template: '%s | AI One Stop Shop'
   },
-  description: 'AI tools we have actually tried and would suggest to a friend. No fake ratings, no paid rankings.',
+  description: 'Hand-checked AI tools directory. No fake ratings, no paid rankings.',
   keywords: ['AI tools', 'artificial intelligence', 'productivity', 'coding assistants', 'AI directory'],
   authors: [{ name: 'Kati Bartolec' }],
   creator: 'Kati Bartolec',
@@ -34,12 +35,12 @@ export const metadata: Metadata = {
     url: '/',
     siteName: 'AI One Stop Shop',
     title: 'AI One Stop Shop - Honest AI Tools Directory',
-    description: 'AI tools we have actually tried and would suggest to a friend.',
+    description: 'Hand-checked AI tools directory. No fake ratings, no paid rankings.',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI One Stop Shop',
-    description: 'AI tools we have actually tried and would suggest to a friend.',
+    description: 'Hand-checked AI tools directory. No fake ratings, no paid rankings.',
   },
   robots: {
     index: true,
@@ -60,6 +61,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <CookieConsent />
       </body>
     </html>
   );

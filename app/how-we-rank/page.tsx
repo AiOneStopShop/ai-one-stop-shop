@@ -16,7 +16,7 @@ export default function HowWeRankPage() {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
               <p className="text-lg font-semibold mb-2">The short version</p>
               <p>
-                We try tools ourselves, we write down what we find in plain English, and we put the tool we'd actually suggest first. Money never changes that order.
+                We check each tool by hand, we write down what we find in plain English, and we put the tool we'd actually suggest first. Money never changes that order.
               </p>
             </div>
 
@@ -79,18 +79,28 @@ export default function HowWeRankPage() {
             <div>
               <h2 className="heading-2 mb-4">How often we re-check</h2>
               <p>
-                AI tools change fast: prices, plans, and features. We re-check each listed tool's pricing and key details regularly, and every tool page shows a "Last checked" date.
+                AI tools change fast: prices, plans, and features. We work to re-check each listed tool's pricing and key details regularly. When we have a verified date, tool pages show a "Price last checked" date.
               </p>
             </div>
 
             <div>
-              <h2 className="heading-2 mb-4">What we don't do (yet)</h2>
+              <h2 className="heading-2 mb-4">What we don't do</h2>
               <ul className="space-y-2">
-                <li>• We don't review every AI tool, only the ones we've tried</li>
+                <li>• We don't review every AI tool, only the ones we check by hand</li>
                 <li>• We don't run formal security audits</li>
-                <li>• We don't sell the tools ourselves</li>
+                <li>• We are not the seller or maker of the tools listed here</li>
                 <li>• We don't offer legal, financial, or tax advice about tools</li>
               </ul>
+            </div>
+
+            <div>
+              <h2 className="heading-2 mb-4">About "Our Kits" (ApproveGate)</h2>
+              <p>
+                ApproveGate is our own product, built by the owner of this site. It appears in the "Our Kits" section, which is kept completely separate from the ranked tool directory.
+              </p>
+              <p className="mt-4">
+                <strong>ApproveGate is never ranked</strong> alongside the other tools. We don't include it in comparisons, search results, or category pages. It lives only in the "Our Kits" section, clearly marked as "Made by us."
+              </p>
             </div>
 
             <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6">

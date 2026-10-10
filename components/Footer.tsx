@@ -11,7 +11,10 @@ export function Footer() {
               AI One Stop Shop
             </h3>
             <p className="text-sm text-gray-300 mb-4">
-              Honest help choosing AI tools, from people who've tried them.
+              Hand-checked AI tools directory. No fake ratings, no paid rankings.
+            </p>
+            <p className="text-xs text-gray-400">
+              [CAN-SPAM POSTAL ADDRESS PLACEHOLDER - owner must add physical mailing address]
             </p>
           </div>
 

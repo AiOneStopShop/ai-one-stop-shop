@@ -106,18 +106,46 @@ npm start           # ✅ Serves production build
 
 2. **Status Filtering:** Tools marked `status: "needs_review"` are filtered from all public routes (/tools, /compare, API, sitemap, llms.txt). Admin review page shows all statuses.
 
+## 🔒 Security Status
+
+### All Security Review Items Fixed ✅
+1. [x] Admin actions require authentication (Supabase session + role check)
+2. [x] Middleware protects /admin routes with SSR auth
+3. [x] Next.js upgraded to 14.2.35, image optimization disabled, stricter CSP
+4. [x] RLS prevents status manipulation (trigger forces pending)
+5. [x] Rate limiting on all API endpoints (in-memory, production should use Upstash Redis)
+6. [x] API routes sanitize input, clamp limits, parameterize queries
+7. [x] JSON-LD safely serialized (escapes <, >, &, U+2028/2029)
+8. [x] Submit form uses Zod validation, URL protocol checks, length caps
+9. [x] /go redirect requires secret, only published tools
+10. [x] .gitignore covers all env files
+11. [x] Legacy files with tokens removed (tokens must be revoked by owner)
+
+### Production Environment Variables Required
+- `AFFILIATE_CLICK_SECRET` (required for /go redirects)
+- `SUPABASE_SERVICE_ROLE_KEY` (required for admin actions)
+- `TURNSTILE_SECRET_KEY` (optional, for Cloudflare Turnstile on submit form)
+- `NEXT_PUBLIC_SITE_URL` (recommended for JSON-LD URLs)
+
+### npm audit Status
+- Production dependencies: 1 high + 1 critical (Next.js/PostCSS)
+- Mitigated: Image optimization disabled, PostCSS build-time only
+- Next steps: Monitor for Next.js 14.2.36+ or upgrade to Next.js 15
+
 ## 📋 Remaining Tasks
 
 ### High Priority
-- [ ] Configure Supabase environment variables for production
+- [ ] Revoke exposed Airtable tokens from git history
+- [ ] Configure production environment variables (secrets above)
 - [ ] Test live database connection and admin review queue
 - [ ] Set up import pipeline cron job (enrichment without AI key)
-- [ ] Configure spam protection on /submit endpoint
 
 ### Medium Priority
+- [ ] Migrate to Upstash Redis for distributed rate limiting
 - [ ] Add catalog import from best-of-ai/ai-directories
 - [ ] Implement scheduled enrichment job
 - [ ] Test admin review workflow with real auth
+- [ ] Enable Cloudflare Turnstile on submit form
 
 ### Documentation
 - [x] BUILD_STATUS.md (this file)

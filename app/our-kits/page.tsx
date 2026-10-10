@@ -95,13 +95,17 @@ export default function OurKitsPage() {
                 </div>
 
                 <a
-                  href="mailto:hello@aionestop.shop?subject=ApproveGate%20Waitlist"
+                  href="mailto:hello@aionestop.shop?subject=ApproveGate%20Waitlist&body=I'm%20interested%20in%20ApproveGate.%20Please%20add%20me%20to%20the%20waitlist."
                   className="btn-secondary w-full text-center"
                 >
                   Join the waitlist
                 </a>
 
                 <p className="text-xs text-[#5B657B] mt-4">
+                  <strong>About the waitlist:</strong> By emailing, you agree we'll store your email address (Supabase database) to notify you when ApproveGate launches. We'll email you no more than once per month with updates. Unsubscribe anytime by replying "unsubscribe". Your email is covered by our <a href="/privacy" className="text-[#6C39EF] hover:underline">Privacy Policy</a>.
+                </p>
+
+                <p className="text-xs text-[#5B657B] mt-2">
                   <strong>Important:</strong> A checkpoint is your judgment, not legal, compliance, or security clearance.
                 </p>
               </article>

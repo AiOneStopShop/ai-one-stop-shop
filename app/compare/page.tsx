@@ -166,50 +166,25 @@ export default async function ComparePage({
                   ))}
                 </tr>
 
-                {/* Editorial Score */}
-                {tools.some((t: any) => t.editorial_score) && (
-                  <tr>
+                {/* Last Verified - only show if we have real data */}
+                {tools.some((t: any) => t.last_verified_at) && (
+                  <tr className="bg-[#FDFDFC]">
                     <td className="p-4 border border-[#E5E1DC] font-medium text-[#171C26]">
-                      Our Rating
+                      Price Last Checked
                     </td>
                     {tools.map((tool: any) => (
-                      <td key={tool.id} className="p-4 border border-[#E5E1DC]">
-                        {tool.editorial_score ? (
-                          <div>
-                            <div className="text-2xl font-bold text-[#6C39EF] mb-1">
-                              {tool.editorial_score}/100
-                            </div>
-                            {tool.editorial_why && (
-                              <p className="text-sm text-[#5B657B] italic">
-                                "{tool.editorial_why}"
-                              </p>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="text-[#5B657B]">Not rated</span>
-                        )}
+                      <td key={tool.id} className="p-4 border border-[#E5E1DC] text-sm text-[#5B657B]">
+                        {tool.last_verified_at 
+                          ? new Date(tool.last_verified_at).toLocaleDateString('en-US', {
+                              month: 'long',
+                              day: 'numeric',
+                              year: 'numeric'
+                            })
+                          : '—'}
                       </td>
                     ))}
                   </tr>
                 )}
-
-                {/* Last Verified */}
-                <tr className="bg-[#FDFDFC]">
-                  <td className="p-4 border border-[#E5E1DC] font-medium text-[#171C26]">
-                    Last Verified
-                  </td>
-                  {tools.map((tool: any) => (
-                    <td key={tool.id} className="p-4 border border-[#E5E1DC] text-sm text-[#5B657B]">
-                      {tool.last_verified_at 
-                        ? new Date(tool.last_verified_at).toLocaleDateString('en-US', {
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric'
-                          })
-                        : 'Unknown'}
-                    </td>
-                  ))}
-                </tr>
 
                 {/* Action Row */}
                 <tr>

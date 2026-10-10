@@ -56,7 +56,7 @@ export default async function HomePage() {
                 Find the AI tool that fits your work, without the noise.
               </h1>
               <p className="text-lead mb-8 max-w-2xl">
-                We try AI tools ourselves and tell you plainly what each one is good for, what it costs, and who it's built for. Right now that's {toolsCount} tools, and we'd rather add more carefully than pad the list. You stay in charge of the choice.
+                We check each tool by hand: what it's built for, what it costs, and how it fits. Right now that's {toolsCount} tools, and we'd rather add more carefully than pad the list. You stay in charge of the choice.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link 

@@ -26,7 +26,7 @@ Some links are paid (affiliate) links. If you sign up through one, we may earn a
 ## What you can find here
 
 - ${count || 0} hand-checked AI tools across categories like coding, content creation, productivity, design, and more
-- Honest pricing (checked regularly, with "last verified" dates)
+- Pricing information (last updated Oct 2026)
 - Editorial picks and explanations of who each tool is best for
 - No fake ratings or review counts
 

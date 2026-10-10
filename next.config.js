@@ -2,11 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  
-  experimental: {
-    // Ensure metadata is in <head> for crawlers/bots (Next 15 streams metadata by default)
-    htmlLimitedBots: /.*/,
-  },
+  // Ensure metadata is in <head> for crawlers/bots (Next 15 streams metadata by default)
+  htmlLimitedBots: /.*/,
   
   async headers() {
     return [

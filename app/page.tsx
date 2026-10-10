@@ -114,7 +114,7 @@ export default async function HomePage() {
               </div>
               <h2 className="heading-3 mb-2">Never Paid Rankings</h2>
               <p className="text-[#5B657B]">
-                Tools don't pay to move up. Our reviews stay honest.{' '}
+                Tools don't pay to move up.{' '}
                 <Link href="/how-we-rank" className="text-[#6C39EF] hover:underline focus-ring rounded">
                   See how
                 </Link>

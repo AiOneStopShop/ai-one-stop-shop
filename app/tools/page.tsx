@@ -48,7 +48,7 @@ export default async function ToolsPage() {
 
   const itemList = generateItemListSchema(
     'AI Tools Directory',
-    'Hand-checked AI tools with honest reviews',
+    'Browse AI tools with pricing and feature details',
     tools.map((tool: any) => ({
       name: tool.name,
       url: `/tools/${tool.slug}`,

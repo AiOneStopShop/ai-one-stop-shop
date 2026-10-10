@@ -18,7 +18,7 @@ export default function PricingPage() {
             <div className="text-center mb-12">
               <h1 className="heading-1 mb-4">It's free</h1>
               <p className="text-lead">
-                No subscriptions. No paid memberships. Just honest AI tool reviews.
+                It's free to use. No subscriptions, no paid memberships.
               </p>
             </div>
 

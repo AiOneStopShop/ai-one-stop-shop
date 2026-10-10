@@ -1,6 +1,6 @@
-// Auto-generated fallback data from JSON files
-// Generated on 2026-10-10T19:38:10.750Z
-// DO NOT EDIT MANUALLY - run 'npm run generate-fallback' instead
+// Fallback data for static site generation
+// Originally auto-generated 2026-10-10T19:38:10.750Z
+// MANUALLY CORRECTED 2026-10-10: placeholder editorial scores nulled
 
 export const fallbackTools = [
   {
@@ -25,7 +25,7 @@ export const fallbackTools = [
       "Web browsing",
       "Image generation"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -69,7 +69,7 @@ export const fallbackTools = [
       "Code generation",
       "Document analysis"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -114,7 +114,7 @@ export const fallbackTools = [
       "Upscaling",
       "Community gallery"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -160,7 +160,7 @@ export const fallbackTools = [
       "IDE integration",
       "Code suggestions"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -204,7 +204,7 @@ export const fallbackTools = [
       "Codebase understanding",
       "Multi-file editing"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -248,7 +248,7 @@ export const fallbackTools = [
       "Real-time collaboration",
       "Database integration"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -292,7 +292,7 @@ export const fallbackTools = [
       "Shadcn/ui",
       "Export to code"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -336,7 +336,7 @@ export const fallbackTools = [
       "AI debugging",
       "Browser-based IDE"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -380,7 +380,7 @@ export const fallbackTools = [
       "Multi-file editing",
       "Terminal integration"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "needs_review",
@@ -425,7 +425,7 @@ export const fallbackTools = [
       "Templates",
       "SEO optimization"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -469,7 +469,7 @@ export const fallbackTools = [
       "Social media",
       "Product descriptions"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -516,7 +516,7 @@ export const fallbackTools = [
       "Plagiarism detection",
       "Style guide"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -562,7 +562,7 @@ export const fallbackTools = [
       "Database",
       "Collaboration"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -607,7 +607,7 @@ export const fallbackTools = [
       "Brand kit",
       "Collaboration"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -652,7 +652,7 @@ export const fallbackTools = [
       "Video editing",
       "Screen recording"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -697,7 +697,7 @@ export const fallbackTools = [
       "Image analysis",
       "Reasoning"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "needs_review",
@@ -742,7 +742,7 @@ export const fallbackTools = [
       "Code",
       "Long context"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "needs_review",
@@ -787,7 +787,7 @@ export const fallbackTools = [
       "Code",
       "Search integration"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -831,7 +831,7 @@ export const fallbackTools = [
       "High quality",
       "Precise prompts"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "needs_review",
@@ -875,7 +875,7 @@ export const fallbackTools = [
       "Image-to-image",
       "Customizable"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -919,7 +919,7 @@ export const fallbackTools = [
       "Translation",
       "Multi-language"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -963,7 +963,7 @@ export const fallbackTools = [
       "Voice cloning",
       "Multi-language"
     ],
-    "editorial_score": 85,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -1007,7 +1007,7 @@ export const fallbackTools = [
       "Tool integration",
       "Memory"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",
@@ -1050,7 +1050,7 @@ export const fallbackTools = [
       "Web browsing",
       "Code execution"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "needs_review",
@@ -1093,7 +1093,7 @@ export const fallbackTools = [
       "Web access",
       "Task breakdown"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "needs_review",
@@ -1136,7 +1136,7 @@ export const fallbackTools = [
       "API access",
       "Multiple models"
     ],
-    "editorial_score": 70,
+    "editorial_score": null,
     "editorial_why": null,
     "is_sponsored": false,
     "status": "published",

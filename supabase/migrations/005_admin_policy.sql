@@ -2,6 +2,7 @@
 -- Purpose: Allow admin role to read/update submissions after profiles table exists
 
 -- Admin policy for reading/updating submissions (requires admin role in profiles)
+DROP POLICY IF EXISTS "Admins can manage submissions" ON tool_submissions;
 CREATE POLICY "Admins can manage submissions"
   ON tool_submissions
   FOR ALL

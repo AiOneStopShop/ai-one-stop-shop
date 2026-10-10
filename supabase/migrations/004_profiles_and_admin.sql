@@ -22,11 +22,12 @@ BEGIN
   END IF;
 
   -- Add role NOT NULL constraint if column allows NULL
-  BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'profiles' AND column_name = 'role' AND is_nullable = 'YES'
+  ) THEN
     ALTER TABLE profiles ALTER COLUMN role SET NOT NULL;
-  EXCEPTION WHEN OTHERS THEN
-    NULL; -- Already NOT NULL
-  END;
+  END IF;
 
   -- Add role check constraint if not exists
   IF NOT EXISTS (
@@ -45,18 +46,20 @@ BEGIN
   END IF;
 
   -- Add created_at NOT NULL constraint if column allows NULL
-  BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'profiles' AND column_name = 'created_at' AND is_nullable = 'YES'
+  ) THEN
     ALTER TABLE profiles ALTER COLUMN created_at SET NOT NULL;
-  EXCEPTION WHEN OTHERS THEN
-    NULL; -- Already NOT NULL
-  END;
+  END IF;
 
   -- Add updated_at NOT NULL constraint if column allows NULL
-  BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'profiles' AND column_name = 'updated_at' AND is_nullable = 'YES'
+  ) THEN
     ALTER TABLE profiles ALTER COLUMN updated_at SET NOT NULL;
-  EXCEPTION WHEN OTHERS THEN
-    NULL; -- Already NOT NULL
-  END;
+  END IF;
 END $$;
 
 -- Create index on role for fast admin lookups (idempotent)
@@ -66,6 +69,7 @@ CREATE INDEX IF NOT EXISTS idx_profiles_role ON profiles(role) WHERE role = 'adm
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Users can read only their own profile
+DROP POLICY IF EXISTS "Users can read own profile" ON profiles;
 CREATE POLICY "Users can read own profile"
   ON profiles
   FOR SELECT
@@ -73,6 +77,7 @@ CREATE POLICY "Users can read own profile"
   USING (auth.uid() = id);
 
 -- Policy: Nobody can update role from the client (admin grants via SQL only)
+DROP POLICY IF EXISTS "No client role updates" ON profiles;
 CREATE POLICY "No client role updates"
   ON profiles
   FOR UPDATE
@@ -85,6 +90,7 @@ CREATE POLICY "No client role updates"
   );
 
 -- Policy: New users can insert their own profile with default 'user' role
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
 CREATE POLICY "Users can insert own profile"
   ON profiles
   FOR INSERT

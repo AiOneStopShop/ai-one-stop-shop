@@ -37,8 +37,9 @@
 
 **(a) 004 Migration Idempotency**  
 - `CREATE TABLE IF NOT EXISTS profiles`
-- Constraints added conditionally in `DO` block
-- Safe for databases that ran old 001
+- `DROP POLICY IF EXISTS` before each `CREATE POLICY` (004 & 005)
+- Constraints added conditionally with proper checks (no blanket exceptions)
+- Safe for re-runs and databases that ran old 001
 
 **(b) Auth Callback Error Handling**  
 - Redirect to `/admin/login?error=auth` on failure

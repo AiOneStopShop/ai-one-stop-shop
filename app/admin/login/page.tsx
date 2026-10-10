@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createBrowserClient } from '@supabase/ssr';
 
@@ -16,6 +16,14 @@ export default function AdminLoginPage() {
   const [success, setSuccess] = useState('');
   const [mode, setMode] = useState<'signin' | 'magic'>('signin');
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const errorParam = searchParams.get('error');
+    if (errorParam === 'auth') {
+      setError('Authentication failed. Please try again.');
+    }
+  }, [searchParams]);
 
   // Only create client if env vars are set
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {

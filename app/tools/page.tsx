@@ -90,8 +90,8 @@ export default async function ToolsPage() {
 
             {/* Initial Tools Grid (SSR) */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
-              {tools.slice(0, 6).map((tool) => {
-                const primaryCategory = (tool.tool_categories as any[])?.find(tc => tc.is_primary)?.categories;
+              {tools.slice(0, 6).map((tool: any) => {
+                const primaryCategory = (tool.tool_categories as any[])?.find((tc: any) => tc.is_primary)?.categories;
                 
                 return (
                   <article key={tool.id} className="card hover:shadow-lg transition-shadow group">

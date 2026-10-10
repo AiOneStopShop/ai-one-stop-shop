@@ -15,18 +15,20 @@ async function getToolsCount(): Promise<number> {
 }
 
 async function getFeaturedTools(): Promise<Tool[]> {
-  // Featured tools (has editorial score and >= 85, or most recently updated)
-  const { data: featured } = await supabase
+  // Get tools with editorial scores >= 85
+  const { data: withScores } = await supabase
     .from('tools')
     .select('*')
     .eq('status', 'published')
-    .not('editorial_score', 'is', null)
     .gte('editorial_score', 85)
     .order('editorial_score', { ascending: false })
-    .limit(6);
+    .limit(20);
+  
+  // Filter out null scores
+  const featured = withScores?.filter((t: Tool) => t.editorial_score !== null && t.editorial_score >= 85) || [];
   
   // If we don't have enough featured tools with real scores, fill with recent
-  if (!featured || featured.length < 6) {
+  if (featured.length < 6) {
     const { data: recent } = await supabase
       .from('tools')
       .select('*')
@@ -36,7 +38,7 @@ async function getFeaturedTools(): Promise<Tool[]> {
     return recent || fallbackTools.slice(0, 6);
   }
   
-  return featured || [];
+  return featured.slice(0, 6);
 }
 
 export const metadata = {

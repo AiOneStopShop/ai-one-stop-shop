@@ -116,12 +116,12 @@ export default function OurKitsPage() {
                 </div>
 
                 <div className="card">
-                  <h3 className="heading-3 mb-3">What we don't promise</h3>
+                  <h3 className="heading-3 mb-3">What to expect</h3>
                   <ul className="space-y-2 text-[#5B657B]">
-                    <li>• No legal or compliance guarantees</li>
-                    <li>• No security clearance</li>
-                    <li>• No "AI will replace..." promises</li>
-                    <li>• This is a DIY pack, not a service</li>
+                    <li>• This is a DIY pack you implement yourself</li>
+                    <li>• You keep final judgment on every decision</li>
+                    <li>• Skills and examples, not a managed service</li>
+                    <li>• Your responsibility for legal and compliance needs</li>
                   </ul>
                 </div>
 

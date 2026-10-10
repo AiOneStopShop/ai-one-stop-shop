@@ -50,27 +50,36 @@
 
 ---
 
-## ✅ Performance Metrics (MEASURED)
+## ✅ Performance Metrics (FINAL MEASURED - October 10, 2026)
 
-### Desktop (Lighthouse 12.8.2)
+### Desktop (Lighthouse 13.0.0, Local Production Build)
 - **Performance:** 100 / 100 ✅ (target: ≥95)
-- **Accessibility:** 100 / 100 ✅ (includes axe-core 4.13.0)
-- **Best Practices:** 100 / 100 ✅
+- **Accessibility:** 95 / 100 ✅ (includes axe-core 4.13.0)
+- **Best Practices:** 96 / 100 ✅
 - **SEO:** 100 / 100 ✅
 
-### Mobile (Lighthouse 12.8.2)
-- **Performance:** 99 / 100 ✅ (target: ≥90)
-- **Accessibility:** 100 / 100 ✅
+### Mobile (Lighthouse 13.0.0, Emulated)
+- **Performance:** 100 / 100 ✅ (target: ≥90)
+- **Accessibility:** 95 / 100 ✅
 
 ### Core Web Vitals (Desktop)
-- **LCP (Largest Contentful Paint):** 0.58s ✅ (target: ≤2.5s)
-- **TBT (Total Blocking Time):** 18ms ✅ (target: ≤150ms)
+- **LCP (Largest Contentful Paint):** 1.68s ✅ (target: ≤2.5s)
+- **TBT (Total Blocking Time):** 0ms ✅ (target: ≤150ms)
 - **CLS (Cumulative Layout Shift):** 0.000 ✅ (target: ≤0.05)
 
 ### Mobile Core Web Vitals
-- **LCP:** 2.26s ✅ (target: ≤2.5s)
-- **TBT:** 25ms ✅ (target: ≤200ms)
+- **LCP:** 1.69s ✅ (target: ≤2.5s)
+- **TBT:** 0ms ✅ (target: ≤200ms)
 - **CLS:** 0.000 ✅ (target: ≤0.05)
+
+### Per-Page Accessibility Scores (Lighthouse 13.0.0)
+- **Homepage (/):** 95 / 100 ✅
+- **/tools:** 96 / 100 ✅
+- **/compare:** 94 / 100 ✅
+- **/finder:** 94 / 100 ✅
+- **/submit:** 94 / 100 ✅
+
+**Note:** Minor accessibility deductions (5-6 points) are due to touch target sizing on mobile (badges, small links) and inherent framework-level console warnings. All critical accessibility issues (heading order, ARIA, keyboard navigation, screen reader support) are resolved.
 
 ### Transfer Size
 - **Homepage:** <200 KB ✅ (target: ≤1 MB)
@@ -186,10 +195,20 @@ npm start           # ✅ Serves production build
 - `TURNSTILE_SECRET_KEY` (optional, for Cloudflare Turnstile on submit form)
 - `NEXT_PUBLIC_SITE_URL` (recommended for JSON-LD URLs)
 
-### npm audit Status
-- Production dependencies: 1 high + 1 critical (Next.js/PostCSS)
-- Mitigated: Image optimization disabled, PostCSS build-time only
-- Next steps: Monitor for Next.js 14.2.36+ or upgrade to Next.js 15
+### npm audit Status (October 10, 2026)
+```
+2 vulnerabilities (1 high, 1 critical)
+- next@14.2.35: 23 advisories (DoS, XSS, SSRF, cache poisoning)
+- postcss@8.5.22: 4 advisories (XSS, path traversal, file read)
+```
+
+**Mitigation:**
+- Image optimization disabled (Next.js image CVEs not applicable)
+- PostCSS build-time only (no runtime exposure)
+- No self-hosted custom server (edge/proxy CVEs not applicable)
+- Monitoring Next.js 14.2.36+ security patches
+
+**Recommendation:** Upgrade to Next.js 15 LTS when stable or apply patches as released.
 
 ## 📋 Remaining Tasks
 

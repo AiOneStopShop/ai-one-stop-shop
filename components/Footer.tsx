@@ -7,9 +7,9 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* About */}
           <div>
-            <h3 className="font-dm-sans font-semibold text-lg mb-4">
+            <p className="font-dm-sans font-semibold text-lg mb-4">
               AI One Stop Shop
-            </h3>
+            </p>
             <p className="text-sm text-gray-300 mb-4">
               Hand-checked AI tools directory. No fake ratings, no paid rankings.
             </p>

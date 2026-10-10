@@ -23,6 +23,7 @@ BEGIN
   NEW.status := 'pending';
   NEW.reviewed_by := NULL;
   NEW.reviewed_at := NULL;
+  NEW.review_notes := NULL;
   RETURN NEW;
 END;
 $$;
@@ -43,9 +44,6 @@ CREATE TRIGGER enforce_pending_status
 
 -- Enable RLS
 ALTER TABLE tool_submissions ENABLE ROW LEVEL SECURITY;
-
-COMMENT ON POLICY "Admins can manage submissions" ON tool_submissions IS 
-  'Only admin role can read/update submissions. Submissions are inserted via server action with service_role.';
 
 -- IMPORTANT: Disable public signups in Supabase Auth settings
 -- Set "Enable Email Confirmations" to OFF or "Disable signups" to ON

@@ -95,7 +95,7 @@ export default async function HomePage() {
                       <h3 className="heading-3 group-hover:text-[#6C39EF] transition-colors">
                         {tool.name}
                       </h3>
-                      {tool.has_free_tier && (
+                      {tool.has_free_tier === true && (
                         <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">
                           Free tier
                         </span>

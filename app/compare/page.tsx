@@ -49,7 +49,10 @@ export default async function ComparePage({
               Compare tools side by side to find the best fit for your needs.
             </p>
             <p className="text-[#5B657B] mb-8">
-              To compare tools, visit any tool page and look for the "Add to compare" button, or add <code className="px-2 py-1 bg-gray-100 rounded">?tools=slug1,slug2</code> to the URL.
+              To compare tools, add their slugs to the URL: <code className="px-2 py-1 bg-gray-100 rounded text-sm">/compare?tools=slug1,slug2,slug3</code>
+            </p>
+            <p className="text-[#5B657B] text-sm mb-8">
+              Find tool slugs on their detail pages (shown in the URL). Example: <code className="px-2 py-1 bg-gray-100 rounded text-xs">/compare?tools=cursor,github-copilot,replit-agent</code>
             </p>
             <Link href="/tools" className="btn-primary inline-block">
               Browse tools
@@ -71,9 +74,11 @@ export default async function ComparePage({
       <section className="section-spacing">
         <div className="container-max">
           <div className="mb-8">
-            <Link href="/tools" className="text-[#6C39EF] hover:underline focus-ring rounded mb-4 inline-block">
-              ← Back to tools
-            </Link>
+            <nav aria-label="Breadcrumb" className="mb-4">
+              <Link href="/tools" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                ← Back to tools
+              </Link>
+            </nav>
             <h1 className="heading-1">
               Compare {tools.map((t: any) => t.name).join(' vs ')}
             </h1>
@@ -122,7 +127,7 @@ export default async function ComparePage({
                       <div className="font-semibold text-[#171C26] mb-1">
                         {tool.pricing_summary || 'Contact for pricing'}
                       </div>
-                      {tool.has_free_tier && (
+                      {tool.has_free_tier === true && (
                         <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">
                           Free tier available
                         </span>

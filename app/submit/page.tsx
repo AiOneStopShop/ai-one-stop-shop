@@ -12,10 +12,12 @@ export default function SubmitPage() {
     honeypot: '', // Spam protection
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
+    setErrorMessage('');
 
     try {
       const response = await fetch('/api/submit-tool', {
@@ -28,9 +30,12 @@ export default function SubmitPage() {
         setStatus('success');
         setFormData({ toolName: '', websiteUrl: '', contactEmail: '', description: '', honeypot: '' });
       } else {
+        const data = await response.json();
+        setErrorMessage(data.error || 'Failed to submit tool. Please try again.');
         setStatus('error');
       }
     } catch (error) {
+      setErrorMessage('Network error. Please check your connection and try again.');
       setStatus('error');
     }
   };
@@ -75,7 +80,24 @@ export default function SubmitPage() {
               </Link>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <>
+              {status === 'error' && (
+                <div 
+                  className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6"
+                  role="alert"
+                  aria-live="assertive"
+                  aria-atomic="true"
+                >
+                  <p className="text-red-800 font-semibold mb-1">
+                    Submission failed
+                  </p>
+                  <p className="text-red-700">
+                    {errorMessage || 'Something went wrong. Please try again or email hello@aionestop.shop'}
+                  </p>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-6">
               {/* Honeypot field - hidden from users, catches bots */}
               <div style={{ position: 'absolute', left: '-9999px' }} aria-hidden="true">
                 <label htmlFor="website">Website</label>
@@ -152,14 +174,6 @@ export default function SubmitPage() {
                 />
               </div>
 
-              {status === 'error' && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <p className="text-sm text-red-800">
-                    Something went wrong. Please try again or email us at hello@aionestop.shop
-                  </p>
-                </div>
-              )}
-
               <button
                 type="submit"
                 disabled={status === 'submitting'}
@@ -171,7 +185,8 @@ export default function SubmitPage() {
               <p className="text-xs text-[#5B657B] text-center">
                 By submitting, you confirm you have a legitimate interest in this tool being reviewed.
               </p>
-            </form>
+              </form>
+            </>
           )}
         </div>
       </section>

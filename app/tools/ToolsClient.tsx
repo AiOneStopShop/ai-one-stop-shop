@@ -177,7 +177,7 @@ export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
                 )}
 
                 <div className="flex flex-wrap gap-2 mb-3">
-                  {tool.has_free_tier && (
+                  {tool.has_free_tier === true && (
                     <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">
                       Free tier
                     </span>
@@ -197,10 +197,11 @@ export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
 
                 {tool.last_verified_at && (
                   <p className="text-xs text-[#5B657B] mb-4">
-                    Last checked {new Date(tool.last_verified_at).toLocaleDateString('en-US', { 
-                      month: 'short', 
-                      day: 'numeric', 
-                      year: 'numeric' 
+                    Last checked {new Date(tool.last_verified_at).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                      timeZone: 'UTC'
                     })}
                   </p>
                 )}

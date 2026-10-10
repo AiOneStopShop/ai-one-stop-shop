@@ -256,7 +256,7 @@ export default function FinderPage() {
                 </p>
               </div>
 
-              <h2 className="heading-2 mb-6">We recommend:</h2>
+              <h2 className="heading-2 mb-6">Our recommendations:</h2>
               
               <div className="space-y-6 mb-8">
                 {recommendations.map((rec, index) => (

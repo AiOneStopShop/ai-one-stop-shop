@@ -159,7 +159,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
                           </Link>
                         </h2>
                       </div>
-                      {tool.has_free_tier && (
+                      {tool.has_free_tier === true && (
                         <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">
                           Free
                         </span>

@@ -11,11 +11,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .eq('status', 'published')
     .order('updated_at', { ascending: false });
 
-  // Get all categories
-  const { data: categories } = await supabase
+  // Get all categories with published tools only
+  const { data: allCategories } = await supabase
     .from('categories')
-    .select('slug, updated_at')
+    .select('slug, updated_at, id')
     .order('updated_at', { ascending: false });
+
+  const { fallbackTools, fallbackToolCategories } = await import('./lib/fallback-data');
+  const categories = (allCategories || []).filter((cat: any) => {
+    const toolIdsInCategory = fallbackToolCategories
+      .filter((tc: any) => tc.category_id === cat.id)
+      .map((tc: any) => tc.tool_id);
+    
+    return fallbackTools.some((tool: any) => 
+      toolIdsInCategory.includes(tool.id) && tool.status === 'published'
+    );
+  });
 
   // Static pages
   const staticPages = [

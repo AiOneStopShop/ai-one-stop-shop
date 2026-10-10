@@ -61,7 +61,7 @@ export default async function ComparePage({
               ← Back to tools
             </Link>
             <h1 className="heading-1">
-              Compare {tools.map(t => t.name).join(' vs ')}
+              Compare {tools.map((t: any) => t.name).join(' vs ')}
             </h1>
           </div>
 
@@ -73,7 +73,7 @@ export default async function ComparePage({
                   <th className="text-left p-4 border border-[#E5E1DC] font-semibold text-[#171C26] min-w-[200px]">
                     Feature
                   </th>
-                  {tools.map(tool => (
+                  {tools.map((tool: any) => (
                     <th key={tool.id} className="p-4 border border-[#E5E1DC] min-w-[250px]">
                       <Link 
                         href={`/tools/${tool.slug}`}
@@ -91,7 +91,7 @@ export default async function ComparePage({
                   <td className="p-4 border border-[#E5E1DC] font-medium text-[#171C26]">
                     Description
                   </td>
-                  {tools.map(tool => (
+                  {tools.map((tool: any) => (
                     <td key={tool.id} className="p-4 border border-[#E5E1DC] text-[#5B657B]">
                       {tool.tagline || tool.description}
                     </td>
@@ -103,7 +103,7 @@ export default async function ComparePage({
                   <td className="p-4 border border-[#E5E1DC] font-medium text-[#171C26]">
                     Pricing
                   </td>
-                  {tools.map(tool => (
+                  {tools.map((tool: any) => (
                     <td key={tool.id} className="p-4 border border-[#E5E1DC]">
                       <div className="font-semibold text-[#171C26] mb-1">
                         {tool.pricing_summary || 'Contact for pricing'}
@@ -122,7 +122,7 @@ export default async function ComparePage({
                   <td className="p-4 border border-[#E5E1DC] font-medium text-[#171C26]">
                     Platforms
                   </td>
-                  {tools.map(tool => (
+                  {tools.map((tool: any) => (
                     <td key={tool.id} className="p-4 border border-[#E5E1DC]">
                       {tool.platforms?.join(', ') || 'N/A'}
                     </td>
@@ -134,7 +134,7 @@ export default async function ComparePage({
                   <td className="p-4 border border-[#E5E1DC] font-medium text-[#171C26] align-top">
                     Key Features
                   </td>
-                  {tools.map(tool => (
+                  {tools.map((tool: any) => (
                     <td key={tool.id} className="p-4 border border-[#E5E1DC]">
                       {tool.features && tool.features.length > 0 ? (
                         <ul className="space-y-1 text-sm">
@@ -153,12 +153,12 @@ export default async function ComparePage({
                 </tr>
 
                 {/* Editorial Score */}
-                {tools.some(t => t.editorial_score) && (
+                {tools.some((t: any) => t.editorial_score) && (
                   <tr>
                     <td className="p-4 border border-[#E5E1DC] font-medium text-[#171C26]">
                       Our Rating
                     </td>
-                    {tools.map(tool => (
+                    {tools.map((tool: any) => (
                       <td key={tool.id} className="p-4 border border-[#E5E1DC]">
                         {tool.editorial_score ? (
                           <div>
@@ -184,7 +184,7 @@ export default async function ComparePage({
                   <td className="p-4 border border-[#E5E1DC] font-medium text-[#171C26]">
                     Last Verified
                   </td>
-                  {tools.map(tool => (
+                  {tools.map((tool: any) => (
                     <td key={tool.id} className="p-4 border border-[#E5E1DC] text-sm text-[#5B657B]">
                       {tool.last_verified_at 
                         ? new Date(tool.last_verified_at).toLocaleDateString('en-US', {
@@ -202,7 +202,7 @@ export default async function ComparePage({
                   <td className="p-4 border border-[#E5E1DC] font-medium text-[#171C26]">
                     
                   </td>
-                  {tools.map(tool => (
+                  {tools.map((tool: any) => (
                     <td key={tool.id} className="p-4 border border-[#E5E1DC]">
                       <Link 
                         href={`/tools/${tool.slug}`}

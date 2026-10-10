@@ -210,8 +210,8 @@ export default function FinderPage() {
                 <div className="space-y-2">
                   {[
                     { value: 'beginner', label: 'Beginner - Just starting out' },
-                    { value: 'intermediate', label: 'Intermediate - I've used a few' },
-                    { value: 'advanced', label: 'Advanced - I'm very familiar with AI tools' },
+                    { value: 'intermediate', label: "Intermediate - I've used a few" },
+                    { value: 'advanced', label: "Advanced - I'm very familiar with AI tools" },
                   ].map(option => (
                     <label key={option.value} className="flex items-center gap-3 p-3 border border-[#E5E1DC] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors">
                       <input
@@ -239,11 +239,11 @@ export default function FinderPage() {
               <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-xl p-6 mb-8">
                 <h2 className="heading-2 mb-2">Based on your answers:</h2>
                 <p className="text-[#5B657B]">
-                  {useCase === 'coding' && 'You're looking for coding tools'}
-                  {useCase === 'writing' && 'You're looking for writing tools'}
-                  {useCase === 'design' && 'You're looking for design tools'}
-                  {useCase === 'productivity' && 'You're looking for productivity tools'}
-                  {useCase === 'other' && 'You're exploring AI tools'}
+                  {useCase === 'coding' && "You're looking for coding tools"}
+                  {useCase === 'writing' && "You're looking for writing tools"}
+                  {useCase === 'design' && "You're looking for design tools"}
+                  {useCase === 'productivity' && "You're looking for productivity tools"}
+                  {useCase === 'other' && "You're exploring AI tools"}
                   {' • '}
                   {budget === 'free' && 'Free only'}
                   {budget === 'low' && 'Up to $15/month'}

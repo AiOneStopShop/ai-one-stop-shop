@@ -1,10 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 
+// Simple in-memory rate limiting (use Redis in production)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function rateLimit(ip: string, limit: number = 3, windowMs: number = 3600000): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record || now > record.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs });
+    return true;
+  }
+
+  if (record.count >= limit) {
+    return false;
+  }
+
+  record.count++;
+  return true;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { toolName, websiteUrl, contactEmail, description } = body;
+    const { toolName, websiteUrl, contactEmail, description, honeypot } = body;
+
+    // Honeypot spam check
+    if (honeypot) {
+      return NextResponse.json(
+        { error: 'Invalid submission' },
+        { status: 400 }
+      );
+    }
+
+    // Rate limiting
+    const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+    if (!rateLimit(ip)) {
+      return NextResponse.json(
+        { error: 'Too many submissions. Please try again later.' },
+        { status: 429 }
+      );
+    }
 
     // Basic validation
     if (!toolName || !websiteUrl || !contactEmail) {

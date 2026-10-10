@@ -9,6 +9,7 @@ export default function SubmitPage() {
     websiteUrl: '',
     contactEmail: '',
     description: '',
+    honeypot: '', // Spam protection
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
@@ -25,7 +26,7 @@ export default function SubmitPage() {
 
       if (response.ok) {
         setStatus('success');
-        setFormData({ toolName: '', websiteUrl: '', contactEmail: '', description: '' });
+        setFormData({ toolName: '', websiteUrl: '', contactEmail: '', description: '', honeypot: '' });
       } else {
         setStatus('error');
       }
@@ -75,6 +76,20 @@ export default function SubmitPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Honeypot field - hidden from users, catches bots */}
+              <div style={{ position: 'absolute', left: '-9999px' }} aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input
+                  type="text"
+                  id="website"
+                  name="website"
+                  tabIndex={-1}
+                  value={formData.honeypot}
+                  onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+                  autoComplete="off"
+                />
+              </div>
+
               <div>
                 <label htmlFor="toolName" className="block text-sm font-medium text-[#171C26] mb-2">
                   Tool name <span className="text-red-600">*</span>

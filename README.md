@@ -36,12 +36,13 @@ UPSTASH_REDIS_REST_URL=your-upstash-url
 UPSTASH_REDIS_REST_TOKEN=your-upstash-token
 
 # Affiliate Links (required)
+# Without this, all /go links redirect to home instead of affiliate URLs
 AFFILIATE_CLICK_SECRET=random-secret-string
 
 # Contact Information (required for CAN-SPAM compliance)
 # Note: Waitlist emails MUST NOT be sent until these are set
 NEXT_PUBLIC_SITE_CONTACT_EMAIL=hello@aionestop.shop
-NEXT_PUBLIC_SITE_POSTAL_ADDRESS="123 Main St\nSan Francisco, CA 94102\nUnited States"
+NEXT_PUBLIC_SITE_POSTAL_ADDRESS="<your mailing address>\n<city, state zip>\n<country>"
 
 # Optional (DO NOT SET until wired)
 # Turnstile (Cloudflare CAPTCHA) - NOT YET WIRED TO SUBMIT FORM

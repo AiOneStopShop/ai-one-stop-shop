@@ -1,16 +1,16 @@
 # Build Status - AI One Stop Shop
 
-**Last Updated:** October 10, 2026, 22:37 UTC  
-**Current Commit:** `2de5a0d` (QA Round 3)  
+**Last Updated:** October 10, 2026, 22:43 UTC  
+**Current Commit:** `6998d25` (QA Round 3 + 3b)  
 **Build:** ✅ Passing (24 routes)  
 **Next.js:** ✅ 15.5.27 (CVE-2025-66478 PATCHED)  
 **npm audit:** ✅ 2 vulnerabilities (1 moderate, 1 high - build-time only)
 
 ---
 
-## 🎯 Quinn QA Round 3 Results
+## 🎯 Quinn QA Round 3 + 3b Results
 
-### Completed Items (6 of 7)
+### Completed Items (6 of 7) + 3 Additional Fixes
 
 1. ✅ **Compare Checkbox Multi-Select** - Fixed state management, appends to array, enforces 3-tool limit
 2. ✅ **"Compare with..." Button** - Added on tool detail pages, Playwright test passes
@@ -32,6 +32,22 @@
 ### Screenshots Captured
 - `docs/screenshots/tool-detail-compare-button.png` (105KB)
 - `docs/screenshots/compare-step1-one-selected.png`
+
+### Round 3b Additional Fixes
+
+**(a) 004 Migration Idempotency**  
+- `CREATE TABLE IF NOT EXISTS profiles`
+- Constraints added conditionally in `DO` block
+- Safe for databases that ran old 001
+
+**(b) Auth Callback Error Handling**  
+- Redirect to `/admin/login?error=auth` on failure
+- Previously continued silently
+
+**(c) README Security**  
+- Removed fake postal address (123 Main St)
+- Clear placeholder: `<your mailing address>`
+- Note about `AFFILIATE_CLICK_SECRET` requirement
 
 ---
 

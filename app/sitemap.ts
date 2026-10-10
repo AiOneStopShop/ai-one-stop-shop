@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .select('slug, updated_at, id')
     .order('updated_at', { ascending: false });
 
-  const { fallbackTools, fallbackToolCategories } = await import('./lib/fallback-data');
+  const { fallbackTools, fallbackToolCategories } = await import('@/lib/fallback-data');
   const categories = (allCategories || []).filter((cat: any) => {
     const toolIdsInCategory = fallbackToolCategories
       .filter((tc: any) => tc.category_id === cat.id)

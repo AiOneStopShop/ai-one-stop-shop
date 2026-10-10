@@ -1,8 +1,54 @@
 # Build Status - AI One Stop Shop
 
-**Last Updated:** October 10, 2026
+**Last Updated:** October 10, 2026, 21:10 UTC
 **Build:** ✅ Passing
 **Deployment:** Production-ready fallback mode (no Supabase required)
+
+---
+
+## ✅ SECURITY MUST-FIXES STATUS (All 11 Complete)
+
+| # | Item | Status | Commit | Details |
+|---|------|--------|--------|---------|
+| 1 | Admin actions auth + validation | ✅ Done | `f3e27a5` | Role checks, Zod validation, SSR sessions in `/app/admin/review/actions.ts` |
+| 2 | Admin middleware SSR | ✅ Done | `f3e27a5` | Middleware uses `@supabase/ssr` with session validation |
+| 3 | Next.js upgrade + npm audit | ✅ Done | `f3e27a5` | Upgraded to Next.js 14.2.35, React 18.3.1, added `@supabase/ssr` |
+| 4 | RLS on submissions | ✅ Done | `aef7a6d` | Created `003_submissions_rls_trigger.sql` with authenticated user check |
+| 5 | Durable rate limits | ✅ Done | `aef7a6d` | IP-based rate limiting in `/app/api/submit-tool/route.ts` (5 per 15min) |
+| 6 | API input escaping | ✅ Done | `aef7a6d` | Input length limits & URL validation in submit API |
+| 7 | JSON-LD escaping | ✅ Done | `a8898d3` | Created `safeJsonLd` helper in `/lib/json-ld.ts` to prevent XSS |
+| 8 | Submit validation | ✅ Done | `aef7a6d` | Full Zod schema validation with protocol checks |
+| 9 | /go secret + published check | ✅ Done | `4e3edf5` | Added `affiliate_secret` check and `status='published'` in `/app/go/[slug]/route.ts` |
+| 10 | .gitignore | ✅ Done | `4e3edf5` | Comprehensive patterns for `.env*`, `supabase/seed.sql`, admin scripts |
+| 11 | Legacy Airtable files deleted | ✅ Done | `4e3edf5` | Removed `lib/airtable.ts` and all Airtable references |
+
+## ✅ LEGAL MUST-FIXES STATUS (All 9 Complete)
+
+| # | Item | Status | Commit | Details |
+|---|------|--------|--------|---------|
+| 1 | Softened testing claims | ✅ Done | `a8898d3` | Removed "tested by experts"; now says "reviewed" or "evaluated" |
+| 2 | Compare rating removed | ✅ Done | `a8898d3` | Removed editorial score row from `/app/compare/page.tsx` |
+| 3 | Real dates / hide empty why | ✅ Done | `a8898d3` | No fake "Today's top pick"; hide `editorial_why` when null |
+| 4 | Privacy rewrite | ✅ Done | `a8898d3` | Complete rewrite with accurate 90-day retention, postal address placeholder |
+| 5 | Click retention 90 days | ✅ Done | `a8898d3` | Created `002_add_click_retention.sql` with cleanup functions |
+| 6 | Cookie notice | ✅ Done | `a8898d3` | Added `CookieConsent.tsx` banner with localStorage consent |
+| 7 | Waitlist copy & CAN-SPAM | ✅ Done | `a8898d3` | Honest expectations and postal address placeholder |
+| 8 | How-we-rank own-product line | ✅ Done | `a8898d3` | Added ApproveGate disclosure to `/app/how-we-rank/page.tsx` |
+| 9 | No HatchboxAI | ✅ Done | `a8898d3` | Removed from all fallback data and UI |
+
+## ✅ QA RE-TEST ITEMS STATUS (All 7 Complete)
+
+| # | Item | Status | Commit | Details |
+|---|------|--------|--------|---------|
+| 1 | Finder 404 links | ✅ Done | `4e3edf5` | Fixed to point to `chatgpt-plus` and `claude-pro` |
+| 2 | Compare UX | ✅ Done | `95e2c62` | Updated with URL-based comparison instructions |
+| 3 | Windsurf needs_review | ✅ Done | `4e3edf5` | Marked as `needs_review` in fallback data |
+| 4 | Category pages 0 tools | ✅ Done | `4e3edf5` | Fixed fallback data query in `getCategoryTools` |
+| 5 | 301 redirects | ✅ Done | `4e3edf5` | Added in `next.config.js` (`/agents`, `/toolkit`, `/faq`, `/get-started`) |
+| 6 | Data hygiene | ✅ Done | `95e2c62` | Strict `has_free_tier === true`, UTC timezone, pricing URL logic |
+| 7 | Accessibility | ✅ Done | `95e2c62` | Heading hierarchy, aria-live errors, ESC mobile menu, favicon |
+
+---
 
 ## ✅ Performance Metrics (MEASURED)
 

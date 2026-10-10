@@ -1,142 +1,197 @@
-'use client'
+import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
+import type { Tool, Category } from '@/types/database';
+import { generateItemListSchema, generateBreadcrumbSchema } from '@/lib/json-ld';
 
-import { useState, useMemo } from 'react'
-import { motion } from 'framer-motion'
-import Header from '@/components/Header'
-import SearchAndFilter from '@/components/SearchAndFilter'
-import PersonaFilter from '@/components/PersonaFilter'
-import { StarIcon, SparklesIcon } from '@heroicons/react/24/outline'
-import { ExternalLink } from 'lucide-react'
-import { Tool } from '@/types'
-import aiTools from '@/data/aiTools'
+async function getTools() {
+  const { data: tools } = await supabase
+    .from('tools')
+    .select(`
+      *,
+      tool_categories!inner(
+        category_id,
+        is_primary,
+        categories(*)
+      )
+    `)
+    .eq('status', 'published')
+    .order('editorial_score', { ascending: false, nullsFirst: false })
+    .order('name');
 
-const categories = ['AI Assistant', 'Image Generation', 'Video Creation', 'Text & Writing', 'Code & Development', 'Audio & Music', 'Data & Analytics', 'Productivity']
-const subcategories = ['Chatbot', 'Search', 'Personal', 'Art', 'Open Source', 'Design', 'Video Editing', 'Video Generation', 'Content Creation', 'Copywriting', 'Writing Assistant', 'Code Assistant', 'AI Models', 'IDE', 'Music Generation', 'Voice Generation', 'Data Visualization', 'Business Intelligence', 'Product Analytics', 'Data Extraction', 'Note-taking', 'Project Management']
+  return tools || [];
+}
 
-export default function ToolsPage() {
-  const [filteredTools, setFilteredTools] = useState<Tool[]>(aiTools)
-  const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(null)
+async function getCategories() {
+  const { data } = await supabase
+    .from('categories')
+    .select('*')
+    .order('sort_order');
+  
+  return data || [];
+}
+
+export const metadata = {
+  title: 'AI Tools Directory - All Tools',
+  description: 'Browse our complete directory of hand-checked AI tools. Each tool includes what it does, who it\'s for, real pricing, and when we last verified it.',
+};
+
+export default async function ToolsPage() {
+  const tools = await getTools();
+  const categories = await getCategories();
+
+  const breadcrumbs = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Tools', url: '/tools' }
+  ]);
+
+  const itemList = generateItemListSchema(
+    'AI Tools Directory',
+    'Hand-checked AI tools with honest reviews',
+    tools.map(tool => ({
+      name: tool.name,
+      url: `/tools/${tool.slug}`,
+      description: tool.tagline || ''
+    }))
+  );
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen pt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              AI Tools Directory
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Discover and explore hundreds of AI tools across all categories. Find the perfect solution for your needs.
-            </p>
-          </div>
-          
-          {/* Persona Filter */}
-          <PersonaFilter
-            tools={aiTools}
-            onFilteredTools={setFilteredTools}
-            selectedPersonaId={selectedPersonaId}
-          />
-          
-          {/* Search and Filter Component */}
-          <SearchAndFilter
-            tools={aiTools}
-            onFilteredTools={setFilteredTools}
-            categories={categories}
-            subcategories={subcategories}
-          />
-          
-          {/* Tools Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredTools.map((tool, index) => (
-              <motion.div
-                key={tool.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="card hover:shadow-lg transition-all duration-300 group"
-              >
-                <div className="relative mb-4">
-                  <img
-                    src={tool.image}
-                    alt={tool.name}
-                    className="w-full h-48 object-cover rounded-lg"
-                  />
-                  <div className="absolute top-2 left-2">
-                    <span className="bg-brand-purple text-white text-xs px-2 py-1 rounded-full">
-                      {tool.category}
-                    </span>
-                  </div>
-                  <div className="absolute top-2 right-2">
-                    <div className="flex items-center bg-white/90 dark:bg-dark-800/90 rounded-full px-2 py-1">
-                      <StarIcon className="w-4 h-4 text-yellow-500 fill-current" />
-                      <span className="text-sm font-medium ml-1">{tool.rating}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-brand-purple transition-colors">
-                  {tool.name}
-                </h3>
-                
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                  {tool.description}
-                </p>
-                
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {tool.features.slice(0, 3).map((feature, idx) => (
-                    <span
-                      key={idx}
-                      className="text-xs bg-gray-100 dark:bg-dark-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded"
-                    >
-                      {feature}
-                    </span>
-                  ))}
-                  {tool.features.length > 3 && (
-                    <span className="text-xs text-gray-500">
-                      +{tool.features.length - 3} more
-                    </span>
-                  )}
-                </div>
-                
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-medium text-green-600 dark:text-green-400">
-                    {tool.price}
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    {tool.difficulty}
-                  </span>
-                </div>
-                
-                <a
-                  href={tool.affiliateLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary w-full flex items-center justify-center group"
-                >
-                  <SparklesIcon className="w-4 h-4 mr-2" />
-                  Try Now
-                  <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </a>
-              </motion.div>
-            ))}
-          </div>
-          
-          {filteredTools.length === 0 && (
-            <div className="text-center py-12">
-              <div className="text-gray-500 dark:text-gray-400 mb-4">
-                No tools found matching your criteria
-              </div>
-              <button
-                onClick={() => window.location.reload()}
-                className="btn-secondary"
-              >
-                Clear Filters
-              </button>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }}
+      />
+
+      <div id="main-content" className="scroll-mt-16">
+        <section className="section-spacing">
+          <div className="container-max">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="heading-1 mb-4">All AI Tools</h1>
+              <p className="text-lead">
+                {tools.length} tools, each checked by hand. No fake ratings.
+              </p>
             </div>
-          )}
-        </div>
-      </main>
+
+            {/* Disclosure */}
+            <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-[#171C26]">
+                Some links are paid links. They never change our ranking.{' '}
+                <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                  How we make money
+                </Link>
+              </p>
+            </div>
+
+            {/* Categories Filter */}
+            {categories.length > 0 && (
+              <div className="mb-8">
+                <h2 className="heading-3 mb-4">Browse by category</h2>
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    href="/tools"
+                    className="px-4 py-2 bg-[#6C39EF] text-white rounded-lg font-medium hover:bg-[#5A2FD0] transition-colors focus-ring"
+                  >
+                    All tools
+                  </Link>
+                  {categories.map(cat => (
+                    <Link
+                      key={cat.id}
+                      href={`/category/${cat.slug}`}
+                      className="px-4 py-2 bg-white border border-[#E5E1DC] rounded-lg font-medium hover:border-[#6C39EF] hover:text-[#6C39EF] transition-colors focus-ring"
+                    >
+                      {cat.icon} {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Tools Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {tools.map((tool: any) => {
+                const primaryCategory = tool.tool_categories?.find((tc: any) => tc.is_primary)?.categories;
+                
+                return (
+                  <article key={tool.id} className="card group">
+                    <div className="flex items-start justify-between mb-3">
+                      <h2 className="heading-3">
+                        <Link 
+                          href={`/tools/${tool.slug}`}
+                          className="group-hover:text-[#6C39EF] transition-colors focus-ring rounded"
+                        >
+                          {tool.name}
+                        </Link>
+                      </h2>
+                      {tool.is_sponsored && (
+                        <span className="badge-sponsored text-xs">Sponsored</span>
+                      )}
+                    </div>
+
+                    {tool.tagline && (
+                      <p className="text-[#5B657B] mb-3 line-clamp-2">{tool.tagline}</p>
+                    )}
+
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {tool.has_free_tier && (
+                        <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">
+                          Free tier
+                        </span>
+                      )}
+                      {primaryCategory && (
+                        <span className="badge bg-blue-50 text-blue-700 border border-blue-200 text-xs">
+                          {primaryCategory.name}
+                        </span>
+                      )}
+                    </div>
+
+                    {tool.pricing_summary && (
+                      <p className="text-sm font-medium text-[#171C26] mb-4">
+                        From {tool.pricing_summary}
+                      </p>
+                    )}
+
+                    {tool.last_verified_at && (
+                      <p className="text-xs text-[#5B657B] mb-4">
+                        Last checked {new Date(tool.last_verified_at).toLocaleDateString('en-US', { 
+                          month: 'short', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        })}
+                      </p>
+                    )}
+
+                    <Link 
+                      href={`/tools/${tool.slug}`}
+                      className="btn-secondary w-full"
+                    >
+                      View details
+                    </Link>
+                  </article>
+                );
+              })}
+            </div>
+
+            {tools.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-lg text-[#5B657B]">No tools found. Check back soon!</p>
+              </div>
+            )}
+
+            {/* Submit CTA */}
+            <div className="mt-16 bg-[#F3EFFF] border border-[#6C39EF] rounded-2xl p-8 text-center">
+              <h2 className="heading-2 mb-4">Can't find a tool?</h2>
+              <p className="text-lead mb-6">Suggest a tool for us to review</p>
+              <Link href="/submit" className="btn-primary">
+                Submit a tool
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
     </>
-  )
+  );
 }

@@ -1,38 +1,66 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
+import type { Metadata } from 'next';
+import { DM_Sans, Inter } from 'next/font/google';
+import './globals.css';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
-const inter = Inter({ subsets: ['latin'] })
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
+  weight: ['400', '500', '700'],
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
-  title: 'AI One Stop Shop - Your Ultimate AI Tools & Knowledge Hub',
-  description: 'Discover the best AI tools, learn from expert knowledge, and join a thriving AI community. Your one-stop destination for everything AI.',
-  keywords: 'AI tools, artificial intelligence, machine learning, AI community, AI knowledge, AI resources',
-  authors: [{ name: 'AI One Stop Shop' }],
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://aionestop.shop'),
+  title: {
+    default: 'AI One Stop Shop - Honest AI Tools Directory',
+    template: '%s | AI One Stop Shop'
+  },
+  description: 'AI tools we have actually tried and would suggest to a friend. No fake ratings, no paid rankings.',
+  keywords: ['AI tools', 'artificial intelligence', 'productivity', 'coding assistants', 'AI directory'],
+  authors: [{ name: 'Kati Bartolec' }],
+  creator: 'Kati Bartolec',
+  publisher: 'AI One Stop Shop',
   openGraph: {
-    title: 'AI One Stop Shop - Your Ultimate AI Tools & Knowledge Hub',
-    description: 'Discover the best AI tools, learn from expert knowledge, and join a thriving AI community.',
     type: 'website',
     locale: 'en_US',
+    url: '/',
+    siteName: 'AI One Stop Shop',
+    title: 'AI One Stop Shop - Honest AI Tools Directory',
+    description: 'AI tools we have actually tried and would suggest to a friend.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI One Stop Shop - Your Ultimate AI Tools & Knowledge Hub',
-    description: 'Discover the best AI tools, learn from expert knowledge, and join a thriving AI community.',
+    title: 'AI One Stop Shop',
+    description: 'AI tools we have actually tried and would suggest to a friend.',
   },
-}
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased`}>
-        {children}
+    <html lang="en" className={`${dmSans.variable} ${inter.variable}`}>
+      <body className="min-h-screen bg-[#F9F8F5] text-[#171C26] font-inter antialiased">
+        <Header />
+        <main className="min-h-screen">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
-  )
+  );
 }
-

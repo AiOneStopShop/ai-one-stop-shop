@@ -19,32 +19,31 @@ const mockSupabase = {
       let count = 0;
 
       if (table === 'tools') {
-        data = fallbackTools.map(tool => ({
-          ...tool,
-          tool_categories: fallbackToolCategories
-            .filter(tc => tc.tool_id === tool.id)
-            .map(tc => ({
-              category_id: tc.category_id,
-              is_primary: tc.is_primary,
-              categories: fallbackCategories.find(c => c.id === tc.category_id),
-            })),
-        }));
+        data = fallbackTools || [];
         count = data.length;
       } else if (table === 'categories') {
-        data = fallbackCategories;
+        data = fallbackCategories || [];
         count = data.length;
       }
 
-      return {
-        eq: (col: string, val: any) => mockSupabase.from(table).select(columns, options),
-        neq: (col: string, val: any) => mockSupabase.from(table).select(columns, options),
-        gte: (col: string, val: any) => mockSupabase.from(table).select(columns, options),
-        order: (col: string, opts?: any) => mockSupabase.from(table).select(columns, options),
-        limit: (n: number) => mockSupabase.from(table).select(columns, options),
-        range: (from: number, to: number) => mockSupabase.from(table).select(columns, options),
-        single: () => Promise.resolve({ data: data[0] || null, error: null }),
-        then: (resolve: any) => resolve({ data, error: null, count }),
-      };
+      const createChainableQuery = (currentData: any[]) => ({
+        eq: (col: string, val: any) => createChainableQuery(currentData.filter((item: any) => item[col] === val)),
+        neq: (col: string, val: any) => createChainableQuery(currentData.filter((item: any) => item[col] !== val)),
+        in: (col: string, vals: any[]) => createChainableQuery(currentData.filter((item: any) => vals.includes(item[col]))),
+        contains: (col: string, val: any) => createChainableQuery(currentData.filter((item: any) => {
+          const colVal = item[col];
+          if (Array.isArray(colVal)) return colVal.includes(val);
+          return false;
+        })),
+        gte: (col: string, val: any) => createChainableQuery(currentData.filter((item: any) => item[col] >= val)),
+        order: (col: string, opts?: any) => createChainableQuery([...currentData]),
+        limit: (n: number) => createChainableQuery(currentData.slice(0, n)),
+        range: (from: number, to: number) => createChainableQuery(currentData.slice(from, to + 1)),
+        single: () => Promise.resolve({ data: currentData[0] || null, error: null }),
+        then: (resolve: any) => resolve({ data: currentData, error: null, count: currentData.length }),
+      });
+
+      return createChainableQuery(data);
     },
     insert: (values: any) => ({
       select: () => Promise.resolve({ data: null, error: null }),

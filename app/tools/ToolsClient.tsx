@@ -198,6 +198,10 @@ export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
                       {tool.pricing_summary}
                     </p>
                   )}
+
+                  <div className="mt-3 pt-3 border-t border-[#E6E8EC]">
+                    <CompareCheckbox toolSlug={tool.slug} />
+                  </div>
                 </div>
               </article>
             );

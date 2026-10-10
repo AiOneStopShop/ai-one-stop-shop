@@ -1,9 +1,6 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Enable RLS
-ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret-here';
-
 -- Categories table
 CREATE TABLE IF NOT EXISTS categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -104,10 +101,12 @@ CREATE TABLE IF NOT EXISTS tool_submissions (
   website_url TEXT NOT NULL,
   contact_email TEXT NOT NULL,
   description TEXT,
-  submitted_at TIMESTAMPTZ DEFAULT NOW(),
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  reviewed_by UUID REFERENCES auth.users(id),
   reviewed_at TIMESTAMPTZ,
-  reviewed_by UUID REFERENCES profiles(user_id)
+  review_notes TEXT,
+  submitted_at TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Create indexes
@@ -126,7 +125,6 @@ ALTER TABLE tools ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tool_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE affiliate_links ENABLE ROW LEVEL SECURITY;
 ALTER TABLE affiliate_clicks ENABLE ROW LEVEL SECURITY;
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE stripe_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tool_submissions ENABLE ROW LEVEL SECURITY;
@@ -158,17 +156,7 @@ CREATE POLICY "Anyone can read tool categories for published tools"
 -- Affiliate clicks should NOT be readable by the public
 -- No public SELECT policy
 
--- Profiles: users can read only their own
-CREATE POLICY "Users can read own profile"
-  ON profiles FOR SELECT
-  USING (auth.uid() = user_id);
-
--- Subscriptions: users can read only their own
-CREATE POLICY "Users can read own subscriptions"
-  ON subscriptions FOR SELECT
-  USING (user_id = auth.uid());
-
--- Tool submissions: RLS policies added in migration 003
+-- Tool submissions: RLS policies added in migration 003 and 005
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()

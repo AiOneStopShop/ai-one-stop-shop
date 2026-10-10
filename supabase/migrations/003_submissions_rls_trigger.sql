@@ -23,7 +23,6 @@ BEGIN
   NEW.status := 'pending';
   NEW.reviewed_by := NULL;
   NEW.reviewed_at := NULL;
-  NEW.review_notes := NULL;
   RETURN NEW;
 END;
 $$;
@@ -40,24 +39,7 @@ CREATE TRIGGER enforce_pending_status
 
 -- Remove all client-side insert policies (submissions go through server action only)
 -- Server action uses service_role, which bypasses RLS
-
--- Admin policy for reading/updating submissions (requires admin role in profiles)
-CREATE POLICY "Admins can manage submissions"
-  ON tool_submissions
-  FOR ALL
-  TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  )
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM profiles
-      WHERE id = auth.uid() AND role = 'admin'
-    )
-  );
+-- Admin policy moved to 005_admin_policy.sql (after profiles table exists)
 
 -- Enable RLS
 ALTER TABLE tool_submissions ENABLE ROW LEVEL SECURITY;

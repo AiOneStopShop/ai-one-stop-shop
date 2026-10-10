@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { generateBreadcrumbSchema } from '@/lib/json-ld';
+import { generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 
 export const metadata = {
   title: 'Our Own Kits - Made by AI One Stop Shop',

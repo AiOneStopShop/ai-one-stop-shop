@@ -6,6 +6,11 @@ export async function middleware(request: NextRequest) {
 
   // Protect /admin routes
   if (pathname.startsWith('/admin')) {
+    // Skip auth check for login page
+    if (pathname === '/admin/login') {
+      return NextResponse.next();
+    }
+
     let response = NextResponse.next({
       request: {
         headers: request.headers,
@@ -42,23 +47,22 @@ export async function middleware(request: NextRequest) {
       }
     )
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
+    // Use getUser() instead of getSession() for secure server-side verification
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (!session) {
-      return NextResponse.redirect(new URL('/api/auth/login?returnTo=' + encodeURIComponent(pathname), request.url))
+    if (error || !user) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
     }
 
     // Check if user has admin role in database
-    const { data: userData } = await supabase
+    const { data: profile } = await supabase
       .from('profiles')
       .select('role')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single()
 
-    if (userData?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/?error=unauthorized', request.url))
+    if (profile?.role !== 'admin') {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
     }
 
     return response

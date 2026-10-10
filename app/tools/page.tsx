@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import type { Tool, Category } from '@/types/database';
-import { generateItemListSchema, generateBreadcrumbSchema } from '@/lib/json-ld';
+import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { ToolsClient } from './ToolsClient';
 
 async function getTools() {

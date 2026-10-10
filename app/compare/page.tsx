@@ -32,11 +32,10 @@ async function getToolsForComparison(slugs: string[]) {
   }
 }
 
-export default async function ComparePage({
-  searchParams,
-}: {
-  searchParams: { tools?: string };
+export default async function ComparePage(props: {
+  searchParams: Promise<{ tools?: string }>;
 }) {
+  const searchParams = await props.searchParams;
   const toolSlugs = searchParams.tools?.split(',').filter(Boolean) || [];
 
   if (toolSlugs.length === 0) {

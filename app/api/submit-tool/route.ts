@@ -18,7 +18,7 @@ const submitToolSchema = z.object({
 
 // Get client IP safely
 function getClientIP(request: NextRequest): string {
-  return request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || request.ip || 'unknown';
+  return request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || 'unknown';
 }
 
 async function verifyTurnstile(token: string, ip: string): Promise<boolean> {

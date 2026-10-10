@@ -21,12 +21,13 @@ function isBot(userAgent: string | null): boolean {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  props: { params: Promise<{ slug: string }> }
 ) {
+  const params = await props.params;
   const { slug } = params;
 
   // Rate limiting with Upstash
-  const ip = request.ip || request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || 'unknown';
+  const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || 'unknown';
   const { success: rateLimitOk } = await affiliateRedirectRateLimit.limit(ip);
   
   if (!rateLimitOk) {

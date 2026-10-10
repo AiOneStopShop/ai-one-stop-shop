@@ -33,7 +33,8 @@ async function getAffiliateLink(toolId: string) {
   return data?.go_slug;
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const tool = await getTool(params.slug);
   
   if (!tool) {
@@ -48,7 +49,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function ToolPage({ params }: { params: { slug: string } }) {
+export default async function ToolPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const tool = await getTool(params.slug);
 
   if (!tool) {

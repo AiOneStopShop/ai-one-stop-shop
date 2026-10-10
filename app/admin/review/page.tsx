@@ -1,166 +1,245 @@
-import Link from 'next/link';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { AdminActions } from './AdminActions';
+import Link from 'next/link';
 
-// Server-side auth check
-async function checkAdminAccess() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+async function getServerSupabase() {
+  const cookieStore = await cookies();
   
-  // If Supabase is not configured, return null (will show config message)
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return null;
-  }
-  
-  // TODO: Implement real auth check using Supabase Auth
-  // For now, return a placeholder that shows the page exists but needs config
-  return null;
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
 }
 
-async function getDraftTools() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+async function checkAuth() {
+  const supabase = await getServerSupabase();
+  const { data: { user }, error } = await supabase.auth.getUser();
   
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return [];
+  if (error || !user) {
+    redirect('/admin/login');
   }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (profile?.role !== 'admin') {
+    redirect('/admin/login');
+  }
+
+  return { user, profile };
+}
+
+async function getDrafts() {
+  const supabase = await getServerSupabase();
   
-  try {
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-    
-    const { data } = await supabase
-      .from('tools')
-      .select('*')
-      .eq('status', 'draft')
-      .order('created_at', { ascending: false });
-    
-    return data || [];
-  } catch (error) {
-    console.error('Error fetching drafts:', error);
-    return [];
-  }
+  const { data } = await supabase
+    .from('tools')
+    .select('*')
+    .eq('status', 'draft')
+    .order('created_at', { ascending: false });
+
+  return data || [];
+}
+
+async function getSubmissions() {
+  const supabase = await getServerSupabase();
+  
+  const { data } = await supabase
+    .from('tool_submissions')
+    .select('*')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: false });
+
+  return data || [];
 }
 
 export default async function AdminReviewPage() {
-  const hasAccess = await checkAdminAccess();
-  const drafts = await getDraftTools();
+  await checkAuth();
   
-  const supabaseConfigured = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
-  
+  const [drafts, submissions] = await Promise.all([
+    getDrafts(),
+    getSubmissions(),
+  ]);
+
   return (
-    <div id="main-content" className="scroll-mt-16 min-h-screen">
-      <section className="section-spacing">
-        <div className="container-max max-w-5xl">
-          <div className="mb-8">
-            <Link href="/" className="text-[#6C39EF] hover:underline focus-ring rounded mb-4 inline-block">
-              ← Back to home
+    <div className="min-h-screen bg-[#F9F8F5]">
+      <div className="border-b border-[#E5E1DC] bg-white">
+        <div className="container-max py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href="/" className="flex items-center gap-2">
+              <span className="text-2xl">✨</span>
+              <span className="font-dm-sans font-bold text-lg text-[#171C26]">
+                AI One Stop Shop
+              </span>
             </Link>
-            <h1 className="heading-1 mb-2">Admin Review Queue</h1>
-            <p className="text-[#5B657B]">
-              Review and approve draft tools and submissions before publishing
-            </p>
+            <span className="text-[#5B657B]">/</span>
+            <h1 className="font-dm-sans font-semibold text-lg text-[#171C26]">
+              Admin Review
+            </h1>
           </div>
+          <Link href="/" className="text-sm text-[#6C39EF] hover:underline">
+            View Site →
+          </Link>
+        </div>
+      </div>
+
+      <div className="container-max py-12">
+        {/* Submissions Section */}
+        <section className="mb-12">
+          <h2 className="heading-2 mb-6">
+            Pending Submissions ({submissions.length})
+          </h2>
           
-          {!supabaseConfigured ? (
-            // Show configuration message when Supabase is not set up
-            <div className="card max-w-2xl mx-auto text-center py-12">
-              <div className="text-6xl mb-4">⚙️</div>
-              <h2 className="heading-2 mb-4">Configure Supabase</h2>
-              <p className="text-[#5B657B] mb-6">
-                The admin review queue requires Supabase to be configured.
-                Set the following environment variables to enable this feature:
-              </p>
-              <div className="bg-[#F9F8F5] rounded-lg p-4 text-left font-mono text-sm mb-6">
-                <div>NEXT_PUBLIC_SUPABASE_URL=your-project-url</div>
-                <div>NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key</div>
-                <div>SUPABASE_SERVICE_ROLE_KEY=your-service-key</div>
-              </div>
-              <p className="text-sm text-[#5B657B]">
-                After configuration, draft tools and submissions will appear here for review.
-              </p>
-            </div>
-          ) : hasAccess === null ? (
-            // Show auth requirement when Supabase is configured but user not authenticated
-            <div className="card max-w-2xl mx-auto text-center py-12">
-              <div className="text-6xl mb-4">🔐</div>
-              <h2 className="heading-2 mb-4">Authentication Required</h2>
-              <p className="text-[#5B657B] mb-6">
-                You must be logged in with an admin account to access this page.
-              </p>
-              <Link href="/" className="btn-primary">
-                Go to home
-              </Link>
+          {submissions.length === 0 ? (
+            <div className="card text-center py-12">
+              <p className="text-[#5B657B]">No pending submissions</p>
             </div>
           ) : (
-            // Show review queue when authenticated
-            <>
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <span className="text-sm text-[#5B657B]">
-                    {drafts.length} items pending review
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <button className="px-4 py-2 text-sm border-2 border-[#E5E1DC] rounded-lg hover:bg-[#F9F8F5] transition-colors">
-                    Filters
-                  </button>
-                  <Link href="/admin/settings" className="px-4 py-2 text-sm border-2 border-[#E5E1DC] rounded-lg hover:bg-[#F9F8F5] transition-colors">
-                    Settings
-                  </Link>
-                </div>
-              </div>
-              
-              {drafts.length === 0 ? (
-                <div className="card text-center py-16">
-                  <div className="text-6xl mb-4">✅</div>
-                  <h2 className="heading-3 mb-2">No items to review</h2>
-                  <p className="text-[#5B657B]">
-                    All submissions and imports have been reviewed.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {drafts.map((tool: any) => (
-                    <div key={tool.id} className="card hover:shadow-lg transition-shadow">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-bold text-lg">{tool.name}</h3>
-                            <span className="badge badge-sponsored text-xs">DRAFT</span>
-                            {tool.import_source && (
-                              <span className="text-xs text-[#5B657B]">
-                                from {tool.import_source}
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-[#5B657B] mb-3">{tool.tagline || tool.description}</p>
-                          <div className="flex items-center gap-4 text-sm text-[#5B657B]">
-                            <a
-                              href={tool.website_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-[#6C39EF] hover:underline"
-                            >
-                              Visit website →
-                            </a>
-                            {tool.created_at && (
-                              <span>
-                                Submitted {new Date(tool.created_at).toLocaleDateString()}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <AdminActions tool={tool} />
-                      </div>
+            <div className="space-y-4">
+              {submissions.map((submission: any) => (
+                <div key={submission.id} className="card">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h3 className="heading-3 mb-2">{submission.tool_name}</h3>
+                      <a
+                        href={submission.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-[#6C39EF] hover:underline"
+                      >
+                        {submission.website_url} ↗
+                      </a>
                     </div>
-                  ))}
+                    <span className="badge bg-yellow-50 text-yellow-700 border border-yellow-200">
+                      Pending
+                    </span>
+                  </div>
+                  
+                  {submission.description && (
+                    <p className="text-[#5B657B] mb-4">{submission.description}</p>
+                  )}
+                  
+                  <div className="flex items-center justify-between pt-4 border-t border-[#E5E1DC]">
+                    <div className="text-sm text-[#5B657B]">
+                      <p>Contact: {submission.contact_email}</p>
+                      <p>Submitted: {new Date(submission.created_at).toLocaleDateString()}</p>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <form action="/admin/review/approve-submission" method="POST">
+                        <input type="hidden" name="submissionId" value={submission.id} />
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                        >
+                          Approve & Create Draft
+                        </button>
+                      </form>
+                      <form action="/admin/review/reject-submission" method="POST">
+                        <input type="hidden" name="submissionId" value={submission.id} />
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                        >
+                          Reject
+                        </button>
+                      </form>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </>
+              ))}
+            </div>
           )}
-        </div>
-      </section>
+        </section>
+
+        {/* Drafts Section */}
+        <section>
+          <h2 className="heading-2 mb-6">
+            Draft Tools ({drafts.length})
+          </h2>
+          
+          {drafts.length === 0 ? (
+            <div className="card text-center py-12">
+              <p className="text-[#5B657B]">No draft tools</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {drafts.map((tool: any) => (
+                <div key={tool.id} className="card">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h3 className="heading-3 mb-2">{tool.name}</h3>
+                      {tool.tagline && (
+                        <p className="text-[#5B657B] mb-2">{tool.tagline}</p>
+                      )}
+                      <a
+                        href={tool.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-[#6C39EF] hover:underline"
+                      >
+                        {tool.website_url} ↗
+                      </a>
+                    </div>
+                    <span className="badge bg-gray-100 text-gray-700 border border-gray-200">
+                      Draft
+                    </span>
+                  </div>
+                  
+                  {tool.description && (
+                    <p className="text-[#5B657B] mb-4">{tool.description}</p>
+                  )}
+                  
+                  <div className="flex items-center justify-between pt-4 border-t border-[#E5E1DC]">
+                    <div className="text-sm text-[#5B657B]">
+                      <p>Created: {new Date(tool.created_at).toLocaleDateString()}</p>
+                      {tool.pricing_summary && <p>Pricing: {tool.pricing_summary}</p>}
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <form action={async () => {
+                        'use server';
+                        const { approveTool } = await import('./actions');
+                        await approveTool(tool.id);
+                      }}>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                        >
+                          Publish
+                        </button>
+                      </form>
+                      <form action={async () => {
+                        'use server';
+                        const { rejectTool } = await import('./actions');
+                        await rejectTool(tool.id);
+                      }}>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                        >
+                          Reject
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }

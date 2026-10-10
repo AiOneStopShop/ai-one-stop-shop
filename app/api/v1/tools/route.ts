@@ -4,7 +4,7 @@ import { apiRateLimit } from '@/lib/rate-limit';
 
 // Get client IP safely
 function getClientIP(request: NextRequest): string {
-  return request.headers.get('x-real-ip') || request.ip || 'unknown';
+  return request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || 'unknown';
 }
 
 // Escape SQL LIKE wildcards

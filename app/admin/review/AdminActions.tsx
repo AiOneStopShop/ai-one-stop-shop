@@ -11,7 +11,7 @@ export function AdminActions({ tool }: { tool: any }) {
     setLoading(true);
     setMessage('');
     
-    const result = await approveTool(tool.id, tool);
+    const result = await approveTool(tool.id);
     
     if (result.success) {
       setMessage('✅ Approved!');
@@ -29,7 +29,7 @@ export function AdminActions({ tool }: { tool: any }) {
     setLoading(true);
     setMessage('');
     
-    const result = await rejectTool(tool.id, tool);
+    const result = await rejectTool(tool.id);
     
     if (result.success) {
       setMessage('✅ Rejected');

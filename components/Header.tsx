@@ -37,16 +37,22 @@ export function Header() {
                 Tools
               </Link>
               <Link 
+                href="/finder" 
+                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+              >
+                Finder
+              </Link>
+              <Link 
+                href="/compare" 
+                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+              >
+                Compare
+              </Link>
+              <Link 
                 href="/our-kits" 
                 className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
               >
                 Our Kits
-              </Link>
-              <Link 
-                href="/pricing" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
-              >
-                Pricing
               </Link>
               <Link 
                 href="/about" 
@@ -90,18 +96,25 @@ export function Header() {
                 Tools
               </Link>
               <Link 
+                href="/finder" 
+                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Finder
+              </Link>
+              <Link 
+                href="/compare" 
+                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Compare
+              </Link>
+              <Link 
                 href="/our-kits" 
                 className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Our Kits
-              </Link>
-              <Link 
-                href="/pricing" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Pricing
               </Link>
               <Link 
                 href="/about" 

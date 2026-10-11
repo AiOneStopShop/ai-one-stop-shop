@@ -35,11 +35,11 @@ test.describe('Quinn QA Round 3 Verification', () => {
       // Verify button shows "Compare (3)"
       await expect(page.locator('button:has-text("Compare (3)")')).toBeVisible();
       
-      // Try to check 4th tool - should show alert
+      // 4th tool is blocked at the 3-tool limit
       page.on('dialog', dialog => dialog.accept());
       if (checkboxes.length >= 4) {
-        await checkboxes[3].check();
-        // Alert should have been shown
+        await checkboxes[3].click();
+        await expect(checkboxes[3]).not.toBeChecked();
       }
       
       // Click Compare button and verify navigation

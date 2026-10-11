@@ -4,6 +4,7 @@ test(' /tools hydrates without CSP or MIME errors', async ({ page }) => {
   const consoleErrors: string[] = [];
   const pageErrors: string[] = [];
   const failedAssets: string[] = [];
+  const cspViolations: string[] = [];
 
   page.on('console', msg => {
     if (msg.type() === 'error') {
@@ -23,12 +24,24 @@ test(' /tools hydrates without CSP or MIME errors', async ({ page }) => {
     }
   });
 
+  await page.addInitScript(() => {
+    document.addEventListener('securitypolicyviolation', (event) => {
+      const detail = `${event.violatedDirective} ${event.blockedURI} (${event.effectiveDirective})`;
+      (window as any).__cspViolations = (window as any).__cspViolations || [];
+      (window as any).__cspViolations.push(detail);
+    });
+  });
+
   await page.goto('/tools', { waitUntil: 'networkidle' });
 
   const checkbox = page.locator('input[type="checkbox"][aria-label^="Compare"]').first();
   await expect(checkbox).toBeVisible({ timeout: 15000 });
 
+  const reported = await page.evaluate(() => (window as any).__cspViolations || []);
+  cspViolations.push(...reported);
+
   expect(failedAssets, `static assets failed:\n${failedAssets.join('\n')}`).toEqual([]);
+  expect(cspViolations, `CSP violations:\n${cspViolations.join('\n')}`).toEqual([]);
   const blocking = [...consoleErrors, ...pageErrors].filter(msg =>
     /Refused to|CSP|Content Security Policy|MIME type|400 \(Bad Request\)/i.test(msg)
   );

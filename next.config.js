@@ -31,11 +31,17 @@ const nextConfig = {
 
     // CSP on HTML pages only. Applying it to /_next/static caused 400s and
     // MIME mismatches that blocked hydration in real Chrome / Playwright.
+    const scriptSrc = [
+      "'self'",
+      "'unsafe-inline'",
+      ...(process.env.NODE_ENV === 'development' ? ["'unsafe-eval'"] : []),
+    ].join(' ');
+
     const pageCsp = {
       key: 'Content-Security-Policy',
       value: [
         "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+        `script-src ${scriptSrc}`,
         "style-src 'self' 'unsafe-inline'",
         "img-src 'self' data: https:",
         "font-src 'self' data:",
@@ -48,6 +54,20 @@ const nextConfig = {
     };
 
     return [
+      {
+        // Apply on every path, including /_next/*
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains'
+          },
+        ],
+      },
       {
         // HTML routes only — do not attach CSP to hashed /_next/static assets
         source: '/((?!_next/).*)',

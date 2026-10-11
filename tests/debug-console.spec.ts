@@ -1,47 +1,36 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
-test('capture console and CSP errors on /tools', async ({ page }) => {
-  const consoleMessages: string[] = [];
-  const cspViolations: string[] = [];
+test(' /tools hydrates without CSP or MIME errors', async ({ page }) => {
+  const consoleErrors: string[] = [];
+  const pageErrors: string[] = [];
+  const failedAssets: string[] = [];
 
   page.on('console', msg => {
-    const text = msg.text();
-    consoleMessages.push(`[${msg.type()}] ${text}`);
-    console.log(`CONSOLE [${msg.type()}]:`, text);
+    if (msg.type() === 'error') {
+      consoleErrors.push(msg.text());
+      console.log('CONSOLE ERROR:', msg.text());
+    }
   });
-
   page.on('pageerror', error => {
+    pageErrors.push(error.message);
     console.log('PAGE ERROR:', error.message);
-    consoleMessages.push(`[error] ${error.message}`);
   });
-
-  // Listen for CSP violations
   page.on('response', response => {
-    const csp = response.headers()['content-security-policy'];
-    if (csp) {
-      console.log('CSP Header:', csp);
+    const url = response.url();
+    if (url.includes('/_next/static') && response.status() >= 400) {
+      failedAssets.push(`${response.status()} ${url}`);
+      console.log('FAILED ASSET:', response.status(), url);
     }
   });
 
-  await page.goto('http://localhost:3100/tools', { waitUntil: 'networkidle' });
-  
-  // Wait a bit for hydration
-  await page.waitForTimeout(3000);
-  
-  // Check if checkboxes are interactive
-  const checkboxes = await page.locator('input[type="checkbox"][aria-label^="Compare"]').count();
-  console.log(`Found ${checkboxes} compare checkboxes`);
-  
-  if (checkboxes > 0) {
-    // Try to click one
-    await page.locator('input[type="checkbox"][aria-label^="Compare"]').first().click();
-    await page.waitForTimeout(1000);
-    
-    // Check localStorage
-    const stored = await page.evaluate(() => localStorage.getItem('compareList'));
-    console.log('localStorage after click:', stored);
-  }
-  
-  console.log('\n=== All Console Messages ===');
-  consoleMessages.forEach(msg => console.log(msg));
+  await page.goto('/tools', { waitUntil: 'networkidle' });
+
+  const checkbox = page.locator('input[type="checkbox"][aria-label^="Compare"]').first();
+  await expect(checkbox).toBeVisible({ timeout: 15000 });
+
+  expect(failedAssets, `static assets failed:\n${failedAssets.join('\n')}`).toEqual([]);
+  const blocking = [...consoleErrors, ...pageErrors].filter(msg =>
+    /Refused to|CSP|Content Security Policy|MIME type|400 \(Bad Request\)/i.test(msg)
+  );
+  expect(blocking, `hydration blockers:\n${blocking.join('\n')}`).toEqual([]);
 });

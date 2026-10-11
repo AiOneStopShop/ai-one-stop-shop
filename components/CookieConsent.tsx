@@ -74,15 +74,15 @@ export function CookieConsent() {
             <Link href="/privacy#cookies" className="text-[#6C39EF] underline hover:no-underline focus-ring rounded">
               Privacy
             </Link>
+            <span aria-hidden="true"> · </span>
+            <button
+              type="button"
+              onClick={handleDismiss}
+              className="btn-primary text-xs sm:text-sm px-3 py-1.5 min-h-[36px] align-middle"
+            >
+              Got it
+            </button>
           </p>
-
-          <button
-            type="button"
-            onClick={handleDismiss}
-            className="btn-primary text-xs sm:text-sm px-3 py-2 min-h-[36px] shrink-0"
-          >
-            Got it
-          </button>
         </div>
       </div>
     </div>

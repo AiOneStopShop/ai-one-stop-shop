@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 type UseCase = 'coding' | 'writing' | 'design' | 'productivity' | 'other';
@@ -12,6 +12,18 @@ export default function FinderPage() {
   const [budget, setBudget] = useState<Budget | ''>('');
   const [experience, setExperience] = useState<Experience | ''>('');
   const [showResults, setShowResults] = useState(false);
+  const [focusFirstQuestion, setFocusFirstQuestion] = useState(false);
+  const resultsHeadingRef = useRef<HTMLHeadingElement>(null);
+  const firstQuestionRef = useRef<HTMLFieldSetElement>(null);
+
+  useEffect(() => {
+    if (showResults) {
+      resultsHeadingRef.current?.focus();
+    } else if (focusFirstQuestion) {
+      firstQuestionRef.current?.focus();
+      setFocusFirstQuestion(false);
+    }
+  }, [showResults, focusFirstQuestion]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,13 +37,12 @@ export default function FinderPage() {
     setBudget('');
     setExperience('');
     setShowResults(false);
+    setFocusFirstQuestion(true);
   };
 
-  // Simple rules-based recommendations
   const getRecommendations = () => {
     const recommendations: Array<{ name: string; slug: string; why: string }> = [];
 
-    // Coding recommendations
     if (useCase === 'coding') {
       if (budget === 'free') {
         recommendations.push({
@@ -56,7 +67,6 @@ export default function FinderPage() {
       }
     }
 
-    // Writing recommendations
     if (useCase === 'writing') {
       if (budget === 'free' || budget === 'low') {
         recommendations.push({
@@ -74,7 +84,6 @@ export default function FinderPage() {
       }
     }
 
-    // Design recommendations
     if (useCase === 'design') {
       if (budget === 'free' || budget === 'low') {
         recommendations.push({
@@ -92,7 +101,6 @@ export default function FinderPage() {
       }
     }
 
-    // Productivity recommendations
     if (useCase === 'productivity') {
       if (budget === 'free' || budget === 'low') {
         recommendations.push({
@@ -108,7 +116,6 @@ export default function FinderPage() {
       });
     }
 
-    // General recommendations
     if (recommendations.length === 0) {
       recommendations.push({
         name: 'ChatGPT Plus',
@@ -122,7 +129,6 @@ export default function FinderPage() {
       });
     }
 
-    // Remove duplicates
     const unique = recommendations.filter((rec, index, self) =>
       index === self.findIndex((r) => r.slug === rec.slug)
     );
@@ -131,6 +137,14 @@ export default function FinderPage() {
   };
 
   const recommendations = showResults ? getRecommendations() : [];
+
+  const useCaseOptions = [
+    { value: 'coding', emoji: '💻', label: 'Coding & Development' },
+    { value: 'writing', emoji: '✍️', label: 'Writing & Content' },
+    { value: 'design', emoji: '🎨', label: 'Design & Creative' },
+    { value: 'productivity', emoji: '⚡', label: 'Productivity & Organization' },
+    { value: 'other', emoji: '🔍', label: 'Something else' },
+  ] as const;
 
   return (
     <div className="scroll-mt-16">
@@ -145,40 +159,35 @@ export default function FinderPage() {
 
           {!showResults ? (
             <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl border border-[#E5E1DC]">
-              {/* Use Case */}
-              <div>
-                <label className="block text-sm font-medium text-[#171C26] mb-3">
-                  What will you mainly use it for? <span className="text-red-600">*</span>
-                </label>
+              <fieldset ref={firstQuestionRef} tabIndex={-1} className="border-0 p-0 m-0 focus:outline-none">
+                <legend className="block text-sm font-medium text-[#171C26] mb-3">
+                  What will you mainly use it for? <span className="text-red-600" aria-hidden="true">*</span>
+                </legend>
                 <div className="space-y-2">
-                  {[
-                    { value: 'coding', label: '💻 Coding & Development' },
-                    { value: 'writing', label: '✍️ Writing & Content' },
-                    { value: 'design', label: '🎨 Design & Creative' },
-                    { value: 'productivity', label: '⚡ Productivity & Organization' },
-                    { value: 'other', label: '🔍 Something else' },
-                  ].map(option => (
-                    <label key={option.value} className="flex items-center gap-3 p-3 border border-[#E5E1DC] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors">
+                  {useCaseOptions.map(option => (
+                    <label key={option.value} className="flex items-center gap-3 p-3 border border-[#5B657B] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors">
                       <input
                         type="radio"
                         name="useCase"
                         value={option.value}
                         checked={useCase === option.value}
                         onChange={(e) => setUseCase(e.target.value as UseCase)}
-                        className="w-4 h-4 text-[#6C39EF] focus-ring"
+                        className="w-6 h-6 text-[#6C39EF] focus-ring"
                         required
                       />
-                      <span>{option.label}</span>
+                      <span>
+                        <span aria-hidden="true">{option.emoji} </span>
+                        {option.label}
+                      </span>
                     </label>
                   ))}
                 </div>
-              </div>
+              </fieldset>
 
-              {/* Budget */}
-              <div>
-                <label className="block text-sm font-medium text-[#171C26] mb-3">
-                  What's your budget? <span className="text-red-600">*</span>
-                </label>
+              <fieldset className="border-0 p-0 m-0">
+                <legend className="block text-sm font-medium text-[#171C26] mb-3">
+                  What's your budget? <span className="text-red-600" aria-hidden="true">*</span>
+                </legend>
                 <div className="space-y-2">
                   {[
                     { value: 'free', label: 'Free only' },
@@ -186,48 +195,47 @@ export default function FinderPage() {
                     { value: 'medium', label: '$15-30/month' },
                     { value: 'high', label: '$30+ per month' },
                   ].map(option => (
-                    <label key={option.value} className="flex items-center gap-3 p-3 border border-[#E5E1DC] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors">
+                    <label key={option.value} className="flex items-center gap-3 p-3 border border-[#5B657B] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors">
                       <input
                         type="radio"
                         name="budget"
                         value={option.value}
                         checked={budget === option.value}
                         onChange={(e) => setBudget(e.target.value as Budget)}
-                        className="w-4 h-4 text-[#6C39EF] focus-ring"
+                        className="w-6 h-6 text-[#6C39EF] focus-ring"
                         required
                       />
                       <span>{option.label}</span>
                     </label>
                   ))}
                 </div>
-              </div>
+              </fieldset>
 
-              {/* Experience */}
-              <div>
-                <label className="block text-sm font-medium text-[#171C26] mb-3">
-                  How would you describe your experience with AI tools? <span className="text-red-600">*</span>
-                </label>
+              <fieldset className="border-0 p-0 m-0">
+                <legend className="block text-sm font-medium text-[#171C26] mb-3">
+                  How would you describe your experience with AI tools? <span className="text-red-600" aria-hidden="true">*</span>
+                </legend>
                 <div className="space-y-2">
                   {[
                     { value: 'beginner', label: 'Beginner - Just starting out' },
                     { value: 'intermediate', label: "Intermediate - I've used a few" },
                     { value: 'advanced', label: "Advanced - I'm very familiar with AI tools" },
                   ].map(option => (
-                    <label key={option.value} className="flex items-center gap-3 p-3 border border-[#E5E1DC] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors">
+                    <label key={option.value} className="flex items-center gap-3 p-3 border border-[#5B657B] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors">
                       <input
                         type="radio"
                         name="experience"
                         value={option.value}
                         checked={experience === option.value}
                         onChange={(e) => setExperience(e.target.value as Experience)}
-                        className="w-4 h-4 text-[#6C39EF] focus-ring"
+                        className="w-6 h-6 text-[#6C39EF] focus-ring"
                         required
                       />
                       <span>{option.label}</span>
                     </label>
                   ))}
                 </div>
-              </div>
+              </fieldset>
 
               <button type="submit" className="btn-primary w-full">
                 Get recommendations
@@ -235,9 +243,14 @@ export default function FinderPage() {
             </form>
           ) : (
             <div>
-              {/* Results */}
               <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-xl p-6 mb-8">
-                <h2 className="heading-2 mb-2">Based on your answers:</h2>
+                <h2
+                  ref={resultsHeadingRef}
+                  tabIndex={-1}
+                  className="heading-2 mb-2 focus:outline-none"
+                >
+                  Based on your answers:
+                </h2>
                 <p className="text-[#5B657B]">
                   {useCase === 'coding' && "You're looking for coding tools"}
                   {useCase === 'writing' && "You're looking for writing tools"}
@@ -257,32 +270,32 @@ export default function FinderPage() {
               </div>
 
               <h2 className="heading-2 mb-6">Our recommendations:</h2>
-              
-              <div className="space-y-6 mb-8">
+
+              <ol className="space-y-6 mb-8 list-none p-0">
                 {recommendations.map((rec, index) => (
-                  <div key={rec.slug} className="card">
+                  <li key={rec.slug} className="card">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl font-bold text-[#6C39EF]">
+                        <span className="text-2xl font-bold text-[#6C39EF]" aria-hidden="true">
                           #{index + 1}
                         </span>
                         <h3 className="heading-3">{rec.name}</h3>
                       </div>
                     </div>
                     <p className="text-[#5B657B] mb-4">{rec.why}</p>
-                    <Link 
+                    <Link
                       href={`/tools/${rec.slug}`}
                       className="btn-primary inline-block"
                     >
                       View details
                     </Link>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ol>
 
-              {/* Actions */}
               <div className="flex gap-4 flex-wrap">
-                <button 
+                <button
+                  type="button"
                   onClick={reset}
                   className="btn-secondary"
                 >
@@ -295,7 +308,6 @@ export default function FinderPage() {
             </div>
           )}
 
-          {/* Note */}
           <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-[#171C26]">
             <strong>Note:</strong> These are general recommendations based on common use cases. Always check the full tool details to make sure it fits your specific needs.
           </div>

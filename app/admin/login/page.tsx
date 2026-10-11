@@ -9,7 +9,7 @@ import { createBrowserClient } from '@supabase/ssr';
 export const dynamic = 'force-dynamic';
 
 const AUTH_QUERY_MESSAGES = {
-  auth: 'If that address is an admin, a link is on its way.',
+  auth: "That sign-in link didn't work or has expired. Request a new one.",
 } as const;
 
 function LoginForm() {
@@ -109,23 +109,25 @@ function LoginForm() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <Link href="/" className="flex items-center justify-center gap-2 mb-8">
-            <span className="text-4xl">✨</span>
+            <span className="text-4xl" aria-hidden="true">✨</span>
             <span className="font-dm-sans font-bold text-2xl text-[#171C26]">
               AI One Stop Shop
             </span>
           </Link>
-          <h2 className="mt-6 text-center heading-2">
+          <h1 className="mt-6 text-center heading-2">
             Admin Login
-          </h2>
+          </h1>
           <p className="mt-2 text-center text-sm text-[#5B657B]">
             Sign in with your admin account
           </p>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-[#E5E1DC] p-8">
-          <div className="flex gap-2 mb-6">
+          <div className="flex gap-2 mb-6" role="group" aria-label="Sign-in method">
             <button
+              type="button"
               onClick={() => setMode('signin')}
+              aria-pressed={mode === 'signin'}
               className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                 mode === 'signin'
                   ? 'bg-[#6C39EF] text-white'
@@ -135,7 +137,9 @@ function LoginForm() {
               Password
             </button>
             <button
+              type="button"
               onClick={() => setMode('magic')}
+              aria-pressed={mode === 'magic'}
               className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                 mode === 'magic'
                   ? 'bg-[#6C39EF] text-white'
@@ -147,13 +151,13 @@ function LoginForm() {
           </div>
 
           {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-sm">
+            <div className="mb-4 bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-sm" role="alert">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="mb-4 bg-green-50 border border-green-200 text-green-800 rounded-lg p-3 text-sm">
+            <div className="mb-4 bg-green-50 border border-green-200 text-green-800 rounded-lg p-3 text-sm" role="status">
               {success}
             </div>
           )}

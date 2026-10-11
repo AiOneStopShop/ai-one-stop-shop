@@ -54,7 +54,7 @@ test.describe('Quinn QA Round 3 Verification', () => {
     await page.goto(`${BASE_URL}/tools`);
     
     // Click first tool
-    const firstTool = page.locator('article.card').first();
+    const firstTool = page.locator('article.card h2 a').first();
     await firstTool.click();
     await page.waitForURL('**/tools/*');
     

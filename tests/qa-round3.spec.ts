@@ -13,7 +13,7 @@ test.describe('Quinn QA Round 3 Verification', () => {
     await page.goto(`${BASE_URL}/tools`);
     
     // Find first 3 tool cards with checkboxes
-    const checkboxes = await page.locator('input[type="checkbox"][aria-label*="Compare"]').all();
+    const checkboxes = await page.getByRole('checkbox', { name: /^Compare / }).all();
     
     if (checkboxes.length >= 3) {
       // Check first tool
@@ -35,8 +35,7 @@ test.describe('Quinn QA Round 3 Verification', () => {
       // Verify button shows "Compare (3)"
       await expect(page.locator('button:has-text("Compare (3)")')).toBeVisible();
       
-      // 4th tool is blocked at the 3-tool limit
-      page.on('dialog', dialog => dialog.accept());
+      // 4th tool is blocked at the 3-tool limit (inline status, no alert())
       if (checkboxes.length >= 4) {
         await checkboxes[3].click();
         await expect(checkboxes[3]).not.toBeChecked();

@@ -5,14 +5,26 @@ import { useRouter } from 'next/navigation';
 
 const MAX_COMPARE = 3;
 
-export function CompareCheckbox({ toolSlug }: { toolSlug: string }) {
+function readCompareList(): string[] {
+  try {
+    const stored = localStorage.getItem('compareList');
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
+function countLabel(count: number): string {
+  if (count === 1) return '1 tool selected';
+  return `${count} tools selected`;
+}
+
+export function CompareCheckbox({ toolSlug, toolName }: { toolSlug: string; toolName: string }) {
   const [selected, setSelected] = useState(false);
 
   useEffect(() => {
     const updateFromStorage = () => {
-      const stored = localStorage.getItem('compareList');
-      const list = stored ? JSON.parse(stored) : [];
-      setSelected(list.includes(toolSlug));
+      setSelected(readCompareList().includes(toolSlug));
     };
 
     updateFromStorage();
@@ -27,89 +39,121 @@ export function CompareCheckbox({ toolSlug }: { toolSlug: string }) {
 
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
-    const stored = localStorage.getItem('compareList');
-    const currentList: string[] = stored ? JSON.parse(stored) : [];
+    const currentList = readCompareList();
     let newList: string[];
 
     if (checked) {
       if (currentList.length >= MAX_COMPARE) {
-        alert(`You can only compare up to ${MAX_COMPARE} tools at once`);
-        e.preventDefault();
+        window.dispatchEvent(new CustomEvent('compareAnnounce', {
+          detail: `Can't add more than ${MAX_COMPARE} tools`,
+        }));
         return;
       }
-      if (!currentList.includes(toolSlug)) {
-        newList = [...currentList, toolSlug];
-      } else {
-        newList = currentList;
-      }
+      newList = currentList.includes(toolSlug) ? currentList : [...currentList, toolSlug];
     } else {
       newList = currentList.filter(s => s !== toolSlug);
     }
 
     localStorage.setItem('compareList', JSON.stringify(newList));
-    setSelected(checked);
-    
-    // Dispatch event for sticky button
+    setSelected(newList.includes(toolSlug));
     window.dispatchEvent(new CustomEvent('compareListChanged', { detail: newList }));
+    window.dispatchEvent(new CustomEvent('compareAnnounce', { detail: countLabel(newList.length) }));
   };
 
   return (
-    <label className="flex items-center gap-2 cursor-pointer">
+    <label className="flex items-center gap-2 cursor-pointer min-h-11">
       <input
         type="checkbox"
         checked={selected}
         onChange={handleToggle}
-        className="w-4 h-4 rounded border-[#5B657B] text-[#6C39EF] focus:ring-2 focus:ring-[#6C39EF] focus:ring-offset-2"
-        aria-label={`Compare ${toolSlug}`}
+        className="w-6 h-6 rounded border-[#5B657B] text-[#6C39EF] focus:ring-2 focus:ring-[#6C39EF] focus:ring-offset-2"
       />
-      <span className="text-sm text-[#5B657B]">Compare</span>
+      <span className="text-sm text-[#5B657B]">
+        Compare<span className="sr-only"> {toolName}</span>
+      </span>
     </label>
   );
 }
 
-export function StickyCompareButton() {
+function useCompareCount() {
   const [count, setCount] = useState(0);
-  const router = useRouter();
 
   useEffect(() => {
-    const updateCount = () => {
-      const stored = localStorage.getItem('compareList');
-      const list = stored ? JSON.parse(stored) : [];
-      setCount(list.length);
-    };
-
+    const updateCount = () => setCount(readCompareList().length);
     updateCount();
     window.addEventListener('compareListChanged', updateCount);
-    
     return () => window.removeEventListener('compareListChanged', updateCount);
   }, []);
 
+  return count;
+}
+
+export function CompareSelectedButton({ sticky = false }: { sticky?: boolean }) {
+  const count = useCompareCount();
+  const router = useRouter();
+
   const handleCompare = () => {
-    const stored = localStorage.getItem('compareList');
-    const list = stored ? JSON.parse(stored) : [];
-    
+    const list = readCompareList();
     if (list.length < 2) {
-      alert('Please select at least 2 tools to compare');
+      window.dispatchEvent(new CustomEvent('compareAnnounce', {
+        detail: 'Select at least 2 tools to compare',
+      }));
       return;
     }
-    
     router.push(`/compare?tools=${list.join(',')}`);
   };
 
   if (count === 0) return null;
 
-  return (
-    <div className="sticky-compare-btn fixed right-6 z-[60] bottom-6">
-      <button
-        onClick={handleCompare}
-        className="btn-primary shadow-lg flex items-center gap-2"
-        aria-label={`Compare ${count} selected tools`}
+  const button = (
+    <button
+      type="button"
+      onClick={handleCompare}
+      className="btn-primary shadow-lg flex items-center gap-2"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 12h18M3 6h18M3 18h18"/>
-        </svg>
-        Compare ({count})
-      </button>
-    </div>
+        <path d="M3 12h18M3 6h18M3 18h18" />
+      </svg>
+      {sticky ? `Compare (${count})` : `Compare selected (${count})`}
+    </button>
+  );
+
+  if (sticky) {
+    return <div className="sticky-compare-btn fixed right-6 z-[60] bottom-6">{button}</div>;
+  }
+
+  return button;
+}
+
+export function StickyCompareButton() {
+  const [status, setStatus] = useState('');
+
+  useEffect(() => {
+    const onAnnounce = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (detail) setStatus(detail);
+    };
+    window.addEventListener('compareAnnounce', onAnnounce);
+    return () => window.removeEventListener('compareAnnounce', onAnnounce);
+  }, []);
+
+  return (
+    <>
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {status}
+      </div>
+      <CompareSelectedButton sticky />
+    </>
   );
 }

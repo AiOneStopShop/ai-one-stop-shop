@@ -34,7 +34,7 @@ test(' /tools hydrates without CSP or MIME errors', async ({ page }) => {
 
   await page.goto('/tools', { waitUntil: 'networkidle' });
 
-  const checkbox = page.locator('input[type="checkbox"][aria-label^="Compare"]').first();
+  const checkbox = page.getByRole('checkbox', { name: /^Compare / }).first();
   await expect(checkbox).toBeVisible({ timeout: 15000 });
 
   const reported = await page.evaluate(() => (window as any).__cspViolations || []);

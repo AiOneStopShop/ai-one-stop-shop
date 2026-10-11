@@ -1,6 +1,6 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import type { Tool, Category } from '@/types/database';
 import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { ToolsClient } from './ToolsClient';
 import { StickyCompareButton } from './CompareCheckbox';
@@ -88,46 +88,9 @@ export default async function ToolsPage() {
               </p>
             </div>
 
-            {/* Initial Tools Grid (SSR) */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
-              {tools.slice(0, 6).map((tool: any) => {
-                const primaryCategory = (tool.tool_categories as any[])?.find((tc: any) => tc.is_primary)?.categories;
-                
-                return (
-                  <article key={tool.id} className="card hover:shadow-lg transition-shadow group">
-                    <Link href={`/tools/${tool.slug}`} className="flex flex-col h-full">
-                      <h2 className="heading-3 mb-2 group-hover:text-[#6C39EF] transition-colors">
-                        {tool.name}
-                      </h2>
-                      {tool.is_sponsored && (
-                        <span className="badge-sponsored text-xs mb-2">Sponsored</span>
-                      )}
-
-                      {tool.tagline && (
-                        <p className="text-[#5B657B] mb-3 line-clamp-2">{tool.tagline}</p>
-                      )}
-
-                      {primaryCategory && (
-                        <div className="mb-3">
-                          <span className="badge-category text-xs">
-                            {primaryCategory.icon} {primaryCategory.name}
-                          </span>
-                        </div>
-                      )}
-
-                      {tool.pricing_summary && (
-                        <p className="text-sm text-[#6C39EF] font-medium mt-auto">
-                          {tool.pricing_summary}
-                        </p>
-                      )}
-                    </Link>
-                  </article>
-                );
-              })}
-            </div>
-
-            {/* Interactive Filters and Full List */}
-            <ToolsClient initialTools={tools} categories={categories} />
+            <Suspense fallback={<p className="text-[#5B657B]">Loading tools…</p>}>
+              <ToolsClient initialTools={tools} categories={categories} />
+            </Suspense>
 
             {/* Submit CTA */}
             <div className="mt-16 bg-[#F3EFFF] border border-[#6C39EF] rounded-2xl p-8 text-center">

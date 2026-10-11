@@ -19,9 +19,9 @@ test.describe('Compare Flow', () => {
 
   test('can select 3 tools, click Compare (n), and land on compare URL', async ({ page }) => {
     await page.goto('/tools', { waitUntil: 'domcontentloaded' });
-    await page.locator('input[type="checkbox"][aria-label^="Compare"]').first().waitFor({ state: 'visible', timeout: 15000 });
+    await page.getByRole('checkbox', { name: /^Compare / }).first().waitFor({ state: 'visible', timeout: 15000 });
 
-    const labels = page.locator('label:has(input[aria-label^="Compare"])');
+    const labels = page.locator('label:has(input[type="checkbox"])').filter({ hasText: 'Compare' });
     const count = await labels.count();
     expect(count).toBeGreaterThanOrEqual(3);
 

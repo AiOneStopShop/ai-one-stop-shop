@@ -220,7 +220,7 @@ function createServiceReviewStore(): ReviewStore {
   };
 }
 
-export async function approveSubmission(formData: FormData) {
+export async function approveSubmission(formData: FormData): Promise<void> {
   const result = await runSubmissionReview({
     submissionId: formData.get('submissionId'),
     decision: 'approved',
@@ -232,11 +232,9 @@ export async function approveSubmission(formData: FormData) {
     revalidatePath('/admin/review');
     revalidatePath('/tools');
   }
-
-  return result;
 }
 
-export async function rejectSubmission(formData: FormData) {
+export async function rejectSubmission(formData: FormData): Promise<void> {
   const result = await runSubmissionReview({
     submissionId: formData.get('submissionId'),
     decision: 'rejected',
@@ -247,6 +245,4 @@ export async function rejectSubmission(formData: FormData) {
   if (result.success) {
     revalidatePath('/admin/review');
   }
-
-  return result;
 }

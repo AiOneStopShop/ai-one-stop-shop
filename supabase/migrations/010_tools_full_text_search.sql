@@ -9,6 +9,9 @@ ALTER TABLE public.tools
 ALTER TABLE public.tools
   ADD COLUMN IF NOT EXISTS search_categories TEXT NOT NULL DEFAULT '';
 
+ALTER TABLE public.tools
+  ADD COLUMN IF NOT EXISTS search_features TEXT NOT NULL DEFAULT '';
+
 CREATE OR REPLACE FUNCTION public.sync_tool_search_categories()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -42,7 +45,7 @@ BEGIN
       FROM public.tool_categories tc
       JOIN public.categories c ON c.id = tc.category_id
       WHERE tc.tool_id = tid
-    ), '')
+    ), ''::text)
     WHERE t.id = tid;
   END LOOP;
 
@@ -71,38 +74,47 @@ SET search_categories = COALESCE((
   FROM public.tool_categories tc
   JOIN public.categories c ON c.id = tc.category_id
   WHERE tc.tool_id = t.id
-), '');
+), ''::text);
+
+CREATE OR REPLACE FUNCTION public.sync_tool_search_features()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = ''
+AS $$
+BEGIN
+  NEW.search_features := pg_catalog.btrim(
+    pg_catalog.array_to_string(COALESCE(NEW.features, ARRAY[]::text[]), ' '::text)
+    || ' '::text
+    || pg_catalog.array_to_string(COALESCE(NEW.tags, ARRAY[]::text[]), ' '::text)
+  );
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS sync_search_features_on_tools ON public.tools;
+CREATE TRIGGER sync_search_features_on_tools
+  BEFORE INSERT OR UPDATE OF features, tags, search_features ON public.tools
+  FOR EACH ROW
+  EXECUTE FUNCTION public.sync_tool_search_features();
+
+UPDATE public.tools
+SET search_features = search_features;
 
 ALTER TABLE public.tools
   ADD COLUMN IF NOT EXISTS search_vector tsvector
   GENERATED ALWAYS AS (
-    pg_catalog.setweight(
-      pg_catalog.to_tsvector(
-        'english'::pg_catalog.regconfig,
-        pg_catalog.coalesce(name, '')
-      ),
-      'A'
-    ) ||
-    pg_catalog.setweight(
-      pg_catalog.to_tsvector(
-        'english'::pg_catalog.regconfig,
-        pg_catalog.concat_ws(
-          ' ',
-          tagline,
-          search_categories,
-          pg_catalog.array_to_string(COALESCE(tags, ARRAY[]::text[]), ' '),
-          pg_catalog.array_to_string(COALESCE(features, ARRAY[]::text[]), ' ')
-        )
+    setweight(to_tsvector('english'::regconfig, COALESCE(name, ''::text)), 'A') ||
+    setweight(
+      to_tsvector(
+        'english'::regconfig,
+        COALESCE(tagline, ''::text) || ' '::text
+        || COALESCE(search_categories, ''::text) || ' '::text
+        || COALESCE(search_features, ''::text)
       ),
       'B'
     ) ||
-    pg_catalog.setweight(
-      pg_catalog.to_tsvector(
-        'english'::pg_catalog.regconfig,
-        pg_catalog.coalesce(description, '')
-      ),
-      'C'
-    )
+    setweight(to_tsvector('english'::regconfig, COALESCE(description, ''::text)), 'C')
   ) STORED;
 
 CREATE INDEX IF NOT EXISTS tools_search_vector_gin
@@ -163,7 +175,7 @@ DECLARE
   v_price text;
   v_free boolean;
 BEGIN
-  v_raw := pg_catalog.left(pg_catalog.btrim(pg_catalog.coalesce(q, '')), 100);
+  v_raw := pg_catalog.left(pg_catalog.btrim(COALESCE(q, ''::text)), 100);
   v_safe := pg_catalog.regexp_replace(v_raw, '[&|!:*()<>''"]', ' ', 'g');
   v_safe := pg_catalog.regexp_replace(v_safe, '\s+', ' ', 'g');
   v_safe := pg_catalog.btrim(v_safe);
@@ -200,7 +212,10 @@ BEGIN
   v_tsquery := NULL;
   IF v_expanded <> '' THEN
     BEGIN
-      v_tsquery := pg_catalog.websearch_to_tsquery('english'::pg_catalog.regconfig, v_expanded);
+      v_tsquery := pg_catalog.websearch_to_tsquery(
+        'english'::regconfig,
+        pg_catalog.regexp_replace(v_expanded, '\s+', ' or ', 'g')
+      );
     EXCEPTION WHEN OTHERS THEN
       v_tsquery := NULL;
     END;
@@ -208,8 +223,8 @@ BEGIN
 
   v_limit := LEAST(GREATEST(COALESCE("limit", 50), 1), 50);
   v_offset := GREATEST(COALESCE("offset", 0), 0);
-  v_category := NULLIF(pg_catalog.btrim(pg_catalog.coalesce(category, '')), 'all');
-  v_price := NULLIF(pg_catalog.btrim(pg_catalog.coalesce(price, '')), 'all');
+  v_category := NULLIF(pg_catalog.btrim(COALESCE(category, ''::text)), 'all'::text);
+  v_price := NULLIF(pg_catalog.btrim(COALESCE(price, ''::text)), 'all'::text);
   v_free := COALESCE(free_only, false);
 
   RETURN QUERY
@@ -238,7 +253,7 @@ BEGIN
     (
       CASE
         WHEN v_tsquery IS NULL THEN 0::double precision
-        ELSE pg_catalog.coalesce(pg_catalog.ts_rank_cd(t.search_vector, v_tsquery), 0) * 2.0
+        ELSE COALESCE(pg_catalog.ts_rank_cd(t.search_vector, v_tsquery), 0::real) * 2.0
       END
       + CASE
           WHEN v_safe = '' THEN 0::double precision
@@ -249,7 +264,7 @@ BEGIN
         END
       + CASE
           WHEN v_safe = '' THEN 0::double precision
-          ELSE 0.5 * extensions.similarity(pg_catalog.coalesce(t.tagline, ''), v_safe)
+          ELSE 0.5 * extensions.similarity(COALESCE(t.tagline, ''::text), v_safe)
         END
     ) AS search_rank,
     COUNT(*) OVER()::integer AS result_total
@@ -282,7 +297,7 @@ BEGIN
       )
       OR (
         v_safe <> ''
-        AND extensions.similarity(pg_catalog.coalesce(t.tagline, ''), v_safe) >= 0.25
+        AND extensions.similarity(COALESCE(t.tagline, ''::text), v_safe) >= 0.25
       )
     )
   ORDER BY
@@ -297,4 +312,7 @@ REVOKE ALL ON FUNCTION public.search_tools(text, text, text, boolean, integer, i
 GRANT EXECUTE ON FUNCTION public.search_tools(text, text, text, boolean, integer, integer) TO anon, authenticated, service_role;
 
 REVOKE ALL ON FUNCTION public.sync_tool_search_categories() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.sync_tool_search_categories() TO service_role;
+GRANT EXECUTE ON FUNCTION public.sync_tool_search_categories() TO authenticated, service_role;
+
+REVOKE ALL ON FUNCTION public.sync_tool_search_features() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.sync_tool_search_features() TO authenticated, service_role;

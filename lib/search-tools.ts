@@ -97,9 +97,9 @@ export function trigramSimilarity(a: string, b: string): number {
   const aGrams = trigrams(left);
   const bGrams = trigrams(right);
   let intersection = 0;
-  for (const gram of aGrams) {
+  Array.from(aGrams).forEach((gram) => {
     if (bGrams.has(gram)) intersection += 1;
-  }
+  });
   return intersection / Math.max(1, aGrams.size + bGrams.size - intersection);
 }
 

@@ -3,14 +3,14 @@ import { getServiceSupabase } from '@/lib/supabase';
 import { z } from 'zod';
 import { submitToolRateLimit } from '@/lib/rate-limit';
 
-export const FIELD_ERROR_CODES = [
+const FIELD_ERROR_CODES = [
   'name_missing',
   'url_invalid',
   'email_invalid',
   'too_long',
 ] as const;
 
-export type FieldErrorCode = (typeof FIELD_ERROR_CODES)[number];
+type FieldErrorCode = (typeof FIELD_ERROR_CODES)[number];
 
 const submitToolSchema = z.object({
   toolName: z.string().min(1).max(200),

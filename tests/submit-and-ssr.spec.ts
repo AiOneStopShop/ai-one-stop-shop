@@ -37,6 +37,8 @@ test('/tools server HTML includes published tool cards', async ({ request }) => 
   expect(response.ok()).toBeTruthy();
   const html = await response.text();
   const articles = html.match(/<article\b/g) || [];
-  expect(articles.length).toBeGreaterThan(0);
+  expect(articles.length).toBe(20);
+  const grepCount = html.split('\n').filter((line) => line.includes('<article')).length;
+  expect(grepCount).toBe(20);
   expect(html).not.toContain('Loading tools…');
 });

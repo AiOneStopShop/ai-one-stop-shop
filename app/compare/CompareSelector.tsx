@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { knownSlugsInOrder } from '@/lib/compare-tools';
 
 interface Tool {
   slug: string;
@@ -26,21 +27,14 @@ export function CompareSelector({ tools }: { tools: Tool[] }) {
       }
     })();
 
-    const initial = [...urlTools];
-    // Add from localStorage if not already present
-    storageTools.forEach((slug: string) => {
-      if (!initial.includes(slug) && initial.length < 3) {
-        initial.push(slug);
-      }
-    });
+    const initial = knownSlugsInOrder([...urlTools, ...storageTools], tools);
 
-    // Pad to 3 slots
     while (initial.length < 3) {
       initial.push('');
     }
 
     setSelectedSlugs(initial.slice(0, 3));
-  }, [searchParams]);
+  }, [searchParams, tools]);
 
   const handleSlotChange = (index: number, slug: string) => {
     const newSlugs = [...selectedSlugs];
@@ -60,7 +54,7 @@ export function CompareSelector({ tools }: { tools: Tool[] }) {
     router.push(`/compare?tools=${filled.join(',')}`);
   };
 
-  const selectedCount = selectedSlugs.filter(Boolean).length;
+  const selectedCount = knownSlugsInOrder(selectedSlugs, tools).length;
 
   return (
     <div className="bg-white border border-[#E5E1DC] rounded-lg p-6">

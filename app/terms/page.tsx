@@ -1,3 +1,5 @@
+import { ContactEmailText } from '@/components/ContactEmail';
+import { getSiteContactEmail } from '@/lib/site-config';
 import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
 
 export const metadata = {
@@ -62,9 +64,11 @@ export default function TermsPage() {
 
             <div>
               <h2 className="heading-2 mb-4">Contact</h2>
-              <p>
-                Questions? Email hello@aionestop.shop
-              </p>
+              {getSiteContactEmail() && (
+                <p>
+                  <ContactEmailText prefix="Questions? Email " />
+                </p>
+              )}
             </div>
           </div>
         </div>

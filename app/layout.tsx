@@ -5,6 +5,9 @@ import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CookieConsent } from '@/components/CookieConsent';
+import { getBrandUrl, getSiteUrl } from '@/lib/site-config';
+
+const brandUrl = getBrandUrl();
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
@@ -20,14 +23,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://aionestop.shop'),
+  metadataBase: new URL(getSiteUrl()),
   title: {
     default: 'AI One Stop Shop - Honest AI Tools Directory',
     template: '%s | AI One Stop Shop'
   },
   description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
   keywords: ['AI tools', 'artificial intelligence', 'productivity', 'coding assistants', 'AI directory'],
-  authors: [{ name: 'oneTomorrow', url: 'https://onetomorrow.online' }],
+  authors: brandUrl ? [{ name: 'oneTomorrow', url: brandUrl }] : [{ name: 'oneTomorrow' }],
   creator: 'oneTomorrow',
   publisher: 'AI One Stop Shop',
   openGraph: {

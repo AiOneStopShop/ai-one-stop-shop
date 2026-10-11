@@ -24,9 +24,11 @@ export function Header() {
 
   return (
     <>
-      <a href="#main" className="skip-link">
-        Skip to main content
-      </a>
+      <nav aria-label="Skip links">
+        <a href="#main" className="skip-link">
+          Skip to main content
+        </a>
+      </nav>
       
       <header className="sticky top-0 z-40 bg-[#F9F8F5] border-b border-[#E5E1DC]">
         <div className="container-max">

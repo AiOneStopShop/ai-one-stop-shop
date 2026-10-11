@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import { ContactEmail, ContactEmailText } from '@/components/ContactEmail';
 import { generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
+import { getSiteContactEmail } from '@/lib/site-config';
 
 export const metadata = {
   title: 'Our Own Kits - Made by AI One Stop Shop',
@@ -95,12 +97,15 @@ export default function OurKitsPage() {
                   </p>
                 </div>
 
-                <a
-                  href="mailto:hello@aionestop.shop?subject=ApproveGate%20Waitlist&body=I'm%20interested%20in%20ApproveGate.%20Please%20add%20me%20to%20the%20waitlist."
-                  className="btn-secondary w-full text-center"
-                >
-                  Join the waitlist
-                </a>
+                {getSiteContactEmail() && (
+                  <ContactEmail
+                    subject="ApproveGate Waitlist"
+                    body="I'm interested in ApproveGate. Please add me to the waitlist."
+                    className="btn-secondary w-full text-center"
+                  >
+                    Join the waitlist
+                  </ContactEmail>
+                )}
 
                 <p className="text-xs text-[#5B657B] mt-4">
                   <strong>About the waitlist:</strong> By emailing, you agree we'll store your email address (Supabase database) to notify you when ApproveGate launches. We'll email you no more than once per month with updates. Unsubscribe anytime by replying "unsubscribe". Your email is covered by our <a href="/privacy" className="text-[#6C39EF] hover:underline">Privacy Policy</a>.
@@ -132,9 +137,11 @@ export default function OurKitsPage() {
 
                 <div className="card">
                   <h3 className="heading-3 mb-3">Questions?</h3>
-                  <p className="text-[#5B657B] mb-4">
-                    Email us at hello@aionestop.shop. A real person reads every message.
-                  </p>
+                  {getSiteContactEmail() && (
+                    <p className="text-[#5B657B] mb-4">
+                      <ContactEmailText prefix="Email us at " suffix=". A real person reads every message." />
+                    </p>
+                  )}
                   <Link href="/disclosure" className="text-[#6C39EF] font-medium hover:underline focus-ring rounded">
                     Read our full disclosure →
                   </Link>

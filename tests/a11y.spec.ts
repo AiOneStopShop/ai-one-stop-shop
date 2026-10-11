@@ -31,9 +31,16 @@ test.describe('Dolly a11y routes', () => {
   test('skip link targets focusable main', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     const skip = page.getByRole('link', { name: 'Skip to main content' });
+    await expect(skip.locator('xpath=ancestor::nav')).toHaveAttribute('aria-label', 'Skip links');
     await skip.focus();
     await skip.press('Enter');
     await expect(page.locator('main#main')).toBeFocused();
+  });
+
+  test('axe region rule passes on the skip link', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const results = await new AxeBuilder({ page }).withRules(['region']).analyze();
+    expect(results.violations, results.violations.map((v) => v.help).join('\n')).toEqual([]);
   });
 
   test('/tools renders one card and one compare checkbox per tool', async ({ page }) => {

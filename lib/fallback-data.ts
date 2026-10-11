@@ -243,7 +243,7 @@ export const fallbackTools = [
     "source_url": "https://replit.com",
     "pricing_summary": "$20/month",
     "pricing_model": "subscription",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "Web"
     ],
@@ -464,7 +464,7 @@ export const fallbackTools = [
     "source_url": "https://copy.ai",
     "pricing_summary": "$49/month",
     "pricing_model": "subscription",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "Web"
     ],
@@ -555,7 +555,7 @@ export const fallbackTools = [
     "source_url": "https://notion.so",
     "pricing_summary": "$10/month",
     "pricing_model": "subscription",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "Web",
       "Desktop",
@@ -601,7 +601,7 @@ export const fallbackTools = [
     "source_url": "https://canva.com",
     "pricing_summary": "$15/month",
     "pricing_model": "subscription",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "Web",
       "Mobile"
@@ -781,7 +781,7 @@ export const fallbackTools = [
     "source_url": "https://deepmind.google/technologies/gemini",
     "pricing_summary": "Pay-per-use",
     "pricing_model": "pay-per-use",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "API",
       "Gemini"

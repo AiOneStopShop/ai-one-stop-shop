@@ -30,6 +30,12 @@ const nextConfig = {
       ...(process.env.NODE_ENV === 'development' ? ["'unsafe-eval'"] : []),
     ].join(' ');
 
+    // One anti-framing pair: CSP frame-ancestors none + X-Frame-Options DENY.
+    // Each header is set once — XFO on all paths, CSP only on HTML routes.
+    const xFrameOptions = {
+      key: 'X-Frame-Options',
+      value: 'DENY'
+    };
     const pageCsp = {
       key: 'Content-Security-Policy',
       value: [
@@ -42,7 +48,7 @@ const nextConfig = {
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",
-        "frame-ancestors 'self'"
+        "frame-ancestors 'none'"
       ].join('; ')
     };
 
@@ -55,10 +61,7 @@ const nextConfig = {
             key: 'X-Content-Type-Options',
             value: 'nosniff'
           },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY'
-          },
+          xFrameOptions,
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains'

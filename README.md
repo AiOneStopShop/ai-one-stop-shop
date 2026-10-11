@@ -44,9 +44,11 @@ AFFILIATE_CLICK_SECRET=random-secret-string
 # The route returns 401 if this is unset
 CRON_SECRET=random-cron-secret
 
-# Contact Information (required for CAN-SPAM compliance)
-# Note: Waitlist emails MUST NOT be sent until these are set
-NEXT_PUBLIC_SITE_CONTACT_EMAIL=hello@aionestop.shop
+# Contact and brand (leave unset until MX / brand site are live)
+# Mailto links stay hidden when NEXT_PUBLIC_SITE_CONTACT_EMAIL is empty
+# NEXT_PUBLIC_SITE_CONTACT_EMAIL=
+# Brand links stay plain text when NEXT_PUBLIC_BRAND_URL is empty
+# NEXT_PUBLIC_BRAND_URL=
 NEXT_PUBLIC_SITE_POSTAL_ADDRESS="<your mailing address>\n<city, state zip>\n<country>"
 
 # Optional (DO NOT SET until wired)

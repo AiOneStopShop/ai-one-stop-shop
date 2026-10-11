@@ -1,4 +1,7 @@
 import Link from 'next/link';
+import { BrandName } from '@/components/BrandName';
+import { ContactEmail } from '@/components/ContactEmail';
+import { getSiteContactEmail } from '@/lib/site-config';
 
 export function Footer() {
   return (
@@ -108,14 +111,13 @@ export function Footer() {
                   Terms
                 </Link>
               </li>
-              <li>
-                <a 
-                  href="mailto:hello@aionestop.shop" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Contact
-                </a>
-              </li>
+              {getSiteContactEmail() && (
+                <li>
+                  <ContactEmail className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded">
+                    Contact
+                  </ContactEmail>
+                </li>
+              )}
             </ul>
           </div>
         </div>
@@ -134,15 +136,9 @@ export function Footer() {
         <div className="border-t border-gray-700 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-400">
           <p>© 2026 AI One Stop Shop · Made in Washington State</p>
           <p className="text-xs">
-            <a 
-              href="https://onetomorrow.online" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors focus-ring rounded"
-            >
+            <BrandName className="hover:text-white transition-colors focus-ring rounded">
               A oneTomorrow venture
-              <span className="sr-only"> (opens in new tab)</span>
-            </a>
+            </BrandName>
           </p>
         </div>
       </div>

@@ -1,9 +1,21 @@
 import { MetadataRoute } from 'next';
+import { headers } from 'next/headers';
+import { getSiteUrl, isCanonicalHost } from '@/lib/site-config';
 
 const DISALLOW_ADMIN_AND_GO = ['/admin/', '/go/'];
 
-export default function robots(): MetadataRoute.Robots {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aionestop.shop';
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const host = (await headers()).get('host');
+  if (!isCanonicalHost(host)) {
+    return {
+      rules: {
+        userAgent: '*',
+        disallow: '/',
+      },
+    };
+  }
+
+  const siteUrl = getSiteUrl();
 
   return {
     rules: [

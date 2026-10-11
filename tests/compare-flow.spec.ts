@@ -97,6 +97,19 @@ test.describe('Compare Flow', () => {
     await expect(page.getByLabel('Select tool 1')).toHaveValue(slug);
     await expect(page.locator('table')).toHaveCount(0);
   });
+
+  test('keeps column order as selection order and ignores unknown slugs', async ({ page }) => {
+    await page.goto('/compare?tools=not-a-real-tool,copy-ai,jasper-ai', { waitUntil: 'domcontentloaded' });
+    const headers = await page.locator('table thead th').allTextContents();
+    expect(headers.slice(1).map((name) => name.trim())).toEqual(['Copy.ai', 'Jasper AI']);
+    await expect(page.locator('[role="status"]').first()).toHaveText('2 tools selected');
+  });
+
+  test('Change selection moves focus to the selector', async ({ page }) => {
+    await page.goto('/compare?tools=copy-ai,jasper-ai', { waitUntil: 'domcontentloaded' });
+    await page.getByRole('link', { name: 'Change selection' }).click();
+    await expect(page.getByLabel('Select tool 1')).toBeFocused();
+  });
 });
 
 test.describe('Compare button vs cookie banner', () => {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { getSiteContactEmail } from '@/lib/site-config';
 
 const FIELD_ERROR_TEXT = {
   name_missing: 'Please enter a tool name.',
@@ -12,10 +13,15 @@ const FIELD_ERROR_TEXT = {
 
 type FieldErrorCode = keyof typeof FIELD_ERROR_TEXT;
 
-const FORM_ERROR_TEXT = {
-  too_many: 'Too many requests. Please try again later.',
-  submit_failed: 'Something went wrong. Please try again or email hello@aionestop.shop',
-} as const;
+function formErrorText() {
+  const email = getSiteContactEmail();
+  return {
+    too_many: 'Too many requests. Please try again later.',
+    submit_failed: email
+      ? `Something went wrong. Please try again or email ${email}`
+      : 'Something went wrong. Please try again.',
+  } as const;
+}
 
 const FIELD_LABELS: Record<string, string> = {
   toolName: 'Tool name',
@@ -144,14 +150,15 @@ export default function SubmitPage() {
       }
 
       const formCode = typeof data.error === 'string' ? data.error : '';
+      const errors = formErrorText();
       setFormError(
-        Object.prototype.hasOwnProperty.call(FORM_ERROR_TEXT, formCode)
-          ? FORM_ERROR_TEXT[formCode as keyof typeof FORM_ERROR_TEXT]
-          : FORM_ERROR_TEXT.submit_failed
+        Object.prototype.hasOwnProperty.call(errors, formCode)
+          ? errors[formCode as keyof typeof errors]
+          : errors.submit_failed
       );
       setStatus('error');
     } catch {
-      setFormError(FORM_ERROR_TEXT.submit_failed);
+      setFormError(formErrorText().submit_failed);
       setStatus('error');
     }
   };

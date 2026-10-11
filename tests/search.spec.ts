@@ -57,6 +57,24 @@ test('typos match nearby tool names with trigram similarity', () => {
     .toBeLessThan(copilot.map((tool) => tool.name).indexOf('Copy.ai'));
 });
 
+test('image expands through synonyms and ranks image tools first', () => {
+  expect(expandSearchTerms('image')).toEqual(
+    expect.arrayContaining(['image', 'art', 'generation', 'generate', 'generator', 'images', 'design'])
+  );
+  const names = searchTools(published, { q: 'image' }).map((tool) => tool.name);
+  expect(names.length).toBeGreaterThanOrEqual(6);
+  expect(names[0]).toMatch(/Midjourney|Stable Diffusion|Canva|DALL/);
+  expect(names.slice(0, 3).join(' ')).toMatch(/Midjourney|Stable Diffusion|Canva|DALL/);
+});
+
+test('code ranks a coding tool first instead of Copy.ai', () => {
+  const names = searchTools(published, { q: 'code' }).map((tool) => tool.name);
+  expect(names[0]).toMatch(/Copilot|Cursor|v0|Bolt|Replit/);
+  if (names.includes('Copy.ai')) {
+    expect(names.indexOf('Copy.ai')).toBeGreaterThan(0);
+  }
+});
+
 test('writing ranks copy/writing tools above Descript', () => {
   const names = searchTools(published, { q: 'writing' }).map((tool) => tool.name);
   expect(names).toEqual(expect.arrayContaining(['Jasper AI', 'Copy.ai', 'Grammarly', 'Descript']));
@@ -177,6 +195,33 @@ test('windsurf shows the zero-results state', async ({ page }) => {
   await page.goto('/tools?q=windsurf');
   await expect(page.getByText(/No tools match/)).toBeVisible();
   await expect(page.getByRole('article')).toHaveCount(0);
+});
+
+test('image returns six or more results with image tools first', async ({ page }) => {
+  await page.goto('/tools?q=image');
+  const names = await page.locator('article h2').allTextContents();
+  expect(names.length).toBeGreaterThanOrEqual(6);
+  expect(names[0]).toMatch(/Midjourney|Stable Diffusion|Canva|DALL|Leonardo|Ideogram|Flux|Firefly/i);
+});
+
+test('code ranks a coding tool first', async ({ page }) => {
+  await page.goto('/tools?q=code');
+  const names = await page.locator('article h2').allTextContents();
+  expect(names[0]).toMatch(/Copilot|Cursor|v0|Bolt|Replit/i);
+});
+
+test('live typing then Enter then double Back returns to unfiltered /tools', async ({ page }) => {
+  await page.goto('/tools');
+  const search = page.getByRole('search').locator('input[name="q"]');
+  await search.fill('image');
+  await expect(page).toHaveURL(/\/tools\?q=image/, { timeout: 5000 });
+  await search.press('Enter');
+  await expect(page).toHaveURL(/\/tools\?q=image/);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/tools\?q=image/);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/tools\/?$/);
+  await expect(search).toHaveValue('');
 });
 
 test('submitted searches use history.push so Back steps through them', async ({ page }) => {

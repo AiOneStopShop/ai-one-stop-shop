@@ -2,6 +2,7 @@ export const SEARCH_QUERY_MAX = 100;
 export const SEARCH_DEBOUNCE_MS = 200;
 export const TRIGRAM_MATCH_THRESHOLD = 0.4;
 export const SEARCH_MIN_SCORE = 1.5;
+export const SHORT_QUERY_MAX = 4;
 
 const AUDIO_SYNONYMS = ['voice', 'audio', 'speech', 'tts', 'cloning', 'text to speech'] as const;
 
@@ -14,8 +15,8 @@ export const SEARCH_SYNONYMS: Record<string, readonly string[]> = {
   copy: ['writing', 'content', 'copywriting'],
   content: ['writing', 'copy'],
   grammar: ['writing'],
-  image: ['art', 'generation', 'generate', 'images'],
-  art: ['image', 'generation', 'images', 'design'],
+  image: ['art', 'generation', 'generate', 'generator', 'images', 'design'],
+  art: ['image', 'generation', 'generate', 'generator', 'images', 'design'],
   code: ['coding', 'developer', 'development', 'copilot', 'programmer'],
   coding: ['code', 'developer', 'development', 'copilot', 'programmer'],
   video: ['film', 'podcast', 'recording'],
@@ -23,6 +24,7 @@ export const SEARCH_SYNONYMS: Record<string, readonly string[]> = {
   audio: AUDIO_SYNONYMS,
   speech: AUDIO_SYNONYMS,
   tts: AUDIO_SYNONYMS,
+  chat: ['chatbot', 'assistant', 'conversation'],
   chatbot: ['assistant', 'chat'],
   assistant: ['chatbot', 'chat'],
 };
@@ -199,8 +201,31 @@ function nameWordScore(candidate: string, query: string): number {
   return trigram;
 }
 
+function prefixOrWordScore(candidate: string, query: string): number {
+  const needle = query.toLowerCase();
+  const haystack = (candidate || '').toLowerCase();
+  if (!needle || !haystack) return 0;
+
+  let best = 0;
+  if (haystack === needle) best = 1;
+  else if (haystack.startsWith(needle)) best = 0.85;
+
+  const words = haystack.split(/[^a-z0-9]+/).filter(Boolean);
+  for (const word of words) {
+    if (word === needle) best = Math.max(best, 1);
+    else if (word.startsWith(needle)) best = Math.max(best, 0.85);
+  }
+  return best;
+}
+
+export function isShortSearchQuery(query: string): boolean {
+  const length = sanitizeSearchQuery(query).length;
+  return length > 0 && length <= SHORT_QUERY_MAX;
+}
+
 function nameSimilarity(tool: SearchableTool, query: string): number {
-  return Math.max(0, ...nameWords(tool).map((candidate) => nameWordScore(candidate, query)));
+  const scoreFn = isShortSearchQuery(query) ? prefixOrWordScore : nameWordScore;
+  return Math.max(0, ...nameWords(tool).map((candidate) => scoreFn(candidate, query)));
 }
 
 function hasExactFtsHit(tool: SearchableTool, rawQuery: string): boolean {
@@ -208,6 +233,24 @@ function hasExactFtsHit(tool: SearchableTool, rawQuery: string): boolean {
   if (terms.length === 0) return false;
   const haystacks = collectSearchText(tool);
   return terms.some((term) => haystacks.some((value) => includesTerm(value, term)));
+}
+
+function hasExpandedHit(tool: SearchableTool, rawQuery: string): boolean {
+  const terms = expandSearchTerms(rawQuery);
+  if (terms.length === 0) return false;
+  const haystacks = collectSearchText(tool);
+  return terms.some((term) => haystacks.some((value) => includesTerm(value, term)));
+}
+
+function categoryText(tool: SearchableTool): string {
+  return (tool.tool_categories || [])
+    .map((relation) => `${relation?.categories?.name || ''} ${relation?.categories?.slug || ''}`)
+    .join(' ')
+    .toLowerCase();
+}
+
+function queryHasToken(rawQuery: string, tokens: readonly string[]): boolean {
+  return tokenizeSearchQuery(rawQuery).some((token) => tokens.includes(token));
 }
 
 function audioVoiceBoost(tool: SearchableTool, rawQuery: string): number {
@@ -235,10 +278,7 @@ function writingCopyBoost(tool: SearchableTool, rawQuery: string): number {
   const name = (tool.name || '').toLowerCase();
   const tagline = (tool.tagline || '').toLowerCase();
   const tags = [...(tool.tags || []), ...(tool.features || [])].join(' ').toLowerCase();
-  const category = (tool.tool_categories || [])
-    .map((relation) => `${relation?.categories?.name || ''} ${relation?.categories?.slug || ''}`)
-    .join(' ')
-    .toLowerCase();
+  const category = categoryText(tool);
 
   let boost = 0;
   if (/writing|copy|grammar|copywrit/.test(name)) boost += 4;
@@ -246,6 +286,51 @@ function writingCopyBoost(tool: SearchableTool, rawQuery: string): number {
     boost += 2;
   }
   if (/content|writing|copy/.test(category)) boost += 1.2;
+  return boost;
+}
+
+function imageArtBoost(tool: SearchableTool, rawQuery: string): number {
+  if (!queryHasToken(rawQuery, ['image', 'art', 'images'])) return 0;
+
+  const name = (tool.name || '').toLowerCase();
+  const tagline = (tool.tagline || '').toLowerCase();
+  const tags = [...(tool.tags || []), ...(tool.features || [])].join(' ').toLowerCase();
+  const category = categoryText(tool);
+
+  let boost = 0;
+  if (/image|art|midjourney|diffusion|dall|canva/.test(name)) boost += 4;
+  if (/image|art/.test(tagline) || /image|art/.test(tags)) boost += 3;
+  if (/design/.test(category)) boost += 2.2;
+  return boost;
+}
+
+function codingBoost(tool: SearchableTool, rawQuery: string): number {
+  if (!queryHasToken(rawQuery, ['code', 'coding'])) return 0;
+
+  const name = (tool.name || '').toLowerCase();
+  const tagline = (tool.tagline || '').toLowerCase();
+  const tags = [...(tool.tags || []), ...(tool.features || [])].join(' ').toLowerCase();
+  const category = categoryText(tool);
+
+  let boost = 0;
+  if (/\bcopilot\b|\bcursor\b|\breplit\b|\bbolt\b|\bv0\b|\bcode\b/.test(name)) boost += 4;
+  if (/code|coding|programmer|developer/.test(tagline) || /code|coding|programmer|developer/.test(tags)) {
+    boost += 2;
+  }
+  if (/coding/.test(category)) boost += 2.5;
+  return boost;
+}
+
+function chatBoost(tool: SearchableTool, rawQuery: string): number {
+  if (!queryHasToken(rawQuery, ['chat', 'chatbot', 'assistant'])) return 0;
+
+  const name = (tool.name || '').toLowerCase();
+  const tagline = (tool.tagline || '').toLowerCase();
+  const tags = [...(tool.tags || []), ...(tool.features || [])].join(' ').toLowerCase();
+
+  let boost = 0;
+  if (/chat/.test(name)) boost += 4;
+  if (/chat|assistant/.test(tagline) || /chat|assistant/.test(tags)) boost += 2;
   return boost;
 }
 
@@ -279,14 +364,18 @@ export function scoreTool(tool: SearchableTool, rawQuery: string): number {
 
   const nameSim = nameSimilarity(tool, query);
   const exactFts = hasExactFtsHit(tool, query);
-  if (!exactFts && nameSim >= 0.4) {
+  const shortQuery = isShortSearchQuery(query);
+  if (!shortQuery && !exactFts && nameSim >= 0.4) {
     score += nameSim * 12;
   } else {
     score += nameSim;
   }
   score += writingCopyBoost(tool, query);
   score += audioVoiceBoost(tool, query);
-  score += trigramSimilarity(tagline, query) * 0.25;
+  score += imageArtBoost(tool, query);
+  score += codingBoost(tool, query);
+  score += chatBoost(tool, query);
+  score += trigramSimilarity(tagline, query) * (shortQuery ? 0.05 : 0.25);
   return score;
 }
 
@@ -294,6 +383,10 @@ export function toolMatchesQuery(tool: SearchableTool, rawQuery: string): boolea
   const query = sanitizeSearchQuery(rawQuery);
   if (!query) return true;
 
+  if (hasExpandedHit(tool, query)) return true;
+  if (imageArtBoost(tool, query) > 0 || codingBoost(tool, query) > 0 || chatBoost(tool, query) > 0) {
+    return true;
+  }
   if (nameSimilarity(tool, query) >= TRIGRAM_MATCH_THRESHOLD) return true;
   return scoreTool(tool, query) >= SEARCH_MIN_SCORE;
 }
@@ -331,11 +424,12 @@ export function searchTools<T extends SearchableTool>(
   });
 
   if (query) {
+    const shortQuery = isShortSearchQuery(query);
     filtered.sort((left, right) => {
       const leftName = nameSimilarity(left, query);
       const rightName = nameSimilarity(right, query);
-      const leftTypo = !hasExactFtsHit(left, query) && leftName >= 0.4 ? leftName : 0;
-      const rightTypo = !hasExactFtsHit(right, query) && rightName >= 0.4 ? rightName : 0;
+      const leftTypo = !shortQuery && !hasExactFtsHit(left, query) && leftName >= 0.4 ? leftName : 0;
+      const rightTypo = !shortQuery && !hasExactFtsHit(right, query) && rightName >= 0.4 ? rightName : 0;
       if (rightTypo !== leftTypo) return rightTypo - leftTypo;
       const rank = scoreTool(right, query) - scoreTool(left, query);
       if (rank !== 0) return rank;

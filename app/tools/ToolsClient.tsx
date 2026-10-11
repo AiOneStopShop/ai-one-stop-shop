@@ -68,10 +68,14 @@ export function ToolsClient({
     const next = buildToolsHref(searchQuery, selectedCategory, priceFilter, hasFreeTier);
     const current = `${pathname}${window.location.search}`;
     if (next === current) {
+      if (historyMode.current === 'push') {
+        window.history.pushState(window.history.state ?? {}, '', current);
+      }
       historyMode.current = 'replace';
       return;
     }
-    const mode = historyMode.current;
+    const leavingUnfilteredTools = current === '/tools' && next !== '/tools';
+    const mode = leavingUnfilteredTools ? 'push' : historyMode.current;
     historyMode.current = 'replace';
     if (mode === 'push') {
       router.push(next, { scroll: false });

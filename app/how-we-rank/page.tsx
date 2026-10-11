@@ -1,3 +1,5 @@
+import { ContactEmailText } from '@/components/ContactEmail';
+import { getSiteContactEmail } from '@/lib/site-config';
 import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
 
 export const metadata = {
@@ -109,15 +111,12 @@ export default function HowWeRankPage() {
               <p>
                 Please tell us. Prices change and we&apos;re human.
               </p>
-              <p className="mt-4">
-                <strong>Email:</strong>{' '}
-                <a
-                  href="mailto:hello@aionestop.shop"
-                  className="text-[#6C39EF] hover:underline focus-ring rounded"
-                >
-                  hello@aionestop.shop
-                </a>
-              </p>
+              {getSiteContactEmail() && (
+                <p className="mt-4">
+                  <strong>Email:</strong>{' '}
+                  <ContactEmailText className="text-[#6C39EF] hover:underline focus-ring rounded" />
+                </p>
+              )}
               <p className="mt-2 text-sm">
                 Tell us the tool, what looks wrong, and a link if you have one. We&apos;ll review facts you send, but corrections and payments are handled separately, and neither changes the ranking.
               </p>

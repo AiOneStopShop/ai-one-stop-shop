@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { ContactEmailText } from '@/components/ContactEmail';
+import { getSiteContactEmail } from '@/lib/site-config';
 
 export const metadata = {
   title: 'Disclosure - How We Make Money',
@@ -84,19 +86,18 @@ export default function DisclosurePage() {
               </p>
             </div>
 
-            <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6">
-              <h3 className="heading-3 mb-3">Questions?</h3>
-              <p>
-                Email us at{' '}
-                <a
-                  href="mailto:hello@aionestop.shop"
-                  className="text-[#6C39EF] hover:underline focus-ring rounded"
-                >
-                  hello@aionestop.shop
-                </a>
-                . We&apos;re happy to explain anything about how this works.
-              </p>
-            </div>
+            {getSiteContactEmail() && (
+              <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6">
+                <h3 className="heading-3 mb-3">Questions?</h3>
+                <p>
+                  <ContactEmailText
+                    className="text-[#6C39EF] hover:underline focus-ring rounded"
+                    prefix="Email us at "
+                    suffix=". We're happy to explain anything about how this works."
+                  />
+                </p>
+              </div>
+            )}
 
             <div className="mt-12">
               <p className="text-sm text-[#5B657B]">

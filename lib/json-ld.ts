@@ -1,7 +1,7 @@
 import type { Tool, Category } from '@/types/database';
+import { getBrandUrl, getSiteUrl, SITE_NAME } from '@/lib/site-config';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://aionestop.shop';
-const SITE_NAME = 'AI One Stop Shop';
+const SITE_URL = getSiteUrl();
 
 /**
  * Safely serialize JSON-LD to prevent XSS attacks
@@ -19,6 +19,7 @@ export function safeJsonLd(obj: any): string {
 }
 
 export function generateOrganizationSchema() {
+  const brandUrl = getBrandUrl();
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -30,16 +31,14 @@ export function generateOrganizationSchema() {
     founder: {
       '@type': 'Organization',
       name: 'oneTomorrow',
-      url: 'https://onetomorrow.online'
+      ...(brandUrl ? { url: brandUrl } : {}),
     },
     address: {
       '@type': 'PostalAddress',
       addressRegion: 'WA',
       addressCountry: 'US'
     },
-    sameAs: [
-      'https://onetomorrow.online'
-    ]
+    ...(brandUrl ? { sameAs: [brandUrl] } : {}),
   };
 }
 

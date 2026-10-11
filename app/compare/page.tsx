@@ -1,7 +1,9 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { knownSlugsInOrder, orderBySlug } from '@/lib/compare-tools';
 import { fallbackTools } from '@/lib/fallback-data';
+import { ChangeSelectionLink } from './ChangeSelectionLink';
 import { CompareSelector } from './CompareSelector';
 
 export const metadata = {
@@ -31,11 +33,14 @@ async function getToolsForComparison(slugs: string[]) {
     );
 
     if (filtered.length > 0) {
-      return filtered;
+      return orderBySlug(filtered, slugs);
     }
 
-    return fallbackTools.filter((tool: any) =>
-      slugs.includes(tool.slug) && tool.status === 'published'
+    return orderBySlug(
+      fallbackTools.filter((tool: any) =>
+        slugs.includes(tool.slug) && tool.status === 'published'
+      ),
+      slugs
     );
   } catch (error) {
     console.error('Exception in getToolsForComparison:', error);
@@ -47,9 +52,8 @@ export default async function ComparePage(props: {
   searchParams: Promise<{ tools?: string }>;
 }) {
   const searchParams = await props.searchParams;
-  const toolSlugs = searchParams.tools?.split(',').filter(Boolean) || [];
+  const requestedSlugs = searchParams.tools?.split(',').filter(Boolean) || [];
 
-  // Get all published tools for the selector
   const { data: allTools } = await supabase
     .from('tools')
     .select('slug, name')
@@ -61,6 +65,7 @@ export default async function ComparePage(props: {
     ? allTools
     : fallbackTools.filter(t => t.status === 'published').map(t => ({ slug: t.slug, name: t.name }));
 
+  const toolSlugs = knownSlugsInOrder(requestedSlugs, availableTools);
   const tools = toolSlugs.length > 0 ? await getToolsForComparison(toolSlugs) : [];
 
   if (tools.length < 2) {
@@ -73,7 +78,7 @@ export default async function ComparePage(props: {
               Compare AI tools side-by-side to find the best fit for your needs.
             </p>
 
-            <div id="compare-selector">
+            <div id="compare-selector" tabIndex={-1}>
               <Suspense fallback={<p className="text-[#5B657B]">Loading selector…</p>}>
                 <CompareSelector tools={availableTools} />
               </Suspense>
@@ -96,9 +101,7 @@ export default async function ComparePage(props: {
         <div className="container-max">
           <div className="mb-8">
             <div className="mb-4 text-center">
-              <a href="#compare-selector" className="text-[#6C39EF] hover:underline text-sm focus-ring rounded">
-                ← Change selection
-              </a>
+              <ChangeSelectionLink />
             </div>
             <h1 className="heading-1 mb-6 text-center">
               Compare {tools.map((t: any) => t.name).join(' vs ')}
@@ -216,7 +219,7 @@ export default async function ComparePage(props: {
             </table>
           </div>
 
-          <div id="compare-selector" className="mt-12 max-w-4xl mx-auto">
+          <div id="compare-selector" tabIndex={-1} className="mt-12 max-w-4xl mx-auto">
             <Suspense fallback={<p className="text-[#5B657B]">Loading selector…</p>}>
               <CompareSelector tools={availableTools} />
             </Suspense>

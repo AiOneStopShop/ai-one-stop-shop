@@ -1,4 +1,7 @@
 import Link from 'next/link';
+import { BrandName } from '@/components/BrandName';
+import { ContactEmailText } from '@/components/ContactEmail';
+import { getSiteContactEmail } from '@/lib/site-config';
 
 export const metadata = {
   title: 'About - AI One Stop Shop',
@@ -59,28 +62,22 @@ export default function AboutPage() {
             <h2 className="heading-2 mt-12">A oneTomorrow venture</h2>
             <p>
               AI One Stop Shop is part of{' '}
-              <a
-                href="https://onetomorrow.online"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#6C39EF] hover:underline focus-ring rounded"
-              >
-                oneTomorrow
-              </a>
+              <BrandName className="text-[#6C39EF] hover:underline focus-ring rounded" />
               , our collection of projects that help people use technology while staying in control.
             </p>
 
-            <h2 className="heading-2 mt-12">Contact</h2>
-            <p>
-              Questions? Spotted a mistake? Email us at{' '}
-              <a
-                href="mailto:hello@aionestop.shop"
-                className="text-[#6C39EF] hover:underline focus-ring rounded"
-              >
-                hello@aionestop.shop
-              </a>
-              . We read every message.
-            </p>
+            {getSiteContactEmail() && (
+              <>
+                <h2 className="heading-2 mt-12">Contact</h2>
+                <p>
+                  <ContactEmailText
+                    className="text-[#6C39EF] hover:underline focus-ring rounded"
+                    prefix="Questions? Spotted a mistake? Email us at "
+                    suffix=". We read every message."
+                  />
+                </p>
+              </>
+            )}
 
             <div className="mt-12 p-6 bg-[#F3EFFF] border border-[#6C39EF] rounded-lg">
               <p className="font-semibold mb-2">The promise</p>

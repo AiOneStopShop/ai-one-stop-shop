@@ -1,3 +1,5 @@
+import { ContactEmailText } from '@/components/ContactEmail';
+import { getSiteContactEmail } from '@/lib/site-config';
 import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
 
 export const metadata = {
@@ -141,9 +143,14 @@ export default function PrivacyPage() {
                 <li>• Request deletion of your data</li>
                 <li>• Unsubscribe from emails at any time (use the unsubscribe link in any email we send)</li>
               </ul>
-              <p className="mt-4">
-                To exercise these rights, email us at: <a href="mailto:hello@aionestop.shop" className="text-[#6C39EF] hover:underline">hello@aionestop.shop</a>
-              </p>
+              {getSiteContactEmail() && (
+                <p className="mt-4">
+                  <ContactEmailText
+                    className="text-[#6C39EF] hover:underline"
+                    prefix="To exercise these rights, email us at: "
+                  />
+                </p>
+              )}
             </div>
 
             <div>
@@ -162,9 +169,14 @@ export default function PrivacyPage() {
 
             <div>
               <h2 className="heading-2 mb-4">Contact us</h2>
-              <p>
-                Questions about this privacy policy? Email us at: <a href="mailto:hello@aionestop.shop" className="text-[#6C39EF] hover:underline">hello@aionestop.shop</a>
-              </p>
+              {getSiteContactEmail() && (
+                <p>
+                  <ContactEmailText
+                    className="text-[#6C39EF] hover:underline"
+                    prefix="Questions about this privacy policy? Email us at: "
+                  />
+                </p>
+              )}
             </div>
           </div>
         </div>

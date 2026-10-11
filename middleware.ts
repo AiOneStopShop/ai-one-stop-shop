@@ -1,16 +1,27 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import {
+  CRON_CLEANUP_PATH,
+  disallowAllRobotsTxt,
+  isCanonicalHost,
+  shouldBlockProductionAlias,
+} from '@/lib/site-config'
 
-export async function middleware(request: NextRequest) {
+function hostOf(request: NextRequest): string | null {
+  return request.headers.get('host')
+}
+
+function withNonCanonicalRobots(response: NextResponse, host: string | null): NextResponse {
+  if (!isCanonicalHost(host)) {
+    response.headers.set('X-Robots-Tag', 'noindex')
+  }
+  return response
+}
+
+async function continueRequest(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl
 
-  // Protect /admin routes
-  if (pathname.startsWith('/admin')) {
-    // Skip auth check for login page
-    if (pathname === '/admin/login') {
-      return NextResponse.next();
-    }
-
+  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
     let response = NextResponse.next({
       request: {
         headers: request.headers,
@@ -47,14 +58,12 @@ export async function middleware(request: NextRequest) {
       }
     )
 
-    // Use getUser() instead of getSession() for secure server-side verification
     const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error || !user) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }
 
-    // Check if user has admin role in database
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
@@ -71,6 +80,40 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
+export async function middleware(request: NextRequest) {
+  const host = hostOf(request)
+  const { pathname } = request.nextUrl
+
+  if (shouldBlockProductionAlias(process.env.VERCEL_ENV, host, pathname)) {
+    return new NextResponse('Not Found', {
+      status: 404,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Robots-Tag': 'noindex, nofollow',
+      },
+    })
+  }
+
+  if (pathname === '/robots.txt' && !isCanonicalHost(host)) {
+    return new NextResponse(disallowAllRobotsTxt(), {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Robots-Tag': 'noindex',
+      },
+    })
+  }
+
+  if (pathname === CRON_CLEANUP_PATH) {
+    return withNonCanonicalRobots(NextResponse.next(), host)
+  }
+
+  const response = await continueRequest(request)
+  return withNonCanonicalRobots(response, host)
+}
+
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+  ],
 }

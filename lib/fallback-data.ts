@@ -1,6 +1,8 @@
 // Fallback data for static site generation
 // Originally auto-generated 2026-10-10T19:38:10.750Z
-// MANUALLY CORRECTED 2026-10-10: placeholder editorial scores nulled
+// MANUALLY CORRECTED 2026-10-11:
+// - placeholder editorial scores (85/70) set to null
+// - Stable Diffusion XL and AgentGPT no longer marked free
 
 export const fallbackTools = [
   {

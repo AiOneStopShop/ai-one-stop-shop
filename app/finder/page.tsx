@@ -133,7 +133,7 @@ export default function FinderPage() {
   const recommendations = showResults ? getRecommendations() : [];
 
   return (
-    <div id="main-content" className="scroll-mt-16">
+    <div className="scroll-mt-16">
       <section className="section-spacing">
         <div className="container-max max-w-2xl">
           <div className="mb-8 text-center">

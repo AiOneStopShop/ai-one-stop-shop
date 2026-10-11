@@ -55,7 +55,7 @@ export default async function ComparePage(props: {
 
   if (toolSlugs.length === 0) {
     return (
-      <div id="main-content" className="scroll-mt-16">
+      <div className="scroll-mt-16">
         <section className="section-spacing">
           <div className="container-max max-w-4xl">
             <h1 className="heading-1 mb-4 text-center">Compare AI Tools</h1>
@@ -83,7 +83,7 @@ export default async function ComparePage(props: {
   }
 
   return (
-    <div id="main-content" className="scroll-mt-16">
+    <div className="scroll-mt-16">
       <section className="section-spacing">
         <div className="container-max">
           <div className="mb-8">

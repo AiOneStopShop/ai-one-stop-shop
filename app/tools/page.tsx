@@ -67,7 +67,7 @@ export default async function ToolsPage() {
         dangerouslySetInnerHTML={{ __html: safeJsonLd(itemList) }}
       />
 
-      <div id="main-content" className="scroll-mt-16">
+      <div className="scroll-mt-16">
         <section className="section-spacing">
           <div className="container-max">
             {/* Header */}

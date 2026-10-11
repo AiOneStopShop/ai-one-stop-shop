@@ -19,7 +19,7 @@ export default function OurKitsPage() {
         dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbs) }}
       />
 
-      <div id="main-content" className="scroll-mt-16">
+      <div className="scroll-mt-16">
         <section className="section-spacing">
           <div className="container-max">
             {/* Header */}

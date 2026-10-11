@@ -86,7 +86,7 @@ export default function SubmitPage() {
   };
 
   return (
-    <div id="main-content" className="scroll-mt-16">
+    <div className="scroll-mt-16">
       <section className="section-spacing">
         <div className="container-max max-w-2xl">
           <nav aria-label="Breadcrumb" className="mb-8">

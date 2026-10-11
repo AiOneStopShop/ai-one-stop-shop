@@ -84,7 +84,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
         dangerouslySetInnerHTML={{ __html: safeJsonLd(toolSchema) }}
       />
 
-      <div id="main-content" className="scroll-mt-16">
+      <div className="scroll-mt-16">
         <section className="section-spacing">
           <div className="container-max">
             {/* Breadcrumbs */}

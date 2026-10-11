@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function HowWeRankPage() {
   return (
-    <div id="main-content" className="scroll-mt-16">
+    <div className="scroll-mt-16">
       <section className="section-spacing">
         <div className="container-max max-w-3xl">
           <h1 className="heading-1 mb-8">How we choose and rank AI tools</h1>

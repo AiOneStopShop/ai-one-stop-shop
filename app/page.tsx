@@ -54,7 +54,7 @@ export default async function HomePage() {
   const websiteSchema = generateWebSiteSchema();
 
   return (
-    <div id="main-content" className="scroll-mt-16">
+    <div className="scroll-mt-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLd(organizationSchema) }}

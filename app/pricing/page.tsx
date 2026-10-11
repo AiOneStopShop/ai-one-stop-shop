@@ -12,7 +12,7 @@ export default function PricingPage() {
   
   // Or show a simple "it's free" page:
   return (
-      <div id="main-content" className="scroll-mt-16">
+      <div className="scroll-mt-16">
         <section className="section-spacing">
           <div className="container-max max-w-3xl">
             <div className="text-center mb-12">

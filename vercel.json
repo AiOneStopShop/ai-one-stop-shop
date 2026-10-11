@@ -54,5 +54,11 @@
   "domains": [
     "aionestop.shop",
     "www.aionestop.shop"
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-clicks",
+      "schedule": "0 5 * * *"
+    }
   ]
 }

@@ -39,6 +39,11 @@ UPSTASH_REDIS_REST_TOKEN=your-upstash-token
 # Without this, all /go links redirect to home instead of affiliate URLs
 AFFILIATE_CLICK_SECRET=random-secret-string
 
+# Daily click-log cleanup cron (required in production)
+# Vercel sends Authorization: Bearer ${CRON_SECRET} to /api/cron/cleanup-clicks
+# The route returns 401 if this is unset
+CRON_SECRET=random-cron-secret
+
 # Contact Information (required for CAN-SPAM compliance)
 # Note: Waitlist emails MUST NOT be sent until these are set
 NEXT_PUBLIC_SITE_CONTACT_EMAIL=hello@aionestop.shop
@@ -70,6 +75,16 @@ supabase db push supabase/migrations/001_initial_schema.sql
 
 # 2. Click retention with secured functions
 supabase db push supabase/migrations/002_add_click_retention.sql
+# Production cleanup: Vercel Cron hits GET /api/cron/cleanup-clicks daily
+# (vercel.json, Authorization: Bearer $CRON_SECRET) and calls
+# delete_old_affiliate_clicks_http() with the service-role key.
+# Alternative if you prefer it in the database:
+#   create extension if not exists pg_cron;
+#   select cron.schedule(
+#     'cleanup-affiliate-clicks',
+#     '0 5 * * *',
+#     $$select delete_old_affiliate_clicks()$$
+#   );
 
 # 3. Submissions RLS with trigger
 supabase db push supabase/migrations/003_submissions_rls_trigger.sql
@@ -127,7 +142,7 @@ See `BUILD_STATUS.md` for complete security implementation details.
 ## Legal Compliance
 
 - Privacy policy with accurate 90-day retention
-- Cookie consent banner
+- Cookie notice (no tracking or ad cookies)
 - Affiliate disclosures on all pages
 - CAN-SPAM compliant (when contact info is set)
 - No fake ratings or AI-generated reviews

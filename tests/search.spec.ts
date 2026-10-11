@@ -75,6 +75,34 @@ test('code ranks a coding tool first instead of Copy.ai', () => {
   }
 });
 
+test('chat maps to AI assistants ahead of Grammarly', () => {
+  expect(expandSearchTerms('chat')).toEqual(
+    expect.arrayContaining(['chat', 'chatbot', 'assistant', 'llm', 'chatgpt', 'claude', 'gemini'])
+  );
+  const names = searchTools(published, { q: 'chat' }).map((tool) => tool.name);
+  expect(names).toEqual(expect.arrayContaining(['ChatGPT Plus', 'Claude Pro', 'Gemini Pro']));
+  expect(names.slice(0, 3)).toEqual(expect.arrayContaining(['ChatGPT Plus', 'Claude Pro', 'Gemini Pro']));
+  if (names.includes('Grammarly')) {
+    expect(names.indexOf('Grammarly')).toBeGreaterThan(names.indexOf('Claude Pro'));
+    expect(names.indexOf('Grammarly')).toBeGreaterThan(names.indexOf('Gemini Pro'));
+  }
+});
+
+test('common single-word intents return the obvious tools first', () => {
+  const first = (q: string) => searchTools(published, { q }).map((tool) => tool.name);
+  expect(first('write')[0]).toMatch(/Grammarly|Jasper|Copy\.ai/);
+  expect(first('video')[0]).toMatch(/Descript/);
+  expect(first('audio')[0]).toMatch(/ElevenLabs|Descript|Whisper/);
+  expect(first('music')[0]).toMatch(/ElevenLabs|Descript|Whisper/);
+  expect(first('design')[0]).toMatch(/Canva|Midjourney/);
+  expect(first('research')[0]).toMatch(/Claude|ChatGPT|Gemini|Notion/);
+  expect(first('notes')[0]).toMatch(/Notion/);
+  expect(first('agent')[0]).toMatch(/LangChain|Replit/);
+  expect(first('automate')[0]).toMatch(/LangChain|Replit|AutoGPT/);
+  expect(first('slides')[0]).toMatch(/Canva/);
+  expect(first('email')[0]).toMatch(/Copy\.ai|Jasper/);
+});
+
 test('writing ranks copy/writing tools above Descript', () => {
   const names = searchTools(published, { q: 'writing' }).map((tool) => tool.name);
   expect(names).toEqual(expect.arrayContaining(['Jasper AI', 'Copy.ai', 'Grammarly', 'Descript']));
@@ -202,6 +230,16 @@ test('image returns six or more results with image tools first', async ({ page }
   const names = await page.locator('article h2').allTextContents();
   expect(names.length).toBeGreaterThanOrEqual(6);
   expect(names[0]).toMatch(/Midjourney|Stable Diffusion|Canva|DALL|Leonardo|Ideogram|Flux|Firefly/i);
+});
+
+test('chat ranks ChatGPT, Claude, and Gemini ahead of Grammarly', async ({ page }) => {
+  await page.goto('/tools?q=chat');
+  const names = await page.locator('article h2').allTextContents();
+  expect(names).toEqual(expect.arrayContaining(['ChatGPT Plus', 'Claude Pro', 'Gemini Pro']));
+  expect(names.slice(0, 3)).toEqual(expect.arrayContaining(['ChatGPT Plus', 'Claude Pro', 'Gemini Pro']));
+  if (names.includes('Grammarly')) {
+    expect(names.indexOf('Grammarly')).toBeGreaterThan(2);
+  }
 });
 
 test('code ranks a coding tool first', async ({ page }) => {

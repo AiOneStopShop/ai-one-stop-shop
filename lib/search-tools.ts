@@ -5,16 +5,20 @@ export const SEARCH_MIN_SCORE = 1.5;
 export const SHORT_QUERY_MAX = 4;
 
 const AUDIO_SYNONYMS = ['voice', 'audio', 'speech', 'tts', 'cloning', 'text to speech'] as const;
+const WRITING_SYNONYMS = ['write', 'writing', 'copy', 'content', 'grammar', 'copywriting', 'copywriter'] as const;
+const CHAT_SYNONYMS = ['chat', 'chatbot', 'assistant', 'llm', 'conversation', 'chatgpt', 'claude', 'gemini'] as const;
+const MUSIC_SYNONYMS = ['music', 'audio', 'song', 'soundtrack', 'voice', 'speech'] as const;
 
 export const SEARCH_PHRASES: Array<{ phrase: string; terms: readonly string[] }> = [
   { phrase: 'text to speech', terms: AUDIO_SYNONYMS },
 ];
 
 export const SEARCH_SYNONYMS: Record<string, readonly string[]> = {
-  writing: ['copy', 'content', 'grammar', 'copywriting', 'copywriter'],
-  copy: ['writing', 'content', 'copywriting'],
-  content: ['writing', 'copy'],
-  grammar: ['writing'],
+  writing: WRITING_SYNONYMS,
+  write: WRITING_SYNONYMS,
+  copy: ['writing', 'write', 'content', 'copywriting'],
+  content: ['writing', 'write', 'copy'],
+  grammar: ['writing', 'write'],
   image: ['art', 'generation', 'generate', 'generator', 'images', 'design'],
   art: ['image', 'generation', 'generate', 'generator', 'images', 'design'],
   code: ['coding', 'developer', 'development', 'copilot', 'programmer'],
@@ -24,10 +28,34 @@ export const SEARCH_SYNONYMS: Record<string, readonly string[]> = {
   audio: AUDIO_SYNONYMS,
   speech: AUDIO_SYNONYMS,
   tts: AUDIO_SYNONYMS,
-  chat: ['chatbot', 'assistant', 'conversation'],
-  chatbot: ['assistant', 'chat'],
-  assistant: ['chatbot', 'chat'],
+  music: MUSIC_SYNONYMS,
+  chat: CHAT_SYNONYMS,
+  chatbot: CHAT_SYNONYMS,
+  assistant: CHAT_SYNONYMS,
+  llm: CHAT_SYNONYMS,
+  design: ['design', 'creative', 'image', 'art', 'canva'],
+  research: ['analysis', 'document', 'knowledge', 'search'],
+  notes: ['note', 'notebook', 'workspace', 'knowledge', 'notion'],
+  note: ['notes', 'notebook', 'workspace', 'knowledge', 'notion'],
+  agent: ['agents', 'autonomous', 'orchestration'],
+  automate: ['automation', 'agent', 'agents', 'autonomous', 'workflow'],
+  slides: ['presentation', 'deck', 'template', 'canva'],
+  email: ['copy', 'copywriting', 'marketing'],
 };
+
+export const KNOWN_INTENT_TOKENS = new Set([
+  'image', 'art', 'images',
+  'code', 'coding',
+  'chat', 'chatbot', 'assistant', 'llm',
+  'write', 'writing', 'copy', 'content', 'grammar',
+  'video', 'audio', 'voice', 'speech', 'tts', 'music',
+  'design',
+  'research',
+  'notes', 'note',
+  'agent', 'automate',
+  'slides',
+  'email',
+]);
 
 export type SearchableTool = {
   name?: string | null;
@@ -223,8 +251,16 @@ export function isShortSearchQuery(query: string): boolean {
   return length > 0 && length <= SHORT_QUERY_MAX;
 }
 
+export function isKnownIntentQuery(rawQuery: string): boolean {
+  return tokenizeSearchQuery(rawQuery).some((token) => KNOWN_INTENT_TOKENS.has(token));
+}
+
+function usesStrictNameMatch(query: string): boolean {
+  return isShortSearchQuery(query) || isKnownIntentQuery(query);
+}
+
 function nameSimilarity(tool: SearchableTool, query: string): number {
-  const scoreFn = isShortSearchQuery(query) ? prefixOrWordScore : nameWordScore;
+  const scoreFn = usesStrictNameMatch(query) ? prefixOrWordScore : nameWordScore;
   return Math.max(0, ...nameWords(tool).map((candidate) => scoreFn(candidate, query)));
 }
 
@@ -321,17 +357,105 @@ function codingBoost(tool: SearchableTool, rawQuery: string): number {
   return boost;
 }
 
+function isAiAssistantTool(tool: SearchableTool): boolean {
+  return /chatgpt|claude|gemini/.test((tool.name || '').toLowerCase());
+}
+
 function chatBoost(tool: SearchableTool, rawQuery: string): number {
-  if (!queryHasToken(rawQuery, ['chat', 'chatbot', 'assistant'])) return 0;
+  if (!queryHasToken(rawQuery, ['chat', 'chatbot', 'assistant', 'llm'])) return 0;
 
   const name = (tool.name || '').toLowerCase();
   const tagline = (tool.tagline || '').toLowerCase();
   const tags = [...(tool.tags || []), ...(tool.features || [])].join(' ').toLowerCase();
 
   let boost = 0;
-  if (/chat/.test(name)) boost += 4;
-  if (/chat|assistant/.test(tagline) || /chat|assistant/.test(tags)) boost += 2;
+  if (isAiAssistantTool(tool)) boost += 5;
+  if (/chat/.test(name)) boost += 1.5;
+  if (/\b(chat|chatbot|llm|conversation)\b/.test(tagline) || /\b(chat|chatbot|llm|conversation)\b/.test(tags)) {
+    boost += 2;
+  }
   return boost;
+}
+
+function videoBoost(tool: SearchableTool, rawQuery: string): number {
+  if (!queryHasToken(rawQuery, ['video'])) return 0;
+  const haystack = `${tool.name || ''} ${tool.tagline || ''} ${(tool.features || []).join(' ')}`.toLowerCase();
+  let boost = 0;
+  if (/video|descript/.test((tool.name || '').toLowerCase())) boost += 4;
+  if (/video|film|podcast|recording/.test(haystack)) boost += 3;
+  return boost;
+}
+
+function designBoost(tool: SearchableTool, rawQuery: string): number {
+  if (!queryHasToken(rawQuery, ['design'])) return 0;
+  const name = (tool.name || '').toLowerCase();
+  const tagline = (tool.tagline || '').toLowerCase();
+  const tags = [...(tool.tags || []), ...(tool.features || [])].join(' ').toLowerCase();
+  const category = categoryText(tool);
+  let boost = 0;
+  if (/canva|midjourney|design/.test(name)) boost += 4;
+  if (/design|creative/.test(tagline) || /design|creative/.test(tags)) boost += 2;
+  if (/design/.test(category)) boost += 2.5;
+  return boost;
+}
+
+function researchBoost(tool: SearchableTool, rawQuery: string): number {
+  if (!queryHasToken(rawQuery, ['research'])) return 0;
+  const haystack = `${tool.name || ''} ${tool.tagline || ''} ${(tool.features || []).join(' ')}`.toLowerCase();
+  let boost = 0;
+  if (isAiAssistantTool(tool)) boost += 3;
+  if (/analysis|research|document|knowledge|search/.test(haystack)) boost += 3;
+  return boost;
+}
+
+function notesBoost(tool: SearchableTool, rawQuery: string): number {
+  if (!queryHasToken(rawQuery, ['notes', 'note'])) return 0;
+  const haystack = `${tool.name || ''} ${tool.tagline || ''} ${(tool.features || []).join(' ')}`.toLowerCase();
+  let boost = 0;
+  if (/notion/.test((tool.name || '').toLowerCase())) boost += 5;
+  if (/note|workspace|knowledge/.test(haystack)) boost += 3;
+  return boost;
+}
+
+function agentAutomateBoost(tool: SearchableTool, rawQuery: string): number {
+  if (!queryHasToken(rawQuery, ['agent', 'automate'])) return 0;
+  const name = (tool.name || '').toLowerCase();
+  const haystack = `${name} ${tool.tagline || ''} ${(tool.features || []).join(' ')}`.toLowerCase();
+  let boost = 0;
+  if (/\bagent\b|autogpt|langchain/.test(name)) boost += 5;
+  if (/agent|autonomous|orchestration|automation|workflow/.test(haystack)) boost += 2;
+  return boost;
+}
+
+function slidesBoost(tool: SearchableTool, rawQuery: string): number {
+  if (!queryHasToken(rawQuery, ['slides'])) return 0;
+  const name = (tool.name || '').toLowerCase();
+  const haystack = `${name} ${tool.tagline || ''} ${(tool.features || []).join(' ')}`.toLowerCase();
+  let boost = 0;
+  if (/canva/.test(name)) boost += 5;
+  if (/template|presentation|deck|design/.test(haystack)) boost += 2;
+  return boost;
+}
+
+function emailBoost(tool: SearchableTool, rawQuery: string): number {
+  if (!queryHasToken(rawQuery, ['email'])) return 0;
+  const haystack = `${tool.name || ''} ${tool.tagline || ''} ${(tool.features || []).join(' ')}`.toLowerCase();
+  let boost = 0;
+  if (/copy\.ai|jasper/.test((tool.name || '').toLowerCase())) boost += 4;
+  if (/email|copy|marketing/.test(haystack)) boost += 3;
+  return boost;
+}
+
+function extraIntentBoost(tool: SearchableTool, rawQuery: string): number {
+  return (
+    videoBoost(tool, rawQuery)
+    + designBoost(tool, rawQuery)
+    + researchBoost(tool, rawQuery)
+    + notesBoost(tool, rawQuery)
+    + agentAutomateBoost(tool, rawQuery)
+    + slidesBoost(tool, rawQuery)
+    + emailBoost(tool, rawQuery)
+  );
 }
 
 export function scoreTool(tool: SearchableTool, rawQuery: string): number {
@@ -365,7 +489,8 @@ export function scoreTool(tool: SearchableTool, rawQuery: string): number {
   const nameSim = nameSimilarity(tool, query);
   const exactFts = hasExactFtsHit(tool, query);
   const shortQuery = isShortSearchQuery(query);
-  if (!shortQuery && !exactFts && nameSim >= 0.4) {
+  const knownIntent = isKnownIntentQuery(query);
+  if (!shortQuery && !knownIntent && !exactFts && nameSim >= 0.4) {
     score += nameSim * 12;
   } else {
     score += nameSim;
@@ -375,7 +500,8 @@ export function scoreTool(tool: SearchableTool, rawQuery: string): number {
   score += imageArtBoost(tool, query);
   score += codingBoost(tool, query);
   score += chatBoost(tool, query);
-  score += trigramSimilarity(tagline, query) * (shortQuery ? 0.05 : 0.25);
+  score += extraIntentBoost(tool, query);
+  score += trigramSimilarity(tagline, query) * (shortQuery || knownIntent ? 0.05 : 0.25);
   return score;
 }
 
@@ -384,7 +510,15 @@ export function toolMatchesQuery(tool: SearchableTool, rawQuery: string): boolea
   if (!query) return true;
 
   if (hasExpandedHit(tool, query)) return true;
-  if (imageArtBoost(tool, query) > 0 || codingBoost(tool, query) > 0 || chatBoost(tool, query) > 0) {
+  if (
+    imageArtBoost(tool, query) > 0
+    || codingBoost(tool, query) > 0
+    || chatBoost(tool, query) > 0
+    || extraIntentBoost(tool, query) > 0
+  ) {
+    return true;
+  }
+  if (queryHasToken(query, ['chat', 'chatbot', 'assistant', 'llm']) && isAiAssistantTool(tool)) {
     return true;
   }
   if (nameSimilarity(tool, query) >= TRIGRAM_MATCH_THRESHOLD) return true;
@@ -424,12 +558,12 @@ export function searchTools<T extends SearchableTool>(
   });
 
   if (query) {
-    const shortQuery = isShortSearchQuery(query);
+    const allowTypoFirst = !usesStrictNameMatch(query);
     filtered.sort((left, right) => {
       const leftName = nameSimilarity(left, query);
       const rightName = nameSimilarity(right, query);
-      const leftTypo = !shortQuery && !hasExactFtsHit(left, query) && leftName >= 0.4 ? leftName : 0;
-      const rightTypo = !shortQuery && !hasExactFtsHit(right, query) && rightName >= 0.4 ? rightName : 0;
+      const leftTypo = allowTypoFirst && !hasExactFtsHit(left, query) && leftName >= 0.4 ? leftName : 0;
+      const rightTypo = allowTypoFirst && !hasExactFtsHit(right, query) && rightName >= 0.4 ? rightName : 0;
       if (rightTypo !== leftTypo) return rightTypo - leftTypo;
       const rank = scoreTool(right, query) - scoreTool(left, query);
       if (rank !== 0) return rank;

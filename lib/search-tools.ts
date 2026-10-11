@@ -81,6 +81,31 @@ export function expandSearchTerms(input: string): string[] {
   return Array.from(terms);
 }
 
+function levenshtein(a: string, b: string): number {
+  const rows = a.length;
+  const cols = b.length;
+  const prev = new Array(cols + 1);
+  const next = new Array(cols + 1);
+  for (let j = 0; j <= cols; j += 1) prev[j] = j;
+  for (let i = 1; i <= rows; i += 1) {
+    next[0] = i;
+    for (let j = 1; j <= cols; j += 1) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      next[j] = Math.min(prev[j] + 1, next[j - 1] + 1, prev[j - 1] + cost);
+    }
+    for (let j = 0; j <= cols; j += 1) prev[j] = next[j];
+  }
+  return prev[cols];
+}
+
+export function editSimilarity(a: string, b: string): number {
+  const left = (a || '').trim().toLowerCase();
+  const right = (b || '').trim().toLowerCase();
+  if (!left || !right) return 0;
+  const distance = levenshtein(left, right);
+  return 1 - distance / Math.max(left.length, right.length, 1);
+}
+
 function trigrams(value: string): Set<string> {
   const padded = `  ${value.toLowerCase()} `;
   const grams = new Set<string>();
@@ -135,14 +160,51 @@ function includesTerm(haystack: string, term: string): boolean {
   return haystack.toLowerCase().includes(term);
 }
 
-function nameSimilarity(tool: SearchableTool, query: string): number {
-  const candidates = [
+function nameWords(tool: SearchableTool): string[] {
+  return [
     tool.name || '',
     tool.slug || '',
     (tool.slug || '').replace(/-/g, ' '),
-    ...(tool.name || '').split(/\s+/).filter((word) => word.length > 2),
+    ...(tool.name || '').split(/[^A-Za-z0-9]+/).filter((word) => word.length >= 3),
   ];
-  return Math.max(0, ...candidates.map((candidate) => trigramSimilarity(candidate, query)));
+}
+
+function nameSimilarity(tool: SearchableTool, query: string): number {
+  return Math.max(
+    0,
+    ...nameWords(tool).map((candidate) =>
+      Math.max(trigramSimilarity(candidate, query), editSimilarity(candidate, query))
+    )
+  );
+}
+
+function hasExactFtsHit(tool: SearchableTool, rawQuery: string): boolean {
+  const terms = tokenizeSearchQuery(rawQuery);
+  if (terms.length === 0) return false;
+  const haystacks = collectSearchText(tool);
+  return terms.some((term) => haystacks.some((value) => includesTerm(value, term)));
+}
+
+function writingCopyBoost(tool: SearchableTool, rawQuery: string): number {
+  const terms = expandSearchTerms(rawQuery);
+  const writingIntent = ['writing', 'copy', 'content', 'grammar', 'copywriting', 'copywriter'];
+  if (!terms.some((term) => writingIntent.includes(term))) return 0;
+
+  const name = (tool.name || '').toLowerCase();
+  const tagline = (tool.tagline || '').toLowerCase();
+  const tags = [...(tool.tags || []), ...(tool.features || [])].join(' ').toLowerCase();
+  const category = (tool.tool_categories || [])
+    .map((relation) => `${relation?.categories?.name || ''} ${relation?.categories?.slug || ''}`)
+    .join(' ')
+    .toLowerCase();
+
+  let boost = 0;
+  if (/writing|copy|grammar|copywrit/.test(name)) boost += 4;
+  if (/writing|copy|grammar|copywrit|content/.test(tagline) || /writing|copy|grammar|copywrit/.test(tags)) {
+    boost += 2;
+  }
+  if (/content|writing|copy/.test(category)) boost += 1.2;
+  return boost;
 }
 
 export function scoreTool(tool: SearchableTool, rawQuery: string): number {
@@ -173,8 +235,15 @@ export function scoreTool(tool: SearchableTool, rawQuery: string): number {
     if (includesTerm(description, term)) score += fieldWeight('description');
   }
 
-  score += nameSimilarity(tool, query) * 2;
-  score += trigramSimilarity(tagline, query) * 0.8;
+  const nameSim = nameSimilarity(tool, query);
+  const exactFts = hasExactFtsHit(tool, query);
+  if (!exactFts && nameSim >= 0.4) {
+    score += nameSim * 12;
+  } else {
+    score += nameSim;
+  }
+  score += writingCopyBoost(tool, query);
+  score += trigramSimilarity(tagline, query) * 0.25;
   return score;
 }
 
@@ -229,6 +298,11 @@ export function searchTools<T extends SearchableTool>(
 
   if (query) {
     filtered.sort((left, right) => {
+      const leftName = nameSimilarity(left, query);
+      const rightName = nameSimilarity(right, query);
+      const leftTypo = !hasExactFtsHit(left, query) && leftName >= 0.4 ? leftName : 0;
+      const rightTypo = !hasExactFtsHit(right, query) && rightName >= 0.4 ? rightName : 0;
+      if (rightTypo !== leftTypo) return rightTypo - leftTypo;
       const rank = scoreTool(right, query) - scoreTool(left, query);
       if (rank !== 0) return rank;
       return (left.name || '').localeCompare(right.name || '');

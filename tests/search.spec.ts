@@ -23,7 +23,17 @@ test('typos match nearby tool names with trigram similarity', () => {
   const grammarly = searchTools(published, { q: 'grammerly' });
   expect(grammarly[0]?.name).toBe('Grammarly');
   const copilot = searchTools(published, { q: 'copliot' });
-  expect(copilot.map((tool) => tool.name)).toContain('GitHub Copilot');
+  expect(copilot[0]?.name).toBe('GitHub Copilot');
+  expect(copilot.map((tool) => tool.name).indexOf('GitHub Copilot'))
+    .toBeLessThan(copilot.map((tool) => tool.name).indexOf('Copy.ai'));
+});
+
+test('writing ranks copy/writing tools above Descript', () => {
+  const names = searchTools(published, { q: 'writing' }).map((tool) => tool.name);
+  expect(names).toEqual(expect.arrayContaining(['Jasper AI', 'Copy.ai', 'Grammarly', 'Descript']));
+  expect(names.indexOf('Copy.ai')).toBeLessThan(names.indexOf('Descript'));
+  expect(names.indexOf('Grammarly')).toBeLessThan(names.indexOf('Descript'));
+  expect(names.indexOf('Jasper AI')).toBeLessThan(names.indexOf('Descript'));
 });
 
 test('filters combine with the query', () => {
@@ -60,6 +70,22 @@ test('/tools search submits on Enter and shows filtered results', async ({ page 
   await search.locator('input[name="q"]').fill('writing');
   await search.locator('input[name="q"]').press('Enter');
   await expectWritingResults(page);
+});
+
+test('typo query copliot ranks GitHub Copilot first', async ({ page }) => {
+  await page.goto('/tools?q=copliot');
+  const names = await page.locator('article h2').allTextContents();
+  expect(names[0]).toContain('GitHub Copilot');
+  if (names.includes('Copy.ai')) {
+    expect(names.indexOf('Copy.ai')).toBeGreaterThan(names.findIndex((name) => name.includes('GitHub Copilot')));
+  }
+});
+
+test('writing ranks Copy.ai above Descript', async ({ page }) => {
+  await page.goto('/tools?q=writing');
+  const names = await page.locator('article h2').allTextContents();
+  expect(names.indexOf('Copy.ai')).toBeGreaterThanOrEqual(0);
+  expect(names.indexOf('Descript')).toBeGreaterThan(names.indexOf('Copy.ai'));
 });
 
 test('typo query grammerly finds Grammarly', async ({ page }) => {

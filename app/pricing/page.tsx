@@ -37,7 +37,7 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#6C39EF] text-xl">✓</span>
-                    <span>Hand-checked tools (no fake ratings)</span>
+                    <span>Curated tools (no fake ratings)</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#6C39EF] text-xl">✓</span>

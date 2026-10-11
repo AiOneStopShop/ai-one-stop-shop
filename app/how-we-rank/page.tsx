@@ -17,7 +17,7 @@ export default function HowWeRankPage() {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
               <p className="text-lg font-semibold mb-2">The short version</p>
               <p>
-                We check each tool by hand, we write down what we find in plain English, and we put the tool we'd actually suggest first. Money never changes that order.
+                We try each tool ourselves, we write down what we find in plain English, and we put the tool we'd actually suggest first. Money never changes that order.
               </p>
             </div>
 
@@ -87,7 +87,7 @@ export default function HowWeRankPage() {
             <div>
               <h2 className="heading-2 mb-4">What we don't do</h2>
               <ul className="space-y-2">
-                <li>• We don't review every AI tool, only the ones we check by hand</li>
+                <li>• We don't review every AI tool, only the ones we try ourselves</li>
                 <li>• We don't run formal security audits</li>
                 <li>• We are not the seller or maker of the tools listed here</li>
                 <li>• We don't offer legal, financial, or tax advice about tools</li>

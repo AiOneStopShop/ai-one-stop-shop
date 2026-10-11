@@ -1,6 +1,6 @@
-import { Suspense } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { fallbackCategories, fallbackTools } from '@/lib/fallback-data';
 import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { ToolsClient } from './ToolsClient';
 import { StickyCompareButton } from './CompareCheckbox';
@@ -17,10 +17,16 @@ async function getTools() {
       )
     `)
     .eq('status', 'published')
-    .order('editorial_score', { ascending: false, nullsFirst: false })
     .order('name');
 
-  return tools || [];
+  if (tools && tools.length > 0) {
+    return tools;
+  }
+
+  return fallbackTools
+    .filter((tool) => tool.status === 'published')
+    .slice()
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 async function getCategories() {
@@ -28,8 +34,12 @@ async function getCategories() {
     .from('categories')
     .select('*')
     .order('sort_order');
-  
-  return data || [];
+
+  if (data && data.length > 0) {
+    return data;
+  }
+
+  return fallbackCategories;
 }
 
 export const metadata = {
@@ -38,7 +48,10 @@ export const metadata = {
   alternates: { canonical: '/tools' },
 };
 
-export default async function ToolsPage() {
+export default async function ToolsPage(props: {
+  searchParams: Promise<{ q?: string; category?: string; price?: string; free?: string }>;
+}) {
+  const searchParams = await props.searchParams;
   const tools = await getTools();
   const categories = await getCategories();
 
@@ -71,15 +84,13 @@ export default async function ToolsPage() {
       <div className="scroll-mt-16">
         <section className="section-spacing">
           <div className="container-max">
-            {/* Header */}
             <div className="mb-8">
               <h1 className="heading-1 mb-4">All AI Tools</h1>
               <p className="text-lead">
-                {tools.length} tools, each checked by hand. No fake ratings.
+                {tools.length} curated tools. No fake ratings.
               </p>
             </div>
 
-            {/* Disclosure */}
             <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-[#171C26]">
                 Some links are paid links. They never change our ranking.{' '}
@@ -89,11 +100,15 @@ export default async function ToolsPage() {
               </p>
             </div>
 
-            <Suspense fallback={<p className="text-[#5B657B]">Loading tools…</p>}>
-              <ToolsClient initialTools={tools} categories={categories} />
-            </Suspense>
+            <ToolsClient
+              initialTools={tools}
+              categories={categories}
+              initialQuery={searchParams.q || ''}
+              initialCategory={searchParams.category || 'all'}
+              initialPrice={searchParams.price || 'all'}
+              initialFree={searchParams.free === '1'}
+            />
 
-            {/* Submit CTA */}
             <div className="mt-16 bg-[#F3EFFF] border border-[#6C39EF] rounded-2xl p-8 text-center">
               <h2 className="heading-2 mb-4">Can't find a tool?</h2>
               <p className="text-lead mb-6">Suggest a tool for us to review</p>

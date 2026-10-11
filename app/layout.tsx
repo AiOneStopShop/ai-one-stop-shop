@@ -58,6 +58,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-[#F9F8F5] text-[#171C26] font-inter antialiased">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem('cookieConsent')){document.documentElement.classList.add('cookie-consent-given')}else{document.documentElement.classList.add('has-cookie-banner')}}catch(e){document.documentElement.classList.add('has-cookie-banner')}`,
+          }}
+        />
         <CookieConsent />
         <Header />
         <main id="main" tabIndex={-1} className="min-h-screen focus:outline-none">

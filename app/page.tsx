@@ -72,7 +72,7 @@ export default async function HomePage() {
             Find the Right AI Tool
           </h1>
           <p className="text-xl text-[#5B657B] max-w-2xl mx-auto mb-8">
-            {toolsCount} AI tools, all checked by hand. No fake ratings, no paid rankings. Find tools that actually help.
+            {toolsCount} curated AI tools. No fake ratings, no paid rankings. Find tools that actually help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/tools" className="btn-primary">
@@ -95,7 +95,7 @@ export default async function HomePage() {
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3EFFF] text-[#6C39EF] mb-4">
                 <CheckCircle className="h-6 w-6" aria-hidden="true" />
               </div>
-              <h2 className="heading-3 mb-2">Hand-Checked</h2>
+              <h2 className="heading-3 mb-2">Curated</h2>
               <p className="text-[#5B657B]">
                 We try each tool ourselves. No fake AI-generated ratings.
               </p>

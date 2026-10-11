@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { z } from 'zod';
 import { submitToolRateLimit } from '@/lib/rate-limit';
+import { getClientIP } from '@/lib/client-ip';
 
 const FIELD_ERROR_CODES = [
   'name_missing',
@@ -12,12 +13,18 @@ const FIELD_ERROR_CODES = [
 
 type FieldErrorCode = (typeof FIELD_ERROR_CODES)[number];
 
+function isHttpOrHttpsUrl(value: string): boolean {
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 const submitToolSchema = z.object({
   toolName: z.string().min(1).max(200),
-  websiteUrl: z.string().url().refine((url) => {
-    const parsed = new URL(url);
-    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
-  }).max(500),
+  websiteUrl: z.string().max(500).refine(isHttpOrHttpsUrl),
   contactEmail: z.string().email().max(200),
   description: z.string().max(2000).optional(),
   extra_ref: z.string().optional(),
@@ -44,10 +51,6 @@ function mapZodIssues(issues: z.ZodIssue[]): { field: string; code: FieldErrorCo
   }
 
   return errors;
-}
-
-function getClientIP(request: NextRequest): string {
-  return request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || 'unknown';
 }
 
 const NEUTRAL_SUCCESS = { success: true };

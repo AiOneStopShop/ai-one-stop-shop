@@ -26,7 +26,7 @@ export function generateOrganizationSchema() {
     name: SITE_NAME,
     url: SITE_URL,
     logo: `${SITE_URL}/logo.svg`,
-    description: 'Honest AI tools directory with hand-checked tools and no fake ratings',
+    description: 'Honest AI tools directory with curated tools and no fake ratings',
     founder: {
       '@type': 'Person',
       name: 'Kati Bartolec'

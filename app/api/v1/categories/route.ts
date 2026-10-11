@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { apiRateLimit } from '@/lib/rate-limit';
+import { getClientIP } from '@/lib/client-ip';
 
 export async function GET(request: NextRequest) {
   // Rate limiting
-  const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || 'unknown';
+  const ip = getClientIP(request);
   const { success } = await apiRateLimit.limit(`api-categories-${ip}`);
   
   if (!success) {

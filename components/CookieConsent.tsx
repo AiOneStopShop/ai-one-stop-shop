@@ -4,13 +4,12 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 export function CookieConsent() {
-  const [showBanner, setShowBanner] = useState(false);
+  const [showBanner, setShowBanner] = useState(true);
   const bannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const consent = localStorage.getItem('cookieConsent');
-    if (!consent) {
-      setShowBanner(true);
+    if (localStorage.getItem('cookieConsent')) {
+      setShowBanner(false);
     }
   }, []);
 

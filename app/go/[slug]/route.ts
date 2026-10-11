@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { affiliateRedirectRateLimit } from '@/lib/rate-limit';
+import { getClientIP } from '@/lib/client-ip';
 import crypto from 'crypto';
 
 // Hash IP address for privacy
@@ -27,7 +28,7 @@ export async function GET(
   const { slug } = params;
 
   // Rate limiting with Upstash
-  const ip = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || 'unknown';
+  const ip = getClientIP(request);
   const { success: rateLimitOk } = await affiliateRedirectRateLimit.limit(ip);
   
   if (!rateLimitOk) {

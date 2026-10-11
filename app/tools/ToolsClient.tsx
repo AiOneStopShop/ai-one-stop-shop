@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 import { CompareCheckbox, CompareSelectedButton } from './CompareCheckbox';
 
@@ -12,17 +12,27 @@ type Category = any;
 interface ToolsClientProps {
   initialTools: Tool[];
   categories: Category[];
+  initialQuery: string;
+  initialCategory: string;
+  initialPrice: string;
+  initialFree: boolean;
 }
 
-export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
-  const searchParams = useSearchParams();
+export function ToolsClient({
+  initialTools,
+  categories,
+  initialQuery,
+  initialCategory,
+  initialPrice,
+  initialFree,
+}: ToolsClientProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
-  const [priceFilter, setPriceFilter] = useState(searchParams.get('price') || 'all');
-  const [hasFreeTier, setHasFreeTier] = useState(searchParams.get('free') === '1');
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [priceFilter, setPriceFilter] = useState(initialPrice);
+  const [hasFreeTier, setHasFreeTier] = useState(initialFree);
   const [announcedCount, setAnnouncedCount] = useState<string>('');
 
   useEffect(() => {
@@ -32,11 +42,11 @@ export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
     if (priceFilter !== 'all') params.set('price', priceFilter);
     if (hasFreeTier) params.set('free', '1');
     const next = params.toString();
-    const current = searchParams.toString();
+    const current = window.location.search.replace(/^\?/, '');
     if (next !== current) {
       router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
     }
-  }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, pathname, router, searchParams]);
+  }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, pathname, router]);
 
   const filteredTools = useMemo(() => {
     return initialTools.filter(tool => {
@@ -255,4 +265,3 @@ export function ToolsClient({ initialTools, categories }: ToolsClientProps) {
     </>
   );
 }
-

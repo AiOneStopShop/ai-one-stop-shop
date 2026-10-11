@@ -44,16 +44,24 @@ async function getCategoryTools(categoryId: string) {
           toolIdsInCategory.includes(tool.id) && 
           tool.status === 'published'
         )
-        .sort((a: any, b: any) => (b.editorial_score || 0) - (a.editorial_score || 0));
+        .sort((a: any, b: any) => a.name.localeCompare(b.name));
       
       return categoryTools;
     }
 
-    return tools || [];
+    return orderCategoryTools(tools || []);
   } catch (err) {
     console.error('Error in getCategoryTools:', err);
     return [];
   }
+}
+
+function orderCategoryTools(tools: any[]) {
+  const hasRanks = tools.some((tool) => tool.editorial_score != null);
+  if (!hasRanks) {
+    return [...tools].sort((a, b) => a.name.localeCompare(b.name));
+  }
+  return [...tools].sort((a, b) => (b.editorial_score ?? -1) - (a.editorial_score ?? -1));
 }
 
 export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
@@ -79,7 +87,8 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
     notFound();
   }
 
-  const tools = await getCategoryTools(category.id);
+  const tools = orderCategoryTools(await getCategoryTools(category.id));
+  const showRanks = tools.some((tool: any) => tool.editorial_score != null);
 
   const breadcrumbs = generateBreadcrumbSchema([
     { name: 'Home', url: '/' },
@@ -153,7 +162,9 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
                   <li key={tool.id} className="card">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <span className="text-[#6C39EF] font-bold" aria-hidden="true">#{index + 1}</span>
+                        {showRanks && (
+                          <span className="text-[#6C39EF] font-bold" aria-hidden="true">#{index + 1}</span>
+                        )}
                         <h2 className="heading-3">
                           <Link 
                             href={`/tools/${tool.slug}`}
@@ -210,7 +221,9 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
             <div className="mt-16 bg-[#F3EFFF] border border-[#6C39EF] rounded-xl p-8">
               <h2 className="heading-2 mb-4">How we chose these tools</h2>
               <p className="text-lg mb-4">
-                We've tried each tool ourselves. Rankings reflect our judgment of what works best, not who pays us.
+                {showRanks
+                  ? "We've tried each tool ourselves. Rankings reflect our judgment of what works best, not who pays us."
+                  : "We've tried each tool ourselves. This list is alphabetical — we have not assigned ranks yet."}
               </p>
               <Link href="/how-we-rank" className="text-[#6C39EF] font-medium hover:underline focus-ring rounded">
                 Read our full ranking method →

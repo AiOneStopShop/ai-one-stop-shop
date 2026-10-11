@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { apiRateLimit } from '@/lib/rate-limit';
-
-// Get client IP safely
-function getClientIP(request: NextRequest): string {
-  return request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for') || 'unknown';
-}
+import { getClientIP } from '@/lib/client-ip';
 
 // Escape SQL LIKE wildcards
 function escapeLikePattern(input: string): string {

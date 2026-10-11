@@ -13,11 +13,11 @@ export async function GET() {
 
 ## What this site is
 
-AI One Stop Shop is a hand-checked directory of AI tools. We check each tool by hand: what it's built for, what it costs, and how it fits. Right now we have ${count || 0} published tools.
+AI One Stop Shop is a curated directory of AI tools. We check each tool: what it's built for, what it costs, and how it fits. Right now we have ${count || 0} published tools.
 
 ## Who runs it
 
-Kati Bartolec runs AI One Stop Shop from Washington State. It's a oneTomorrow venture. Tools are checked by hand and ranked editorially.
+Kati Bartolec runs AI One Stop Shop from Washington State. It's a oneTomorrow venture. Tools are curated and ranked editorially.
 
 ## How we earn money
 
@@ -25,7 +25,7 @@ Some links are paid (affiliate) links. If you sign up through one, we may earn a
 
 ## What you can find here
 
-- ${count || 0} hand-checked AI tools across categories like coding, content creation, productivity, design, and more
+- ${count || 0} curated AI tools across categories like coding, content creation, productivity, design, and more
 - Pricing information (last updated Oct 2026)
 - Editorial picks and explanations of who each tool is best for
 - No fake ratings or review counts

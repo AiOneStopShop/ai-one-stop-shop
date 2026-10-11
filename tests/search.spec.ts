@@ -43,7 +43,7 @@ async function expectWritingResults(page: import('@playwright/test').Page) {
   await expect(page.getByRole('article').filter({ hasText: 'Jasper AI' })).toBeVisible();
   await expect(page.getByRole('article').filter({ hasText: 'Copy.ai' })).toBeVisible();
   await expect(page.getByRole('article').filter({ hasText: 'Grammarly' })).toBeVisible();
-  await expect(page.getByRole('status')).toContainText(/Showing \d+ tools \(filtered from \d+\)/);
+  await expect(page.getByRole('status').filter({ hasText: /Showing \d+ tools/ })).toContainText(/Showing \d+ tools \(filtered from \d+\)/);
 }
 
 test('home page search submits on Enter and filters /tools', async ({ page }) => {
@@ -75,7 +75,7 @@ test('zero-results state offers suggestions and submit', async ({ page }) => {
   await page.goto('/tools?q=xyzzynope123');
   await expect(page.getByText(/No tools match/)).toBeVisible();
   await expect(page.getByText('Popular categories')).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Submit a tool' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Submit a tool' }).first()).toBeVisible();
 });
 
 test('filters plus query hide tools outside the category', async ({ page }) => {

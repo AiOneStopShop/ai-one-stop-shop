@@ -62,7 +62,7 @@ This is a **complete working application** built from scratch following all team
 12. `/submit` - Tool submission form
 
 ### API Routes
-- `GET /api/v1/tools` - Public tools API
+- `GET /api/v1/tools` - Public tools API (name, slug, tagline, description, category, pricing, website_url, logo_url, go_url, updated_at; `?q=` cached 5 min)
 - `GET /api/v1/categories` - Categories API
 - `POST /api/submit-tool` - Submissions
 - `GET /go/[slug]` - Affiliate redirects

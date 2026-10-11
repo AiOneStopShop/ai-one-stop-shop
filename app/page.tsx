@@ -5,7 +5,6 @@ import type { Tool } from '@/types/database';
 import { fallbackTools } from '@/lib/fallback-data';
 import { generateOrganizationSchema, generateWebSiteSchema, safeJsonLd } from '@/lib/json-ld';
 import { PRICE_CHECKED_LABEL } from '@/lib/site-dates';
-import { ToolSearchForm } from '@/components/ToolSearchForm';
 
 async function getToolsCount(): Promise<number> {
   const { count } = await supabase
@@ -77,7 +76,27 @@ export default async function HomePage() {
             {toolsCount} curated AI tools. No fake ratings, no paid rankings. Find tools that actually help.
           </p>
           <div className="max-w-xl mx-auto mb-8 text-left">
-            <ToolSearchForm id="home-tool-search" />
+            <form role="search" action="/tools" method="get">
+              <label htmlFor="home-tool-search" className="block text-sm font-medium text-[#171C26] mb-2">
+                Search tools
+              </label>
+              <div className="relative flex flex-col sm:flex-row gap-2">
+                <input
+                  id="home-tool-search"
+                  type="search"
+                  name="q"
+                  placeholder="Search tools by name, job, or category..."
+                  autoComplete="off"
+                  enterKeyHint="search"
+                  inputMode="search"
+                  maxLength={100}
+                  className="w-full px-4 py-3 text-base border border-[#5B657B] rounded-lg focus-ring bg-white min-h-11"
+                />
+                <button type="submit" className="btn-primary shrink-0 w-full sm:w-auto">
+                  Search
+                </button>
+              </div>
+            </form>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/tools" className="btn-primary">

@@ -9,6 +9,35 @@ import {
 
 const published = fallbackTools.filter((tool) => tool.status === 'published');
 
+test('audio synonyms include voice, tts, speech, and text to speech', () => {
+  expect(expandSearchTerms('voice')).toEqual(
+    expect.arrayContaining(['voice', 'audio', 'speech', 'tts', 'text to speech'])
+  );
+  expect(expandSearchTerms('text to speech')).toEqual(
+    expect.arrayContaining(['voice', 'speech', 'tts'])
+  );
+  expect(expandSearchTerms('text to speech')).not.toContain('text');
+  expect(expandSearchTerms('tts')).toEqual(expect.arrayContaining(['voice', 'speech']));
+});
+
+test('voice and text to speech rank ElevenLabs above v0', () => {
+  const voice = searchTools(published, { q: 'voice' }).map((tool) => tool.name);
+  expect(voice.slice(0, 3)).toContain('ElevenLabs');
+  expect(voice[0]).not.toBe('v0 by Vercel');
+  if (voice.includes('v0 by Vercel')) {
+    expect(voice.indexOf('ElevenLabs')).toBeLessThan(voice.indexOf('v0 by Vercel'));
+  }
+
+  const tts = searchTools(published, { q: 'text to speech' }).map((tool) => tool.name);
+  expect(tts.slice(0, 3)).toContain('ElevenLabs');
+  expect(tts[0]).not.toBe('v0 by Vercel');
+});
+
+test('windsurf is a hidden tool and does not return unrelated results', () => {
+  expect(published.find((tool) => tool.name === 'Windsurf')).toBeUndefined();
+  expect(searchTools(published, { q: 'windsurf' })).toEqual([]);
+});
+
 test('writing matches Jasper, Copy.ai, and Grammarly via synonyms and category text', () => {
   expect(expandSearchTerms('writing')).toEqual(
     expect.arrayContaining(['writing', 'copy', 'content', 'grammar'])
@@ -55,6 +84,25 @@ async function expectWritingResults(page: import('@playwright/test').Page) {
   await expect(page.getByRole('article').filter({ hasText: 'Grammarly' })).toBeVisible();
   await expect(page.getByRole('status').filter({ hasText: /Showing \d+ tools/ })).toContainText(/Showing \d+ tools \(filtered from \d+\)/);
 }
+
+test('public tools API exposes only public fields and short cache headers', async ({ request }) => {
+  const response = await request.get('/api/v1/tools?q=Voice');
+  expect(response.ok()).toBeTruthy();
+  expect(response.headers()['cache-control']).toBe('public, s-maxage=300, stale-while-revalidate=600');
+  const body = await response.json();
+  expect(body.tools.length).toBeGreaterThan(0);
+  const tool = body.tools[0];
+  expect(tool).toEqual(expect.objectContaining({
+    name: expect.any(String),
+    slug: expect.any(String),
+    go_url: expect.stringMatching(/\/go\//),
+  }));
+  expect(tool).not.toHaveProperty('editorial_why');
+  expect(tool).not.toHaveProperty('source_url');
+  expect(tool).not.toHaveProperty('status');
+  expect(tool).not.toHaveProperty('tags');
+  expect(tool).not.toHaveProperty('editorial_score');
+});
 
 test('home page search submits on Enter and filters /tools', async ({ page }) => {
   await page.goto('/');
@@ -109,6 +157,39 @@ test('filters plus query hide tools outside the category', async ({ page }) => {
   await expect(page.getByRole('article').filter({ hasText: 'Jasper AI' })).toBeVisible();
   await expect(page.getByRole('article').filter({ hasText: 'Grammarly' })).toBeVisible();
   await expect(page.getByRole('article').filter({ hasText: 'Copy.ai' })).toHaveCount(0);
+});
+
+test('voice ranks ElevenLabs in the top 3', async ({ page }) => {
+  await page.goto('/tools?q=voice');
+  const names = await page.locator('article h2').allTextContents();
+  expect(names.slice(0, 3).join(' ')).toMatch(/ElevenLabs/);
+  expect(names[0]).not.toContain('v0');
+});
+
+test('text to speech ranks ElevenLabs in the top 3', async ({ page }) => {
+  await page.goto('/tools?q=text%20to%20speech');
+  const names = await page.locator('article h2').allTextContents();
+  expect(names.slice(0, 3).join(' ')).toMatch(/ElevenLabs/);
+  expect(names[0]).not.toContain('v0');
+});
+
+test('windsurf shows the zero-results state', async ({ page }) => {
+  await page.goto('/tools?q=windsurf');
+  await expect(page.getByText(/No tools match/)).toBeVisible();
+  await expect(page.getByRole('article')).toHaveCount(0);
+});
+
+test('submitted searches use history.push so Back steps through them', async ({ page }) => {
+  await page.goto('/tools');
+  const search = page.getByRole('search');
+  await search.locator('input[name="q"]').fill('writing');
+  await search.locator('input[name="q"]').press('Enter');
+  await expect(page).toHaveURL(/q=writing/);
+  await search.locator('input[name="q"]').fill('voice');
+  await search.locator('input[name="q"]').press('Enter');
+  await expect(page).toHaveURL(/q=voice/);
+  await page.goBack();
+  await expect(page).toHaveURL(/q=writing/);
 });
 
 test('no-JS GET form submit filters /tools', async ({ browser }) => {

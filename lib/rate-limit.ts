@@ -78,6 +78,13 @@ function createRateLimiter(requests: number, windowMinutes: number) {
   }
 }
 
+export const isUpstashConfigured = Boolean(
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+);
+
+// Cheap per-instance burst guard used only when Upstash is unset.
+export const apiMemoryBurst = new InMemoryRatelimit(40, 10_000);
+
 // Export rate limiters for different endpoints
 export const submitToolRateLimit = createRateLimiter(5, 15); // 5 requests per 15 minutes
 export const affiliateRedirectRateLimit = createRateLimiter(30, 1); // 30 requests per minute

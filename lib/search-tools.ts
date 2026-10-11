@@ -1,6 +1,13 @@
 export const SEARCH_QUERY_MAX = 100;
 export const SEARCH_DEBOUNCE_MS = 200;
-export const TRIGRAM_MATCH_THRESHOLD = 0.25;
+export const TRIGRAM_MATCH_THRESHOLD = 0.4;
+export const SEARCH_MIN_SCORE = 1.5;
+
+const AUDIO_SYNONYMS = ['voice', 'audio', 'speech', 'tts', 'cloning', 'text to speech'] as const;
+
+export const SEARCH_PHRASES: Array<{ phrase: string; terms: readonly string[] }> = [
+  { phrase: 'text to speech', terms: AUDIO_SYNONYMS },
+];
 
 export const SEARCH_SYNONYMS: Record<string, readonly string[]> = {
   writing: ['copy', 'content', 'grammar', 'copywriting', 'copywriter'],
@@ -12,8 +19,10 @@ export const SEARCH_SYNONYMS: Record<string, readonly string[]> = {
   code: ['coding', 'developer', 'development', 'copilot', 'programmer'],
   coding: ['code', 'developer', 'development', 'copilot', 'programmer'],
   video: ['film', 'podcast', 'recording'],
-  voice: ['audio', 'speech', 'tts', 'cloning'],
-  audio: ['voice', 'speech', 'podcast'],
+  voice: AUDIO_SYNONYMS,
+  audio: AUDIO_SYNONYMS,
+  speech: AUDIO_SYNONYMS,
+  tts: AUDIO_SYNONYMS,
   chatbot: ['assistant', 'chat'],
   assistant: ['chatbot', 'chat'],
 };
@@ -60,6 +69,7 @@ export function sanitizeSearchQuery(input: string | null | undefined): string {
     .replace(/[&|!:*()<>'"]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
+    .toLowerCase()
     .slice(0, SEARCH_QUERY_MAX);
 }
 
@@ -70,9 +80,20 @@ export function tokenizeSearchQuery(input: string): string[] {
 }
 
 export function expandSearchTerms(input: string): string[] {
-  const tokens = tokenizeSearchQuery(input);
-  const terms = new Set<string>(tokens);
+  const sanitized = sanitizeSearchQuery(input);
+  const terms = new Set<string>();
+  let remaining = sanitized;
+
+  for (const { phrase, terms: extras } of SEARCH_PHRASES) {
+    if (remaining.includes(phrase)) {
+      remaining = remaining.split(phrase).join(' ').replace(/\s+/g, ' ').trim();
+      for (const synonym of extras) terms.add(synonym);
+    }
+  }
+
+  const tokens = remaining.split(' ').filter(Boolean);
   for (const token of tokens) {
+    terms.add(token);
     const synonyms = SEARCH_SYNONYMS[token];
     if (synonyms) {
       for (const synonym of synonyms) terms.add(synonym);
@@ -169,13 +190,17 @@ function nameWords(tool: SearchableTool): string[] {
   ];
 }
 
+function nameWordScore(candidate: string, query: string): number {
+  const trigram = trigramSimilarity(candidate, query);
+  const edit = editSimilarity(candidate, query);
+  if (edit >= TRIGRAM_MATCH_THRESHOLD && trigram >= 0.25) {
+    return Math.max(edit, trigram);
+  }
+  return trigram;
+}
+
 function nameSimilarity(tool: SearchableTool, query: string): number {
-  return Math.max(
-    0,
-    ...nameWords(tool).map((candidate) =>
-      Math.max(trigramSimilarity(candidate, query), editSimilarity(candidate, query))
-    )
-  );
+  return Math.max(0, ...nameWords(tool).map((candidate) => nameWordScore(candidate, query)));
 }
 
 function hasExactFtsHit(tool: SearchableTool, rawQuery: string): boolean {
@@ -183,6 +208,23 @@ function hasExactFtsHit(tool: SearchableTool, rawQuery: string): boolean {
   if (terms.length === 0) return false;
   const haystacks = collectSearchText(tool);
   return terms.some((term) => haystacks.some((value) => includesTerm(value, term)));
+}
+
+function audioVoiceBoost(tool: SearchableTool, rawQuery: string): number {
+  const terms = expandSearchTerms(rawQuery);
+  if (!terms.some((term) => (AUDIO_SYNONYMS as readonly string[]).includes(term))) return 0;
+
+  const name = (tool.name || '').toLowerCase();
+  const tagline = (tool.tagline || '').toLowerCase();
+  const tags = [...(tool.tags || []), ...(tool.features || [])].join(' ').toLowerCase();
+  const haystack = `${name} ${tagline} ${tags}`;
+  let boost = 0;
+  if (/voice|speech|tts|audio|clon/.test(name)) boost += 4;
+  if (/voice|speech|tts|audio|clon/.test(tagline) || /voice|speech|tts|audio|clon/.test(tags)) {
+    boost += 3;
+  }
+  if (/text to speech/.test(haystack)) boost += 2;
+  return boost;
 }
 
 function writingCopyBoost(tool: SearchableTool, rawQuery: string): number {
@@ -243,6 +285,7 @@ export function scoreTool(tool: SearchableTool, rawQuery: string): number {
     score += nameSim;
   }
   score += writingCopyBoost(tool, query);
+  score += audioVoiceBoost(tool, query);
   score += trigramSimilarity(tagline, query) * 0.25;
   return score;
 }
@@ -251,17 +294,8 @@ export function toolMatchesQuery(tool: SearchableTool, rawQuery: string): boolea
   const query = sanitizeSearchQuery(rawQuery);
   if (!query) return true;
 
-  const terms = expandSearchTerms(query);
-  const haystacks = collectSearchText(tool);
-  const termHit = terms.some((term) =>
-    haystacks.some((value) => includesTerm(value, term))
-  );
-  if (termHit) return true;
-
-  return (
-    nameSimilarity(tool, query) >= TRIGRAM_MATCH_THRESHOLD
-    || trigramSimilarity(tool.tagline || '', query) >= TRIGRAM_MATCH_THRESHOLD
-  );
+  if (nameSimilarity(tool, query) >= TRIGRAM_MATCH_THRESHOLD) return true;
+  return scoreTool(tool, query) >= SEARCH_MIN_SCORE;
 }
 
 function matchesFilters(tool: SearchableTool, options: SearchToolsOptions): boolean {

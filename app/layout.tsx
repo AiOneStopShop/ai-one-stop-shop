@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import { DM_Sans, Inter } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/Header';
@@ -12,14 +11,19 @@ const brandUrl = getBrandUrl();
 const dmSans = DM_Sans({
   subsets: ['latin'],
   variable: '--font-dm-sans',
-  weight: ['400', '500', '700'],
+  weight: ['600', '700'],
   display: 'swap',
+  preload: true,
+  adjustFontFallback: true,
 });
 
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  weight: '400',
   display: 'swap',
+  preload: true,
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
@@ -62,7 +66,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-[#F9F8F5] text-[#171C26] font-inter antialiased">
-        <Script src="/cookie-banner-boot.js" strategy="beforeInteractive" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "try{if(localStorage.getItem('cookieConsent')){document.documentElement.classList.add('cookie-consent-given')}else{document.documentElement.classList.add('has-cookie-banner')}}catch(e){document.documentElement.classList.add('has-cookie-banner')}",
+          }}
+        />
         <CookieConsent />
         <Header />
         <main id="main" tabIndex={-1} className="min-h-screen focus:outline-none">

@@ -1,46 +1,10 @@
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
-import { fallbackCategories, fallbackTools } from '@/lib/fallback-data';
 import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
+import { getCategories, getPublishedSuggestionPool, searchPublishedCatalog } from '@/lib/search-catalog';
+import { sanitizeSearchQuery, suggestDidYouMean } from '@/lib/search-tools';
 import { ToolsClient } from './ToolsClient';
+import { ToolsResults } from './ToolsResults';
 import { StickyCompareButton } from './CompareCheckbox';
-
-async function getTools() {
-  const { data: tools } = await supabase
-    .from('tools')
-    .select(`
-      *,
-      tool_categories!inner(
-        category_id,
-        is_primary,
-        categories(*)
-      )
-    `)
-    .eq('status', 'published')
-    .order('name');
-
-  if (tools && tools.length > 0) {
-    return tools;
-  }
-
-  return fallbackTools
-    .filter((tool) => tool.status === 'published')
-    .slice()
-    .sort((a, b) => a.name.localeCompare(b.name));
-}
-
-async function getCategories() {
-  const { data } = await supabase
-    .from('categories')
-    .select('*')
-    .order('sort_order');
-
-  if (data && data.length > 0) {
-    return data;
-  }
-
-  return fallbackCategories;
-}
 
 export const metadata = {
   title: 'AI Tools Directory - All Tools',
@@ -52,8 +16,28 @@ export default async function ToolsPage(props: {
   searchParams: Promise<{ q?: string; category?: string; price?: string; free?: string }>;
 }) {
   const searchParams = await props.searchParams;
-  const tools = await getTools();
-  const categories = await getCategories();
+  const query = sanitizeSearchQuery(searchParams.q);
+  const category = searchParams.category || 'all';
+  const price = searchParams.price || 'all';
+  const free = searchParams.free === '1';
+
+  const [catalog, categories, publishedPool] = await Promise.all([
+    searchPublishedCatalog({
+      q: query,
+      category,
+      price,
+      freeOnly: free,
+    }),
+    getCategories(),
+    getPublishedSuggestionPool(),
+  ]);
+
+  const didYouMean = catalog.tools.length === 0 && query
+    ? suggestDidYouMean(query, publishedPool)
+    : null;
+  const popularCategories = [...categories]
+    .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+    .slice(0, 4);
 
   const breadcrumbs = generateBreadcrumbSchema([
     { name: 'Home', url: '/' },
@@ -63,7 +47,7 @@ export default async function ToolsPage(props: {
   const itemList = generateItemListSchema(
     'AI Tools Directory',
     'Browse AI tools with pricing and feature details',
-    tools.map((tool: any) => ({
+    catalog.tools.map((tool: any) => ({
       name: tool.name,
       url: `/tools/${tool.slug}`,
       description: tool.tagline || ''
@@ -87,7 +71,7 @@ export default async function ToolsPage(props: {
             <div className="mb-8">
               <h1 className="heading-1 mb-4">All AI Tools</h1>
               <p className="text-lead">
-                {tools.length} curated tools. No fake ratings.
+                {publishedPool.length} curated tools. No fake ratings.
               </p>
             </div>
 
@@ -101,13 +85,24 @@ export default async function ToolsPage(props: {
             </div>
 
             <ToolsClient
-              initialTools={tools}
               categories={categories}
-              initialQuery={searchParams.q || ''}
-              initialCategory={searchParams.category || 'all'}
-              initialPrice={searchParams.price || 'all'}
-              initialFree={searchParams.free === '1'}
-            />
+              initialQuery={query}
+              initialCategory={category}
+              initialPrice={price}
+              initialFree={free}
+              resultCount={catalog.tools.length}
+              publishedCount={publishedPool.length}
+            >
+              <ToolsResults
+                tools={catalog.tools}
+                query={query}
+                selectedCategory={category}
+                priceFilter={price}
+                hasFreeTier={free}
+                didYouMean={didYouMean}
+                popularCategories={popularCategories}
+              />
+            </ToolsClient>
 
             <div className="mt-16 bg-[#F3EFFF] border border-[#6C39EF] rounded-2xl p-8 text-center">
               <h2 className="heading-2 mb-4">Can't find a tool?</h2>

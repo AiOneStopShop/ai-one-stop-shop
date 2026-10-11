@@ -37,6 +37,8 @@ Some links are paid (affiliate) links. If you sign up through one, we may earn a
 - Categories: ${siteUrl}/api/v1/categories
 - OpenAPI spec: ${siteUrl}/openapi.json (planned)
 
+GET /api/v1/tools returns public fields only: name, slug, tagline, description, category, pricing_model, has_free_tier, pricing_summary, website_url, logo_url, go_url, and updated_at. Search with ?q= (normalized lowercase). Responses are cached for 5 minutes (stale-while-revalidate 10 minutes).
+
 ## More information
 
 - How we rank tools: ${siteUrl}/how-we-rank

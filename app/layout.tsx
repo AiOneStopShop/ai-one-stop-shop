@@ -56,12 +56,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-[#F9F8F5] text-[#171C26] font-inter antialiased">
+        <CookieConsent />
         <Header />
         <main id="main" tabIndex={-1} className="min-h-screen focus:outline-none">
           {children}
         </main>
         <Footer />
-        <CookieConsent />
       </body>
     </html>
   );

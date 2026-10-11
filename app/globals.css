@@ -21,8 +21,21 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  html.has-cookie-banner {
+    scroll-padding-bottom: var(--cookie-banner-height, 4.5rem);
+  }
+
+  html.has-cookie-banner body {
+    padding-bottom: var(--cookie-banner-height, 4.5rem);
+  }
+
+  html.has-cookie-banner .sticky-compare-btn {
+    bottom: calc(var(--cookie-banner-height, 4.5rem) + 1rem);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -76,8 +89,13 @@
     @apply py-16 md:py-24 lg:py-32;
   }
 
-  .heading-display {
+  .heading-display,
+  .heading-hero {
     @apply font-dm-sans font-bold text-[clamp(2.75rem,1.6rem+5vw,6rem)] leading-tight tracking-tight;
+  }
+
+  .badge-category {
+    @apply badge bg-[#F3EFFF] text-[#4A2D86] border border-[#6C39EF];
   }
 
   .heading-1 {

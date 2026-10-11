@@ -99,7 +99,7 @@ export function StickyCompareButton() {
   if (count === 0) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-[60]">
+    <div className="sticky-compare-btn fixed right-6 z-[60] bottom-6">
       <button
         onClick={handleCompare}
         className="btn-primary shadow-lg flex items-center gap-2"

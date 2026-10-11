@@ -1,10 +1,30 @@
 # Build Status - AI One Stop Shop
 
-**Last Updated:** October 10, 2026, 22:43 UTC  
-**Current Commit:** `a78eecf` (QA Round 3 + 3b)  
-**Build:** ✅ Passing (24 routes)  
+**Last Updated:** October 11, 2026  
+**Current Commit:** see Secura 008 section below  
+**Build:** ✅ Passing  
 **Next.js:** ✅ 15.5.27 (CVE-2025-66478 PATCHED)  
 **npm audit:** ✅ 2 vulnerabilities (1 moderate, 1 high - build-time only)
+
+---
+
+## Secura 008 — `approve_tool_submission` grants
+
+Applied `001`–`008` on local Postgres 16. Then:
+
+```sql
+SELECT grantee FROM information_schema.routine_privileges WHERE routine_name='approve_tool_submission'
+```
+
+```
+   grantee    
+--------------
+ postgres
+ service_role
+(2 rows)
+```
+
+Only `postgres` (owner) and `service_role` remain. `PUBLIC`, `anon`, and `authenticated` have no EXECUTE. The function was recreated with `SET search_path = ''` and `public.*` table references.
 
 ---
 

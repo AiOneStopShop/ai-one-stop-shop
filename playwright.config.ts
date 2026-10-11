@@ -1,4 +1,16 @@
+import Module from 'node:module';
 import { defineConfig, devices } from '@playwright/test';
+
+const originalLoad = (Module as unknown as { _load: (...args: unknown[]) => unknown })._load;
+(Module as unknown as { _load: (...args: unknown[]) => unknown })._load = function (
+  request: string,
+  ...rest: unknown[]
+) {
+  if (request === 'server-only') {
+    return {};
+  }
+  return originalLoad.call(this, request, ...rest);
+};
 
 export default defineConfig({
   testDir: './tests',

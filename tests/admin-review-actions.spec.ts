@@ -19,7 +19,10 @@ const pending: PendingSubmission = {
   status: 'pending',
 };
 
-function createTrackingStore() {
+function createTrackingStore(options?: {
+  url?: string;
+  claimLimit?: number;
+}) {
   const calls = {
     getPending: 0,
     createDraft: 0,
@@ -27,11 +30,16 @@ function createTrackingStore() {
   };
   const drafts: DraftToolInsert[] = [];
   const marks: Array<{ id: string; update: SubmissionUpdate }> = [];
+  const submission: PendingSubmission = {
+    ...pending,
+    website_url: options?.url ?? pending.website_url,
+  };
+  let claims = 0;
 
   const store: ReviewStore = {
     async getPendingSubmission() {
       calls.getPending += 1;
-      return { data: pending };
+      return { data: submission };
     },
     async createDraftTool(tool) {
       calls.createDraft += 1;
@@ -41,11 +49,25 @@ function createTrackingStore() {
     async markSubmission(id, update) {
       calls.mark += 1;
       marks.push({ id, update });
-      return {};
+      const limit = options?.claimLimit ?? Infinity;
+      if (claims >= limit) {
+        return { claimed: false };
+      }
+      claims += 1;
+      return { claimed: true };
     },
   };
 
   return { store, calls, drafts, marks };
+}
+
+function adminApprove(store: ReviewStore, submissionId: unknown = VALID_ID) {
+  return runSubmissionReview({
+    submissionId,
+    decision: 'approved',
+    checkAdmin: async () => ({ authorized: true, userId: ADMIN_ID }),
+    getStore: () => store,
+  });
 }
 
 test.describe('admin submission review actions', () => {
@@ -111,6 +133,7 @@ test.describe('admin submission review actions', () => {
       slug: slugFromName('Example AI'),
       status: 'draft',
       website_url: 'https://example.com',
+      source_url: 'https://example.com',
     });
     expect(tracking.marks[0]).toMatchObject({
       id: VALID_ID,
@@ -143,12 +166,50 @@ test.describe('admin submission review actions', () => {
     });
   });
 
+  test('approve rejects javascript: and data: URLs and accepts https:', async () => {
+    const javascriptStore = createTrackingStore({ url: 'javascript:alert(1)' });
+    const javascriptResult = await adminApprove(javascriptStore.store);
+    expect(javascriptResult).toEqual({ success: false, error: 'invalid_url' });
+    expect(javascriptStore.calls.createDraft).toBe(0);
+    expect(javascriptStore.calls.mark).toBe(0);
+
+    const dataStore = createTrackingStore({ url: 'data:text/html,<script>alert(1)</script>' });
+    const dataResult = await adminApprove(dataStore.store);
+    expect(dataResult).toEqual({ success: false, error: 'invalid_url' });
+    expect(dataStore.calls.createDraft).toBe(0);
+    expect(dataStore.calls.mark).toBe(0);
+
+    const httpsStore = createTrackingStore({ url: 'https://safe.example' });
+    const httpsResult = await adminApprove(httpsStore.store);
+    expect(httpsResult).toEqual({ success: true });
+    expect(httpsStore.calls.createDraft).toBe(1);
+    expect(httpsStore.drafts[0]).toMatchObject({
+      website_url: 'https://safe.example',
+      source_url: 'https://safe.example',
+    });
+  });
+
+  test('a second concurrent approve does not create another draft', async () => {
+    const tracking = createTrackingStore({ claimLimit: 1 });
+
+    const first = await adminApprove(tracking.store);
+    const second = await adminApprove(tracking.store);
+
+    expect(first).toEqual({ success: true });
+    expect(second).toEqual({ success: false, error: 'Submission is no longer pending' });
+    expect(tracking.calls.createDraft).toBe(1);
+    expect(tracking.calls.mark).toBe(2);
+  });
+
   test('review page binds the server actions, not missing routes', async () => {
     const { readFileSync } = await import('fs');
-    const src = readFileSync('app/admin/review/page.tsx', 'utf8');
-    expect(src).not.toContain('/admin/review/approve-submission');
-    expect(src).not.toContain('/admin/review/reject-submission');
-    expect(src).toContain('action={approveSubmission}');
-    expect(src).toContain('action={rejectSubmission}');
+    const pageSrc = readFileSync('app/admin/review/page.tsx', 'utf8');
+    const actionsSrc = readFileSync('app/admin/review/SubmissionReviewActions.tsx', 'utf8');
+    expect(pageSrc).not.toContain('/admin/review/approve-submission');
+    expect(pageSrc).not.toContain('/admin/review/reject-submission');
+    expect(pageSrc).toContain('SubmissionReviewActions');
+    expect(actionsSrc).toContain('action={approveAction}');
+    expect(actionsSrc).toContain('action={rejectAction}');
+    expect(actionsSrc).toContain('role="alert"');
   });
 });

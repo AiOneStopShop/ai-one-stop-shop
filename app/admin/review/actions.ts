@@ -161,7 +161,7 @@ function createServiceReviewStore(): ReviewStore {
     return {
       getPendingSubmission: async () => ({ data: null, ...missing }),
       createDraftTool: async () => missing,
-      markSubmission: async () => missing,
+      markSubmission: async () => ({ ...missing, claimed: false }),
     };
   }
 
@@ -205,22 +205,28 @@ function createServiceReviewStore(): ReviewStore {
     },
 
     async markSubmission(id: string, update: SubmissionUpdate) {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('tool_submissions')
         .update(update)
         .eq('id', id)
-        .eq('status', 'pending');
+        .eq('status', 'pending')
+        .select('id');
 
       if (error) {
         console.error('Mark submission error:', error);
-        return { error: 'Failed to update submission' };
+        return { error: 'Failed to update submission', claimed: false };
       }
-      return {};
+      return { claimed: Array.isArray(data) && data.length === 1 };
     },
   };
 }
 
-export async function approveSubmission(formData: FormData): Promise<void> {
+export type ReviewFormState = { error: string | null };
+
+export async function approveSubmission(
+  _prevState: ReviewFormState,
+  formData: FormData
+): Promise<ReviewFormState> {
   const result = await runSubmissionReview({
     submissionId: formData.get('submissionId'),
     decision: 'approved',
@@ -228,13 +234,19 @@ export async function approveSubmission(formData: FormData): Promise<void> {
     getStore: createServiceReviewStore,
   });
 
-  if (result.success) {
-    revalidatePath('/admin/review');
-    revalidatePath('/tools');
+  if (!result.success) {
+    return { error: result.error || 'Failed to approve submission' };
   }
+
+  revalidatePath('/admin/review');
+  revalidatePath('/tools');
+  return { error: null };
 }
 
-export async function rejectSubmission(formData: FormData): Promise<void> {
+export async function rejectSubmission(
+  _prevState: ReviewFormState,
+  formData: FormData
+): Promise<ReviewFormState> {
   const result = await runSubmissionReview({
     submissionId: formData.get('submissionId'),
     decision: 'rejected',
@@ -242,7 +254,10 @@ export async function rejectSubmission(formData: FormData): Promise<void> {
     getStore: createServiceReviewStore,
   });
 
-  if (result.success) {
-    revalidatePath('/admin/review');
+  if (!result.success) {
+    return { error: result.error || 'Failed to reject submission' };
   }
+
+  revalidatePath('/admin/review');
+  return { error: null };
 }

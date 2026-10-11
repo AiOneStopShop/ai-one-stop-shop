@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { approveSubmission, rejectSubmission } from './actions';
+import { SubmissionReviewActions } from './SubmissionReviewActions';
 
 async function getServerSupabase() {
   const cookieStore = await cookies();
@@ -153,28 +153,10 @@ export default async function AdminReviewPage() {
                       <p>Submitted: {new Date(submission.created_at).toLocaleDateString()}</p>
                     </div>
                     
-                    <div className="flex gap-2">
-                      <form action={approveSubmission}>
-                        <input type="hidden" name="submissionId" value={submission.id} />
-                        <button
-                          type="submit"
-                          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors text-sm font-medium"
-                        >
-                          Approve & Create Draft
-                          <span className="sr-only"> {submission.tool_name}</span>
-                        </button>
-                      </form>
-                      <form action={rejectSubmission}>
-                        <input type="hidden" name="submissionId" value={submission.id} />
-                        <button
-                          type="submit"
-                          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
-                        >
-                          Reject
-                          <span className="sr-only"> {submission.tool_name}</span>
-                        </button>
-                      </form>
-                    </div>
+                    <SubmissionReviewActions
+                      submissionId={submission.id}
+                      toolName={submission.tool_name}
+                    />
                   </div>
                 </div>
               ))}

@@ -1,3 +1,4 @@
+import 'server-only';
 import { z } from 'zod';
 
 export const submissionIdSchema = z.string().uuid();
@@ -37,7 +38,7 @@ export type SubmissionUpdate = {
 export type ReviewStore = {
   getPendingSubmission: (id: string) => Promise<{ data: PendingSubmission | null; error?: string }>;
   createDraftTool: (tool: DraftToolInsert) => Promise<{ error?: string }>;
-  markSubmission: (id: string, update: SubmissionUpdate) => Promise<{ error?: string }>;
+  markSubmission: (id: string, update: SubmissionUpdate) => Promise<{ error?: string; claimed: boolean }>;
 };
 
 export function slugFromName(name: string): string {
@@ -47,6 +48,15 @@ export function slugFromName(name: string): string {
     .replace(/^-+|-+$/g, '')
     .slice(0, 80);
   return slug || 'tool';
+}
+
+export function isHttpOrHttpsUrl(value: string): boolean {
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
 }
 
 export async function runSubmissionReview(input: {
@@ -69,13 +79,16 @@ export async function runSubmissionReview(input: {
   const store = input.getStore();
 
   if (input.decision === 'rejected') {
-    const { error } = await store.markSubmission(parsed.data, {
+    const { error, claimed } = await store.markSubmission(parsed.data, {
       status: 'rejected',
       reviewed_by: auth.userId,
       reviewed_at: new Date().toISOString(),
     });
     if (error) {
       return { success: false, error: 'Failed to reject submission' };
+    }
+    if (!claimed) {
+      return { success: false, error: 'Submission is no longer pending' };
     }
     return { success: true };
   }
@@ -85,26 +98,35 @@ export async function runSubmissionReview(input: {
     return { success: false, error: pending.error || 'Submission not found' };
   }
 
-  const { error: draftError } = await store.createDraftTool({
-    slug: slugFromName(pending.data.tool_name),
-    name: pending.data.tool_name,
-    website_url: pending.data.website_url,
-    description: pending.data.description,
-    tagline: pending.data.description ? pending.data.description.slice(0, 255) : null,
-    source_url: pending.data.website_url,
-    status: 'draft',
-  });
-  if (draftError) {
-    return { success: false, error: 'Failed to create draft' };
+  const websiteUrl = pending.data.website_url;
+  const sourceUrl = pending.data.website_url;
+  if (!isHttpOrHttpsUrl(websiteUrl) || !isHttpOrHttpsUrl(sourceUrl)) {
+    return { success: false, error: 'invalid_url' };
   }
 
-  const { error } = await store.markSubmission(parsed.data, {
+  const { error: claimError, claimed } = await store.markSubmission(parsed.data, {
     status: 'approved',
     reviewed_by: auth.userId,
     reviewed_at: new Date().toISOString(),
   });
-  if (error) {
+  if (claimError) {
     return { success: false, error: 'Failed to approve submission' };
+  }
+  if (!claimed) {
+    return { success: false, error: 'Submission is no longer pending' };
+  }
+
+  const { error: draftError } = await store.createDraftTool({
+    slug: slugFromName(pending.data.tool_name),
+    name: pending.data.tool_name,
+    website_url: websiteUrl,
+    description: pending.data.description,
+    tagline: pending.data.description ? pending.data.description.slice(0, 255) : null,
+    source_url: sourceUrl,
+    status: 'draft',
+  });
+  if (draftError) {
+    return { success: false, error: 'Failed to create draft' };
   }
 
   return { success: true };

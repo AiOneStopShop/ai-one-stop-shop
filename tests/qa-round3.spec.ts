@@ -15,39 +15,38 @@ test.describe('Quinn QA Round 3 Verification', () => {
     // Find first 3 tool cards with checkboxes
     const checkboxes = await page.getByRole('checkbox', { name: /^Compare / }).all();
     
-    if (checkboxes.length >= 3) {
-      // Check first tool
-      await checkboxes[0].check();
-      await page.screenshot({ path: 'docs/screenshots/compare-1-checked.png', fullPage: true });
-      
-      // Check second tool (should not replace first)
-      await checkboxes[1].check();
-      await page.screenshot({ path: 'docs/screenshots/compare-2-checked.png', fullPage: true });
-      
-      // Verify sticky button shows "Compare (2)"
-      const compareButton = page.locator('button:has-text("Compare (2)")');
-      await expect(compareButton).toBeVisible();
-      
-      // Check third tool
-      await checkboxes[2].check();
-      await page.screenshot({ path: 'docs/screenshots/compare-3-checked.png', fullPage: true });
-      
-      // Verify button shows "Compare (3)"
-      await expect(page.locator('button:has-text("Compare (3)")')).toBeVisible();
-      
-      // 4th tool is blocked at the 3-tool limit (inline status, no alert())
-      if (checkboxes.length >= 4) {
-        await checkboxes[3].click();
-        await expect(checkboxes[3]).not.toBeChecked();
-      }
-      
-      // Click Compare button and verify navigation
-      await page.locator('button:has-text("Compare (3)")').click();
-      await page.waitForURL('**/compare?tools=*');
-      await page.screenshot({ path: 'docs/screenshots/compare-page-with-tools.png', fullPage: true });
-      
-      console.log('✅ Compare multi-select works correctly');
-    }
+    expect(checkboxes.length).toBeGreaterThanOrEqual(4);
+
+    // Check first tool
+    await checkboxes[0].check();
+    await page.screenshot({ path: 'docs/screenshots/compare-1-checked.png', fullPage: true });
+
+    // Check second tool (should not replace first)
+    await checkboxes[1].check();
+    await page.screenshot({ path: 'docs/screenshots/compare-2-checked.png', fullPage: true });
+
+    // Verify sticky button shows "Compare (2)"
+    const compareButton = page.locator('button:has-text("Compare (2)")');
+    await expect(compareButton).toBeVisible();
+
+    // Check third tool
+    await checkboxes[2].check();
+    await page.screenshot({ path: 'docs/screenshots/compare-3-checked.png', fullPage: true });
+
+    // Verify button shows "Compare (3)"
+    await expect(page.locator('button:has-text("Compare (3)")')).toBeVisible();
+
+    // 4th tool is blocked at the 3-tool limit (inline status, no alert())
+    await checkboxes[3].click();
+    await expect(checkboxes[3]).not.toBeChecked();
+    await expect(page.locator('button:has-text("Compare (4)")')).toHaveCount(0);
+
+    // Click Compare button and verify navigation
+    await page.locator('button:has-text("Compare (3)")').click();
+    await page.waitForURL('**/compare?tools=*');
+    await page.screenshot({ path: 'docs/screenshots/compare-page-with-tools.png', fullPage: true });
+
+    console.log('✅ Compare multi-select works correctly');
   });
 
   test('2. Compare with button on tool detail page', async ({ page }) => {

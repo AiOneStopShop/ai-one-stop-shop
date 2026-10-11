@@ -34,7 +34,7 @@ export default function AboutPage() {
 
             <h2 className="heading-2 mt-12">The numbers you see</h2>
             <p>
-              Right now, I have a small catalog of hand-checked tools. Every number you see on this site comes from real data—tool counts, prices, and "last verified" dates. If I don't have real data for something, I don't show it.
+              Right now, I have a small catalog of tools. Every number you see on this site comes from real data—tool counts, prices, and "Price last checked" dates. If I don't have real data for something, I don't show it.
             </p>
 
             <p>

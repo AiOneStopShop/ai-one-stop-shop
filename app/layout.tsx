@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     default: 'AI One Stop Shop - Honest AI Tools Directory',
     template: '%s | AI One Stop Shop'
   },
-  description: 'Hand-checked AI tools directory. No fake ratings, no paid rankings.',
+  description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
   keywords: ['AI tools', 'artificial intelligence', 'productivity', 'coding assistants', 'AI directory'],
   authors: [{ name: 'Kati Bartolec' }],
   creator: 'Kati Bartolec',
@@ -35,13 +35,13 @@ export const metadata: Metadata = {
     url: '/',
     siteName: 'AI One Stop Shop',
     title: 'AI One Stop Shop - Honest AI Tools Directory',
-    description: 'Hand-checked AI tools directory. No fake ratings, no paid rankings.',
+    description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
     images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'AI One Stop Shop' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI One Stop Shop',
-    description: 'Hand-checked AI tools directory. No fake ratings, no paid rankings.',
+    description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
     images: ['/og-image.svg'],
   },
   robots: {

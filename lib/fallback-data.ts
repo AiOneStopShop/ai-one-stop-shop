@@ -3,6 +3,7 @@
 // MANUALLY CORRECTED 2026-10-11:
 // - placeholder editorial scores (85/70) set to null
 // - Stable Diffusion XL and AgentGPT no longer marked free
+// - Cursor, GitHub Copilot, and Grammarly marked has_free_tier (Hobby / Copilot Free / Grammarly Free)
 
 export const fallbackTools = [
   {
@@ -150,7 +151,7 @@ export const fallbackTools = [
     "source_url": "https://github.com/features/copilot",
     "pricing_summary": "$10/month",
     "pricing_model": "subscription",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "VS Code",
       "JetBrains",
@@ -196,7 +197,7 @@ export const fallbackTools = [
     "source_url": "https://cursor.com",
     "pricing_summary": "$20/month",
     "pricing_model": "subscription",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "Desktop"
     ],
@@ -505,7 +506,7 @@ export const fallbackTools = [
     "source_url": "https://grammarly.com",
     "pricing_summary": "$12/month",
     "pricing_model": "subscription",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "Web",
       "Desktop",

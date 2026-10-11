@@ -34,9 +34,6 @@
     padding-bottom: var(--cookie-banner-height, 4.5rem);
   }
 
-  html.has-cookie-banner .sticky-compare-btn {
-    bottom: calc(var(--cookie-banner-height, 4.5rem) + 1rem);
-  }
 
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -139,4 +136,13 @@ li a:hover,
 article a:hover,
 .prose a:hover {
   text-decoration-thickness: 2px;
+}
+
+/* Unlayered so these beat Tailwind's `bottom-6` utility. */
+.sticky-compare-btn {
+  bottom: 1.5rem;
+}
+
+html.has-cookie-banner .sticky-compare-btn {
+  bottom: calc(var(--cookie-banner-height, 4.5rem) + 1.5rem);
 }

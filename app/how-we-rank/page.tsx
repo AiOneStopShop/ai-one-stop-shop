@@ -80,7 +80,7 @@ export default function HowWeRankPage() {
             <div>
               <h2 className="heading-2 mb-4">How often we re-check</h2>
               <p>
-                AI tools change fast: prices, plans, and features. We work to re-check each listed tool's pricing and key details regularly. When we have a verified date, tool pages show a "Price last checked" date.
+                AI tools change fast: prices, plans, and features. We re-check listed tools' pricing and key details. When we have a check date, tool pages show a "Price last checked" date.
               </p>
             </div>
 

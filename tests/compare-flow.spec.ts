@@ -52,6 +52,27 @@ test.describe('Compare Flow', () => {
     await page.screenshot({ path: 'docs/screenshots/compare-step4-compare-page.png', fullPage: true });
   });
 
+  test('blocks a 4th tool at the 3-tool cap', async ({ page }) => {
+    await page.goto('/tools', { waitUntil: 'domcontentloaded' });
+    const checkboxes = page.getByRole('checkbox', { name: /^Compare / });
+    await checkboxes.first().waitFor({ state: 'visible', timeout: 15000 });
+
+    expect(await checkboxes.count()).toBeGreaterThanOrEqual(4);
+
+    await checkboxes.nth(0).check();
+    await checkboxes.nth(1).check();
+    await checkboxes.nth(2).check();
+    await expect(page.locator('button:has-text("Compare (3)")')).toBeVisible({ timeout: 5000 });
+
+    await checkboxes.nth(3).click();
+    await expect(checkboxes.nth(3)).not.toBeChecked();
+    await expect(page.locator('button:has-text("Compare (3)")')).toBeVisible();
+    await expect(page.locator('button:has-text("Compare (4)")')).toHaveCount(0);
+
+    const slugs = await page.evaluate(() => JSON.parse(localStorage.getItem('compareList') || '[]'));
+    expect(slugs).toHaveLength(3);
+  });
+
   test('compare with button exists on tool page and pre-fills that tool', async ({ page }) => {
     await page.goto('/tools', { waitUntil: 'domcontentloaded' });
     const firstToolLink = page.locator('article.card h2 a').first();
@@ -71,5 +92,9 @@ test.describe('Compare Flow', () => {
     await page.waitForURL(/\/compare\?tools=/, { timeout: 10000 });
     const slug = (href || '').split('tools=')[1];
     expect(page.url()).toContain(slug);
+
+    await expect(page.locator('#compare-selector')).toBeVisible();
+    await expect(page.getByLabel('Select tool 1')).toHaveValue(slug);
+    await expect(page.locator('table')).toHaveCount(0);
   });
 });

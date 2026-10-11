@@ -10,7 +10,6 @@
     "lint": "next lint",
     "generate-fallback": "tsx scripts/generate-fallback.ts",
     "seed": "tsx scripts/seed-database.ts",
-    "seed-json": "tsx scripts/seed-from-json.ts",
     "import": "tsx scripts/import-pipeline.ts",
     "enrich": "tsx scripts/enrichment-job.ts",
     "type-check": "tsc --noEmit"

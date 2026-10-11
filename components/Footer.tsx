@@ -11,7 +11,7 @@ export function Footer() {
               AI One Stop Shop
             </p>
             <p className="text-sm text-gray-300 mb-4">
-              Hand-checked AI tools directory. No fake ratings, no paid rankings.
+              Curated AI tools directory. No fake ratings, no paid rankings.
             </p>
             {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS && (
               <p className="text-xs text-gray-400 whitespace-pre-line">

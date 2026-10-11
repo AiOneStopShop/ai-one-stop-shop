@@ -1,5 +1,5 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { fallbackTools } from '@/lib/fallback-data';
 import { CompareSelector } from './CompareSelector';
@@ -57,9 +57,13 @@ export default async function ComparePage(props: {
     .order('name')
     .limit(200);
 
-  const availableTools = allTools || fallbackTools.map(t => ({ slug: t.slug, name: t.name }));
+  const availableTools = (allTools && allTools.length > 0)
+    ? allTools
+    : fallbackTools.filter(t => t.status === 'published').map(t => ({ slug: t.slug, name: t.name }));
 
-  if (toolSlugs.length === 0) {
+  const tools = toolSlugs.length > 0 ? await getToolsForComparison(toolSlugs) : [];
+
+  if (tools.length < 2) {
     return (
       <div className="scroll-mt-16">
         <section className="section-spacing">
@@ -68,9 +72,13 @@ export default async function ComparePage(props: {
             <p className="text-lg text-[#5B657B] mb-8 text-center">
               Compare AI tools side-by-side to find the best fit for your needs.
             </p>
-            
-            <CompareSelector tools={availableTools} />
-            
+
+            <div id="compare-selector">
+              <Suspense fallback={<p className="text-[#5B657B]">Loading selector…</p>}>
+                <CompareSelector tools={availableTools} />
+              </Suspense>
+            </div>
+
             <div className="text-center mt-8">
               <Link href="/tools" className="btn-secondary">
                 ← Back to All Tools
@@ -82,21 +90,15 @@ export default async function ComparePage(props: {
     );
   }
 
-  const tools = await getToolsForComparison(toolSlugs);
-
-  if (tools.length === 0) {
-    notFound();
-  }
-
   return (
     <div className="scroll-mt-16">
       <section className="section-spacing">
         <div className="container-max">
           <div className="mb-8">
             <div className="mb-4 text-center">
-              <Link href={`/compare?tools=${toolSlugs.join(',')}`} className="text-[#6C39EF] hover:underline text-sm focus-ring rounded">
+              <a href="#compare-selector" className="text-[#6C39EF] hover:underline text-sm focus-ring rounded">
                 ← Change selection
-              </Link>
+              </a>
             </div>
             <h1 className="heading-1 mb-6 text-center">
               Compare {tools.map((t: any) => t.name).join(' vs ')}
@@ -212,6 +214,12 @@ export default async function ComparePage(props: {
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <div id="compare-selector" className="mt-12 max-w-4xl mx-auto">
+            <Suspense fallback={<p className="text-[#5B657B]">Loading selector…</p>}>
+              <CompareSelector tools={availableTools} />
+            </Suspense>
           </div>
 
           <div className="mt-8 text-center">

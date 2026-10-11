@@ -34,7 +34,7 @@ async function getCategories() {
 
 export const metadata = {
   title: 'AI Tools Directory - All Tools',
-  description: 'Browse our complete directory of hand-checked AI tools. Each tool includes what it does, who it\'s for, real pricing, and when we last verified it.',
+  description: 'Browse our complete directory of AI tools. Each tool includes what it does, who it\'s for, and real pricing.',
   alternates: { canonical: '/tools' },
 };
 

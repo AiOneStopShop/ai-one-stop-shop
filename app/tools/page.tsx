@@ -32,9 +32,10 @@ export default async function ToolsPage(props: {
     getPublishedSuggestionPool(),
   ]);
 
-  const didYouMean = catalog.tools.length === 0 && query
+  const suggested = catalog.tools.length === 0 && query
     ? suggestDidYouMean(query, publishedPool)
     : null;
+  const didYouMean = suggested?.name ? { name: suggested.name } : null;
   const popularCategories = [...categories]
     .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
     .slice(0, 4);

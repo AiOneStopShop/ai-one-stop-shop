@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, X } from 'lucide-react';
@@ -200,7 +200,9 @@ export function ToolsClient({
             const primaryCategory = tool.tool_categories?.find((tc: any) => tc.is_primary)?.categories;
 
             return (
-              <article key={tool.id} className="card group relative">
+              <Fragment key={tool.id}>
+                {'\n'}
+              <article className="card group relative">
                 <div className="absolute top-4 right-4 z-10">
                   <CompareCheckbox toolSlug={tool.slug} toolName={tool.name} />
                 </div>
@@ -245,6 +247,7 @@ export function ToolsClient({
                   )}
                 </div>
               </article>
+              </Fragment>
             );
           })}
         </div>

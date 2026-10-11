@@ -4,6 +4,12 @@ import { supabase } from '@/lib/supabase';
 import { fallbackTools } from '@/lib/fallback-data';
 import { CompareSelector } from './CompareSelector';
 
+export const metadata = {
+  title: 'Compare AI Tools',
+  description: 'Compare AI tools side-by-side to find the best fit for your needs.',
+  alternates: { canonical: '/compare' },
+};
+
 async function getToolsForComparison(slugs: string[]) {
   try {
     const { data, error } = await supabase
@@ -100,6 +106,9 @@ export default async function ComparePage(props: {
           {/* Comparison Table */}
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
+              <caption className="sr-only">
+                Side-by-side comparison of {tools.map((t: any) => t.name).join(', ')}
+              </caption>
               <thead>
                 <tr className="bg-[#F9F8F5]">
                   <th scope="col" className="text-left p-4 border border-[#E5E1DC] font-semibold text-[#171C26] min-w-[200px]">
@@ -142,7 +151,7 @@ export default async function ComparePage(props: {
 
                 <tr>
                   <th scope="row" className="text-left p-4 border border-[#E5E1DC] font-medium text-[#5B657B]">
-                    Primary Category
+                    Main category
                   </th>
                   {tools.map((tool: any) => {
                     const primaryCat = (tool.tool_categories as any[])?.find(tc => tc.is_primary)?.categories;
@@ -173,7 +182,9 @@ export default async function ComparePage(props: {
                         rel="noopener noreferrer"
                         className="text-[#6C39EF] hover:underline focus-ring rounded"
                       >
-                        Visit website →
+                        Visit <span className="sr-only">{tool.name} </span>website
+                        <span className="sr-only"> (opens in new tab)</span>
+                        <span aria-hidden="true"> →</span>
                       </a>
                     </td>
                   ))}
@@ -181,7 +192,7 @@ export default async function ComparePage(props: {
 
                 <tr>
                   <th scope="row" className="text-left p-4 border border-[#E5E1DC] font-medium text-[#5B657B]">
-                    Last Updated
+                    Info last checked
                   </th>
                   {tools.map((tool: any) => (
                     <td key={tool.id} className="p-4 border border-[#E5E1DC]">

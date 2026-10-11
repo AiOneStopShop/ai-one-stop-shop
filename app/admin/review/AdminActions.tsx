@@ -14,10 +14,10 @@ export function AdminActions({ tool }: { tool: any }) {
     const result = await approveTool(tool.id);
     
     if (result.success) {
-      setMessage('✅ Approved!');
-      setTimeout(() => window.location.reload(), 1000);
+      setMessage('Approved.');
+      setTimeout(() => window.location.reload(), 2500);
     } else {
-      setMessage(`❌ Error: ${result.error}`);
+      setMessage(`Error: ${result.error}`);
     }
     
     setLoading(false);
@@ -32,10 +32,10 @@ export function AdminActions({ tool }: { tool: any }) {
     const result = await rejectTool(tool.id);
     
     if (result.success) {
-      setMessage('✅ Rejected');
-      setTimeout(() => window.location.reload(), 1000);
+      setMessage('Rejected.');
+      setTimeout(() => window.location.reload(), 2500);
     } else {
-      setMessage(`❌ Error: ${result.error}`);
+      setMessage(`Error: ${result.error}`);
     }
     
     setLoading(false);
@@ -50,6 +50,7 @@ export function AdminActions({ tool }: { tool: any }) {
           className="px-4 py-2 bg-[#6C39EF] text-white font-medium rounded-lg hover:bg-[#5A2FD0] transition-colors disabled:opacity-50"
         >
           {loading ? 'Processing...' : 'Approve'}
+          <span className="sr-only"> {tool.name}</span>
         </button>
         <button
           onClick={handleReject}
@@ -57,10 +58,11 @@ export function AdminActions({ tool }: { tool: any }) {
           className="px-4 py-2 border-2 border-[#E5E1DC] text-[#5B657B] font-medium rounded-lg hover:bg-[#F9F8F5] transition-colors disabled:opacity-50"
         >
           Reject
+          <span className="sr-only"> {tool.name}</span>
         </button>
       </div>
       {message && (
-        <div className="mt-2 text-sm">{message}</div>
+        <div className="mt-2 text-sm" role="status" aria-live="polite">{message}</div>
       )}
     </div>
   );

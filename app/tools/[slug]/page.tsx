@@ -46,6 +46,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   return {
     title: `${tool.name} - ${tool.tagline || 'AI Tool'}`,
     description: tool.description || tool.tagline,
+    alternates: { canonical: `/tools/${tool.slug}` },
   };
 }
 
@@ -132,7 +133,8 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                         href={`/category/${cat.slug}`}
                         className="badge bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors focus-ring rounded"
                       >
-                        {cat.icon} {cat.name}
+                        {cat.icon ? <span aria-hidden="true">{cat.icon} </span> : null}
+                        {cat.name}
                       </Link>
                     ))}
                   </div>
@@ -160,7 +162,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {tool.features.map((feature: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <span className="text-[#6C39EF] mt-1">✓</span>
+                          <span className="text-[#6C39EF] mt-1" aria-hidden="true">✓</span>
                           <span>{feature}</span>
                         </li>
                       ))}
@@ -185,7 +187,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
 
               {/* Sidebar */}
               <div className="lg:col-span-1">
-                <div className="sticky top-20 space-y-6">
+                <div className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto space-y-6">
                   {/* Pricing Card */}
                   <div className="card">
                     <h2 className="heading-3 mb-4">Pricing</h2>
@@ -198,7 +200,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     
                     {tool.has_free_tier === true && (
                       <span className="badge bg-green-50 text-green-700 border border-green-200 mb-4 inline-block">
-                        ✓ Free tier available
+                        <span aria-hidden="true">✓ </span>Free tier available
                       </span>
                     )}
 
@@ -223,10 +225,12 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     <a
                       href={visitUrl}
                       target="_blank"
-                      rel={isAffiliate ? 'sponsored nofollow' : 'noopener noreferrer'}
+                      rel={isAffiliate ? 'sponsored nofollow noopener' : 'noopener noreferrer'}
                       className="btn-primary w-full flex items-center justify-center gap-2"
+                      aria-describedby={isAffiliate ? 'paid-note' : undefined}
                     >
                       Visit {tool.name}
+                      <span className="sr-only">{isAffiliate ? ' (paid link, opens in a new tab)' : ' (opens in new tab)'}</span>
                       <ExternalLink className="h-4 w-4" aria-hidden="true" />
                     </a>
 
@@ -239,7 +243,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     </Link>
 
                     {isAffiliate && (
-                      <p className="text-xs text-[#5B657B] mt-3 flex items-start gap-1">
+                      <p id="paid-note" className="text-xs text-[#5B657B] mt-3 flex items-start gap-1">
                         <span className="font-medium text-[#C62810]">Paid link:</span>
                         <span>
                           We may earn a commission if you sign up. It never changes our ranking.{' '}
@@ -262,8 +266,10 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                         className="text-sm text-[#6C39EF] hover:underline focus-ring rounded"
                       >
                         {/\/(pricing|plans|price)(\/|$|\?)/i.test(tool.source_url)
-                          ? 'Official pricing page ↗'
-                          : 'Official site ↗'}
+                          ? 'Official pricing page'
+                          : 'Official site'}
+                        <span className="sr-only"> (opens in new tab)</span>
+                        <span aria-hidden="true"> ↗</span>
                       </a>
                     </div>
                   )}

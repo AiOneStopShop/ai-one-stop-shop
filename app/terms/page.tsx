@@ -1,6 +1,7 @@
 export const metadata = {
   title: 'Terms of Service',
   description: 'Terms of service for AI One Stop Shop',
+  alternates: { canonical: '/terms' },
 };
 
 export default function TermsPage() {

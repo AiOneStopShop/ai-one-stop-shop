@@ -3,6 +3,7 @@ import Link from 'next/link';
 export const metadata = {
   title: 'About - AI One Stop Shop',
   description: 'Learn about AI One Stop Shop and who\'s behind the honest AI tools directory.',
+  alternates: { canonical: '/about' },
 };
 
 export default function AboutPage() {

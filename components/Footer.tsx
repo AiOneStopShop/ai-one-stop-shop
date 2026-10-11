@@ -141,6 +141,7 @@ export function Footer() {
               className="hover:text-white transition-colors focus-ring rounded"
             >
               A oneTomorrow venture
+              <span className="sr-only"> (opens in new tab)</span>
             </a>
           </p>
         </div>

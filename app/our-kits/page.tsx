@@ -4,6 +4,7 @@ import { generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 export const metadata = {
   title: 'Our Own Kits - Made by AI One Stop Shop',
   description: 'DIY packs and kits we made ourselves to help you use AI tools while staying in control. Clearly marked and never part of our rankings.',
+  alternates: { canonical: '/our-kits' },
 };
 
 export default function OurKitsPage() {

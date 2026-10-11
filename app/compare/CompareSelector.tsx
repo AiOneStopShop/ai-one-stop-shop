@@ -67,7 +67,7 @@ export function CompareSelector({ tools }: { tools: Tool[] }) {
       <h2 className="heading-3 mb-4">Select tools to compare</h2>
       
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg text-sm">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg text-sm" role="alert">
           {error}
         </div>
       )}

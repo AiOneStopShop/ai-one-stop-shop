@@ -25,7 +25,7 @@ export function generateOrganizationSchema() {
     '@id': `${SITE_URL}/#organization`,
     name: SITE_NAME,
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.png`,
+    logo: `${SITE_URL}/logo.svg`,
     description: 'Honest AI tools directory with hand-checked tools and no fake ratings',
     founder: {
       '@type': 'Person',

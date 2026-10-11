@@ -36,11 +36,13 @@ export const metadata: Metadata = {
     siteName: 'AI One Stop Shop',
     title: 'AI One Stop Shop - Honest AI Tools Directory',
     description: 'Hand-checked AI tools directory. No fake ratings, no paid rankings.',
+    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'AI One Stop Shop' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AI One Stop Shop',
     description: 'Hand-checked AI tools directory. No fake ratings, no paid rankings.',
+    images: ['/og-image.svg'],
   },
   robots: {
     index: true,

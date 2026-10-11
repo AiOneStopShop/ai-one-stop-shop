@@ -67,6 +67,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   return {
     title: `Best ${category.name} AI Tools`,
     description: category.description || `Discover the best AI tools for ${category.name.toLowerCase()}`,
+    alternates: { canonical: `/category/${category.slug}` },
   };
 }
 
@@ -134,7 +135,8 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
             {/* Header */}
             <div className="mb-8">
               <h1 className="heading-1 mb-4">
-                {category.icon} Best {category.name} AI Tools
+                {category.icon ? <span aria-hidden="true">{category.icon} </span> : null}
+                Best {category.name} AI Tools
               </h1>
               {category.description && (
                 <p className="text-lead">{category.description}</p>
@@ -146,12 +148,12 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
 
             {/* Tools Grid */}
             {tools.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <ol className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0">
                 {tools.map((tool: any, index: number) => (
-                  <article key={tool.id} className="card">
+                  <li key={tool.id} className="card">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <span className="text-[#6C39EF] font-bold">#{index + 1}</span>
+                        <span className="text-[#6C39EF] font-bold" aria-hidden="true">#{index + 1}</span>
                         <h2 className="heading-3">
                           <Link 
                             href={`/tools/${tool.slug}`}
@@ -190,9 +192,9 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
                     >
                       View details
                     </Link>
-                  </article>
+                  </li>
                 ))}
-              </div>
+              </ol>
             ) : (
               <div className="text-center py-12 bg-[#F9F8F5] rounded-xl">
                 <p className="text-lg text-[#5B657B] mb-4">

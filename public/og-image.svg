@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="AI One Stop Shop">
+  <rect width="1200" height="630" fill="#F9F8F5"/>
+  <rect x="64" y="64" width="120" height="120" rx="28" fill="#6C39EF"/>
+  <text x="124" y="150" text-anchor="middle" font-family="Georgia, serif" font-size="72" fill="#F9F8F5">A</text>
+  <text x="220" y="150" font-family="Georgia, serif" font-size="56" fill="#171C26">AI One Stop Shop</text>
+  <text x="220" y="230" font-family="system-ui, sans-serif" font-size="36" fill="#5B657B">Honest AI tools directory</text>
+</svg>

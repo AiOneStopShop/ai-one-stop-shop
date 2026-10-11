@@ -3,6 +3,7 @@ import Link from 'next/link';
 export const metadata = {
   title: 'How We Rank AI Tools',
   description: 'Learn about our methodology for choosing and ranking AI tools.',
+  alternates: { canonical: '/how-we-rank' },
 };
 
 export default function HowWeRankPage() {

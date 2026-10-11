@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 export const metadata = {
   title: 'AI One Stop Shop is Free',
   description: 'Browse all AI tools for free. No subscriptions, no hidden costs.',
+  alternates: { canonical: '/pricing' },
 };
 
 export default function PricingPage() {

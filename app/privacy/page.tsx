@@ -1,6 +1,7 @@
 export const metadata = {
   title: 'Privacy Policy',
   description: 'Privacy policy for AI One Stop Shop',
+  alternates: { canonical: '/privacy' },
 };
 
 export default function PrivacyPage() {

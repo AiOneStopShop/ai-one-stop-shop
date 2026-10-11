@@ -3,6 +3,7 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Disclosure - How We Make Money',
   description: 'Learn how AI One Stop Shop makes money and how we keep our recommendations honest.',
+  alternates: { canonical: '/disclosure' },
 };
 
 export default function DisclosurePage() {

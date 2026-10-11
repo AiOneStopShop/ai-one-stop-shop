@@ -86,25 +86,27 @@ export default async function AdminReviewPage() {
 
   return (
     <div className="min-h-screen bg-[#F9F8F5]">
-      <div className="border-b border-[#E5E1DC] bg-white">
+      <header className="border-b border-[#E5E1DC] bg-white">
         <div className="container-max py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl">✨</span>
+              <span className="text-2xl" aria-hidden="true">✨</span>
               <span className="font-dm-sans font-bold text-lg text-[#171C26]">
                 AI One Stop Shop
               </span>
             </Link>
-            <span className="text-[#5B657B]">/</span>
+            <span className="text-[#5B657B]" aria-hidden="true">/</span>
             <h1 className="font-dm-sans font-semibold text-lg text-[#171C26]">
               Admin Review
             </h1>
           </div>
-          <Link href="/" className="text-sm text-[#6C39EF] hover:underline">
-            View Site →
-          </Link>
+          <nav aria-label="Admin">
+            <Link href="/" className="text-sm text-[#6C39EF] hover:underline">
+              View Site <span aria-hidden="true">→</span>
+            </Link>
+          </nav>
         </div>
-      </div>
+      </header>
 
       <div className="container-max py-12">
         {/* Submissions Section */}
@@ -130,7 +132,9 @@ export default async function AdminReviewPage() {
                         rel="noopener noreferrer"
                         className="text-sm text-[#6C39EF] hover:underline"
                       >
-                        {submission.website_url} ↗
+                        {submission.website_url}
+                        <span className="sr-only"> (opens in new tab)</span>
+                        <span aria-hidden="true"> ↗</span>
                       </a>
                     </div>
                     <span className="badge bg-yellow-50 text-yellow-700 border border-yellow-200">
@@ -153,9 +157,10 @@ export default async function AdminReviewPage() {
                         <input type="hidden" name="submissionId" value={submission.id} />
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors text-sm font-medium"
                         >
                           Approve & Create Draft
+                          <span className="sr-only"> {submission.tool_name}</span>
                         </button>
                       </form>
                       <form action="/admin/review/reject-submission" method="POST">
@@ -165,6 +170,7 @@ export default async function AdminReviewPage() {
                           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
                         >
                           Reject
+                          <span className="sr-only"> {submission.tool_name}</span>
                         </button>
                       </form>
                     </div>
@@ -201,7 +207,9 @@ export default async function AdminReviewPage() {
                         rel="noopener noreferrer"
                         className="text-sm text-[#6C39EF] hover:underline"
                       >
-                        {tool.website_url} ↗
+                        {tool.website_url}
+                        <span className="sr-only"> (opens in new tab)</span>
+                        <span aria-hidden="true"> ↗</span>
                       </a>
                     </div>
                     <span className="badge bg-gray-100 text-gray-700 border border-gray-200">
@@ -227,9 +235,10 @@ export default async function AdminReviewPage() {
                       }}>
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors text-sm font-medium"
                         >
                           Publish
+                          <span className="sr-only"> {tool.name}</span>
                         </button>
                       </form>
                       <form action={async () => {
@@ -242,6 +251,7 @@ export default async function AdminReviewPage() {
                           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
                         >
                           Reject
+                          <span className="sr-only"> {tool.name}</span>
                         </button>
                       </form>
                     </div>

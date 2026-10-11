@@ -44,6 +44,7 @@ async function getFeaturedTools(): Promise<Tool[]> {
 export const metadata = {
   title: 'AI One Stop Shop - Honest AI Tools Directory',
   description: 'AI tools we\'ve actually tried and would suggest to a friend. No fake ratings, no paid rankings. Find the right tool for your work and budget.',
+  alternates: { canonical: '/' },
 };
 
 export default async function HomePage() {
@@ -101,7 +102,7 @@ export default async function HomePage() {
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3EFFF] text-[#6C39EF] mb-4">
-                <span className="text-2xl">💰</span>
+                <span className="text-2xl" aria-hidden="true">💰</span>
               </div>
               <h2 className="heading-3 mb-2">Real Pricing</h2>
               <p className="text-[#5B657B]">
@@ -110,13 +111,13 @@ export default async function HomePage() {
             </div>
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F3EFFF] text-[#6C39EF] mb-4">
-                <span className="text-2xl">🔍</span>
+                <span className="text-2xl" aria-hidden="true">🔍</span>
               </div>
               <h2 className="heading-3 mb-2">Never Paid Rankings</h2>
               <p className="text-[#5B657B]">
                 Tools don't pay to move up.{' '}
                 <Link href="/how-we-rank" className="text-[#6C39EF] hover:underline focus-ring rounded">
-                  See how
+                  See how we rank tools
                 </Link>
               </p>
             </div>
@@ -130,7 +131,7 @@ export default async function HomePage() {
           <div className="flex items-center justify-between mb-8">
             <h2 className="heading-2">Featured Tools</h2>
             <Link href="/tools" className="text-[#6C39EF] hover:underline focus-ring rounded">
-              View all →
+              View all tools <span aria-hidden="true">→</span>
             </Link>
           </div>
           

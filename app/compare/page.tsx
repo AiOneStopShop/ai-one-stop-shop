@@ -18,14 +18,19 @@ async function getToolsForComparison(slugs: string[]) {
 
     if (error) {
       console.error('Supabase error in compare:', error);
-      return [];
     }
     
     const filtered = (data || []).filter((tool: any) => 
       slugs.includes(tool.slug) && tool.status === 'published'
     );
-    
-    return filtered;
+
+    if (filtered.length > 0) {
+      return filtered;
+    }
+
+    return fallbackTools.filter((tool: any) =>
+      slugs.includes(tool.slug) && tool.status === 'published'
+    );
   } catch (error) {
     console.error('Exception in getToolsForComparison:', error);
     return [];
@@ -83,7 +88,7 @@ export default async function ComparePage(props: {
         <div className="container-max">
           <div className="mb-8">
             <div className="mb-4 text-center">
-              <Link href="/compare" className="text-[#6C39EF] hover:underline text-sm focus-ring rounded">
+              <Link href={`/compare?tools=${toolSlugs.join(',')}`} className="text-[#6C39EF] hover:underline text-sm focus-ring rounded">
                 ← Change selection
               </Link>
             </div>

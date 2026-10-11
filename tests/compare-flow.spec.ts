@@ -98,3 +98,41 @@ test.describe('Compare Flow', () => {
     await expect(page.locator('table')).toHaveCount(0);
   });
 });
+
+test.describe('Compare button vs cookie banner', () => {
+  test('sticky Compare sits above Got it at 768px while the banner is visible', async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 800 });
+    await page.addInitScript(() => {
+      localStorage.removeItem('cookieConsent');
+      localStorage.removeItem('compareList');
+    });
+
+    await page.goto('/tools', { waitUntil: 'domcontentloaded' });
+
+    const gotIt = page.getByRole('button', { name: 'Got it' });
+    await expect(gotIt).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('html')).toHaveClass(/has-cookie-banner/);
+
+    const checkboxes = page.getByRole('checkbox', { name: /^Compare / });
+    await checkboxes.first().waitFor({ state: 'visible', timeout: 15000 });
+    await checkboxes.nth(0).check();
+    await checkboxes.nth(1).check();
+
+    const compareBtn = page.locator('.sticky-compare-btn');
+    await expect(compareBtn).toBeVisible({ timeout: 5000 });
+
+    const compareBox = await compareBtn.boundingBox();
+    const gotItBox = await gotIt.boundingBox();
+    expect(compareBox).toBeTruthy();
+    expect(gotItBox).toBeTruthy();
+
+    const overlap = !(
+      compareBox!.x + compareBox!.width <= gotItBox!.x ||
+      gotItBox!.x + gotItBox!.width <= compareBox!.x ||
+      compareBox!.y + compareBox!.height <= gotItBox!.y ||
+      gotItBox!.y + gotItBox!.height <= compareBox!.y
+    );
+    expect(overlap, 'Compare button must not cover the cookie Got it button').toBe(false);
+    expect(compareBox!.y + compareBox!.height).toBeLessThanOrEqual(gotItBox!.y);
+  });
+});

@@ -109,7 +109,14 @@ export function ToolsClient({
     event.preventDefault();
     const submitted = new FormData(event.currentTarget).get('q');
     const query = typeof submitted === 'string' ? submitted.trim() : '';
-    historyMode.current = 'push';
+    const next = buildToolsHref(query, selectedCategory, priceFilter, hasFreeTier);
+    const current = `${pathname}${typeof window !== 'undefined' ? window.location.search : ''}`;
+    if (next === current) {
+      window.history.pushState(window.history.state ?? {}, '', current);
+      historyMode.current = 'replace';
+    } else {
+      historyMode.current = 'push';
+    }
     setDraftQuery(query);
     setSearchQuery(query);
   };

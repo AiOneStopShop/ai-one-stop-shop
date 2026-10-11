@@ -21,7 +21,7 @@ export default function DisclosurePage() {
             <div>
               <h2 className="heading-2 mb-4">The short version</h2>
               <p className="text-lg">
-                I want you to know exactly how this site pays for itself, so you can judge my advice for yourself.
+                We want you to know exactly how this site pays for itself, so you can judge our advice for yourself.
               </p>
             </div>
 
@@ -29,24 +29,24 @@ export default function DisclosurePage() {
               <div>
                 <h3 className="heading-3 mb-3">1. Affiliate links</h3>
                 <p>
-                  Some "Visit" buttons are affiliate links. If you click one and later buy or subscribe, the tool maker may pay me a commission. You pay the same price either way.
+                  Some &quot;Visit&quot; buttons are affiliate links. If you click one and later buy or subscribe, the tool maker may pay us a commission. You pay the same price either way.
                 </p>
                 <p>
-                  Every affiliate link is marked <strong className="text-[#C62810]">"Paid link"</strong> right next to it.
+                  Every affiliate link is marked <strong className="text-[#C62810]">&quot;Paid link&quot;</strong> right next to it.
                 </p>
               </div>
 
               <div>
                 <h3 className="heading-3 mb-3">2. Sponsored spots</h3>
                 <p>
-                  Tool makers may pay to be shown in a spot marked <strong className="badge-sponsored">Sponsored</strong>. Sponsored spots are always labeled, kept apart from my ranked picks, and never dressed up as a review.
+                  Tool makers may pay to be shown in a spot marked <strong className="badge-sponsored">Sponsored</strong>. Sponsored spots are always labeled, kept apart from our ranked picks, and never dressed up as a review.
                 </p>
               </div>
 
               <div>
-                <h3 className="heading-3 mb-3">3. My own products</h3>
+                <h3 className="heading-3 mb-3">3. Our own products</h3>
                 <p>
-                  I also make my own DIY packs and kits (like ApproveGate). When I mention one of my own projects, I say so right there. They're kept in a{' '}
+                  We also make our own DIY packs and kits (like ApproveGate). When we mention one of our own projects, we say so right there. They&apos;re kept in a{' '}
                   <Link href="/our-kits" className="text-[#6C39EF] hover:underline focus-ring rounded">
                     separate section
                   </Link>{' '}
@@ -68,33 +68,33 @@ export default function DisclosurePage() {
             </div>
 
             <div>
-              <h3 className="heading-3 mb-3">What I don't do</h3>
+              <h3 className="heading-3 mb-3">What we don&apos;t do</h3>
               <ul className="space-y-2">
-                <li>• I don't accept free products in exchange for a positive review</li>
-                <li>• I don't hide affiliate relationships</li>
-                <li>• I don't use fake urgency ("only 3 spots left")</li>
-                <li>• I don't make up ratings or review counts</li>
+                <li>• We don&apos;t accept free products in exchange for a positive review</li>
+                <li>• We don&apos;t hide affiliate relationships</li>
+                <li>• We don&apos;t use fake urgency (&quot;only 3 spots left&quot;)</li>
+                <li>• We don&apos;t make up ratings or review counts</li>
               </ul>
             </div>
 
             <div>
-              <h3 className="heading-3 mb-3">Conflict of interest: my own tools</h3>
+              <h3 className="heading-3 mb-3">Conflict of interest: our own tools</h3>
               <p>
-                ApproveGate and HumanHold are products I made. When I mention them, I disclose that they're mine. They're never ranked inside the main directory or included in "best of" lists.
+                ApproveGate and HumanHold are products we made. When we mention them, we disclose that they&apos;re ours. They&apos;re never ranked inside the main directory or included in &quot;best of&quot; lists.
               </p>
             </div>
 
             <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6">
               <h3 className="heading-3 mb-3">Questions?</h3>
               <p>
-                Email me at{' '}
+                Email us at{' '}
                 <a
                   href="mailto:hello@aionestop.shop"
                   className="text-[#6C39EF] hover:underline focus-ring rounded"
                 >
                   hello@aionestop.shop
                 </a>
-                . I'm happy to explain anything about how this works.
+                . We&apos;re happy to explain anything about how this works.
               </p>
             </div>
 

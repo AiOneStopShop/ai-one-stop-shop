@@ -1,10 +1,17 @@
 'use client';
 
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { CompareCheckbox, CompareSelectedButton } from './CompareCheckbox';
+import { ToolSearchForm } from '@/components/ToolSearchForm';
+import { HighlightedText } from '@/components/HighlightedText';
+import {
+  SEARCH_DEBOUNCE_MS,
+  searchTools,
+  suggestDidYouMean,
+} from '@/lib/search-tools';
 
 type Tool = any;
 type Category = any;
@@ -18,6 +25,16 @@ interface ToolsClientProps {
   initialFree: boolean;
 }
 
+function buildToolsHref(query: string, category: string, price: string, free: boolean): string {
+  const params = new URLSearchParams();
+  if (query) params.set('q', query);
+  if (category !== 'all') params.set('category', category);
+  if (price !== 'all') params.set('price', price);
+  if (free) params.set('free', '1');
+  const next = params.toString();
+  return next ? `/tools?${next}` : '/tools';
+}
+
 export function ToolsClient({
   initialTools,
   categories,
@@ -29,6 +46,7 @@ export function ToolsClient({
   const router = useRouter();
   const pathname = usePathname();
 
+  const [draftQuery, setDraftQuery] = useState(initialQuery);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [priceFilter, setPriceFilter] = useState(initialPrice);
@@ -36,54 +54,36 @@ export function ToolsClient({
   const [announcedCount, setAnnouncedCount] = useState<string>('');
 
   useEffect(() => {
-    const params = new URLSearchParams();
-    if (searchQuery) params.set('q', searchQuery);
-    if (selectedCategory !== 'all') params.set('category', selectedCategory);
-    if (priceFilter !== 'all') params.set('price', priceFilter);
-    if (hasFreeTier) params.set('free', '1');
-    const next = params.toString();
-    const current = window.location.search.replace(/^\?/, '');
+    const timer = window.setTimeout(() => {
+      setSearchQuery(draftQuery.trim());
+    }, SEARCH_DEBOUNCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [draftQuery]);
+
+  useEffect(() => {
+    const next = buildToolsHref(searchQuery, selectedCategory, priceFilter, hasFreeTier);
+    const current = `${pathname}${window.location.search}`;
     if (next !== current) {
-      router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+      router.replace(next, { scroll: false });
     }
   }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, pathname, router]);
 
-  const filteredTools = useMemo(() => {
-    return initialTools.filter(tool => {
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        const matchesSearch =
-          tool.name.toLowerCase().includes(query) ||
-          (tool.tagline && tool.tagline.toLowerCase().includes(query)) ||
-          (tool.description && tool.description.toLowerCase().includes(query));
-
-        if (!matchesSearch) return false;
-      }
-
-      if (selectedCategory !== 'all') {
-        const toolCategories = tool.tool_categories || [];
-        const hasCategory = toolCategories.some((tc: any) =>
-          tc.categories?.slug === selectedCategory
-        );
-        if (!hasCategory) return false;
-      }
-
-      if (hasFreeTier && !tool.has_free_tier) {
-        return false;
-      }
-
-      if (priceFilter !== 'all') {
-        if (priceFilter === 'free' && tool.pricing_model !== 'free') return false;
-        if (priceFilter === 'subscription' && tool.pricing_model !== 'subscription') return false;
-        if (priceFilter === 'one-time' && tool.pricing_model !== 'one-time') return false;
-        if (priceFilter === 'pay-per-use' && tool.pricing_model !== 'pay-per-use') return false;
-      }
-
-      return true;
-    });
-  }, [initialTools, searchQuery, selectedCategory, priceFilter, hasFreeTier]);
+  const filteredTools = useMemo(
+    () =>
+      searchTools(initialTools, {
+        q: searchQuery,
+        category: selectedCategory,
+        price: priceFilter,
+        freeOnly: hasFreeTier,
+      }),
+    [initialTools, searchQuery, selectedCategory, priceFilter, hasFreeTier]
+  );
 
   const hasActiveFilters = Boolean(searchQuery) || selectedCategory !== 'all' || priceFilter !== 'all' || hasFreeTier;
+  const didYouMean = useMemo(
+    () => (filteredTools.length === 0 && searchQuery ? suggestDidYouMean(searchQuery, initialTools) : null),
+    [filteredTools.length, searchQuery, initialTools]
+  );
 
   const resultText = filteredTools.length === 0
     ? `No tools found matching your filters`
@@ -97,31 +97,43 @@ export function ToolsClient({
   }, [resultText]);
 
   const clearFilters = () => {
+    setDraftQuery('');
     setSearchQuery('');
     setSelectedCategory('all');
     setPriceFilter('all');
     setHasFreeTier(false);
   };
 
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const submitted = new FormData(event.currentTarget).get('q');
+    const query = typeof submitted === 'string' ? submitted.trim() : '';
+    setDraftQuery(query);
+    setSearchQuery(query);
+    router.push(buildToolsHref(query, selectedCategory, priceFilter, hasFreeTier));
+  };
+
+  const popularCategories = [...categories]
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+    .slice(0, 4);
+
   return (
     <>
       <div className="mb-8 space-y-4">
-        <div>
-          <label htmlFor="tool-search" className="block text-sm font-medium text-[#171C26] mb-2">
-            Search tools
-          </label>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#5B657B]" aria-hidden="true" />
-            <input
-              id="tool-search"
-              type="search"
-              placeholder="Search tools by name or description..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-[#5B657B] rounded-lg focus-ring bg-white"
-            />
-          </div>
-        </div>
+        <ToolSearchForm
+          id="tool-search"
+          value={draftQuery}
+          onQueryChange={setDraftQuery}
+          onSearchSubmit={handleSearchSubmit}
+        >
+          {selectedCategory !== 'all' ? (
+            <input type="hidden" name="category" value={selectedCategory} />
+          ) : null}
+          {priceFilter !== 'all' ? (
+            <input type="hidden" name="price" value={priceFilter} />
+          ) : null}
+          {hasFreeTier ? <input type="hidden" name="free" value="1" /> : null}
+        </ToolSearchForm>
 
         <div className="flex flex-wrap gap-4 items-end">
           <div>
@@ -132,10 +144,10 @@ export function ToolsClient({
               id="category-filter"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white"
+              className="px-4 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white min-h-11"
             >
               <option value="all">All categories</option>
-              {categories.map(cat => (
+              {categories.map((cat) => (
                 <option key={cat.id} value={cat.slug}>
                   {cat.name}
                 </option>
@@ -151,7 +163,7 @@ export function ToolsClient({
               id="price-filter"
               value={priceFilter}
               onChange={(e) => setPriceFilter(e.target.value)}
-              className="px-4 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white"
+              className="px-4 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white min-h-11"
             >
               <option value="all">All pricing</option>
               <option value="free">Free</option>
@@ -215,7 +227,7 @@ export function ToolsClient({
                       href={`/tools/${tool.slug}`}
                       className="group-hover:text-[#6C39EF] transition-colors focus-ring rounded"
                     >
-                      {tool.name}
+                      <HighlightedText text={tool.name} query={searchQuery} />
                     </Link>
                   </h2>
                   {tool.is_sponsored && (
@@ -223,7 +235,9 @@ export function ToolsClient({
                   )}
 
                   {tool.tagline && (
-                    <p className="text-[#5B657B] mb-3 line-clamp-2">{tool.tagline}</p>
+                    <p className="text-[#5B657B] mb-3 line-clamp-2">
+                      <HighlightedText text={tool.tagline} query={searchQuery} />
+                    </p>
                   )}
 
                   <div className="flex flex-wrap gap-2 mb-3">
@@ -254,17 +268,64 @@ export function ToolsClient({
           })}
         </div>
       ) : (
-        <div className="text-center py-12">
-          <p className="text-[#5B657B] mb-4">
-            No tools found matching your filters
+        <div className="text-center py-12 max-w-xl mx-auto">
+          <p className="text-[#171C26] text-lg font-medium mb-2">
+            No tools match{searchQuery ? ` “${searchQuery}”` : ' those filters'}
           </p>
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="btn-secondary"
-          >
-            Clear all filters
-          </button>
+          {didYouMean ? (
+            <p className="text-[#5B657B] mb-6">
+              Did you mean{' '}
+              <Link
+                href={buildToolsHref(didYouMean.name, selectedCategory, priceFilter, hasFreeTier)}
+                className="text-[#6C39EF] hover:underline focus-ring rounded"
+                onClick={() => {
+                  setDraftQuery(didYouMean.name);
+                  setSearchQuery(didYouMean.name);
+                }}
+              >
+                {didYouMean.name}
+              </Link>
+              ?
+            </p>
+          ) : (
+            <p className="text-[#5B657B] mb-6">
+              Try a different word, or browse a popular category.
+            </p>
+          )}
+
+          {popularCategories.length > 0 && (
+            <div className="mb-8">
+              <p className="text-sm font-medium text-[#171C26] mb-3">Popular categories</p>
+              <ul className="flex flex-wrap justify-center gap-2">
+                {popularCategories.map((category) => (
+                  <li key={category.id}>
+                    <Link
+                      href={buildToolsHref('', category.slug, 'all', false)}
+                      className="badge-category focus-ring"
+                      onClick={() => {
+                        setDraftQuery('');
+                        setSearchQuery('');
+                        setSelectedCategory(category.slug);
+                        setPriceFilter('all');
+                        setHasFreeTier(false);
+                      }}
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="flex flex-wrap justify-center gap-3">
+            <button type="button" onClick={clearFilters} className="btn-secondary">
+              Clear all filters
+            </button>
+            <Link href="/submit" className="btn-primary">
+              Submit a tool
+            </Link>
+          </div>
         </div>
       )}
     </>

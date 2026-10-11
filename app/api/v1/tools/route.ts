@@ -2,21 +2,112 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { apiRateLimit } from '@/lib/rate-limit';
 import { getClientIP } from '@/lib/client-ip';
+import { fallbackTools } from '@/lib/fallback-data';
+import { sanitizeSearchQuery, searchTools } from '@/lib/search-tools';
 
-// Escape SQL LIKE wildcards
-function escapeLikePattern(input: string): string {
-  return input
-    .replace(/\\/g, '\\\\')
-    .replace(/%/g, '\\%')
-    .replace(/_/g, '\\_')
-    .substring(0, 100);
+const CORS_HEADERS = {
+  'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+};
+
+function jsonTools(tools: any[], total: number, limit: number, offset: number) {
+  return NextResponse.json({
+    tools,
+    pagination: {
+      total,
+      limit,
+      offset,
+      hasMore: (offset + limit) < total,
+    },
+  }, { headers: CORS_HEADERS });
+}
+
+function flattenCategories(tool: any) {
+  return {
+    ...tool,
+    categories: tool.tool_categories?.map((tc: any) => tc.categories).filter(Boolean) || [],
+    tool_categories: undefined,
+    search_rank: undefined,
+    result_total: undefined,
+    search_vector: undefined,
+    search_categories: undefined,
+  };
+}
+
+async function attachCategories(rows: any[]) {
+  if (rows.length === 0) return [];
+  const ids = rows.map((row) => row.id);
+  const { data } = await supabase
+    .from('tool_categories')
+    .select('tool_id, is_primary, categories(id, slug, name, icon)')
+    .in('tool_id', ids);
+
+  const byTool = new Map<string, any[]>();
+  for (const relation of data || []) {
+    const list = byTool.get(relation.tool_id) || [];
+    list.push(relation);
+    byTool.set(relation.tool_id, list);
+  }
+
+  return rows.map((row) => flattenCategories({
+    ...row,
+    tool_categories: byTool.get(row.id) || [],
+  }));
+}
+
+async function searchPublishedInMemory(
+  q: string,
+  category: string | null,
+  price: string | null,
+  freeOnly: boolean,
+  limit: number,
+  offset: number
+) {
+  const { data } = await supabase
+    .from('tools')
+    .select(`
+      id,
+      slug,
+      name,
+      tagline,
+      description,
+      website_url,
+      pricing_summary,
+      pricing_model,
+      has_free_tier,
+      platforms,
+      features,
+      editorial_score,
+      last_verified_at,
+      is_sponsored,
+      created_at,
+      updated_at,
+      status,
+      tool_categories(
+        categories(id, slug, name, icon)
+      )
+    `)
+    .eq('status', 'published');
+
+  const source = (data && data.length > 0)
+    ? data
+    : fallbackTools.filter((tool) => tool.status === 'published');
+
+  const matched = searchTools(source, {
+    q,
+    category: category || undefined,
+    price: price || undefined,
+    freeOnly,
+  });
+  const page = matched.slice(offset, offset + limit);
+  return jsonTools(page.map(flattenCategories), matched.length, limit, offset);
 }
 
 export async function GET(request: NextRequest) {
-  // Rate limiting
   const ip = getClientIP(request);
   const { success } = await apiRateLimit.limit(`api-tools-${ip}`);
-  
+
   if (!success) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }
@@ -24,114 +115,33 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
-    const rawSearch = searchParams.get('q');
-    const search = rawSearch ? escapeLikePattern(rawSearch) : null;
-    
-    // Clamp limit to max 50
-    const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '50')), 50);
-    const offset = Math.max(0, parseInt(searchParams.get('offset') || '0'));
+    const price = searchParams.get('price');
+    const freeOnly = searchParams.get('free') === '1' || searchParams.get('free_only') === '1';
+    const q = sanitizeSearchQuery(searchParams.get('q'));
+    const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '50', 10) || 50), 50);
+    const offset = Math.max(0, parseInt(searchParams.get('offset') || '0', 10) || 0);
+    const supabaseConfigured = Boolean(
+      process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
 
-    let query = supabase
-      .from('tools')
-      .select(`
-        id,
-        slug,
-        name,
-        tagline,
-        description,
-        website_url,
-        pricing_summary,
-        pricing_model,
-        has_free_tier,
-        platforms,
-        features,
-        editorial_score,
-        last_verified_at,
-        is_sponsored,
-        created_at,
-        updated_at,
-        tool_categories(
-          categories(id, slug, name, icon)
-        )
-      `, { count: 'exact' })
-      .eq('status', 'published');
+    if (supabaseConfigured) {
+      const { data, error } = await supabase.rpc('search_tools', {
+        q,
+        category: category || null,
+        price: price || null,
+        free_only: freeOnly,
+        limit,
+        offset,
+      });
 
-    // Category filter
-    if (category) {
-      query = query.eq('tool_categories.categories.slug', category);
-    }
-
-    // Search filter using separate ilike calls (not building .or() from user input)
-    if (search && search.length > 0) {
-      const pattern = `%${search}%`;
-      // Use three separate queries and combine results to avoid building SQL from user input
-      const [nameResults, taglineResults, descResults] = await Promise.all([
-        supabase.from('tools').select('id').eq('status', 'published').ilike('name', pattern).limit(limit * 3),
-        supabase.from('tools').select('id').eq('status', 'published').ilike('tagline', pattern).limit(limit * 3),
-        supabase.from('tools').select('id').eq('status', 'published').ilike('description', pattern).limit(limit * 3),
-      ]);
-
-      const matchingIds = new Set([
-        ...(nameResults.data || []).map((t: any) => t.id),
-        ...(taglineResults.data || []).map((t: any) => t.id),
-        ...(descResults.data || []).map((t: any) => t.id),
-      ]);
-
-      if (matchingIds.size > 0) {
-        query = query.in('id', Array.from(matchingIds));
-      } else {
-        // No matches, return empty
-        return NextResponse.json({
-          tools: [],
-          pagination: {
-            total: 0,
-            limit,
-            offset,
-            hasMore: false,
-          },
-        }, {
-          headers: {
-            'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, OPTIONS',
-          },
-        });
+      if (!error && Array.isArray(data)) {
+        const total = data[0]?.result_total ?? data.length;
+        const tools = await attachCategories(data);
+        return jsonTools(tools, total, limit, offset);
       }
     }
 
-    query = query
-      .order('editorial_score', { ascending: false, nullsFirst: false })
-      .range(offset, offset + limit - 1);
-
-    const { data, error, count } = await query;
-
-    if (error) {
-      console.error('API tools query error:', error);
-      throw error;
-    }
-
-    // Transform the data to flatten categories
-    const tools = (data || []).map((tool: any) => ({
-      ...tool,
-      categories: tool.tool_categories?.map((tc: any) => tc.categories).filter(Boolean) || [],
-      tool_categories: undefined,
-    }));
-
-    return NextResponse.json({
-      tools,
-      pagination: {
-        total: count || 0,
-        limit,
-        offset,
-        hasMore: (offset + limit) < (count || 0),
-      },
-    }, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      },
-    });
+    return await searchPublishedInMemory(q, category, price, freeOnly, limit, offset);
   } catch (error) {
     console.error('Failed to fetch tools:', error);
     return NextResponse.json(

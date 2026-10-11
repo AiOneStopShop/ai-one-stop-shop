@@ -18,7 +18,7 @@ AI One Stop Shop is a curated directory of AI tools. We check each tool: what it
 
 ## Who runs it
 
-Kati Bartolec runs AI One Stop Shop from Washington State. It's a oneTomorrow venture. Tools are curated and ranked editorially.
+oneTomorrow runs AI One Stop Shop from Washington State. Tools are curated and ranked editorially.
 
 ## How we earn money
 

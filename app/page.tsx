@@ -5,6 +5,7 @@ import type { Tool } from '@/types/database';
 import { fallbackTools } from '@/lib/fallback-data';
 import { generateOrganizationSchema, generateWebSiteSchema, safeJsonLd } from '@/lib/json-ld';
 import { PRICE_CHECKED_LABEL } from '@/lib/site-dates';
+import { ToolSearchForm } from '@/components/ToolSearchForm';
 
 async function getToolsCount(): Promise<number> {
   const { count } = await supabase
@@ -75,6 +76,9 @@ export default async function HomePage() {
           <p className="text-xl text-[#5B657B] max-w-2xl mx-auto mb-8">
             {toolsCount} curated AI tools. No fake ratings, no paid rankings. Find tools that actually help.
           </p>
+          <div className="max-w-xl mx-auto mb-8 text-left">
+            <ToolSearchForm id="home-tool-search" />
+          </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/tools" className="btn-primary">
               Browse all tools

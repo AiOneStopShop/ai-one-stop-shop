@@ -27,8 +27,8 @@ export const metadata: Metadata = {
   },
   description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
   keywords: ['AI tools', 'artificial intelligence', 'productivity', 'coding assistants', 'AI directory'],
-  authors: [{ name: 'Kati Bartolec' }],
-  creator: 'Kati Bartolec',
+  authors: [{ name: 'oneTomorrow', url: 'https://onetomorrow.online' }],
+  creator: 'oneTomorrow',
   publisher: 'AI One Stop Shop',
   openGraph: {
     type: 'website',

@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 export default function PricingPage() {
-  // Redirect to home - pricing page shouldn't exist per Kati's decision
+  // Directory browsing is free; this page states that instead of a paid plan.
   // redirect('/');
   
   // Or show a simple "it's free" page:

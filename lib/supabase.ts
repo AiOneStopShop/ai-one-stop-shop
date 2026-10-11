@@ -50,6 +50,7 @@ const mockSupabase = {
       then: (resolve: any) => resolve({ data: null, error: null }),
     }),
   }),
+  rpc: async () => ({ data: null, error: { message: 'search_tools unavailable in fallback' } }),
 };
 
 export const supabase = isBuildTime ? (mockSupabase as any) : client;

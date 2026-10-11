@@ -28,8 +28,9 @@ export function generateOrganizationSchema() {
     logo: `${SITE_URL}/logo.svg`,
     description: 'Honest AI tools directory with curated tools and no fake ratings',
     founder: {
-      '@type': 'Person',
-      name: 'Kati Bartolec'
+      '@type': 'Organization',
+      name: 'oneTomorrow',
+      url: 'https://onetomorrow.online'
     },
     address: {
       '@type': 'PostalAddress',

@@ -1,3 +1,4 @@
+import './stub-server-only.cjs';
 import { test, expect } from '@playwright/test';
 import {
   runSubmissionReview,

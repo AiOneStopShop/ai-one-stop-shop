@@ -40,7 +40,7 @@ export function CookieConsent() {
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        handleDecline();
+        handleDismiss();
       }
     };
     document.addEventListener('keydown', handleEscape);
@@ -53,13 +53,8 @@ export function CookieConsent() {
     };
   }, [showBanner]);
 
-  const handleAccept = () => {
-    localStorage.setItem('cookieConsent', 'accepted');
-    setShowBanner(false);
-  };
-
-  const handleDecline = () => {
-    localStorage.setItem('cookieConsent', 'declined');
+  const handleDismiss = () => {
+    localStorage.setItem('cookieConsent', 'dismissed');
     setShowBanner(false);
   };
 
@@ -69,32 +64,25 @@ export function CookieConsent() {
     <div
       ref={bannerRef}
       role="region"
-      aria-label="Cookie consent notice"
+      aria-label="Cookie notice"
       className="cookie-banner fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-[#5B657B] shadow-lg"
     >
-      <div className="container-max py-2 sm:py-3">
+      <div className="container-max py-2 sm:py-2.5">
         <div className="flex flex-row items-center justify-between gap-2 sm:gap-4">
           <p className="text-xs sm:text-sm text-[#171C26] leading-snug min-w-0">
-            Essential cookies only. No tracking.{' '}
-            <Link href="/privacy" className="text-[#6C39EF] underline hover:no-underline focus-ring rounded">
-              Privacy Policy
+            <strong>We keep it simple.</strong> We don't use tracking or ad cookies. Your browser just remembers your compare list and this choice. Some links are paid links, and partner sites may set their own cookies after you click.{' '}
+            <Link href="/privacy#cookies" className="text-[#6C39EF] underline hover:no-underline focus-ring rounded">
+              Privacy
             </Link>
           </p>
 
-          <div className="flex gap-2 shrink-0">
-            <button
-              onClick={handleDecline}
-              className="btn-secondary text-xs sm:text-sm px-3 py-2 min-h-[36px]"
-            >
-              Dismiss
-            </button>
-            <button
-              onClick={handleAccept}
-              className="btn-primary text-xs sm:text-sm px-3 py-2 min-h-[36px]"
-            >
-              OK
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleDismiss}
+            className="btn-primary text-xs sm:text-sm px-3 py-2 min-h-[36px] shrink-0"
+          >
+            Got it
+          </button>
         </div>
       </div>
     </div>

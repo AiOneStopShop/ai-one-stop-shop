@@ -13,7 +13,7 @@ export default function PrivacyPage() {
 
           <div className="prose prose-lg max-w-none space-y-6 text-[#171C26]">
             <p className="text-sm text-[#5B657B]">
-              Last updated: October 10, 2026
+              Last updated: October 11, 2026
             </p>
 
             <div>
@@ -78,17 +78,22 @@ export default function PrivacyPage() {
               </ul>
             </div>
 
-            <div>
+            <div id="cookies" className="scroll-mt-20">
               <h2 className="heading-2 mb-4">Cookies and local storage</h2>
               <p>
-                Our site uses a small number of cookies for essential functions:
+                We don't use analytics, advertising, or tracking cookies, and visitors who browse aren't given cookies by us.
               </p>
-              <ul className="space-y-2">
-                <li>• <strong>Authentication cookies:</strong> If you log in to the admin area, Supabase sets session cookies to keep you logged in</li>
-                <li>• <strong>Cookie consent:</strong> We store your cookie consent choice in local storage</li>
-              </ul>
               <p className="mt-4">
-                <strong>Partner cookies:</strong> When you click through to a partner site (tool maker or affiliate), that site may set its own cookies. We do not control those cookies. See their privacy policies for details.
+                Your browser's local storage keeps two small things on your own device: the tools you add to your compare list, and whether you've dismissed our cookie notice. You can clear them anytime in your browser settings.
+              </p>
+              <p className="mt-4">
+                If you're a site admin who signs in, we use login cookies so you stay signed in. Those are needed for the admin area to work.
+              </p>
+              <p className="mt-4">
+                Some links on this site are paid (affiliate) links. When you click one, we record the click (including a hashed, not raw, version of your IP address, your browser type, and the page you came from) so we can count referrals. After you land on the partner's site, that partner may set its own cookies under its own privacy policy, which we don't control.
+              </p>
+              <p className="mt-4">
+                We delete click records after 90 days.
               </p>
             </div>
 

@@ -23,7 +23,11 @@ const categories = [
   { id: '6', slug: 'ai-models', name: 'AI Models', icon: '🤖', description: 'Foundation models and APIs', sort_order: 6, created_at: '2026-10-10T00:00:00Z', updated_at: '2026-10-10T00:00:00Z' },
 ];
 
-const uploadsDir = process.env.HOME ? path.join(process.env.HOME, '.cursor/projects/workspace/uploads') : path.join(process.cwd(), 'uploads');
+const localUploads = path.join(process.cwd(), 'uploads');
+const legacyUploads = process.env.HOME
+  ? path.join(process.env.HOME, '.cursor/projects/workspace/uploads')
+  : localUploads;
+const uploadsDir = fs.existsSync(localUploads) ? localUploads : legacyUploads;
 const toolsPath = path.join(uploadsDir, 'api-tools_2a75.json');
 const agentsPath = path.join(uploadsDir, 'api-agents_f655.json');
 

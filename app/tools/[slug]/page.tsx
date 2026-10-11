@@ -261,7 +261,9 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                         rel="noopener noreferrer"
                         className="text-sm text-[#6C39EF] hover:underline focus-ring rounded"
                       >
-                        Official pricing page ↗
+                        {/\/(pricing|plans|price)(\/|$|\?)/i.test(tool.source_url)
+                          ? 'Official pricing page ↗'
+                          : 'Official site ↗'}
                       </a>
                     </div>
                   )}

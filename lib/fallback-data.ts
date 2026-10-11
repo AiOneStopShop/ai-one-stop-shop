@@ -863,9 +863,9 @@ export const fallbackTools = [
     "description": "Open-source image generation",
     "website_url": "https://stability.ai",
     "source_url": "https://stability.ai",
-    "pricing_summary": "Free (self-hosted)",
-    "pricing_model": "free",
-    "has_free_tier": true,
+    "pricing_summary": "Paid API (open weights)",
+    "pricing_model": "pay-per-use",
+    "has_free_tier": false,
     "platforms": [
       "Self-hosted",
       "API"
@@ -1082,9 +1082,9 @@ export const fallbackTools = [
     "description": "Browser-based autonomous AI",
     "website_url": "https://agentgpt.reworkd.ai",
     "source_url": "https://agentgpt.reworkd.ai",
-    "pricing_summary": "Freemium",
-    "pricing_model": "free",
-    "has_free_tier": true,
+    "pricing_summary": "See website",
+    "pricing_model": "contact",
+    "has_free_tier": false,
     "platforms": [
       "Web"
     ],

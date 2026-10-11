@@ -6,18 +6,11 @@ const nextConfig = {
   htmlLimitedBots: /.*/,
   
   async headers() {
+    // nosniff + HSTS live only on `/:path*` so HTML routes do not send them twice.
     const securityHeaders = [
       {
         key: 'X-DNS-Prefetch-Control',
         value: 'on'
-      },
-      {
-        key: 'Strict-Transport-Security',
-        value: 'max-age=63072000; includeSubDomains'
-      },
-      {
-        key: 'X-Content-Type-Options',
-        value: 'nosniff'
       },
       {
         key: 'Referrer-Policy',

@@ -69,7 +69,7 @@ function LoginForm() {
 
       if (profile?.role !== 'admin') {
         await supabase.auth.signOut();
-        setError('If that address is an admin, a link is on its way.');
+        setError('Sign-in failed.');
         setLoading(false);
         return;
       }
@@ -77,7 +77,7 @@ function LoginForm() {
       router.push('/admin/review');
       router.refresh();
     } catch {
-      setError('If that address is an admin, a link is on its way.');
+      setError('Sign-in failed.');
       setLoading(false);
     }
   };

@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { approveSubmission, rejectSubmission } from './actions';
 
 async function getServerSupabase() {
   const cookieStore = await cookies();
@@ -153,7 +154,7 @@ export default async function AdminReviewPage() {
                     </div>
                     
                     <div className="flex gap-2">
-                      <form action="/admin/review/approve-submission" method="POST">
+                      <form action={approveSubmission}>
                         <input type="hidden" name="submissionId" value={submission.id} />
                         <button
                           type="submit"
@@ -163,7 +164,7 @@ export default async function AdminReviewPage() {
                           <span className="sr-only"> {submission.tool_name}</span>
                         </button>
                       </form>
-                      <form action="/admin/review/reject-submission" method="POST">
+                      <form action={rejectSubmission}>
                         <input type="hidden" name="submissionId" value={submission.id} />
                         <button
                           type="submit"

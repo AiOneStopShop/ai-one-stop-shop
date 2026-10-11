@@ -3,7 +3,14 @@
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import {
+  runSubmissionReview,
+  type DraftToolInsert,
+  type ReviewStore,
+  type SubmissionUpdate,
+} from '@/lib/review-submissions';
 
 // Validation schemas
 const toolIdSchema = z.string().uuid();
@@ -143,4 +150,103 @@ export async function rejectTool(toolId: string) {
     console.error('Reject tool exception:', error);
     return { success: false, error: 'Failed to reject tool' };
   }
+}
+
+function createServiceReviewStore(): ReviewStore {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    const missing = { error: 'Supabase not configured' };
+    return {
+      getPendingSubmission: async () => ({ data: null, ...missing }),
+      createDraftTool: async () => missing,
+      markSubmission: async () => missing,
+    };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { persistSession: false },
+  });
+
+  return {
+    async getPendingSubmission(id: string) {
+      const { data, error } = await supabase
+        .from('tool_submissions')
+        .select('id, tool_name, website_url, description, status')
+        .eq('id', id)
+        .eq('status', 'pending')
+        .single();
+
+      if (error || !data) {
+        return { data: null, error: 'Submission not found' };
+      }
+      return { data };
+    },
+
+    async createDraftTool(tool: DraftToolInsert) {
+      let slug = tool.slug;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const { error } = await supabase.from('tools').insert({
+          ...tool,
+          slug,
+        });
+        if (!error) {
+          return {};
+        }
+        if (error.code === '23505') {
+          slug = `${tool.slug}-${Math.random().toString(36).slice(2, 8)}`;
+          continue;
+        }
+        console.error('Create draft tool error:', error);
+        return { error: 'Failed to create draft' };
+      }
+      return { error: 'Failed to create draft' };
+    },
+
+    async markSubmission(id: string, update: SubmissionUpdate) {
+      const { error } = await supabase
+        .from('tool_submissions')
+        .update(update)
+        .eq('id', id)
+        .eq('status', 'pending');
+
+      if (error) {
+        console.error('Mark submission error:', error);
+        return { error: 'Failed to update submission' };
+      }
+      return {};
+    },
+  };
+}
+
+export async function approveSubmission(formData: FormData) {
+  const result = await runSubmissionReview({
+    submissionId: formData.get('submissionId'),
+    decision: 'approved',
+    checkAdmin: checkAdminAuth,
+    getStore: createServiceReviewStore,
+  });
+
+  if (result.success) {
+    revalidatePath('/admin/review');
+    revalidatePath('/tools');
+  }
+
+  return result;
+}
+
+export async function rejectSubmission(formData: FormData) {
+  const result = await runSubmissionReview({
+    submissionId: formData.get('submissionId'),
+    decision: 'rejected',
+    checkAdmin: checkAdminAuth,
+    getStore: createServiceReviewStore,
+  });
+
+  if (result.success) {
+    revalidatePath('/admin/review');
+  }
+
+  return result;
 }

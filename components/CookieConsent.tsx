@@ -54,7 +54,6 @@ export function CookieConsent() {
             <button
               onClick={handleAccept}
               className="btn-primary text-sm"
-              aria-label="Acknowledge and continue"
             >
               OK
             </button>

@@ -103,7 +103,7 @@ export default async function ComparePage(props: {
               <thead>
                 <tr className="bg-[#F9F8F5]">
                   <th scope="col" className="text-left p-4 border border-[#E5E1DC] font-semibold text-[#171C26] min-w-[200px]">
-                    <h2 className="text-lg font-semibold">Feature</h2>
+                    Feature
                   </th>
                   {tools.map((tool: any) => (
                     <th key={tool.id} scope="col" className="p-4 border border-[#E5E1DC] min-w-[250px]">

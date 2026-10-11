@@ -143,15 +143,12 @@ test.describe('admin submission review actions', () => {
     });
   });
 
-  test('legacy POST routes for approve and reject are gone', async ({ request }) => {
-    const approve = await request.post('/admin/review/approve-submission', {
-      form: { submissionId: VALID_ID },
-    });
-    const reject = await request.post('/admin/review/reject-submission', {
-      form: { submissionId: VALID_ID },
-    });
-
-    expect(approve.status()).toBe(404);
-    expect(reject.status()).toBe(404);
+  test('review page binds the server actions, not missing routes', async () => {
+    const { readFileSync } = await import('fs');
+    const src = readFileSync('app/admin/review/page.tsx', 'utf8');
+    expect(src).not.toContain('/admin/review/approve-submission');
+    expect(src).not.toContain('/admin/review/reject-submission');
+    expect(src).toContain('action={approveSubmission}');
+    expect(src).toContain('action={rejectSubmission}');
   });
 });

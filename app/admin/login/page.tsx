@@ -8,6 +8,10 @@ import { createBrowserClient } from '@supabase/ssr';
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
+const AUTH_QUERY_MESSAGES = {
+  auth: 'If that address is an admin, a link is on its way.',
+} as const;
+
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,9 +23,9 @@ function LoginForm() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const errorParam = searchParams.get('error');
-    if (errorParam === 'auth') {
-      setError('Authentication failed. Please try again.');
+    const code = searchParams.get('error');
+    if (code && Object.prototype.hasOwnProperty.call(AUTH_QUERY_MESSAGES, code)) {
+      setError(AUTH_QUERY_MESSAGES[code as keyof typeof AUTH_QUERY_MESSAGES]);
     }
   }, [searchParams]);
 
@@ -65,16 +69,15 @@ function LoginForm() {
 
       if (profile?.role !== 'admin') {
         await supabase.auth.signOut();
-        setError('Access denied. Admin role required.');
+        setError('If that address is an admin, a link is on its way.');
         setLoading(false);
         return;
       }
 
-      // Success - redirect to admin review
       router.push('/admin/review');
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
+    } catch {
+      setError('If that address is an admin, a link is on its way.');
       setLoading(false);
     }
   };
@@ -86,22 +89,19 @@ function LoginForm() {
     setSuccess('');
 
     try {
-      const { error: magicError } = await supabase.auth.signInWithOtp({
+      await supabase.auth.signInWithOtp({
         email,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
-          shouldCreateUser: false, // Disable signups - admin accounts must exist
+          shouldCreateUser: false,
         },
       });
-
-      if (magicError) throw magicError;
-
-      setSuccess('Check your email for the magic link!');
-      setLoading(false);
-    } catch (err: any) {
-      setError(err.message || 'Failed to send magic link');
-      setLoading(false);
+    } catch {
+      // Same message whether the address exists or not
     }
+
+    setSuccess('If that address is an admin, a link is on its way.');
+    setLoading(false);
   };
 
   return (

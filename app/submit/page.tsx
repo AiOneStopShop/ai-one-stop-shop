@@ -3,21 +3,43 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
+const FIELD_ERROR_TEXT = {
+  name_missing: 'Please enter a tool name.',
+  url_invalid: 'Please enter a valid website URL.',
+  email_invalid: 'Please enter a valid email address.',
+  too_long: 'That field is too long.',
+} as const;
+
+type FieldErrorCode = keyof typeof FIELD_ERROR_TEXT;
+
+const FORM_ERROR_TEXT = {
+  too_many: 'Too many requests. Please try again later.',
+  submit_failed: 'Something went wrong. Please try again or email hello@aionestop.shop',
+} as const;
+
+function textForFieldCode(code: string): string | null {
+  return Object.prototype.hasOwnProperty.call(FIELD_ERROR_TEXT, code)
+    ? FIELD_ERROR_TEXT[code as FieldErrorCode]
+    : null;
+}
+
 export default function SubmitPage() {
   const [formData, setFormData] = useState({
     toolName: '',
     websiteUrl: '',
     contactEmail: '',
     description: '',
-    honeypot: '', // Spam protection
+    extra_ref: '',
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [formError, setFormError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<string, string>>>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
-    setErrorMessage('');
+    setFormError('');
+    setFieldErrors({});
 
     try {
       const response = await fetch('/api/submit-tool', {
@@ -26,16 +48,39 @@ export default function SubmitPage() {
         body: JSON.stringify(formData),
       });
 
+      const data = await response.json().catch(() => ({}));
+
       if (response.ok) {
         setStatus('success');
-        setFormData({ toolName: '', websiteUrl: '', contactEmail: '', description: '', honeypot: '' });
-      } else {
-        const data = await response.json();
-        setErrorMessage(data.error || 'Failed to submit tool. Please try again.');
-        setStatus('error');
+        setFormData({ toolName: '', websiteUrl: '', contactEmail: '', description: '', extra_ref: '' });
+        return;
       }
-    } catch (error) {
-      setErrorMessage('Network error. Please check your connection and try again.');
+
+      const nextFieldErrors: Partial<Record<string, string>> = {};
+      if (Array.isArray(data.errors)) {
+        for (const item of data.errors) {
+          const message = textForFieldCode(item?.code);
+          if (message && item.field) {
+            nextFieldErrors[item.field] = message;
+          }
+        }
+      }
+
+      if (Object.keys(nextFieldErrors).length > 0) {
+        setFieldErrors(nextFieldErrors);
+        setStatus('error');
+        return;
+      }
+
+      const formCode = typeof data.error === 'string' ? data.error : '';
+      setFormError(
+        Object.prototype.hasOwnProperty.call(FORM_ERROR_TEXT, formCode)
+          ? FORM_ERROR_TEXT[formCode as keyof typeof FORM_ERROR_TEXT]
+          : FORM_ERROR_TEXT.submit_failed
+      );
+      setStatus('error');
+    } catch {
+      setFormError(FORM_ERROR_TEXT.submit_failed);
       setStatus('error');
     }
   };
@@ -60,7 +105,7 @@ export default function SubmitPage() {
 
           <h1 className="heading-1 mb-4">Submit a Tool</h1>
           <p className="text-lead mb-8 text-[#5B657B]">
-            Know an AI tool we should review? Submit it here. We review every submission, though it may take time.
+            Know an AI tool we should look at? Submit it here.
           </p>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
@@ -81,8 +126,8 @@ export default function SubmitPage() {
             </div>
           ) : (
             <>
-              {status === 'error' && (
-                <div 
+              {status === 'error' && formError && (
+                <div
                   className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6"
                   role="alert"
                   aria-live="assertive"
@@ -91,23 +136,23 @@ export default function SubmitPage() {
                   <p className="text-red-800 font-semibold mb-1">
                     Submission failed
                   </p>
-                  <p className="text-red-700">
-                    {errorMessage || 'Something went wrong. Please try again or email hello@aionestop.shop'}
-                  </p>
+                  <p className="text-red-700">{formError}</p>
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Honeypot field - hidden from users, catches bots */}
-              <div style={{ position: 'absolute', left: '-9999px' }} aria-hidden="true">
-                <label htmlFor="website">Website</label>
+              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+              <div
+                aria-hidden="true"
+                style={{ position: 'absolute', left: '-9999px', height: 0, overflow: 'hidden' }}
+              >
+                <label htmlFor="extra_ref">Leave blank</label>
                 <input
                   type="text"
-                  id="website"
-                  name="website"
+                  id="extra_ref"
+                  name="extra_ref"
                   tabIndex={-1}
-                  value={formData.honeypot}
-                  onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+                  value={formData.extra_ref}
+                  onChange={(e) => setFormData({ ...formData, extra_ref: e.target.value })}
                   autoComplete="off"
                 />
               </div>
@@ -124,7 +169,14 @@ export default function SubmitPage() {
                   onChange={(e) => setFormData({ ...formData, toolName: e.target.value })}
                   className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
                   placeholder="e.g., ChatGPT"
+                  aria-invalid={fieldErrors.toolName ? true : undefined}
+                  aria-describedby={fieldErrors.toolName ? 'toolName-error' : undefined}
                 />
+                {fieldErrors.toolName && (
+                  <p id="toolName-error" className="text-sm text-red-700 mt-1" role="alert">
+                    {fieldErrors.toolName}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -139,7 +191,14 @@ export default function SubmitPage() {
                   onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
                   className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
                   placeholder="https://..."
+                  aria-invalid={fieldErrors.websiteUrl ? true : undefined}
+                  aria-describedby={fieldErrors.websiteUrl ? 'websiteUrl-error' : undefined}
                 />
+                {fieldErrors.websiteUrl && (
+                  <p id="websiteUrl-error" className="text-sm text-red-700 mt-1" role="alert">
+                    {fieldErrors.websiteUrl}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -154,7 +213,14 @@ export default function SubmitPage() {
                   onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
                   className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
                   placeholder="you@example.com"
+                  aria-invalid={fieldErrors.contactEmail ? true : undefined}
+                  aria-describedby={fieldErrors.contactEmail ? 'contactEmail-error' : undefined}
                 />
+                {fieldErrors.contactEmail && (
+                  <p id="contactEmail-error" className="text-sm text-red-700 mt-1" role="alert">
+                    {fieldErrors.contactEmail}
+                  </p>
+                )}
                 <p className="text-sm text-[#5B657B] mt-1">
                   We'll only use this to follow up about your submission
                 </p>
@@ -162,7 +228,7 @@ export default function SubmitPage() {
 
               <div>
                 <label htmlFor="description" className="block text-sm font-medium text-[#171C26] mb-2">
-                  Why should we review this tool? (optional)
+                  Why should we look at this tool? (optional)
                 </label>
                 <textarea
                   id="description"
@@ -170,8 +236,15 @@ export default function SubmitPage() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
-                  placeholder="Tell us what makes this tool interesting..."
+                  placeholder="Tell us what this tool does..."
+                  aria-invalid={fieldErrors.description ? true : undefined}
+                  aria-describedby={fieldErrors.description ? 'description-error' : undefined}
                 />
+                {fieldErrors.description && (
+                  <p id="description-error" className="text-sm text-red-700 mt-1" role="alert">
+                    {fieldErrors.description}
+                  </p>
+                )}
               </div>
 
               <button
@@ -181,10 +254,6 @@ export default function SubmitPage() {
               >
                 {status === 'submitting' ? 'Submitting...' : 'Submit tool'}
               </button>
-
-              <p className="text-xs text-[#5B657B] text-center">
-                By submitting, you confirm you have a legitimate interest in this tool being reviewed.
-              </p>
               </form>
             </>
           )}

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
 
 export const metadata = {
   title: 'How We Rank AI Tools',
@@ -17,7 +17,7 @@ export default function HowWeRankPage() {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
               <p className="text-lg font-semibold mb-2">The short version</p>
               <p>
-                We try each tool ourselves, we write down what we find in plain English, and we put the tool we'd actually suggest first. Money never changes that order.
+                We review each tool's public pricing and features, we write down what we find in plain English, and we put the tool we'd actually suggest first. Money never changes that order.
               </p>
             </div>
 
@@ -32,9 +32,9 @@ export default function HowWeRankPage() {
             </div>
 
             <div>
-              <h2 className="heading-2 mb-4">Who does the testing</h2>
+              <h2 className="heading-2 mb-4">Who reviews the tools</h2>
               <p>
-                I'm Kati Bartolec. I run AI One Stop Shop from Washington State, and I test tools hands-on: I sign up, use the tool on a real task, and note what worked and what got in the way.
+                I'm Kati Bartolec. I run AI One Stop Shop from Washington State, and I review each tool's public pricing and features: what it claims to do, what it costs, and who it appears to be for.
               </p>
               <p>
                 I use AI helpers for research, like gathering pricing pages and summarizing changelogs. They work alongside me. A person decides whether a tool gets listed and where it ranks.
@@ -48,8 +48,8 @@ export default function HowWeRankPage() {
                 <li>✓ What it really does (in one or two plain sentences)</li>
                 <li>✓ Who it's built for</li>
                 <li>✓ Real pricing (with the date we checked)</li>
-                <li>✓ How hard it is to get started</li>
-                <li>✓ Hands-on notes from using it</li>
+                <li>✓ How hard it is to get started, from public docs</li>
+                <li>✓ Notes from the vendor's own feature and pricing pages</li>
                 <li>✓ Good alternatives</li>
               </ul>
             </div>
@@ -87,7 +87,7 @@ export default function HowWeRankPage() {
             <div>
               <h2 className="heading-2 mb-4">What we don't do</h2>
               <ul className="space-y-2">
-                <li>• We don't review every AI tool, only the ones we try ourselves</li>
+                <li>• We don't review every AI tool, only the ones whose public pricing and features we check</li>
                 <li>• We don't run formal security audits</li>
                 <li>• We are not the seller or maker of the tools listed here</li>
                 <li>• We don't offer legal, financial, or tax advice about tools</li>
@@ -126,7 +126,7 @@ export default function HowWeRankPage() {
             <div className="mt-12">
               <p className="text-sm text-[#5B657B]">
                 — Kati<br />
-                Last updated: October 10, 2026
+                Last updated: {PRICE_CHECKED_LONG}
               </p>
             </div>
           </div>

@@ -39,6 +39,12 @@ export type ReviewStore = {
   getPendingSubmission: (id: string) => Promise<{ data: PendingSubmission | null; error?: string }>;
   createDraftTool: (tool: DraftToolInsert) => Promise<{ error?: string }>;
   markSubmission: (id: string, update: SubmissionUpdate) => Promise<{ error?: string; claimed: boolean }>;
+  revertToPending: (id: string) => Promise<{ error?: string }>;
+  approveWithDraft?: (input: {
+    id: string;
+    update: SubmissionUpdate;
+    tool: DraftToolInsert;
+  }) => Promise<{ claimed: boolean; error?: string }>;
 };
 
 export function slugFromName(name: string): string {
@@ -104,19 +110,7 @@ export async function runSubmissionReview(input: {
     return { success: false, error: 'invalid_url' };
   }
 
-  const { error: claimError, claimed } = await store.markSubmission(parsed.data, {
-    status: 'approved',
-    reviewed_by: auth.userId,
-    reviewed_at: new Date().toISOString(),
-  });
-  if (claimError) {
-    return { success: false, error: 'Failed to approve submission' };
-  }
-  if (!claimed) {
-    return { success: false, error: 'Submission is no longer pending' };
-  }
-
-  const { error: draftError } = await store.createDraftTool({
+  const draftTool: DraftToolInsert = {
     slug: slugFromName(pending.data.tool_name),
     name: pending.data.tool_name,
     website_url: websiteUrl,
@@ -124,8 +118,39 @@ export async function runSubmissionReview(input: {
     tagline: pending.data.description ? pending.data.description.slice(0, 255) : null,
     source_url: sourceUrl,
     status: 'draft',
-  });
+  };
+  const approvalUpdate: SubmissionUpdate = {
+    status: 'approved',
+    reviewed_by: auth.userId,
+    reviewed_at: new Date().toISOString(),
+  };
+
+  if (store.approveWithDraft) {
+    const result = await store.approveWithDraft({
+      id: parsed.data,
+      update: approvalUpdate,
+      tool: draftTool,
+    });
+    if (!result.claimed) {
+      return { success: false, error: result.error || 'Submission is no longer pending' };
+    }
+    if (result.error) {
+      return { success: false, error: result.error };
+    }
+    return { success: true };
+  }
+
+  const { error: claimError, claimed } = await store.markSubmission(parsed.data, approvalUpdate);
+  if (claimError) {
+    return { success: false, error: 'Failed to approve submission' };
+  }
+  if (!claimed) {
+    return { success: false, error: 'Submission is no longer pending' };
+  }
+
+  const { error: draftError } = await store.createDraftTool(draftTool);
   if (draftError) {
+    await store.revertToPending(parsed.data);
     return { success: false, error: 'Failed to create draft' };
   }
 

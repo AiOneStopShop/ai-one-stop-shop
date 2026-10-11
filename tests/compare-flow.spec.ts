@@ -38,7 +38,7 @@ test.describe('Compare Flow', () => {
     const slugs = await page.evaluate(() => JSON.parse(localStorage.getItem('compareList') || '[]'));
     expect(slugs).toHaveLength(3);
 
-    await page.screenshot({ path: 'docs/screenshots/compare-step3-three-selected.png', fullPage: true });
+    await page.screenshot({ path: 'test-results/compare-step3-three-selected.png', fullPage: true });
 
     await compareButton.click();
     await page.waitForURL(/\/compare\?tools=/, { timeout: 10000 });
@@ -49,7 +49,7 @@ test.describe('Compare Flow', () => {
     expect(urlSlugs).toHaveLength(3);
     expect(urlSlugs.sort()).toEqual([...slugs].sort());
 
-    await page.screenshot({ path: 'docs/screenshots/compare-step4-compare-page.png', fullPage: true });
+    await page.screenshot({ path: 'test-results/compare-step4-compare-page.png', fullPage: true });
   });
 
   test('blocks a 4th tool at the 3-tool cap', async ({ page }) => {
@@ -86,7 +86,7 @@ test.describe('Compare Flow', () => {
     const href = await compareButton.getAttribute('href');
     expect(href).toMatch(/^\/compare\?tools=[^&]+$/);
 
-    await page.screenshot({ path: 'docs/screenshots/tool-detail-compare-button.png', fullPage: true });
+    await page.screenshot({ path: 'test-results/tool-detail-compare-button.png', fullPage: true });
 
     await compareButton.click();
     await page.waitForURL(/\/compare\?tools=/, { timeout: 10000 });

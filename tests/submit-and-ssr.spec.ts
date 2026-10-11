@@ -1,10 +1,26 @@
 import { test, expect } from '@playwright/test';
 import { getClientIP } from '../lib/client-ip';
 
-test('rate-limit IP uses the first X-Forwarded-For hop, then request.ip, then a constant', () => {
+test('rate-limit IP prefers Vercel, then real-ip, then first XFF hop, then request.ip', () => {
   expect(getClientIP({
-    headers: new Headers({ 'x-forwarded-for': ' 203.0.113.10, 10.0.0.1 ' }),
-  })).toBe('203.0.113.10');
+    headers: new Headers({
+      'x-vercel-forwarded-for': ' 203.0.113.1 ',
+      'x-real-ip': '198.51.100.2',
+      'x-forwarded-for': '192.0.2.1, 10.0.0.1',
+    }),
+    ip: '198.51.100.20',
+  })).toBe('203.0.113.1');
+
+  expect(getClientIP({
+    headers: new Headers({
+      'x-real-ip': '198.51.100.2',
+      'x-forwarded-for': '192.0.2.1, 10.0.0.1',
+    }),
+  })).toBe('198.51.100.2');
+
+  expect(getClientIP({
+    headers: new Headers({ 'x-forwarded-for': ' 192.0.2.1, 10.0.0.1 ' }),
+  })).toBe('192.0.2.1');
 
   expect(getClientIP({
     headers: new Headers(),

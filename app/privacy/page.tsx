@@ -1,3 +1,5 @@
+import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
+
 export const metadata = {
   title: 'Privacy Policy',
   description: 'Privacy policy for AI One Stop Shop',
@@ -13,7 +15,7 @@ export default function PrivacyPage() {
 
           <div className="prose prose-lg max-w-none space-y-6 text-[#171C26]">
             <p className="text-sm text-[#5B657B]">
-              Last updated: October 11, 2026
+              Last updated: {PRICE_CHECKED_LONG}
             </p>
 
             <div>

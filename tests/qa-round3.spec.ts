@@ -19,11 +19,11 @@ test.describe('Quinn QA Round 3 Verification', () => {
 
     // Check first tool
     await checkboxes[0].check();
-    await page.screenshot({ path: 'docs/screenshots/compare-1-checked.png', fullPage: true });
+    await page.screenshot({ path: 'test-results/compare-1-checked.png', fullPage: true });
 
     // Check second tool (should not replace first)
     await checkboxes[1].check();
-    await page.screenshot({ path: 'docs/screenshots/compare-2-checked.png', fullPage: true });
+    await page.screenshot({ path: 'test-results/compare-2-checked.png', fullPage: true });
 
     // Verify sticky button shows "Compare (2)"
     const compareButton = page.locator('button:has-text("Compare (2)")');
@@ -31,7 +31,7 @@ test.describe('Quinn QA Round 3 Verification', () => {
 
     // Check third tool
     await checkboxes[2].check();
-    await page.screenshot({ path: 'docs/screenshots/compare-3-checked.png', fullPage: true });
+    await page.screenshot({ path: 'test-results/compare-3-checked.png', fullPage: true });
 
     // Verify button shows "Compare (3)"
     await expect(page.locator('button:has-text("Compare (3)")')).toBeVisible();
@@ -44,7 +44,7 @@ test.describe('Quinn QA Round 3 Verification', () => {
     // Click Compare button and verify navigation
     await page.locator('button:has-text("Compare (3)")').click();
     await page.waitForURL('**/compare?tools=*');
-    await page.screenshot({ path: 'docs/screenshots/compare-page-with-tools.png', fullPage: true });
+    await page.screenshot({ path: 'test-results/compare-page-with-tools.png', fullPage: true });
 
     console.log('✅ Compare multi-select works correctly');
   });
@@ -60,7 +60,7 @@ test.describe('Quinn QA Round 3 Verification', () => {
     // Verify "Compare with..." button exists
     const compareButton = page.locator('a:has-text("Compare with...")');
     await expect(compareButton).toBeVisible();
-    await page.screenshot({ path: 'docs/screenshots/tool-detail-compare-button.png', fullPage: true });
+    await page.screenshot({ path: 'test-results/tool-detail-compare-button.png', fullPage: true });
     
     console.log('✅ Compare with button exists on tool detail page');
   });
@@ -70,7 +70,7 @@ test.describe('Quinn QA Round 3 Verification', () => {
     
     // Scroll to footer
     await page.locator('footer').scrollIntoViewIfNeeded();
-    await page.screenshot({ path: 'docs/screenshots/footer-headings.png' });
+    await page.screenshot({ path: 'test-results/footer-headings.png' });
     
     // Check that Legal is not an h3
     const legalHeading = page.locator('footer div:has-text("Legal")').first();

@@ -29,7 +29,7 @@ export default function AboutPage() {
 
             <h2 className="heading-2 mt-12">How I work</h2>
             <p>
-              I test tools hands-on. I sign up, use the tool on a real task, and note what worked and what got in the way. I use AI helpers for research, like gathering pricing pages and summarizing changelogs. They work alongside me. A person decides whether a tool gets listed and where it ranks.
+              I review each tool's public pricing and features. I use AI helpers for research, like gathering pricing pages and summarizing changelogs. They work alongside me. A person decides whether a tool gets listed and where it ranks.
             </p>
 
             <h2 className="heading-2 mt-12">The numbers you see</h2>

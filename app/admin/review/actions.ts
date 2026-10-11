@@ -162,6 +162,7 @@ function createServiceReviewStore(): ReviewStore {
       getPendingSubmission: async () => ({ data: null, ...missing }),
       createDraftTool: async () => missing,
       markSubmission: async () => ({ ...missing, claimed: false }),
+      revertToPending: async () => missing,
     };
   }
 
@@ -217,6 +218,54 @@ function createServiceReviewStore(): ReviewStore {
         return { error: 'Failed to update submission', claimed: false };
       }
       return { claimed: Array.isArray(data) && data.length === 1 };
+    },
+
+    async revertToPending(id: string) {
+      const { error } = await supabase
+        .from('tool_submissions')
+        .update({
+          status: 'pending',
+          reviewed_by: null,
+          reviewed_at: null,
+        })
+        .eq('id', id)
+        .eq('status', 'approved');
+
+      if (error) {
+        console.error('Revert submission error:', error);
+        return { error: 'Failed to revert submission' };
+      }
+      return {};
+    },
+
+    async approveWithDraft({ id, update, tool }) {
+      const { data, error } = await supabase.rpc('approve_tool_submission', {
+        p_submission_id: id,
+        p_reviewed_by: update.reviewed_by ?? null,
+        p_slug: tool.slug,
+        p_name: tool.name,
+        p_website_url: tool.website_url,
+        p_description: tool.description,
+        p_tagline: tool.tagline,
+        p_source_url: tool.source_url,
+      });
+
+      if (error) {
+        console.error('approve_tool_submission rpc:', error);
+        return { claimed: false, error: 'Failed to approve submission' };
+      }
+
+      if (data === 'not_pending') {
+        return { claimed: false };
+      }
+      if (data === 'draft_failed') {
+        return { claimed: true, error: 'Failed to create draft' };
+      }
+      if (data === 'ok') {
+        return { claimed: true };
+      }
+
+      return { claimed: false, error: 'Failed to approve submission' };
     },
   };
 }

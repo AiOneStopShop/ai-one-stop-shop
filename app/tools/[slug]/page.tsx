@@ -206,7 +206,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
 
                     {tool.pricing_model && (
                       <p className="text-sm text-[#5B657B] mb-4 capitalize">
-                        {tool.pricing_model.replace('-', ' ')} pricing
+                        {tool.pricing_model.replace(/-/g, ' ')} pricing
                       </p>
                     )}
 

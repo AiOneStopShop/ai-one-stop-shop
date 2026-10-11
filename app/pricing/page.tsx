@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { PRICE_CHECKED_LABEL } from '@/lib/site-dates';
 
 export const metadata = {
   title: 'AI One Stop Shop is Free',
@@ -33,7 +33,7 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#6C39EF] text-xl">✓</span>
-                    <span>Real pricing info (last updated Oct 2026)</span>
+                    <span>Real pricing info (price checked {PRICE_CHECKED_LABEL})</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-[#6C39EF] text-xl">✓</span>

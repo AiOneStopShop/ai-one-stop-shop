@@ -1,4 +1,4 @@
-export type PricingModel = 'free' | 'freemium' | 'subscription' | 'one-time' | 'usage-based' | 'contact';
+export type PricingModel = 'free' | 'freemium' | 'subscription' | 'one-time' | 'usage-based' | 'pay-per-use' | 'contact';
 export type ToolStatus = 'draft' | 'published' | 'archived';
 
 export interface Category {

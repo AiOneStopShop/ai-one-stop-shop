@@ -222,8 +222,8 @@ export default async function CategoryPage(props: { params: Promise<{ slug: stri
               <h2 className="heading-2 mb-4">How we chose these tools</h2>
               <p className="text-lg mb-4">
                 {showRanks
-                  ? "We've tried each tool ourselves. Rankings reflect our judgment of what works best, not who pays us."
-                  : "We've tried each tool ourselves. This list is alphabetical — we have not assigned ranks yet."}
+                  ? "We review each tool's public pricing and features. Rankings reflect our judgment of what works best, not who pays us."
+                  : "We review each tool's public pricing and features. This list is alphabetical — we have not assigned ranks yet."}
               </p>
               <Link href="/how-we-rank" className="text-[#6C39EF] font-medium hover:underline focus-ring rounded">
                 Read our full ranking method →

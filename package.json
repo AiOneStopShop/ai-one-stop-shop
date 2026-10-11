@@ -3,12 +3,14 @@
   "version": "2.0.0",
   "description": "Honest AI tools directory - rebuilt",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-fallback": "tsx scripts/generate-fallback.ts",
     "seed": "tsx scripts/seed-database.ts",
     "import": "tsx scripts/import-pipeline.ts",
     "enrich": "tsx scripts/enrichment-job.ts",

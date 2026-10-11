@@ -76,6 +76,7 @@ export function ToolsClient({
         if (priceFilter === 'free' && tool.pricing_model !== 'free') return false;
         if (priceFilter === 'subscription' && tool.pricing_model !== 'subscription') return false;
         if (priceFilter === 'one-time' && tool.pricing_model !== 'one-time') return false;
+        if (priceFilter === 'pay-per-use' && tool.pricing_model !== 'pay-per-use') return false;
       }
 
       return true;
@@ -156,6 +157,7 @@ export function ToolsClient({
               <option value="free">Free</option>
               <option value="subscription">Subscription</option>
               <option value="one-time">One-time purchase</option>
+              <option value="pay-per-use">Pay per use</option>
             </select>
           </div>
 

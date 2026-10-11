@@ -23,14 +23,18 @@ const pending: PendingSubmission = {
 function createTrackingStore(options?: {
   url?: string;
   claimLimit?: number;
+  draftFails?: boolean;
 }) {
   const calls = {
     getPending: 0,
     createDraft: 0,
     mark: 0,
+    revert: 0,
   };
   const drafts: DraftToolInsert[] = [];
   const marks: Array<{ id: string; update: SubmissionUpdate }> = [];
+  const reverts: string[] = [];
+  let draftShouldFail = options?.draftFails ?? false;
   const submission: PendingSubmission = {
     ...pending,
     website_url: options?.url ?? pending.website_url,
@@ -45,6 +49,9 @@ function createTrackingStore(options?: {
     async createDraftTool(tool) {
       calls.createDraft += 1;
       drafts.push(tool);
+      if (draftShouldFail) {
+        return { error: 'Failed to create draft' };
+      }
       return {};
     },
     async markSubmission(id, update) {
@@ -57,9 +64,14 @@ function createTrackingStore(options?: {
       claims += 1;
       return { claimed: true };
     },
+    async revertToPending(id) {
+      calls.revert += 1;
+      reverts.push(id);
+      return {};
+    },
   };
 
-  return { store, calls, drafts, marks };
+  return { store, calls, drafts, marks, reverts };
 }
 
 function adminApprove(store: ReviewStore, submissionId: unknown = VALID_ID) {
@@ -200,6 +212,17 @@ test.describe('admin submission review actions', () => {
     expect(second).toEqual({ success: false, error: 'Submission is no longer pending' });
     expect(tracking.calls.createDraft).toBe(1);
     expect(tracking.calls.mark).toBe(2);
+  });
+
+  test('approve reverts the submission to pending if draft creation fails', async () => {
+    const tracking = createTrackingStore({ draftFails: true });
+    const result = await adminApprove(tracking.store);
+
+    expect(result).toEqual({ success: false, error: 'Failed to create draft' });
+    expect(tracking.calls.createDraft).toBe(1);
+    expect(tracking.calls.revert).toBe(1);
+    expect(tracking.reverts).toEqual([VALID_ID]);
+    expect(tracking.marks[0]?.update.status).toBe('approved');
   });
 
   test('review page binds the server actions, not missing routes', async () => {

@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import type { Tool } from '@/types/database';
 import { fallbackTools } from '@/lib/fallback-data';
 import { generateOrganizationSchema, generateWebSiteSchema, safeJsonLd } from '@/lib/json-ld';
+import { PRICE_CHECKED_LABEL } from '@/lib/site-dates';
 
 async function getToolsCount(): Promise<number> {
   const { count } = await supabase
@@ -97,7 +98,7 @@ export default async function HomePage() {
               </div>
               <h2 className="heading-3 mb-2">Curated</h2>
               <p className="text-[#5B657B]">
-                We try each tool ourselves. No fake AI-generated ratings.
+                We review each tool's public pricing and features. No fake AI-generated ratings.
               </p>
             </div>
             <div className="text-center">
@@ -106,7 +107,7 @@ export default async function HomePage() {
               </div>
               <h2 className="heading-3 mb-2">Real Pricing</h2>
               <p className="text-[#5B657B]">
-                Pricing shown as found on vendor sites. Last updated Oct 2026.
+                Pricing shown as found on vendor sites. Price checked {PRICE_CHECKED_LABEL}.
               </p>
             </div>
             <div className="text-center">

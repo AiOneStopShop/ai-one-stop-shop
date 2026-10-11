@@ -4,6 +4,8 @@
 // - placeholder editorial scores (85/70) set to null
 // - Stable Diffusion XL and AgentGPT no longer marked free
 // - Cursor, GitHub Copilot, and Grammarly marked has_free_tier (Hobby / Copilot Free / Grammarly Free)
+// - v0, Bolt, and Descript marked has_free_tier after checking their $0 plans (2026-10-11)
+// - Replit left has_free_tier false: current pricing page has no $0 plan (Starter dropped)
 
 export const fallbackTools = [
   {
@@ -239,7 +241,7 @@ export const fallbackTools = [
     "description": "Build complete apps from natural language descriptions",
     "website_url": "https://replit.com",
     "source_url": "https://replit.com",
-    "pricing_summary": "$25/month",
+    "pricing_summary": "$20/month",
     "pricing_model": "subscription",
     "has_free_tier": false,
     "platforms": [
@@ -285,7 +287,7 @@ export const fallbackTools = [
     "source_url": "https://v0.dev",
     "pricing_summary": "$20/month",
     "pricing_model": "subscription",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "Web"
     ],
@@ -327,9 +329,9 @@ export const fallbackTools = [
     "description": "Full-stack web apps from prompts, deployed instantly",
     "website_url": "https://bolt.new",
     "source_url": "https://bolt.new",
-    "pricing_summary": "$20/month",
+    "pricing_summary": "$25/month",
     "pricing_model": "subscription",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "Web"
     ],
@@ -642,9 +644,9 @@ export const fallbackTools = [
     "description": "AI-powered video and podcast editing",
     "website_url": "https://descript.com",
     "source_url": "https://descript.com",
-    "pricing_summary": "$15/month",
+    "pricing_summary": "$16/month",
     "pricing_model": "subscription",
-    "has_free_tier": false,
+    "has_free_tier": true,
     "platforms": [
       "Desktop",
       "Web"

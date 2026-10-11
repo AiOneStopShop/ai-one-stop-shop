@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { DM_Sans, Inter } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/Header';
@@ -58,11 +59,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-[#F9F8F5] text-[#171C26] font-inter antialiased">
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem('cookieConsent')){document.documentElement.classList.add('cookie-consent-given')}else{document.documentElement.classList.add('has-cookie-banner')}}catch(e){document.documentElement.classList.add('has-cookie-banner')}`,
-          }}
-        />
+        <Script src="/cookie-banner-boot.js" strategy="beforeInteractive" />
         <CookieConsent />
         <Header />
         <main id="main" tabIndex={-1} className="min-h-screen focus:outline-none">

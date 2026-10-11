@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { PRICE_CHECKED_ISO, PRICE_CHECKED_LABEL } from '@/lib/site-dates';
 
 export async function GET() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aionestop.shop';
@@ -26,7 +27,7 @@ Some links are paid (affiliate) links. If you sign up through one, we may earn a
 ## What you can find here
 
 - ${count || 0} curated AI tools across categories like coding, content creation, productivity, design, and more
-- Pricing information (last updated Oct 2026)
+- Pricing information (price checked ${PRICE_CHECKED_LABEL})
 - Editorial picks and explanations of who each tool is best for
 - No fake ratings or review counts
 
@@ -47,7 +48,7 @@ Some links are paid (affiliate) links. If you sign up through one, we may earn a
 
 ## Last updated
 
-${new Date().toISOString().split('T')[0]}
+${PRICE_CHECKED_ISO}
 `;
 
   return new Response(content, {

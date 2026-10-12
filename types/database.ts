@@ -31,6 +31,7 @@ export interface Tool {
   last_verified_at: string | null;
   status: ToolStatus;
   is_sponsored: boolean;
+  review_notes?: string | null;
   created_at: string;
   updated_at: string;
 }

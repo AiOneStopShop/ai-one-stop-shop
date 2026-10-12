@@ -26,7 +26,7 @@ Some links are paid (affiliate) links. If you sign up through one, we may earn a
 
 ## What you can find here
 
-- ${count || 0} curated AI tools across categories like coding, content creation, productivity, design, and more
+- ${count || 0} curated AI tools across chat, writing, image, video, audio, music, coding, agents, research, email, slides, design, marketing, productivity, and local models
 - Pricing information (price checked ${PRICE_CHECKED_LABEL})
 - Editorial picks and explanations of who each tool is best for
 - Personas with live starter toolkits: ${siteUrl}/personas

@@ -9,12 +9,13 @@ import { SEARCH_DEBOUNCE_MS } from '@/lib/search-tools';
 
 type Category = any;
 
-function buildToolsHref(query: string, category: string, price: string, free: boolean): string {
+function buildToolsHref(query: string, category: string, price: string, free: boolean, sort = 'relevance'): string {
   const params = new URLSearchParams();
   if (query) params.set('q', query);
   if (category !== 'all') params.set('category', category);
   if (price !== 'all') params.set('price', price);
   if (free) params.set('free', '1');
+  if (sort !== 'relevance') params.set('sort', sort);
   const next = params.toString();
   return next ? `/tools?${next}` : '/tools';
 }
@@ -27,6 +28,7 @@ export function ToolsClient({
   initialFree,
   resultCount,
   publishedCount,
+  initialSort = 'relevance',
   children,
 }: {
   categories: Category[];
@@ -36,6 +38,7 @@ export function ToolsClient({
   initialFree: boolean;
   resultCount: number;
   publishedCount: number;
+  initialSort?: string;
   children: ReactNode;
 }) {
   const router = useRouter();
@@ -47,6 +50,7 @@ export function ToolsClient({
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [priceFilter, setPriceFilter] = useState(initialPrice);
   const [hasFreeTier, setHasFreeTier] = useState(initialFree);
+  const [sort, setSort] = useState(initialSort);
   const [announcedCount, setAnnouncedCount] = useState('');
 
   useEffect(() => {
@@ -55,7 +59,8 @@ export function ToolsClient({
     setSelectedCategory(initialCategory);
     setPriceFilter(initialPrice);
     setHasFreeTier(initialFree);
-  }, [initialQuery, initialCategory, initialPrice, initialFree]);
+    setSort(initialSort);
+  }, [initialQuery, initialCategory, initialPrice, initialFree, initialSort]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -65,7 +70,7 @@ export function ToolsClient({
   }, [draftQuery]);
 
   useEffect(() => {
-    const next = buildToolsHref(searchQuery, selectedCategory, priceFilter, hasFreeTier);
+    const next = buildToolsHref(searchQuery, selectedCategory, priceFilter, hasFreeTier, sort);
     const current = `${pathname}${window.location.search}`;
     if (next === current) {
       if (historyMode.current === 'push') {
@@ -82,7 +87,7 @@ export function ToolsClient({
     } else {
       router.replace(next, { scroll: false });
     }
-  }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, pathname, router]);
+  }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, sort, pathname, router]);
 
   const hasActiveFilters = Boolean(searchQuery) || selectedCategory !== 'all' || priceFilter !== 'all' || hasFreeTier;
   const resultText = resultCount === 0
@@ -103,13 +108,14 @@ export function ToolsClient({
     setSelectedCategory('all');
     setPriceFilter('all');
     setHasFreeTier(false);
+    setSort('relevance');
   };
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const submitted = new FormData(event.currentTarget).get('q');
     const query = typeof submitted === 'string' ? submitted.trim() : '';
-    const next = buildToolsHref(query, selectedCategory, priceFilter, hasFreeTier);
+    const next = buildToolsHref(query, selectedCategory, priceFilter, hasFreeTier, sort);
     const current = `${pathname}${typeof window !== 'undefined' ? window.location.search : ''}`;
     if (next === current) {
       window.history.pushState(window.history.state ?? {}, '', current);
@@ -156,6 +162,22 @@ export function ToolsClient({
                   {cat.name}
                 </option>
               ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="sort-filter" className="block text-sm font-medium text-[#171C26] mb-2">
+              Sort
+            </label>
+            <select
+              id="sort-filter"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="px-4 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white min-h-11"
+            >
+              <option value="relevance">Relevance</option>
+              <option value="free">Free first</option>
+              <option value="newest">Newest</option>
             </select>
           </div>
 

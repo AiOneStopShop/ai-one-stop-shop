@@ -91,7 +91,17 @@ const nextConfig = {
       },
       {
         source: '/toolkit',
-        destination: '/finder',
+        destination: '/budget',
+        permanent: true,
+      },
+      {
+        source: '/category/content',
+        destination: '/category/writing',
+        permanent: true,
+      },
+      {
+        source: '/category/ai-models',
+        destination: '/category/local-open-source',
         permanent: true,
       },
       {

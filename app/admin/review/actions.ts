@@ -104,6 +104,37 @@ export async function approveTool(toolId: string) {
   }
 }
 
+export async function saveReviewNotes(toolId: string, notes: string) {
+  const parsed = toolIdSchema.safeParse(toolId);
+  if (!parsed.success) {
+    return { success: false, error: 'Invalid tool ID' };
+  }
+  const authCheck = await checkAdminAuth();
+  if (!authCheck.authorized) {
+    return { success: false, error: authCheck.error || 'Unauthorized' };
+  }
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return { success: false, error: 'Supabase not configured' };
+  }
+  const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { persistSession: false },
+  });
+  const { error } = await supabase
+    .from('tools')
+    .update({
+      review_notes: notes.slice(0, 5000) || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', toolId);
+  if (error) {
+    return { success: false, error: 'Failed to save review notes' };
+  }
+  revalidatePath('/admin/review');
+  return { success: true };
+}
+
 export async function rejectTool(toolId: string) {
   // Validate input
   const parsed = toolIdSchema.safeParse(toolId);

@@ -41,6 +41,23 @@ async function checkAuth() {
   return { user, profile };
 }
 
+async function getHeldTools() {
+  const { createClient } = await import('@supabase/supabase-js');
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  );
+
+  const { data } = await supabase
+    .from('tools')
+    .select('id, name, slug, tagline, website_url, status, review_notes, created_at, pricing_summary')
+    .eq('status', 'needs_review')
+    .order('updated_at', { ascending: false });
+
+  return data || [];
+}
+
 async function getDrafts() {
   // Use service_role to bypass RLS
   const { createClient } = await import('@supabase/supabase-js');
@@ -80,9 +97,10 @@ async function getSubmissions() {
 export default async function AdminReviewPage() {
   await checkAuth();
   
-  const [drafts, submissions] = await Promise.all([
+  const [drafts, submissions, held] = await Promise.all([
     getDrafts(),
     getSubmissions(),
+    getHeldTools(),
   ]);
 
   return (
@@ -158,6 +176,46 @@ export default async function AdminReviewPage() {
                       toolName={submission.tool_name}
                     />
                   </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="mb-12">
+          <h2 className="heading-2 mb-6">
+            Held for review ({held.length})
+          </h2>
+          {held.length === 0 ? (
+            <div className="card text-center py-12">
+              <p className="text-[#5B657B]">No tools on hold</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {held.map((tool: any) => (
+                <div key={tool.id} className="card">
+                  <h3 className="heading-3 mb-2">{tool.name}</h3>
+                  {tool.tagline && <p className="text-[#5B657B] mb-3">{tool.tagline}</p>}
+                  <form
+                    action={async (formData) => {
+                      'use server';
+                      const { saveReviewNotes } = await import('./actions');
+                      await saveReviewNotes(tool.id, String(formData.get('review_notes') || ''));
+                    }}
+                    className="space-y-3"
+                  >
+                    <label htmlFor={`notes-${tool.id}`} className="block text-sm font-medium">
+                      Hold reason (admin only)
+                    </label>
+                    <textarea
+                      id={`notes-${tool.id}`}
+                      name="review_notes"
+                      defaultValue={tool.review_notes || ''}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white"
+                    />
+                    <button type="submit" className="btn-secondary">Save notes</button>
+                  </form>
                 </div>
               ))}
             </div>

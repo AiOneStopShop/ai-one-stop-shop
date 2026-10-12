@@ -39,6 +39,14 @@ export function Footer() {
               </li>
               <li>
                 <Link 
+                  href="/categories" 
+                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                >
+                  Categories
+                </Link>
+              </li>
+              <li>
+                <Link 
                   href="/personas" 
                   className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >

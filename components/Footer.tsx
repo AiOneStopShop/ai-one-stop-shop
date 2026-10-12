@@ -39,6 +39,22 @@ export function Footer() {
               </li>
               <li>
                 <Link 
+                  href="/personas" 
+                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                >
+                  Personas
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/budget" 
+                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                >
+                  Budget calculator
+                </Link>
+              </li>
+              <li>
+                <Link 
                   href="/our-kits" 
                   className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >

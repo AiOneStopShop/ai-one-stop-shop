@@ -29,6 +29,8 @@ Some links are paid (affiliate) links. If you sign up through one, we may earn a
 - ${count || 0} curated AI tools across categories like coding, content creation, productivity, design, and more
 - Pricing information (price checked ${PRICE_CHECKED_LABEL})
 - Editorial picks and explanations of who each tool is best for
+- Personas with live starter toolkits: ${siteUrl}/personas
+- Budget calculator (toolkit builder): ${siteUrl}/budget
 - No fake ratings or review counts
 
 ## Machine-readable catalog

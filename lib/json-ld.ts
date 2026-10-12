@@ -127,3 +127,33 @@ export function generateItemListSchema(
     }))
   };
 }
+
+export function generatePersonaPageSchema(persona: {
+  slug: string;
+  name: string;
+  title: string;
+  whoFor: string;
+  jobs: string[];
+}, tools: Array<{ name: string; slug: string; tagline?: string | null }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${persona.name}: ${persona.title}`,
+    description: persona.whoFor,
+    url: `${SITE_URL}/personas/${persona.slug}`,
+    about: {
+      '@type': 'Intangible',
+      name: persona.title,
+      description: persona.whoFor,
+    },
+    mainEntity: generateItemListSchema(
+      `${persona.name}'s starter toolkit`,
+      persona.jobs.join(' '),
+      tools.map((tool) => ({
+        name: tool.name,
+        url: `/tools/${tool.slug}`,
+        description: tool.tagline || undefined,
+      }))
+    ),
+  };
+}

@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { ArrowRight, Search, CheckCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { Tool } from '@/types/database';
 import { fallbackTools } from '@/lib/fallback-data';
 import { generateOrganizationSchema, generateWebSiteSchema, safeJsonLd } from '@/lib/json-ld';
+import { PERSONAS } from '@/lib/personas';
 import { PRICE_CHECKED_LABEL } from '@/lib/site-dates';
 
 async function getToolsCount(): Promise<number> {
@@ -103,9 +104,8 @@ export default async function HomePage() {
               Browse all tools
               <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
             </Link>
-            <Link href="/finder" className="btn-secondary">
-              <Search className="mr-2 h-5 w-5" aria-hidden="true" />
-              AI Tool Finder
+            <Link href="/budget" className="btn-secondary">
+              Budget calculator
             </Link>
           </div>
         </div>
@@ -149,8 +149,39 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured Tools */}
       <section className="section-spacing bg-[#F9F8F5]">
+        <div className="container-max">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+            <div>
+              <h2 className="heading-2 mb-3">Start from a persona</h2>
+              <p className="text-[#5B657B] max-w-2xl">
+                Four starting points with a live starter toolkit. Or set a monthly budget, including $0.
+              </p>
+            </div>
+            <Link href="/personas" className="text-[#6C39EF] hover:underline focus-ring rounded">
+              All personas <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+          <ul className="grid gap-6 md:grid-cols-2">
+            {PERSONAS.map((persona) => (
+              <li key={persona.slug}>
+                <Link href={`/personas/${persona.slug}`} className="card block h-full hover:shadow-lg focus-ring">
+                  <h3 className="heading-3 mb-2">{persona.name}</h3>
+                  <p className="text-[#5B657B]">{persona.whoFor}</p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-8">
+            <Link href="/budget" className="btn-secondary">
+              Open the budget calculator
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* Featured Tools */}
+      <section className="section-spacing bg-white">
         <div className="container-max">
           <div className="flex items-center justify-between mb-8">
             <h2 className="heading-2">Featured Tools</h2>

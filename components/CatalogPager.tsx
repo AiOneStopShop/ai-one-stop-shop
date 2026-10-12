@@ -23,12 +23,10 @@ export function CatalogPager({
       </p>
       <div className="flex gap-3">
         {prev ? (
-          <Link href={hrefForPage(prev)} className="btn-secondary">
+          <Link href={hrefForPage(prev)} className="btn-secondary" rel="prev">
             Previous page
           </Link>
-        ) : (
-          <span className="btn-secondary opacity-50 pointer-events-none">Previous page</span>
-        )}
+        ) : null}
         {next ? (
           <Link href={hrefForPage(next)} className="btn-primary" rel="next">
             Next page

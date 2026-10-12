@@ -1,5 +1,6 @@
 import { fallbackTools } from '@/lib/fallback-data';
 import { supabase } from '@/lib/supabase';
+import { applyFallbackTaxonomy } from '@/lib/taxonomy-fallback';
 
 export type CatalogTool = {
   id: string;
@@ -60,7 +61,9 @@ export function primaryCategorySlug(tool: CatalogTool): string | null {
 }
 
 export function publishedFallbackTools(): CatalogTool[] {
-  return fallbackTools.filter((tool) => tool.status === 'published') as CatalogTool[];
+  return fallbackTools
+    .filter((tool) => tool.status === 'published')
+    .map((tool) => applyFallbackTaxonomy(tool)) as CatalogTool[];
 }
 
 export async function getPublishedCatalogTools(): Promise<CatalogTool[]> {

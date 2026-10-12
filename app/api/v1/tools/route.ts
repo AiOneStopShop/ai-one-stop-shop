@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
       offset,
     });
 
-    return jsonTools(result.tools.map((tool) => toPublicTool(tool)), result.total, limit, offset);
+    return jsonTools(result.tools.map((tool: any) => toPublicTool(tool)), result.total, limit, offset);
   } catch (error) {
     console.error('Failed to fetch tools:', error);
     return NextResponse.json(

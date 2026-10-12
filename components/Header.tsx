@@ -54,6 +54,12 @@ export function Header() {
                 Tools
               </Link>
               <Link 
+                href="/categories" 
+                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+              >
+                Categories
+              </Link>
+              <Link 
                 href="/personas" 
                 className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
               >
@@ -118,6 +124,13 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Tools
+              </Link>
+              <Link 
+                href="/categories" 
+                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Categories
               </Link>
               <Link 
                 href="/personas" 

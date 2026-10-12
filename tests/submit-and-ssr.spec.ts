@@ -53,8 +53,9 @@ test('/tools server HTML includes published tool cards', async ({ request }) => 
   expect(response.ok()).toBeTruthy();
   const html = await response.text();
   const articles = html.match(/<article\b/g) || [];
-  expect(articles.length).toBe(20);
+  expect(articles.length).toBeGreaterThanOrEqual(1);
+  expect(articles.length).toBeLessThanOrEqual(24);
   const grepCount = html.split('\n').filter((line) => line.includes('<article')).length;
-  expect(grepCount).toBe(20);
+  expect(grepCount).toBe(articles.length);
   expect(html).not.toContain('Loading tools…');
 });

@@ -1,3 +1,5 @@
+import { INTENT_CATEGORY_SLUGS, normalizeCategorySlug } from '@/lib/taxonomy';
+
 export const SEARCH_QUERY_MAX = 100;
 export const SEARCH_DEBOUNCE_MS = 200;
 export const TRIGRAM_MATCH_THRESHOLD = 0.4;
@@ -322,6 +324,7 @@ function writingCopyBoost(tool: SearchableTool, rawQuery: string): number {
     boost += 2;
   }
   if (/content|writing|copy/.test(category)) boost += 1.2;
+  if (categorySlugs(tool).includes('writing')) boost += 1.4;
   return boost;
 }
 
@@ -336,7 +339,8 @@ function imageArtBoost(tool: SearchableTool, rawQuery: string): number {
   let boost = 0;
   if (/image|art|midjourney|diffusion|dall|canva/.test(name)) boost += 4;
   if (/image|art/.test(tagline) || /image|art/.test(tags)) boost += 3;
-  if (/design/.test(category)) boost += 2.2;
+  if (/design|image/.test(category)) boost += 2.2;
+  if (categorySlugs(tool).some((slug) => slug === 'image' || slug === 'design')) boost += 1.4;
   return boost;
 }
 
@@ -521,18 +525,29 @@ export function toolMatchesQuery(tool: SearchableTool, rawQuery: string): boolea
   if (queryHasToken(query, ['chat', 'chatbot', 'assistant', 'llm']) && isAiAssistantTool(tool)) {
     return true;
   }
+  const slugs = categorySlugs(tool);
+  for (const token of tokenizeSearchQuery(query)) {
+    const mapped = INTENT_CATEGORY_SLUGS[token];
+    if (mapped?.some((slug) => slugs.includes(slug))) return true;
+  }
   if (nameSimilarity(tool, query) >= TRIGRAM_MATCH_THRESHOLD) return true;
   return scoreTool(tool, query) >= SEARCH_MIN_SCORE;
 }
 
+function categorySlugs(tool: SearchableTool): string[] {
+  return (tool.tool_categories || [])
+    .map((relation) => relation?.categories?.slug)
+    .filter((slug): slug is string => Boolean(slug));
+}
+
 function matchesFilters(tool: SearchableTool, options: SearchToolsOptions): boolean {
-  const category = options.category && options.category !== 'all' ? options.category : '';
+  const category = normalizeCategorySlug(options.category);
   const price = options.price && options.price !== 'all' ? options.price : '';
 
   if (category) {
-    const hasCategory = (tool.tool_categories || []).some(
-      (relation) => relation?.categories?.slug === category
-    );
+    const hasCategory = categorySlugs(tool)
+      .map((slug) => normalizeCategorySlug(slug) || slug)
+      .includes(category);
     if (!hasCategory) return false;
   }
 

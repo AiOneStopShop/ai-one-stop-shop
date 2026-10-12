@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const routes = ['/', '/tools', '/finder', '/submit', '/compare', '/personas', '/budget', '/admin/login'];
+const routes = ['/', '/tools', '/categories', '/finder', '/submit', '/compare', '/personas', '/budget', '/admin/login'];
 
 test.describe('Dolly a11y routes', () => {
   test.beforeEach(async ({ page }) => {

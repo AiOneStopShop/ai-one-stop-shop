@@ -32,15 +32,23 @@ export function Footer() {
               <li>
                 <Link 
                   href="/tools" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >
                   All Tools
                 </Link>
               </li>
               <li>
                 <Link 
+                  href="/categories" 
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                >
+                  Categories
+                </Link>
+              </li>
+              <li>
+                <Link 
                   href="/personas" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >
                   Personas
                 </Link>
@@ -48,7 +56,7 @@ export function Footer() {
               <li>
                 <Link 
                   href="/budget" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >
                   Budget calculator
                 </Link>
@@ -56,7 +64,7 @@ export function Footer() {
               <li>
                 <Link 
                   href="/our-kits" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >
                   Our Kits
                 </Link>
@@ -64,7 +72,7 @@ export function Footer() {
               <li>
                 <Link 
                   href="/submit" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >
                   Submit a Tool
                 </Link>
@@ -81,7 +89,7 @@ export function Footer() {
               <li>
                 <Link 
                   href="/how-we-rank" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >
                   How We Rank
                 </Link>
@@ -89,7 +97,7 @@ export function Footer() {
               <li>
                 <Link 
                   href="/disclosure" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >
                   Disclosure
                 </Link>
@@ -97,7 +105,7 @@ export function Footer() {
               <li>
                 <Link 
                   href="/about" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >
                   About
                 </Link>
@@ -114,7 +122,7 @@ export function Footer() {
               <li>
                 <Link 
                   href="/privacy" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >
                   Privacy
                 </Link>
@@ -122,7 +130,7 @@ export function Footer() {
               <li>
                 <Link 
                   href="/terms" 
-                  className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
                 >
                   Terms
                 </Link>

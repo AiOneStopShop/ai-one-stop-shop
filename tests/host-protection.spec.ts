@@ -20,6 +20,10 @@ test('canonical host helpers', () => {
   expect(isCanonicalHost('localhost:3100')).toBe(false);
 });
 
+const BRANCH_ALIAS =
+  'ai-one-stop-shop-5e48-git-cursor-rebuild-ai-efdd64-one-tomorrow.vercel.app';
+const DEPLOYMENT_URL = 'ai-one-stop-shop-5e48-7k2xq9mnp-one-tomorrow.vercel.app';
+
 test('production vercel.app alias is blocked except cron', () => {
   expect(isProductionVercelAlias('production', 'ai-one-stop-shop-5e48.vercel.app')).toBe(true);
   expect(shouldBlockProductionAlias('production', 'ai-one-stop-shop-5e48.vercel.app', '/')).toBe(true);
@@ -28,6 +32,30 @@ test('production vercel.app alias is blocked except cron', () => {
   expect(shouldBlockProductionAlias('production', 'ai-one-stop-shop-5e48.vercel.app', CRON_CLEANUP_PATH)).toBe(false);
   expect(shouldBlockProductionAlias('production', 'aionestop.shop', '/')).toBe(false);
   expect(shouldBlockProductionAlias('preview', 'ai-one-stop-shop-5e48.vercel.app', '/')).toBe(false);
+});
+
+test('branch aliases and per-deployment URLs stay unblocked when VERCEL_ENV is production', () => {
+  expect(isProductionVercelAlias('production', BRANCH_ALIAS)).toBe(false);
+  expect(shouldBlockProductionAlias('production', BRANCH_ALIAS, '/')).toBe(false);
+  expect(shouldBlockProductionAlias('production', BRANCH_ALIAS, '/tools')).toBe(false);
+  expect(isProductionVercelAlias('production', DEPLOYMENT_URL)).toBe(false);
+  expect(shouldBlockProductionAlias('production', DEPLOYMENT_URL, '/')).toBe(false);
+});
+
+test('VERCEL_PROJECT_PRODUCTION_URL host is treated as the public production alias', () => {
+  const previous = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  process.env.VERCEL_PROJECT_PRODUCTION_URL = 'https://custom-prod-alias.vercel.app';
+  try {
+    expect(shouldBlockProductionAlias('production', 'custom-prod-alias.vercel.app', '/')).toBe(true);
+    expect(shouldBlockProductionAlias('production', BRANCH_ALIAS, '/')).toBe(false);
+    expect(shouldBlockProductionAlias('production', 'aionestop.shop', '/')).toBe(false);
+  } finally {
+    if (previous === undefined) {
+      delete process.env.VERCEL_PROJECT_PRODUCTION_URL;
+    } else {
+      process.env.VERCEL_PROJECT_PRODUCTION_URL = previous;
+    }
+  }
 });
 
 test('contact and brand stay empty when env is unset', () => {
@@ -90,6 +118,14 @@ test('custom domain and preview deployments stay reachable', async () => {
   const preview = await middlewareFor('/tools', 'ai-one-stop-shop-git-preview.vercel.app', 'preview');
   expect(preview.status).not.toBe(404);
   expect(preview.headers.get('X-Robots-Tag')).toBe('noindex');
+
+  const branchOnProduction = await middlewareFor('/tools', BRANCH_ALIAS, 'production');
+  expect(branchOnProduction.status).not.toBe(404);
+  expect(branchOnProduction.headers.get('X-Robots-Tag')).toBe('noindex');
+
+  const deployment = await middlewareFor('/tools', DEPLOYMENT_URL, 'production');
+  expect(deployment.status).not.toBe(404);
+  expect(deployment.headers.get('X-Robots-Tag')).toBe('noindex');
 });
 
 test('non-canonical hosts get a disallow-all robots.txt', async () => {

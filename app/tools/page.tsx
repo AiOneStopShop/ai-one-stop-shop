@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { CatalogPager } from '@/components/CatalogPager';
 import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
+import { getActiveAffiliateGoSlugs } from '@/lib/affiliate-links';
 import { getCategories, getPublishedSuggestionPool, searchPublishedCatalog } from '@/lib/search-catalog';
 import { sanitizeSearchQuery, suggestDidYouMean } from '@/lib/search-tools';
 import { CATALOG_PAGE_SIZE, parseCategorySort, parsePage } from '@/lib/taxonomy';
@@ -25,7 +26,7 @@ export default async function ToolsPage(props: {
   const page = parsePage(searchParams.page);
   const sort = parseCategorySort(searchParams.sort);
 
-  const [catalog, categories, publishedPool] = await Promise.all([
+  const [catalog, categories, publishedPool, affiliates] = await Promise.all([
     searchPublishedCatalog({
       q: query,
       category,
@@ -37,6 +38,7 @@ export default async function ToolsPage(props: {
     }),
     getCategories(),
     getPublishedSuggestionPool(),
+    getActiveAffiliateGoSlugs(),
   ]);
 
   const suggested = catalog.tools.length === 0 && query
@@ -110,6 +112,7 @@ export default async function ToolsPage(props: {
                 hasFreeTier={free}
                 didYouMean={didYouMean}
                 popularCategories={popularCategories}
+                affiliates={affiliates}
               />
             </ToolsClient>
 

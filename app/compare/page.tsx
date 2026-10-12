@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { knownSlugsInOrder, orderBySlug } from '@/lib/compare-tools';
+import { getActiveAffiliateGoSlugs, toolHasAffiliate, visitHref } from '@/lib/affiliate-links';
 import { fallbackTools } from '@/lib/fallback-data';
 import { ChangeSelectionLink } from './ChangeSelectionLink';
 import { CompareSelector } from './CompareSelector';
@@ -66,7 +67,10 @@ export default async function ComparePage(props: {
     : fallbackTools.filter(t => t.status === 'published').map(t => ({ slug: t.slug, name: t.name }));
 
   const toolSlugs = knownSlugsInOrder(requestedSlugs, availableTools);
-  const tools = toolSlugs.length > 0 ? await getToolsForComparison(toolSlugs) : [];
+  const [tools, affiliates] = await Promise.all([
+    toolSlugs.length > 0 ? getToolsForComparison(toolSlugs) : Promise.resolve([]),
+    getActiveAffiliateGoSlugs(),
+  ]);
 
   if (tools.length < 2) {
     return (
@@ -179,20 +183,27 @@ export default async function ComparePage(props: {
                   <th scope="row" className="text-left p-4 border border-[#E5E1DC] font-medium text-[#5B657B]">
                     Website
                   </th>
-                  {tools.map((tool: any) => (
-                    <td key={tool.id} className="p-4 border border-[#E5E1DC]">
-                      <a
-                        href={tool.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#6C39EF] hover:underline focus-ring rounded"
-                      >
-                        Visit <span className="sr-only">{tool.name} </span>website
-                        <span className="sr-only"> (opens in new tab)</span>
-                        <span aria-hidden="true"> →</span>
-                      </a>
-                    </td>
-                  ))}
+                  {tools.map((tool: any) => {
+                    const paid = toolHasAffiliate(affiliates, tool.slug);
+                    return (
+                      <td key={tool.id} className="p-4 border border-[#E5E1DC]">
+                        <a
+                          href={visitHref(affiliates, tool.slug)}
+                          rel={paid ? 'sponsored nofollow noopener' : 'noopener'}
+                          className="text-[#6C39EF] hover:underline focus-ring rounded"
+                        >
+                          Visit {tool.name}
+                          {paid ? <span className="sr-only"> (paid link)</span> : null}
+                        </a>
+                        {paid ? (
+                          <p className="text-xs text-[#5B657B] mt-1">
+                            <span className="font-medium text-[#C62810]">Paid link:</span>{' '}
+                            We may earn a commission if you sign up.
+                          </p>
+                        ) : null}
+                      </td>
+                    );
+                  })}
                 </tr>
 
                 <tr>

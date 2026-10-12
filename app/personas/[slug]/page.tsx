@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { PriceHonesty } from '@/components/PriceHonesty';
 import { ToolkitResults } from '@/components/ToolkitResults';
 import { budgetPath } from '@/lib/budget-url';
+import { getActiveAffiliateGoSlugs } from '@/lib/affiliate-links';
 import { getPublishedCatalogTools } from '@/lib/catalog-tools';
 import {
   generateBreadcrumbSchema,
@@ -42,7 +43,10 @@ export default async function PersonaPage(props: {
   if (!persona) notFound();
 
   const freeFirst = searchParams.free === '1';
-  const tools = await getPublishedCatalogTools();
+  const [tools, affiliates] = await Promise.all([
+    getPublishedCatalogTools(),
+    getActiveAffiliateGoSlugs(),
+  ]);
   const result = starterToolkitForPersona(tools, persona.slug, { freeFirst });
 
   const breadcrumbs = generateBreadcrumbSchema([
@@ -131,6 +135,7 @@ export default async function PersonaPage(props: {
             result={result}
             heading={freeFirst ? 'Free-first starter toolkit' : 'Recommended starter toolkit'}
             showSwap={false}
+            affiliates={affiliates}
           />
         </div>
       </section>

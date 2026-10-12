@@ -53,40 +53,49 @@ export async function GET(
       .eq('tools.status', 'published')
       .single();
 
+    let destination = link?.destination_url || null;
+    let toolId = link?.tool_id || null;
+    let linkId = link?.id || null;
+
     if (error || !link) {
-      return NextResponse.redirect(new URL('/', request.url), 302);
+      const { data: tool } = await supabase
+        .from('tools')
+        .select('id, website_url')
+        .eq('slug', slug)
+        .eq('status', 'published')
+        .maybeSingle();
+
+      if (!tool?.website_url) {
+        return NextResponse.redirect(new URL('/', request.url), 302);
+      }
+      destination = tool.website_url;
+      toolId = tool.id;
     }
 
-    // Get user agent for logging
     const userAgent = request.headers.get('user-agent');
-    const ipHash = hashIP(ip);
-    const botDetected = isBot(userAgent);
-
-    // Log the click (async, don't wait)
     const referrer = request.headers.get('referer') || '';
     const referrerUrl = referrer ? new URL(referrer) : null;
-    
-    // Fire and forget - log the click
+
     void (async () => {
       try {
+        const ipHash = hashIP(ip);
         await supabase
           .from('affiliate_clicks')
           .insert({
-            link_id: link.id,
-            tool_id: link.tool_id,
+            link_id: linkId,
+            tool_id: toolId,
             ip_hash: ipHash,
             user_agent: userAgent?.substring(0, 255),
             referrer: referrerUrl ? `${referrerUrl.origin}${referrerUrl.pathname}` : '',
             page_path: referrerUrl?.pathname || '',
-            is_bot: botDetected,
+            is_bot: isBot(userAgent),
           });
       } catch (err) {
         console.error('Failed to log affiliate click:', err);
       }
     })();
 
-    // Redirect to the destination
-    return NextResponse.redirect(link.destination_url, 302);
+    return NextResponse.redirect(destination, 302);
   } catch (error) {
     console.error('Error in /go redirect:', error);
     return NextResponse.redirect(new URL('/', request.url), 302);

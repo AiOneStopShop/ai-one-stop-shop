@@ -2,6 +2,9 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 import { CompareCheckbox } from './CompareCheckbox';
 import { HighlightedText } from '@/components/HighlightedText';
+import { PaidVisitLink } from '@/components/PaidVisitLink';
+import type { AffiliateGoMap } from '@/lib/affiliate-links';
+import { toolHasAffiliate } from '@/lib/affiliate-links';
 
 function buildToolsHref(query: string, category: string, price: string, free: boolean): string {
   const params = new URLSearchParams();
@@ -21,6 +24,7 @@ export function ToolsResults({
   hasFreeTier,
   didYouMean,
   popularCategories,
+  affiliates = {},
 }: {
   tools: any[];
   query: string;
@@ -29,6 +33,7 @@ export function ToolsResults({
   hasFreeTier: boolean;
   didYouMean: { name: string } | null;
   popularCategories: Array<{ id: string; slug: string; name: string }>;
+  affiliates?: AffiliateGoMap;
 }) {
   if (tools.length > 0) {
     return (
@@ -84,6 +89,14 @@ export function ToolsResults({
                       {tool.pricing_summary}
                     </p>
                   )}
+                  <div className="mt-4">
+                    <PaidVisitLink
+                      slug={tool.slug}
+                      name={tool.name}
+                      paid={toolHasAffiliate(affiliates, tool.slug)}
+                      goSlug={affiliates[tool.slug]}
+                    />
+                  </div>
                 </div>
               </article>
             </Fragment>

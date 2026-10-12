@@ -4,17 +4,21 @@ import { budgetPath, withPick } from '@/lib/budget-url';
 import type { ToolkitResult } from '@/lib/toolkit';
 import { PaidVisitLink } from '@/components/PaidVisitLink';
 import { ResultLiveRegion } from '@/components/ResultLiveRegion';
+import type { AffiliateGoMap } from '@/lib/affiliate-links';
+import { toolHasAffiliate } from '@/lib/affiliate-links';
 
 export function ToolkitResults({
   result,
   query,
   heading = 'Recommended stack',
   showSwap = true,
+  affiliates = {},
 }: {
   result: ToolkitResult;
   query?: BudgetQuery;
   heading?: string;
   showSwap?: boolean;
+  affiliates?: AffiliateGoMap;
 }) {
   const compareHref = result.pickedSlugs.length >= 2
     ? `/compare?tools=${result.pickedSlugs.join(',')}`
@@ -93,7 +97,12 @@ export function ToolkitResults({
                   )}
                 </p>
                 <div className="mt-4">
-                  <PaidVisitLink slug={row.pick.tool.slug} name={row.pick.tool.name} />
+                  <PaidVisitLink
+                    slug={row.pick.tool.slug}
+                    name={row.pick.tool.name}
+                    paid={toolHasAffiliate(affiliates, row.pick.tool.slug)}
+                    goSlug={affiliates[row.pick.tool.slug]}
+                  />
                 </div>
               </div>
             ) : (

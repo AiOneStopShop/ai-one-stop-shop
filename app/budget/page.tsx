@@ -4,6 +4,7 @@ import { BudgetForm } from '@/app/budget/BudgetForm';
 import { PriceHonesty } from '@/components/PriceHonesty';
 import { ToolkitResults } from '@/components/ToolkitResults';
 import { parseBudgetSearchParams, serializeBudgetSearchParams } from '@/lib/budget-url';
+import { getActiveAffiliateGoSlugs } from '@/lib/affiliate-links';
 import { getPublishedCatalogTools } from '@/lib/catalog-tools';
 import { getPersona } from '@/lib/personas';
 import { buildToolkit } from '@/lib/toolkit';
@@ -24,7 +25,10 @@ export default async function BudgetPage(props: {
 }) {
   const searchParams = await props.searchParams;
   const query = parseBudgetSearchParams(searchParams);
-  const tools = await getPublishedCatalogTools();
+  const [tools, affiliates] = await Promise.all([
+    getPublishedCatalogTools(),
+    getActiveAffiliateGoSlugs(),
+  ]);
   const result = buildToolkit(tools, query);
   const persona = getPersona(query.persona);
 
@@ -66,7 +70,7 @@ export default async function BudgetPage(props: {
 
           <div className="grid gap-12">
             <BudgetForm key={serializeBudgetSearchParams(query)} query={query} />
-            <ToolkitResults result={result} query={query} />
+            <ToolkitResults result={result} query={query} affiliates={affiliates} />
           </div>
         </div>
       </section>

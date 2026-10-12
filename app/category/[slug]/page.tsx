@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { CatalogPager } from '@/components/CatalogPager';
+import { PaidVisitLink } from '@/components/PaidVisitLink';
+import { getActiveAffiliateGoSlugs, toolHasAffiliate } from '@/lib/affiliate-links';
 import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { getCategoryBySlug, listPublishedTools, searchPublishedCatalog } from '@/lib/search-catalog';
 import { applyFallbackTaxonomy, taxonomyFallbackCategories } from '@/lib/taxonomy-fallback';
@@ -94,6 +96,7 @@ export default async function CategoryPage(props: {
     }
   }
 
+  const affiliates = await getActiveAffiliateGoSlugs();
   const showRanks = sort === 'relevance' && listed.tools.some((tool: any) => tool.editorial_score != null);
 
   const breadcrumbs = generateBreadcrumbSchema([
@@ -195,7 +198,15 @@ export default async function CategoryPage(props: {
                     {tool.pricing_summary && (
                       <p className="text-sm font-medium text-[#171C26] mb-4">{tool.pricing_summary}</p>
                     )}
-                    <Link href={`/tools/${tool.slug}`} className="btn-secondary w-full">View details</Link>
+                    <div className="space-y-3">
+                      <PaidVisitLink
+                        slug={tool.slug}
+                        name={tool.name}
+                        paid={toolHasAffiliate(affiliates, tool.slug)}
+                        goSlug={affiliates[tool.slug]}
+                      />
+                      <Link href={`/tools/${tool.slug}`} className="btn-secondary w-full">View details</Link>
+                    </div>
                   </li>
                 ))}
               </ol>

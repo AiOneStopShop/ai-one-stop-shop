@@ -70,8 +70,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
 
   const toolSchema = generateToolSchema(tool, categories);
 
-  // Determine the visit link
-  const visitUrl = affiliateSlug ? `/go/${affiliateSlug}` : tool.website_url;
+  const visitUrl = `/go/${affiliateSlug || tool.slug}`;
   const isAffiliate = !!affiliateSlug;
 
   return (
@@ -225,7 +224,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     <a
                       href={visitUrl}
                       target="_blank"
-                      rel={isAffiliate ? 'sponsored nofollow noopener' : 'noopener noreferrer'}
+                      rel={isAffiliate ? 'sponsored nofollow noopener' : 'noopener'}
                       className="btn-primary w-full flex items-center justify-center gap-2"
                       aria-describedby={isAffiliate ? 'paid-note' : undefined}
                     >

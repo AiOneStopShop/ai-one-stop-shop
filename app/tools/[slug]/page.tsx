@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase';
 import type { Tool, Category } from '@/types/database';
 import { generateToolSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { ExternalLink } from 'lucide-react';
+import { LLMPricingBlock } from '@/components/LLMPricingBlock';
 
 async function getTool(slug: string) {
   const { data } = await supabase
@@ -145,6 +146,9 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     <p>{tool.description}</p>
                   </div>
                 )}
+
+                {/* LLM Pricing Block */}
+                <LLMPricingBlock toolSlug={tool.slug} />
 
                 {/* Editorial Why */}
                 {tool.editorial_why && (

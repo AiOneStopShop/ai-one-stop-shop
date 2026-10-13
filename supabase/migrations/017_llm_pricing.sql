@@ -65,8 +65,27 @@ GRANT ALL ON public.llm_pricing TO service_role;
 -- Seed data with verified pricing as of 2026-10-13
 INSERT INTO public.llm_pricing (slug, name, provider, category, input_price_per_1m, output_price_per_1m, cached_input_price_per_1m, context_window_tokens, monthly_price, has_free_tier, free_tier_note, source_url, notes) VALUES
 
--- OpenAI API Models
-('gpt-4o', 'GPT-4o', 'openai', 'api-model', NULL, NULL, NULL, NULL, NULL, false, NULL, 'https://openai.com/api/pricing/', 'Legacy model; see GPT-5.6 or GPT-6 series for latest. Pricing not listed on current pricing page.'),
+-- OpenAI API Models (Current GPT-6 and GPT-5.6 family)
+('gpt-6-astra', 'GPT-6 Astra', 'openai', 'api-model', 10.00, 50.00, 1.00, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Flagship model. Short context: $10/$50 per MTok. Long context (>272K): $20/$75 per MTok.'),
+('gpt-6-1-sol', 'GPT-6.1 Sol', 'openai', 'api-model', 2.00, 10.00, 0.10, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Short context pricing. Long context (>272K): $4/$15 per MTok.'),
+('gpt-6-sol', 'GPT-6 Sol', 'openai', 'api-model', 2.00, 10.00, 0.20, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Short context pricing. Long context (>272K): $4/$15 per MTok.'),
+('gpt-6-luna', 'GPT-6 Luna', 'openai', 'api-model', 0.10, 0.50, 0.01, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Short context pricing. Long context (>272K): $0.20/$0.75 per MTok.'),
+('gpt-5-6-sol', 'GPT-5.6 Sol', 'openai', 'api-model', 4.00, 20.00, 0.40, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Promotional pricing available at least through November 21, 2026. Short context pricing.'),
+('gpt-5-6-terra', 'GPT-5.6 Terra', 'openai', 'api-model', 2.00, 12.00, 0.20, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Short context pricing. Long context (>272K): $4/$18 per MTok.'),
+('gpt-5-6-luna', 'GPT-5.6 Luna', 'openai', 'api-model', 0.20, 1.20, 0.02, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Short context pricing. Long context (>272K): $0.40/$1.80 per MTok.'),
+('gpt-5-4-mini', 'GPT-5.4 Mini', 'openai', 'api-model', 0.75, 4.50, 0.075, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Context length <272K tokens.'),
+('gpt-5-4-nano', 'GPT-5.4 Nano', 'openai', 'api-model', 0.20, 1.25, 0.02, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Context length <272K tokens.'),
+('gpt-4o', 'GPT-4o', 'openai', 'api-model', 2.50, 10.00, 1.25, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Legacy model. For latest models, see GPT-6 and GPT-5.6 series.'),
+('gpt-4o-mini', 'GPT-4o Mini', 'openai', 'api-model', 0.15, 0.60, 0.075, NULL, NULL, false, NULL, 'https://platform.openai.com/docs/pricing', 'Legacy mini model.'),
+
+-- Mistral API Models
+('mistral-large-4', 'Mistral Large 4', 'mistral', 'api-model', 0.68, 2.09, 0.07, 1000000, NULL, false, NULL, 'https://docs.mistral.ai/inference/pricing', 'Sale price (was $1.36/$4.18). State-of-the-art open-weight multimodal model. 1M context window.'),
+('mistral-large-3', 'Mistral Large 3', 'mistral', 'api-model', 0.50, 1.50, 0.05, 256000, NULL, false, NULL, 'https://docs.mistral.ai/inference/pricing', 'Open-weight general-purpose multimodal model. 256K context window.'),
+('mistral-medium-3-5', 'Mistral Medium 3.5', 'mistral', 'api-model', 1.50, 7.50, 0.15, NULL, NULL, false, NULL, 'https://docs.mistral.ai/inference/pricing', 'Premier frontier model for demanding workloads.'),
+('mistral-small-4', 'Mistral Small 4', 'mistral', 'api-model', 0.15, 0.60, 0.015, NULL, NULL, false, NULL, 'https://docs.mistral.ai/inference/pricing', 'Hybrid instruct and reasoning MoE model. Cost-sensitive projects.'),
+('ministral-3b', 'Ministral 3B', 'mistral', 'api-model', 0.10, 0.10, 0.01, NULL, NULL, false, NULL, 'https://docs.mistral.ai/inference/pricing', '3B parameter model.'),
+('ministral-8b', 'Ministral 8B', 'mistral', 'api-model', 0.15, 0.15, 0.015, NULL, NULL, false, NULL, 'https://docs.mistral.ai/inference/pricing', '8B parameter model.'),
+('codestral', 'Codestral', 'mistral', 'api-model', 0.30, 0.90, 0.03, NULL, NULL, false, NULL, 'https://docs.mistral.ai/inference/pricing', 'Specialized coding model.'),
 
 -- Anthropic API Models
 ('claude-3-5-sonnet', 'Claude 3.5 Sonnet', 'anthropic', 'api-model', NULL, NULL, NULL, NULL, NULL, false, NULL, 'https://www.anthropic.com/pricing', 'Legacy model; see Claude Sonnet 5.5 or Opus 5.5 for latest.'),

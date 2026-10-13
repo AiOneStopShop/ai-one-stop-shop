@@ -78,6 +78,12 @@ export function Header() {
                 Compare
               </Link>
               <Link 
+                href="/compare/llm-pricing" 
+                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+              >
+                LLM Pricing
+              </Link>
+              <Link 
                 href="/finder" 
                 className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
               >
@@ -152,6 +158,13 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Compare
+              </Link>
+              <Link 
+                href="/compare/llm-pricing" 
+                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                LLM Pricing
               </Link>
               <Link 
                 href="/finder" 

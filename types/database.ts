@@ -50,3 +50,25 @@ export interface ToolSubmission {
   submitted_at: string;
   status: 'pending' | 'approved' | 'rejected';
 }
+
+export type LLMPricingCategory = 'api-model' | 'consumer-plan' | 'agent-service' | 'local';
+
+export interface LLMPricing {
+  id: string;
+  slug: string;
+  name: string;
+  provider: string;
+  category: LLMPricingCategory;
+  input_price_per_1m: number | null;
+  output_price_per_1m: number | null;
+  cached_input_price_per_1m: number | null;
+  context_window_tokens: number | null;
+  monthly_price: number | null;
+  has_free_tier: boolean;
+  free_tier_note: string | null;
+  source_url: string;
+  last_checked_date: string;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}

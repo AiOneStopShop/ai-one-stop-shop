@@ -15,7 +15,8 @@ export type TaxonomySlug =
   | 'design'
   | 'marketing'
   | 'productivity'
-  | 'local-open-source';
+  | 'local-open-source'
+  | 'skills';
 
 export type TaxonomyCategory = {
   slug: TaxonomySlug;
@@ -41,6 +42,7 @@ export const TAXONOMY: TaxonomyCategory[] = [
   { slug: 'marketing', name: 'Marketing', description: 'Campaigns, social posts, and go-to-market copy', icon: '📈', sort_order: 13 },
   { slug: 'productivity', name: 'Productivity', description: 'Everyday work tools that do not fit a more specific job', icon: '⚡', sort_order: 14 },
   { slug: 'local-open-source', name: 'Local and open-source models', description: 'Run models locally, self-host, or use open weights', icon: '🏠', sort_order: 15 },
+  { slug: 'skills', name: 'Skills', description: 'Skill packs, rules, and MCP integrations that teach your AI assistant new abilities', icon: '🧩', sort_order: 16 },
 ];
 
 export const CATEGORY_ALIASES: Record<string, TaxonomySlug> = {
@@ -78,6 +80,9 @@ export const INTENT_CATEGORY_SLUGS: Record<string, TaxonomySlug[]> = {
   email: ['email'],
   slides: ['slides', 'design'],
   design: ['design', 'image'],
+  skill: ['skills'],
+  skills: ['skills'],
+  mcp: ['skills'],
 };
 
 export const CATEGORY_SORTS = ['relevance', 'free', 'newest'] as const;
@@ -98,6 +103,7 @@ const PRIMARY_ORDER: TaxonomySlug[] = [
   'design',
   'marketing',
   'local-open-source',
+  'skills',
   'productivity',
 ];
 
@@ -182,6 +188,9 @@ export function classifyTool(tool: Classifiable): { slugs: TaxonomySlug[]; prima
   }
   if (hasAny(hay, ['local-llm', 'self-hosted', 'offline', 'ollama', 'llama.cpp', 'localai', 'privategpt', 'open weights'])) {
     matched.add('local-open-source');
+  }
+  if (hasAny(hay, ['skill', 'skills', 'mcp', 'integration', 'rule', 'prompt', 'extension', 'plugin', 'skill pack', 'teach'])) {
+    matched.add('skills');
   }
 
   if (matched.size === 0) {

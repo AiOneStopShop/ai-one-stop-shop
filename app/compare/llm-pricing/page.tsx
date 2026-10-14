@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 3600; // Revalidate every hour
+export const dynamic = 'force-dynamic'; // Force dynamic rendering to fetch live data
 
 async function getLLMPricing(): Promise<LLMPricing[]> {
   try {
@@ -22,9 +23,11 @@ async function getLLMPricing(): Promise<LLMPricing[]> {
 
     if (error) {
       console.error('Error fetching LLM pricing:', error);
+      console.error('RLS might be blocking anon access. Check policies.');
       return [];
     }
 
+    console.log(`Fetched ${(data || []).length} pricing entries from Supabase`);
     return (data || []) as LLMPricing[];
   } catch (error) {
     console.error('Exception fetching LLM pricing:', error);

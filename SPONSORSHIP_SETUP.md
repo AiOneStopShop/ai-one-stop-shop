@@ -7,9 +7,19 @@
 - `NEXT_PUBLIC_STRIPE_LINK_SPOTLIGHT` - Stripe Payment Link for Category Spotlight package (optional)
 - `NEXT_PUBLIC_STRIPE_LINK_NEWSLETTER` - Stripe Payment Link for Newsletter package (optional, currently disabled)
 - `NEXT_PUBLIC_STRIPE_LINK_BUNDLE` - Stripe Payment Link for Founding Bundle package (optional)
-- `RESEND_API_KEY` - Resend API key for sending notification emails (server-side only)
+- `RESEND_API_KEY` - Resend API key for sending notification emails (server-side only, optional)
+  - Get from resend.com/api-keys
+  - Free tier: 100 emails/day, 3000/month
+  - Must verify sending domain (notifications@aionestop.shop) in Resend dashboard
+  - Common errors (non-fatal, logged only):
+    - 401: Invalid API key
+    - 403: Domain not verified in Resend
+    - 422: Invalid email format
+    - 429: Rate limit exceeded
 - `NEXT_PUBLIC_SITE_CONTACT_EMAIL` - Contact email for receiving notifications (e.g., aionestopshop25@gmail.com)
-- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` - Upstash Redis for rate limiting (manual) OR connect via Vercel Marketplace (auto-injects `KV_REST_API_URL` / `KV_REST_API_TOKEN`)
+- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` - Upstash Redis for rate limiting (required in production)
+  - Without Redis configured, rate limiting fails closed in production (rejects all requests)
+  - Manual credentials OR connect via Vercel Marketplace (auto-injects KV_REST_API_URL / KV_REST_API_TOKEN as fallback)
 
 ### Launch Mode
 Current launch mode is **request-only**. All "Book" buttons fall back to "Request a spot" when Stripe Payment Link env vars are empty. This is intentional for the initial launch.

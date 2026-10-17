@@ -1,24 +1,35 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Fraunces, Inter } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const fraunces = Fraunces({ 
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap',
+  axes: ['opsz'],
+})
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
-  title: 'AI One Stop Shop - Your Ultimate AI Tools & Knowledge Hub',
-  description: 'Discover the best AI tools, learn from expert knowledge, and join a thriving AI community. Your one-stop destination for everything AI.',
-  keywords: 'AI tools, artificial intelligence, machine learning, AI community, AI knowledge, AI resources',
-  authors: [{ name: 'AI One Stop Shop' }],
+  title: 'AI One Stop Shop - AI That Fits Your Life and Budget',
+  description: 'New to AI? Start with your situation. We help you find a useful first step, and you stay in charge of every choice. Honest pricing, no fake ratings.',
+  keywords: 'AI tools, artificial intelligence, beginner friendly, budget AI tools, honest AI reviews',
+  authors: [{ name: 'oneTomorrow' }],
+  creator: 'oneTomorrow',
   openGraph: {
-    title: 'AI One Stop Shop - Your Ultimate AI Tools & Knowledge Hub',
-    description: 'Discover the best AI tools, learn from expert knowledge, and join a thriving AI community.',
+    title: 'AI One Stop Shop - AI That Fits Your Life and Budget',
+    description: 'New to AI? Start with your situation. We help you find a useful first step, within your budget.',
     type: 'website',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI One Stop Shop - Your Ultimate AI Tools & Knowledge Hub',
-    description: 'Discover the best AI tools, learn from expert knowledge, and join a thriving AI community.',
+    title: 'AI One Stop Shop - AI That Fits Your Life and Budget',
+    description: 'New to AI? Start with your situation. We help you find a useful first step, within your budget.',
   },
 }
 
@@ -28,7 +39,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`scroll-smooth ${fraunces.variable} ${inter.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+      </head>
       <body className={`${inter.className} antialiased`}>
         {children}
       </body>

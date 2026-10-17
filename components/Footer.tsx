@@ -37,7 +37,7 @@ const socialLinks = [
   },
   {
     name: 'Email',
-    href: 'mailto:hello@aionestop.shop',
+    href: 'mailto:aionestopshop25@gmail.com',
     icon: Mail,
     color: 'hover:text-green-500'
   }
@@ -79,8 +79,8 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-gray-400 mb-6">
-              The ultimate AI storefront for tools, knowledge, and community. 
-              Discover, learn, and master AI with our curated collection.
+              The best AI tools don&apos;t replace you. They give you more time for the work only you can do. 
+              A oneTomorrow venture.
             </p>
             {/* Social Media Links */}
             <div className="flex space-x-4">
@@ -156,17 +156,17 @@ export default function Footer() {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-gray-400 text-sm mb-4 md:mb-0">
-              © 2024 AIOneStop.shop. All rights reserved.
+              © 2026 AI One Stop Shop · A oneTomorrow venture · <a href="mailto:aionestopshop25@gmail.com" className="hover:text-white">aionestopshop25@gmail.com</a>
             </div>
             <div className="flex space-x-6 text-sm">
               <a href="/privacy" className="text-gray-400 hover:text-white transition-colors">
-                Privacy Policy
+                Privacy
               </a>
               <a href="/terms" className="text-gray-400 hover:text-white transition-colors">
-                Terms of Service
+                Terms
               </a>
-              <a href="/contact" className="text-gray-400 hover:text-white transition-colors">
-                Contact
+              <a href="/disclosure" className="text-gray-400 hover:text-white transition-colors">
+                Disclosure
               </a>
             </div>
           </div>

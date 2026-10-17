@@ -175,7 +175,7 @@ export default function BudgetBuilder({ tools, onToolkitGenerated }: BudgetBuild
           total_tools: selectedTools.length,
           total_cost: toolkitTotal,
           tools_list: selectedTools.map(t => t.name),
-          categories: [...new Set(selectedTools.map(t => t.category))]
+          categories: Array.from(new Set(selectedTools.map(t => t.category)))
         }
       })
     }

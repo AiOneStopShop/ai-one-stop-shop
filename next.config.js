@@ -32,10 +32,6 @@ const nextConfig = {
 
     // One anti-framing pair: CSP frame-ancestors none + X-Frame-Options DENY.
     // Each header is set once — XFO on all paths, CSP only on HTML routes.
-    // Allow vercel.live toolbar only on preview deployments, never production.
-    const isPreview = process.env.VERCEL_ENV === 'preview';
-    const frameAncestors = isPreview ? "frame-ancestors 'none' https://vercel.live" : "frame-ancestors 'none'";
-    
     const xFrameOptions = {
       key: 'X-Frame-Options',
       value: 'DENY'
@@ -52,7 +48,7 @@ const nextConfig = {
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",
-        frameAncestors
+        "frame-ancestors 'none'"
       ].join('; ')
     };
 

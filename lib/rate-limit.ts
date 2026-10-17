@@ -47,8 +47,8 @@ class InMemoryRatelimit {
 
 // Initialize rate limiters
 function createRateLimiter(requests: number, windowMinutes: number) {
-  const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
-  const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const upstashUrl = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+  const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
   const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
 
   if (upstashUrl && upstashToken) {
@@ -67,8 +67,9 @@ function createRateLimiter(requests: number, windowMinutes: number) {
     // Fail closed in production
     if (isProduction) {
       console.error(
-        '❌ PRODUCTION ERROR: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN must be set in production. ' +
-        'Rate limiting is unavailable.'
+        '❌ PRODUCTION ERROR: Upstash Redis not configured. ' +
+        'Rate limiting is unavailable. Set UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN ' +
+        'or connect via Vercel Marketplace (KV_REST_API_URL + KV_REST_API_TOKEN).'
       );
       // Return a limiter that always fails in production
       return {
@@ -94,7 +95,8 @@ function createRateLimiter(requests: number, windowMinutes: number) {
 }
 
 export const isUpstashConfigured = Boolean(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) ||
+  (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
 );
 
 // Cheap per-instance burst guard used only when Upstash is unset.

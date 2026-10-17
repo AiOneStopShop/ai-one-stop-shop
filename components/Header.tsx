@@ -30,62 +30,59 @@ export function Header() {
         </a>
       </nav>
       
-      <header className="sticky top-0 z-40 bg-[#F9F8F5] border-b border-[#E5E1DC]">
+      <header className="sticky top-0 z-40 bg-cream border-b border-line">
         <div className="container-max">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between min-h-[68px]">
             {/* Logo */}
             <Link 
               href="/" 
-              className="flex items-center gap-2 focus-ring rounded-lg px-2 py-1"
+              className="flex items-center font-fraunces font-bold text-[1.3rem] text-green focus-ring rounded-lg px-2 py-1"
               aria-label="AI One Stop Shop - Home"
             >
-              <span className="text-2xl" aria-hidden="true">✨</span>
-              <span className="font-dm-sans font-bold text-lg text-[#171C26]">
-                AI One Stop Shop
-              </span>
+              AI One Stop Shop
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-4 lg:gap-6" aria-label="Main navigation">
+            <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
               <Link 
                 href="/tools" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded-full px-3 py-2 inline-flex items-center min-h-[44px]"
               >
                 Tools
               </Link>
               <Link 
                 href="/categories" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded-full px-3 py-2 inline-flex items-center min-h-[44px]"
               >
                 Categories
               </Link>
               <Link 
                 href="/personas" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded-full px-3 py-2 inline-flex items-center min-h-[44px]"
               >
                 Personas
               </Link>
               <Link 
                 href="/budget" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded-full px-3 py-2 inline-flex items-center min-h-[44px]"
               >
                 Budget
               </Link>
               <Link 
                 href="/compare" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded-full px-3 py-2 inline-flex items-center min-h-[44px]"
               >
                 Compare
               </Link>
               <Link 
                 href="/finder" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded-full px-3 py-2 inline-flex items-center min-h-[44px]"
               >
                 Finder
               </Link>
               <Link 
                 href="/about" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-1"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded-full px-3 py-2 inline-flex items-center min-h-[44px]"
               >
                 About
               </Link>
@@ -114,55 +111,55 @@ export function Header() {
         {mobileMenuOpen && (
           <nav 
             id="mobile-menu"
-            className="md:hidden border-t border-[#E5E1DC] bg-[#F9F8F5]"
+            className="md:hidden border-t border-line bg-cream"
             aria-label="Mobile navigation"
           >
             <div className="container-max py-4 flex flex-col gap-4">
               <Link 
                 href="/tools" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded px-3 py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Tools
               </Link>
               <Link 
                 href="/categories" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded px-3 py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Categories
               </Link>
               <Link 
                 href="/personas" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded px-3 py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Personas
               </Link>
               <Link 
                 href="/budget" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded px-3 py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Budget
               </Link>
               <Link 
                 href="/compare" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded px-3 py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Compare
               </Link>
               <Link 
                 href="/finder" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded px-3 py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Finder
               </Link>
               <Link 
                 href="/about" 
-                className="text-[#171C26] hover:text-[#6C39EF] transition-colors focus-ring rounded px-2 py-2"
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded px-3 py-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 About

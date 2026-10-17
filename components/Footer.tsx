@@ -1,196 +1,33 @@
 import Link from 'next/link';
-import { BrandName } from '@/components/BrandName';
-import { ContactEmail } from '@/components/ContactEmail';
+import { ContactEmail, ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail, isAffiliateLive } from '@/lib/site-config';
 
 export function Footer() {
+  const siteContactEmail = getSiteContactEmail();
+  const affiliateLive = isAffiliateLive();
+
   return (
-    <footer className="bg-[#171C26] text-white py-12 mt-24">
+    <footer className="border-t border-line bg-cream py-9 text-[0.95rem] text-soft">
       <div className="container-max">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          {/* About */}
-          <div>
-            <p className="font-dm-sans font-semibold text-lg mb-4">
-              AI One Stop Shop
-            </p>
-            <p className="text-sm text-gray-300 mb-4">
-              Curated AI tools directory. No fake ratings, no paid rankings.
-            </p>
-            {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS && (
-              <p className="text-xs text-gray-400 whitespace-pre-line">
-                {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS}
-              </p>
-            )}
-          </div>
-
-          {/* Tools */}
-          <div>
-            <p className="font-dm-sans font-semibold text-base mb-4">
-              Discover
-            </p>
-            <ul className="space-y-2">
-              <li>
-                <Link 
-                  href="/tools" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  All Tools
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/categories" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/personas" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Personas
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/budget" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Budget calculator
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/our-kits" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Our Kits
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/submit" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Submit a Tool
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Trust */}
-          <div>
-            <p className="font-dm-sans font-semibold text-base mb-4">
-              Trust
-            </p>
-            <ul className="space-y-2">
-              <li>
-                <Link 
-                  href="/how-we-rank" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  How We Rank
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/disclosure" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Disclosure
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/about" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/advertise" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Advertise
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/partners" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Partners
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <p className="font-dm-sans font-semibold text-base mb-4">
-              Legal
-            </p>
-            <ul className="space-y-2">
-              <li>
-                <Link 
-                  href="/privacy" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Privacy
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/terms" 
-                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                >
-                  Terms
-                </Link>
-              </li>
-              {process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' && (
-                <li>
-                  <Link 
-                    href="/dmca" 
-                    className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
-                  >
-                    Copyright &amp; DMCA
-                  </Link>
-                </li>
-              )}
-              {getSiteContactEmail() && (
-                <li>
-                  <ContactEmail className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded">
-                    Contact
-                  </ContactEmail>
-                </li>
-              )}
-            </ul>
-          </div>
-        </div>
-
         {/* Disclosure */}
-        <div className="border-t border-gray-700 pt-8 mb-8">
-          <p className="text-sm text-gray-400 max-w-3xl">
-            {isAffiliateLive() 
+        <div className="mb-6 pb-6 border-b border-line">
+          <p className="text-sm text-soft max-w-3xl">
+            {affiliateLive
               ? "We earn money from clearly labeled sponsored ads, some paid links, and our own kits. Payments never change how we rank tools."
               : "We earn money from clearly labeled sponsored ads and our own kits. Payments never change how we rank tools."
             }{' '}
-            <Link href="/disclosure" className="text-white hover:underline focus-ring rounded">
+            <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
               Read our disclosure
             </Link>
           </p>
           {process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' && (
-            <p className="text-sm text-gray-400 max-w-3xl mt-4">
+            <p className="text-sm text-soft max-w-3xl mt-3">
               <strong>Terms:</strong> By submitting a tool or using this site, you agree to our{' '}
-              <Link href="/terms" className="text-white hover:underline focus-ring rounded">
+              <Link href="/terms" className="text-green hover:underline focus-ring rounded">
                 Terms of Service
               </Link>
               . For copyright concerns, see our{' '}
-              <Link href="/dmca" className="text-white hover:underline focus-ring rounded">
+              <Link href="/dmca" className="text-green hover:underline focus-ring rounded">
                 Copyright &amp; DMCA policy
               </Link>
               .
@@ -198,15 +35,56 @@ export function Footer() {
           )}
         </div>
 
-        {/* Bottom */}
-        <div className="border-t border-gray-700 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-400">
-          <p>© 2026 AI One Stop Shop · Made in Washington State</p>
-          <p className="text-xs">
-            <BrandName className="hover:text-white transition-colors focus-ring rounded">
-              A oneTomorrow venture
-            </BrandName>
-          </p>
+        {/* Main footer row */}
+        <div className="flex flex-wrap justify-between gap-4">
+          <span>
+            © 2026 AI One Stop Shop · A oneTomorrow venture
+            {siteContactEmail && (
+              <>
+                {' · '}
+                <ContactEmailText className="text-green hover:underline focus-ring rounded" />
+              </>
+            )}
+          </span>
+          <ul className="flex flex-wrap gap-x-5 gap-y-1 list-none m-0 p-0">
+            <li>
+              <Link href="/privacy" className="text-green hover:underline focus-ring rounded">
+                Privacy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className="text-green hover:underline focus-ring rounded">
+                Terms
+              </Link>
+            </li>
+            <li>
+              <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
+                Disclosure
+              </Link>
+            </li>
+            <li>
+              <Link href="/advertise" className="text-green hover:underline focus-ring rounded">
+                Advertise
+              </Link>
+            </li>
+            <li>
+              <Link href="/how-we-rank" className="text-green hover:underline focus-ring rounded">
+                How we rank
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className="text-green hover:underline focus-ring rounded">
+                About
+              </Link>
+            </li>
+          </ul>
         </div>
+
+        {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS && (
+          <p className="text-xs text-soft whitespace-pre-line mt-4">
+            {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS}
+          </p>
+        )}
       </div>
     </footer>
   );

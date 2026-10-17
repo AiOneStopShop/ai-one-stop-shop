@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { DM_Sans, Inter } from 'next/font/google';
+import { Fraunces, Source_Sans_3 } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -9,19 +9,19 @@ import { Analytics } from '@vercel/analytics/react';
 
 const brandUrl = getBrandUrl();
 
-const dmSans = DM_Sans({
+const fraunces = Fraunces({
   subsets: ['latin'],
-  variable: '--font-dm-sans',
+  variable: '--font-fraunces',
   weight: ['600', '700'],
   display: 'swap',
   preload: true,
   adjustFontFallback: true,
 });
 
-const inter = Inter({
+const sourceSans3 = Source_Sans_3({
   subsets: ['latin'],
-  variable: '--font-inter',
-  weight: '400',
+  variable: '--font-source-sans',
+  weight: ['400', '600', '700'],
   display: 'swap',
   preload: true,
   adjustFontFallback: true,
@@ -65,8 +65,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${inter.variable}`}>
-      <body className="min-h-screen bg-[#F9F8F5] text-[#171C26] font-inter antialiased">
+    <html lang="en" className={`${fraunces.variable} ${sourceSans3.variable}`}>
+      <body className="min-h-screen bg-[#FBF4E6] text-[#22201B] font-source-sans antialiased">
         <script
           dangerouslySetInnerHTML={{
             __html: "try{if(localStorage.getItem('cookieConsent')){document.documentElement.classList.add('cookie-consent-given')}else{document.documentElement.classList.add('has-cookie-banner')}}catch(e){document.documentElement.classList.add('has-cookie-banner')}",

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@next/env": "15.5.27",
+    "@next/font": "14.2.15",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.55.0",
     "@upstash/ratelimit": "^2.2.0",

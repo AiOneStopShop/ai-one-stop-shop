@@ -2,21 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Option D: Everyday Guide Design System */
 @layer base {
   :root {
-    --font-dm-sans: 'DM Sans', sans-serif;
-    --font-inter: 'Inter', sans-serif;
-    
-    /* Brand colors */
-    --color-purple: #6C39EF;
-    --color-deep-purple: #4A2D86;
-    --color-coral: #FB6851;
-    --color-coral-text: #C62810;
-    --color-navy: #171C26;
-    --color-canvas: #F9F8F5;
-    --color-card: #FDFDFC;
-    --color-slate: #5B657B;
-    --color-border: #E5E1DC;
+    --cream: #FBF4E6;
+    --cream-2: #F4EAD6;
+    --green: #1E3B2C;
+    --green-2: #2E5A43;
+    --ink: #22201B;
+    --soft: #5A5348;
+    --line: #E2D6BF;
+    --orange: #E2562B;
+    --orange-ink: #B8360F;
+    --card: #FFFDF8;
   }
 
   html {
@@ -30,7 +28,6 @@
     scroll-padding-bottom: 6.5rem;
   }
 
-  /* Fixed reserve so JS-measured banner height cannot shift page content (CLS). */
   html.has-cookie-banner body {
     padding-bottom: 6.5rem;
   }
@@ -39,6 +36,28 @@
     display: none;
   }
 
+  ::selection {
+    background: #CFE3D4;
+    color: var(--green);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-fraunces text-green;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  a {
+    @apply text-green;
+    text-underline-offset: 0.2em;
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--green-2);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -55,22 +74,68 @@
 }
 
 @layer components {
+  /* Containers */
+  .container-max {
+    @apply max-w-[1180px] mx-auto px-7;
+  }
+
+  .wrap {
+    @apply container-max;
+  }
+
+  /* Section spacing */
+  .section-spacing {
+    @apply py-12 md:py-16;
+  }
+
+  /* Typography */
+  .heading-1 {
+    @apply text-[clamp(2.9rem,1.6rem+4.4vw,5.4rem)] font-fraunces font-bold text-green leading-[1.05];
+  }
+
+  .heading-2 {
+    @apply text-[clamp(2rem,1.4rem+2vw,3rem)] font-fraunces font-bold text-green;
+  }
+
+  .heading-3 {
+    @apply text-[1.6rem] font-fraunces font-bold text-green;
+  }
+
+  .text-lead {
+    @apply text-xl text-ink leading-relaxed;
+  }
+
+  /* Buttons */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-[#6C39EF] text-white font-medium rounded-lg hover:bg-[#5A2FD0] transition-colors focus:outline-none focus:ring-2 focus:ring-[#6736E2] focus:ring-offset-2 focus:ring-offset-[#F9F8F5] min-h-[44px];
+    @apply inline-flex items-center justify-center gap-3 min-h-[56px] px-7 rounded-xl bg-green text-white font-bold text-lg;
+    @apply hover:bg-green-2 transition-all duration-200;
+    box-shadow: 0 10px 22px -14px rgba(30, 59, 44, 0.9);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-[#171C26] text-[#171C26] font-medium rounded-lg hover:bg-[#171C26] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#6736E2] focus:ring-offset-2 focus:ring-offset-[#F9F8F5] min-h-[44px];
+    @apply inline-flex items-center justify-center gap-3 min-h-[56px] px-7 rounded-xl;
+    @apply bg-card border-2 border-line text-ink font-semibold;
+    @apply hover:border-green hover:bg-cream-2 transition-all duration-200;
   }
 
-  .link-paid {
-    @apply inline-flex items-center gap-2 text-[#6C39EF] hover:underline focus:outline-none focus:ring-2 focus:ring-[#6736E2] focus:ring-offset-2 focus:ring-offset-[#F9F8F5];
+  .btn-coral {
+    @apply btn-primary;
   }
 
+  .btn-outline {
+    @apply btn-secondary;
+  }
+
+  /* Cards */
   .card {
-    @apply bg-[#FDFDFC] rounded-xl border border-[#E5E1DC] p-6 hover:shadow-lg transition-shadow;
+    @apply bg-card border border-line rounded-2xl p-6;
   }
 
+  /* Badges */
   .badge {
     @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
   }
@@ -83,50 +148,56 @@
     @apply badge bg-[#F3EFFF] text-[#4A2D86] border border-[#6C39EF];
   }
 
-  .container-max {
-    @apply max-w-[1120px] mx-auto px-5 sm:px-6 lg:px-8;
-  }
-
-  .section-spacing {
-    @apply py-16 md:py-24 lg:py-32;
-  }
-
-  .heading-display,
-  .heading-hero {
-    @apply font-dm-sans font-bold text-[clamp(2.75rem,1.6rem+5vw,6rem)] leading-tight tracking-tight;
-  }
-
   .badge-category {
     @apply badge bg-[#F3EFFF] text-[#4A2D86] border border-[#6C39EF];
   }
 
-  .heading-1 {
-    @apply font-dm-sans font-bold text-[clamp(2.25rem,1.5rem+3vw,4rem)] leading-tight tracking-tight;
+  /* Orange swoosh decoration (never for text) */
+  .swoosh {
+    @apply block w-[140px] h-[14px] my-4;
   }
 
-  .heading-2 {
-    @apply font-dm-sans font-bold text-[clamp(1.75rem,1.3rem+2vw,3rem)] leading-snug;
+  /* Focus ring */
+  .focus-ring {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-2 focus-visible:rounded;
   }
 
-  .heading-3 {
-    @apply font-dm-sans font-semibold text-xl md:text-2xl leading-snug;
+  /* Legacy headings for backward compat */
+  .heading-large {
+    @apply text-4xl md:text-5xl font-dm-sans font-bold text-navy leading-tight;
   }
 
-  .text-lead {
-    @apply text-lg md:text-xl lg:text-2xl text-[#5B657B] leading-relaxed;
+  .heading-medium {
+    @apply text-3xl md:text-4xl font-dm-sans font-bold text-navy leading-snug;
+  }
+
+  .heading-small {
+    @apply text-2xl md:text-3xl font-dm-sans font-semibold text-navy;
+  }
+
+  .link-paid {
+    @apply inline-flex items-center gap-2 text-green hover:underline focus-ring;
   }
 }
 
 @layer utilities {
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-[#6736E2] focus:ring-offset-2 focus:ring-offset-[#F9F8F5];
+  /* Screen reader only */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+    clip: rect(0, 0, 0, 0);
   }
 
+  /* Skip link */
   .skip-link {
-    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-6 focus:py-3 focus:bg-[#6C39EF] focus:text-white focus:rounded-lg;
+    @apply absolute left-[-999px] top-2 bg-green text-white px-4 py-2 rounded z-50;
+  }
+
+  .skip-link:focus {
+    @apply left-3;
   }
 }
 
+/* Unlayered overrides */
 mark {
   background-color: #F3EFFF;
   color: inherit;
@@ -134,7 +205,7 @@ mark {
   border-radius: 0.2em;
 }
 
-/* Ensure links in text blocks are distinguishable without relying on color alone */
+/* Ensure links in text blocks are distinguishable */
 p a,
 li a,
 article a,
@@ -150,7 +221,7 @@ article a:hover,
   text-decoration-thickness: 2px;
 }
 
-/* Unlayered so these beat Tailwind's `bottom-6` utility. */
+/* Sticky compare button positioning */
 .sticky-compare-btn {
   bottom: 1.5rem;
 }

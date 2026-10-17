@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -11,7 +11,7 @@ const packages = [
   { value: 'founding-bundle', label: 'Founding Bundle ($99)', price: '$99' },
 ];
 
-export default function AdvertiseRequestPage() {
+function RequestFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const defaultPackage = searchParams.get('package') || '';
@@ -258,5 +258,23 @@ export default function AdvertiseRequestPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+export default function AdvertiseRequestPage() {
+  return (
+    <Suspense fallback={
+      <div className="scroll-mt-16">
+        <section className="section-spacing">
+          <div className="container-max max-w-2xl">
+            <div className="card p-12 text-center">
+              <p className="text-[#5B657B]">Loading...</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    }>
+      <RequestFormContent />
+    </Suspense>
   );
 }

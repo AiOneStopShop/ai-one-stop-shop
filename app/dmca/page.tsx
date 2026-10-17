@@ -1,6 +1,6 @@
 import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
-import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
+import { LEGAL_DMCA_UPDATED } from '@/lib/site-dates';
 import { notFound } from 'next/navigation';
 
 export const metadata = {
@@ -49,7 +49,7 @@ export default function DmcaPage() {
 
           <div className="prose prose-lg max-w-none space-y-6 text-[#171C26]">
             <p className="text-sm text-[#5B657B]">
-              Last updated: {PRICE_CHECKED_LONG}
+              Last updated: {LEGAL_DMCA_UPDATED}
             </p>
 
             <div>
@@ -63,6 +63,9 @@ export default function DmcaPage() {
               <h2 className="heading-2 mb-4">Filing a DMCA Notice</h2>
               <p>
                 If you believe that content on our site infringes your copyright, you may send a written notice to our designated copyright agent with the following information required by 17 U.S.C. § 512(c)(3):
+              </p>
+              <p className="mt-4">
+                We may share a copy of your notice, including your contact details, with the person who posted the material.
               </p>
               <ol className="list-decimal pl-6 space-y-2 mt-4">
                 <li>
@@ -89,20 +92,14 @@ export default function DmcaPage() {
             <div>
               <h2 className="heading-2 mb-4">Designated Agent Contact Information</h2>
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                {agentInfo.name ? (
+                {agentInfo.name && agentInfo.address && agentInfo.email && agentInfo.phone ? (
                   <>
                     <p className="font-medium mb-2">{agentInfo.name}</p>
-                    {agentInfo.address && (
-                      <p className="text-sm whitespace-pre-line mb-2">{agentInfo.address}</p>
-                    )}
-                    {agentInfo.email && (
-                      <p className="text-sm mb-2">
-                        Email: <a href={`mailto:${agentInfo.email}`} className="text-[#6C39EF] hover:underline">{agentInfo.email}</a>
-                      </p>
-                    )}
-                    {agentInfo.phone && (
-                      <p className="text-sm">Phone: {agentInfo.phone}</p>
-                    )}
+                    <p className="text-sm whitespace-pre-line mb-2">{agentInfo.address}</p>
+                    <p className="text-sm mb-2">
+                      Email: <a href={`mailto:${agentInfo.email}`} className="text-[#6C39EF] hover:underline">{agentInfo.email}</a>
+                    </p>
+                    <p className="text-sm">Phone: {agentInfo.phone}</p>
                   </>
                 ) : (
                   <p className="text-sm text-red-700">TODO(Lexi): Agent contact information pending configuration.</p>
@@ -126,11 +123,11 @@ export default function DmcaPage() {
                   <strong>A statement under penalty of perjury</strong> that you have a good faith belief the material was removed or disabled as a result of mistake or misidentification.
                 </li>
                 <li>
-                  <strong>Your name, address, and telephone number</strong>, and a statement that you consent to the jurisdiction of the federal district court for the judicial district in which your address is located (or the Western District of Washington if your address is outside the United States), and that you will accept service of process from the person who provided the original DMCA notice or an agent of that person.
+                  <strong>Your name, address, and telephone number</strong>, and a statement that you consent to the jurisdiction of the federal district court for the judicial district in which your address is located (or, if your address is outside the United States, any judicial district in which we may be found), and that you will accept service of process from the person who provided the original DMCA notice or an agent of that person.
                 </li>
               </ol>
               <p className="mt-4">
-                Upon receiving a valid counter-notice, we will forward it to the party who submitted the original claim. If that party does not notify us within 10 business days that they have filed a court action to restrain the allegedly infringing activity, we may restore the removed content.
+                Upon receiving a valid counter-notice, we will forward it to the party who submitted the original claim. If that party does not notify us within 10 business days that they have filed a court action to restrain the allegedly infringing activity, we may restore the removed content in 10 to 14 business days after we receive the counter-notice.
               </p>
             </div>
 

@@ -6,3 +6,6 @@ export const PRICE_CHECKED_LABEL = 'Oct 10, 2026';
 export const PRICE_CHECKED_LONG = 'October 10, 2026';
 
 export const PRICE_CHECKED_DATETIME = `${PRICE_CHECKED_ISO}T00:00:00Z`;
+
+/** DMCA policy page last updated (set to the date the page publishes). */
+export const LEGAL_DMCA_UPDATED = 'October 17, 2026';

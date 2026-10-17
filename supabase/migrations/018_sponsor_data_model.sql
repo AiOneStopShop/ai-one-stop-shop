@@ -1,5 +1,6 @@
 -- Migration 018: Sponsor data model
--- Creates tables for sponsorships, placements, intake, and event tracking
+-- Creates tables, indexes, policies, and triggers for sponsorships and placements
+-- Note: Some CREATE INDEX and policy statements may fail on re-run; apply once per database
 
 -- Create tables if they don't exist (idempotent)
 CREATE TABLE IF NOT EXISTS sponsors (

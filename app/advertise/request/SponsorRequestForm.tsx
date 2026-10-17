@@ -88,7 +88,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
 
       if (!response.ok) {
         if (response.status === 429) {
-          setErrorMessage('Too many requests. Please try again in an hour.');
+          setErrorMessage('Too many requests. Please try again in 15 minutes.');
         } else {
           setErrorMessage(result.error || 'Something went wrong. Please try again.');
         }

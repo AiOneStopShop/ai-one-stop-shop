@@ -199,13 +199,21 @@ test.describe('Affiliate flag and partners page', () => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto('/tools', { waitUntil: 'domcontentloaded' });
       
-      // Find any paid link label
-      const paidLabel = page.locator('p:has-text("Paid link: we may earn a commission")').first();
+      // Find any paid link label (span, not p)
+      const paidLabel = page.locator('span:has-text("Paid link: we may earn a commission")').first();
       
-      // Skip if no paid links
-      if (await paidLabel.count() === 0) {
-        test.skip(true, 'No paid links active or flag OFF: skipping');
+      // Count paid links on this page
+      const count = await paidLabel.count();
+      
+      // If flag is OFF, this test should be skipped
+      if (process.env.NEXT_PUBLIC_AFFILIATE_LIVE !== '1') {
+        expect(count).toBe(0);
+        test.skip(true, 'Flag OFF: no paid labels expected');
+        return;
       }
+      
+      // With flag ON, we expect at least one paid label to be visible
+      expect(count).toBeGreaterThan(0);
       
       // Verify label is visible and at least 14px
       await expect(paidLabel).toBeVisible();

@@ -11,13 +11,20 @@ function requireTestSeeding() {
   }
   
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-  const isLocalhost = supabaseUrl.includes('localhost') || supabaseUrl.includes('127.0.0.1');
-  const isStaging = supabaseUrl.includes('staging') || supabaseUrl.includes('test');
+  let hostname: string;
+  try {
+    hostname = new URL(supabaseUrl).hostname;
+  } catch {
+    throw new Error(`Invalid NEXT_PUBLIC_SUPABASE_URL: ${supabaseUrl}`);
+  }
+  
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+  const isStaging = hostname.includes('staging') || hostname.includes('test');
   
   if (!isLocalhost && !isStaging) {
     throw new Error(
       'Tests with database seeding can only run against localhost or staging. ' +
-      `Current NEXT_PUBLIC_SUPABASE_URL: ${supabaseUrl}`
+      `Current hostname: ${hostname}`
     );
   }
 }

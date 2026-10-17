@@ -111,8 +111,8 @@ export const affiliateRedirectRateLimit = createRateLimiter(30, 1); // 30 reques
 export const apiRateLimit = createRateLimiter(100, 1); // 100 requests per minute for API
 
 // Redis client and dedupe helper for click/impression tracking
-const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
-const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+const upstashUrl = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
 
 export const redis = upstashUrl && upstashToken
   ? new Redis({ url: upstashUrl, token: upstashToken })

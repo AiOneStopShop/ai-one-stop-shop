@@ -48,7 +48,7 @@ export default function AdvertiseThanksPage() {
                 <div>
                   <h3 className="font-semibold mb-1">We'll reply by email</h3>
                   <p className="text-[#5B657B]">
-                    We'll tell you whether your tool is a fit and what happens next. Booking and payment open once our Sponsor Terms are final. Nothing is owed until then.
+                    We'll tell you whether your tool is a fit and what happens next.
                   </p>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { BrandName } from '@/components/BrandName';
 import { ContactEmail } from '@/components/ContactEmail';
-import { getSiteContactEmail } from '@/lib/site-config';
+import { getSiteContactEmail, isAffiliateLive } from '@/lib/site-config';
 
 export function Footer() {
   return (
@@ -118,6 +118,14 @@ export function Footer() {
                   Advertise
                 </Link>
               </li>
+              <li>
+                <Link 
+                  href="/partners" 
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                >
+                  Partners
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -167,7 +175,10 @@ export function Footer() {
         {/* Disclosure */}
         <div className="border-t border-gray-700 pt-8 mb-8">
           <p className="text-sm text-gray-400 max-w-3xl">
-            We earn money from clearly labeled sponsored ads and our own kits. Payments never change how we rank tools.{' '}
+            {isAffiliateLive() 
+              ? "We earn money from clearly labeled sponsored ads, some paid links, and our own kits. Payments never change how we rank tools."
+              : "We earn money from clearly labeled sponsored ads and our own kits. Payments never change how we rank tools."
+            }{' '}
             <Link href="/disclosure" className="text-white hover:underline focus-ring rounded">
               Read our disclosure
             </Link>

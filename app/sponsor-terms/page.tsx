@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import { ContactEmailText } from '@/components/ContactEmail';
-import { getSiteContactEmail } from '@/lib/site-config';
+import { getSiteContactEmail, getOperatorLegalName } from '@/lib/site-config';
 
 export const metadata = {
   title: 'Sponsor Terms (DRAFT) - AI One Stop Shop',
-  description: 'Terms and conditions for sponsorships on AI One Stop Shop',
+  description: 'Draft outline of our future Sponsor Terms. Not in effect.',
   alternates: { canonical: '/sponsor-terms' },
   robots: {
     index: false,
@@ -19,10 +19,14 @@ export default function SponsorTermsPage() {
         <div className="container-max max-w-3xl">
           <div className="bg-amber-50 border-2 border-amber-400 rounded-xl p-6 mb-8">
             <h2 className="text-2xl font-bold text-amber-900 mb-3">
-              ⚠️ DRAFT – Pending Legal Review
+              ⚠️ DRAFT outline. Not in effect.
             </h2>
             <p className="text-amber-900">
-              This document is a <strong>placeholder structure only</strong>. All terms are subject to change and legal counsel review before any sponsorships are accepted. Do not rely on this draft for any purpose.
+              This page lists the topics our Sponsor Terms will cover. It is <strong>not an offer and not a contract</strong>, and nothing here binds you or us. We're finalizing the terms with our attorney and aren't taking paid bookings until they're published. You can still{' '}
+              <Link href="/advertise/request" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                request a sponsored spot
+              </Link>
+              .
             </p>
           </div>
 
@@ -31,6 +35,10 @@ export default function SponsorTermsPage() {
           <div className="prose prose-lg max-w-none space-y-8 text-[#171C26]">
             <p className="text-sm text-[#5B657B]">
               Last updated: October 17, 2026 (DRAFT)
+            </p>
+
+            <p className="text-sm italic text-[#5B657B]">
+              Planned topics only. The final wording may differ.
             </p>
 
             <div>
@@ -99,7 +107,7 @@ export default function SponsorTermsPage() {
             <div>
               <h2 className="heading-2 mb-4">10. Governing Law and Disputes</h2>
               <p className="text-[#5B657B] italic">
-                [To be completed: Washington State law; business name of operator (oneTomorrow); dispute resolution.]
+                [To be completed: Washington State law; operator: {getOperatorLegalName()}, a Washington limited liability company, doing business as AI One Stop Shop; dispute resolution.]
               </p>
             </div>
 

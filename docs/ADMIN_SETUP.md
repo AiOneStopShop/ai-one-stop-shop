@@ -4,11 +4,11 @@
 
 The admin role is granted via direct SQL only. Client-side role updates are blocked by RLS.
 
-### Steps to Grant Admin Role to Kati (or any user):
+### Steps to Grant Admin Role to a user:
 
 1. **Get the user's UUID from auth.users**:
    ```sql
-   SELECT id, email FROM auth.users WHERE email = 'kati@example.com';
+   SELECT id, email FROM auth.users WHERE email = 'admin@example.com';
    ```
 
 2. **Update their role to admin**:
@@ -21,14 +21,14 @@ The admin role is granted via direct SQL only. Client-side role updates are bloc
    SELECT p.role, u.email 
    FROM profiles p 
    JOIN auth.users u ON p.id = u.id 
-   WHERE u.email = 'kati@example.com';
+   WHERE u.email = 'admin@example.com';
    ```
    
    Should return:
    ```
    role  | email
    ------+------------------
-   admin | kati@example.com
+   admin | admin@example.com
    ```
 
 ### Alternative: Use Supabase Service Role Key
@@ -45,7 +45,7 @@ const supabase = createClient(
 
 // Get user by email
 const { data: { users } } = await supabase.auth.admin.listUsers();
-const user = users.find(u => u.email === 'kati@example.com');
+const user = users.find(u => u.email === 'admin@example.com');
 
 // Update role
 await supabase

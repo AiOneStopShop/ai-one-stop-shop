@@ -72,7 +72,7 @@ export default function HowWeRankPage() {
                 Money buys a labeled spot, never our opinion.
               </p>
               <p className="text-lg">
-                Sponsors can't buy a higher rank, a better write-up, inclusion in "best of" lists, or the removal of honest criticism. Sponsored spots are always labeled and kept apart from our picks.
+                Sponsors can't buy a higher rank, a better write-up, inclusion in "best of" lists, or the removal of honest criticism. Sponsored ads are never mixed into our ranked lists, the finder, comparisons or 'best of' pages, and we mark a tool 'Current sponsor' wherever we recommend it.
               </p>
               <p className="text-lg mt-4">
                 If a sponsor's tool is also in our directory, its listing is reviewed the same way as every other tool's. We can decline any sponsor that doesn't fit our readers.

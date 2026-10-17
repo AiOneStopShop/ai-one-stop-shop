@@ -46,9 +46,9 @@ export default function AdvertiseThanksPage() {
                   2
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-1">You'll get a payment link (if approved)</h3>
+                  <h3 className="font-semibold mb-1">We'll reply by email</h3>
                   <p className="text-[#5B657B]">
-                    If we approve, we'll email you a secure Stripe payment link and next steps.
+                    We'll tell you whether your tool is a fit and what happens next. Booking and payment open once our Sponsor Terms are final. Nothing is owed until then.
                   </p>
                 </div>
               </div>
@@ -60,7 +60,7 @@ export default function AdvertiseThanksPage() {
                 <div>
                   <h3 className="font-semibold mb-1">Send your assets</h3>
                   <p className="text-[#5B657B]">
-                    After payment, we'll send you a form for your logo, blurb, and destination link.
+                    When booking opens, we'll send you a form for your logo, blurb and link.
                   </p>
                 </div>
               </div>

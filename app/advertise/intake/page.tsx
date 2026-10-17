@@ -163,6 +163,15 @@ function IntakeFormContent() {
               ← Back to sponsorship options
             </Link>
             <h1 className="heading-1 mb-4">Sponsorship intake form</h1>
+            <div className="bg-amber-50 border-2 border-amber-400 rounded-lg p-4 mb-6">
+              <p className="text-amber-900 font-semibold">
+                <strong>Booking isn't open yet.</strong> Please{' '}
+                <Link href="/advertise/request" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                  request a spot
+                </Link>{' '}
+                first. We'll send you this form after we've agreed on your placement.
+              </p>
+            </div>
             <p className="text-lg text-[#5B657B]">
               Provide your assets and details for your sponsored placement.
             </p>
@@ -438,10 +447,7 @@ function IntakeFormContent() {
                   disabled={status === 'submitting'}
                 />
                 <span className="text-sm">
-                  I agree to the{' '}
-                  <Link href="/sponsor-terms" className="text-[#6C39EF] hover:underline focus-ring rounded" target="_blank">
-                    Sponsor Terms
-                  </Link>{' '}
+                  I understand the Sponsor Terms are still being finalized, and nothing is booked until they're published and I've paid.{' '}
                   <span className="text-red-600">*</span>
                 </span>
               </label>
@@ -494,7 +500,11 @@ function IntakeFormContent() {
             </button>
 
             <p className="text-sm text-[#5B657B] text-center">
-              We'll review your submission and be in touch within 2 business days.
+              We'll review your submission and be in touch within 2 business days. We use these details only to review and run your sponsorship. See our{' '}
+              <Link href="/privacy" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                Privacy page
+              </Link>
+              .
             </p>
           </form>
         </div>

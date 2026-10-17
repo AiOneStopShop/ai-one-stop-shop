@@ -12,6 +12,10 @@ export function getSiteContactEmail(): string | null {
   return email || null;
 }
 
+export function getOperatorLegalName(): string {
+  return (process.env.NEXT_PUBLIC_OPERATOR_LEGAL_NAME || '').trim() || '[LLC NAME]';
+}
+
 export function getBrandUrl(): string | null {
   const url = (process.env.NEXT_PUBLIC_BRAND_URL || '').trim();
   return url || null;

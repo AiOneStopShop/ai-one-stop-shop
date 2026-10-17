@@ -31,7 +31,7 @@ export default function DisclosurePage() {
               <div>
                 <h3 className="heading-3 mb-3">1. Sponsorships (our main revenue)</h3>
                 <p>
-                  Tool makers may pay for a labeled spot in our sponsored row, at the top of a category page, or in our newsletter. Every sponsored placement is clearly marked <strong>Sponsored</strong> and kept separate from our ranked picks.
+                  Tool makers may pay for a labeled spot in our sponsored row, at the top of a category page, or in our newsletter. Every sponsored placement is clearly marked <strong>Sponsored ad</strong> and kept separate from our ranked picks. If a sponsor's tool is also in our directory, its normal listing is reviewed and ranked exactly like every other tool's.
                 </p>
                 <p>
                   <strong>Money buys a labeled spot, never our opinion.</strong> Sponsors can't buy a higher rank, a better write-up, inclusion in &quot;best of&quot; lists, or the removal of honest criticism. Sponsored spots are always labeled and kept apart from our picks.

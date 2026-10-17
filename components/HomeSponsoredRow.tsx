@@ -39,9 +39,9 @@ export async function HomeSponsoredRow() {
     <section className="section-spacing bg-[#FFFBF0]">
       <div className="container-max">
         <div className="mb-8">
-          <h2 className="heading-2">Sponsored ad</h2>
+          <h2 className="heading-2">Sponsored ads</h2>
           <p className="text-[#5B657B] mt-2">
-            These tools are paying to be featured. They don't affect our rankings.
+            Paid placements. Our picks are above and aren't affected.
           </p>
         </div>
 

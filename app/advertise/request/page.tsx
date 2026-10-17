@@ -137,7 +137,7 @@ function RequestFormContent() {
                 className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
                 disabled={status === 'submitting'}
               />
-              <p className="text-sm text-[#5B657B] mt-1">We'll use this to send you the payment link if approved.</p>
+              <p className="text-sm text-[#5B657B] mt-1">We'll use this to reply about your request.</p>
             </div>
 
             {/* Tool Info */}
@@ -249,10 +249,11 @@ function RequestFormContent() {
             </button>
 
             <p className="text-sm text-[#5B657B] text-center">
-              By submitting, you agree to our{' '}
-              <Link href="/sponsor-terms" className="text-[#6C39EF] hover:underline focus-ring rounded">
-                Sponsor Terms
+              Requesting a spot is free and doesn't commit you to anything. We'll use these details only to review your request and reply to you. See our{' '}
+              <Link href="/privacy" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                Privacy page
               </Link>
+              .
             </p>
           </form>
         </div>

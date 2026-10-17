@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import { SponsoredLabel } from './SponsoredLabel';
+import { ImpressionTracker } from './ImpressionTracker';
 import type { PublicLivePlacement } from '@/types/database';
 import type { Tool } from '@/types/database';
 
@@ -18,7 +21,8 @@ export function SponsoredToolCard({ placement, tool }: SponsoredToolCardProps) {
   const pricingSummary = tool?.pricing_summary;
 
   return (
-    <div className="card">
+    <div className="card relative">
+      <ImpressionTracker placementId={placement.id} />
       <div className="mb-3">
         <SponsoredLabel className="mb-2" />
       </div>

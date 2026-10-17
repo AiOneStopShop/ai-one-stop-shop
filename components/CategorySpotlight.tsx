@@ -1,4 +1,7 @@
+'use client';
+
 import { SponsoredLabel } from './SponsoredLabel';
+import { ImpressionTracker } from './ImpressionTracker';
 import type { PublicLivePlacement } from '@/types/database';
 
 interface CategorySpotlightProps {
@@ -11,7 +14,8 @@ interface CategorySpotlightProps {
  */
 export function CategorySpotlight({ placement }: CategorySpotlightProps) {
   return (
-    <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 rounded-xl p-6 mb-8">
+    <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 rounded-xl p-6 mb-8 relative">
+      <ImpressionTracker placementId={placement.id} />
       <div className="flex items-start gap-4">
         {placement.logo_url && (
           <div className="flex-shrink-0">
@@ -26,7 +30,7 @@ export function CategorySpotlight({ placement }: CategorySpotlightProps) {
         <div className="flex-1 min-w-0">
           <div className="mb-2 flex items-center gap-2">
             <SponsoredLabel />
-            <span className="text-sm text-[#5B657B]">· Category Spotlight</span>
+            <span className="text-sm text-[#5B657B]">· Paid placement</span>
           </div>
 
           <h2 className="heading-2 mb-3">{placement.company}</h2>

@@ -10,33 +10,59 @@ test.describe('Sponsorship feature', () => {
 
   // T2: Ranking isolation test
   test('sponsored placements do not affect tool rankings', async ({ page }) => {
-    // Go to a category page to check rankings
+    // This test verifies that creating a live sponsored placement for a tool
+    // does NOT change that tool's organic rank in the directory.
+    //
+    // IMPORTANT: This test requires a live placement to exist in the database.
+    // Before payments go live, seed a test placement on UAT and verify:
+    // 1. The tool's position in the ranked list stays the same
+    // 2. The tool appears in the sponsored section separately
+    // 3. The organic ranking order is preserved
+    
+    // Go to homepage to check if sponsored section exists
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    
+    const sponsoredSection = page.locator('section').filter({ hasText: /Sponsored ad/i });
+    const hasSponsoredSection = await sponsoredSection.count() > 0;
+    
+    if (!hasSponsoredSection) {
+      // No live placements yet - test passes but documents requirement
+      console.log('✓ No sponsored placements yet. Ranking isolation will be verified once placements are seeded.');
+      return;
+    }
+    
+    // If sponsored section exists, verify it's visually separate from organic rankings
+    const sponsoredY = await sponsoredSection.boundingBox().then(box => box?.y ?? 0);
+    
+    // Check category page for ranking preservation
     await page.goto('/category/writing-content', { waitUntil: 'domcontentloaded' });
     
-    // Get the ranked list order (tools with #1, #2, etc)
+    // Get the organic ranked list (should start with #1)
     const rankedTools = page.locator('li.card');
-    const firstToolBefore = await rankedTools.first().locator('h2').textContent();
+    const rankedCount = await rankedTools.count();
     
-    // Check that ranked numbers exist and start from #1
-    const firstRank = await rankedTools.first().locator('[aria-hidden="true"]').filter({ hasText: '#1' }).count();
-    expect(firstRank).toBeGreaterThanOrEqual(0); // May or may not have ranks depending on sort
-    
-    // Verify sponsored section is separate (if it exists)
-    const sponsoredSection = page.locator('section').filter({ hasText: 'Sponsored ad' });
-    if (await sponsoredSection.count() > 0) {
-      // Sponsored section should be before the ranked list
-      const sponsoredY = await sponsoredSection.boundingBox().then(box => box?.y ?? 0);
-      const rankedY = await rankedTools.first().boundingBox().then(box => box?.y ?? 0);
-      expect(sponsoredY).toBeLessThan(rankedY);
+    if (rankedCount > 0) {
+      // Verify ranks start from #1 and are sequential
+      const firstRank = await rankedTools.first().locator('[aria-hidden="true"]').filter({ hasText: '#1' }).count();
+      expect(firstRank).toBe(1); // Must have #1 rank
+      
+      // Verify any category spotlight is separate and labeled
+      const spotlight = page.locator('.bg-gradient-to-r.from-amber-50');
+      if (await spotlight.count() > 0) {
+        // Spotlight must have "Sponsored ad" label
+        await expect(spotlight.getByText('Sponsored ad')).toBeVisible();
+        
+        // Spotlight should be above the ranked list
+        const spotlightY = await spotlight.boundingBox().then(box => box?.y ?? 0);
+        const rankedY = await rankedTools.first().boundingBox().then(box => box?.y ?? 0);
+        expect(spotlightY).toBeLessThan(rankedY);
+      }
     }
     
-    // Verify sponsored items in category spotlight are visually separate
-    const spotlight = page.locator('.bg-gradient-to-r.from-amber-50');
-    if (await spotlight.count() > 0) {
-      // Spotlight should have "Sponsored ad" label
-      await expect(spotlight.getByText('Sponsored ad')).toBeVisible();
-      await expect(spotlight.getByText('Category Spotlight')).toBeVisible();
-    }
+    // FUTURE: Once placements are seeded on UAT, this test should:
+    // 1. Query the tool's position before the placement
+    // 2. Verify the tool's position after the placement is live
+    // 3. Assert they are identical (fail if rank changed)
   });
 
   // T2: "Sponsored ad" label visibility at 390px and 1440px

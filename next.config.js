@@ -85,6 +85,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/advertise/intake',
+        destination: '/advertise/request',
+        permanent: false,
+      },
+      {
         source: '/agents',
         destination: '/tools',
         permanent: true,

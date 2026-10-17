@@ -47,6 +47,12 @@ export default function AdvertisePage() {
         <div className="container-max max-w-4xl">
           <h1 className="heading-1 mb-6">Sponsor AI One Stop Shop</h1>
           
+          <div className="bg-amber-50 border-2 border-amber-400 rounded-lg p-4 mb-8">
+            <p className="text-amber-900 font-semibold">
+              <strong>Booking opens soon.</strong> You can request a spot today. Requesting is free and doesn't commit you to anything. We won't take any payment until our Sponsor Terms are final.
+            </p>
+          </div>
+
           <p className="text-lead text-[#171C26] mb-12">
             Put your AI tool in front of people choosing tools to work smarter. Clearly labeled sponsored spots on an honest, curated directory. Founding sponsor pricing.
           </p>
@@ -74,7 +80,7 @@ export default function AdvertisePage() {
                 </p>
               </div>
               <p>
-                We'd rather be upfront: <strong>we're a new site.</strong> Our audience is still small and growing, so we don't promise traffic, clicks or sales. What we do promise is a clearly labeled, well-placed spot for the full term, honest first-party numbers at the end, and a real person to talk to.
+                We'd rather be upfront: <strong>we're a new site.</strong> Our audience is still small and growing, so we don't promise traffic, clicks or sales. What we do promise is a clearly labeled, well-placed spot for the full term, honest first-party numbers at the end, and a person on our team to talk to.
               </p>
             </div>
 
@@ -82,7 +88,7 @@ export default function AdvertisePage() {
             <div>
               <h2 className="heading-2 mb-6">Founding sponsor pricing</h2>
               <p className="mb-6">
-                We're opening <strong>5 founding sponsor spots</strong> at launch prices. Founding sponsors keep their price for up to 3 renewals.
+                We're opening <strong>5 founding sponsor spots</strong> at introductory prices. Founding sponsors can re-book the same package at their founding price up to 3 more times [within 12 months], whenever a slot is free. When we change prices, we'll post the new ones here first.
               </p>
 
               <div className="space-y-4 not-prose">
@@ -128,7 +134,7 @@ export default function AdvertisePage() {
             <div>
               <h2 className="heading-2 mb-4">What you'll get at the end</h2>
               <p>
-                A short report with the numbers we measure ourselves: how many times your sponsored spot was shown, and how many people clicked through. We don't use tracking cookies or third-party ad pixels, so these are simple, honest counts.
+                A short report with the numbers we measure ourselves: how many times your sponsored spot was shown, and how many people clicked through. Our website doesn't use tracking cookies or third-party ad pixels, and we filter out bots, so these are simple, honest, approximate counts.
               </p>
             </div>
 
@@ -136,7 +142,7 @@ export default function AdvertisePage() {
             <div>
               <h2 className="heading-2 mb-4">Who we say yes to</h2>
               <p>
-                Tools that help people get real work done, with clear pricing and no deceptive claims. We say no to tools aimed at children, adult content, get-rich-quick schemes, or anything that's unsafe or misleading. We may decline any sponsorship that isn't a good fit for our readers. If we do, you get a full refund.
+                Tools that help people get real work done, with clear pricing and no deceptive claims. We say no to products made for children under 13, adult content, get-rich-quick schemes, or anything that's unsafe or misleading. We may decline any sponsorship that isn't a good fit for our readers. If we decline, you won't be charged.
               </p>
             </div>
 
@@ -145,7 +151,7 @@ export default function AdvertisePage() {
               <h2 className="heading-2 mb-4">How to book</h2>
               <ol className="space-y-3 list-decimal list-inside">
                 <li><strong>Request a spot.</strong> Tell us about your tool and the package you'd like.</li>
-                <li><strong>We check fit</strong> (usually within 2 business days) and email you a secure payment link (Stripe).</li>
+                <li><strong>We check fit</strong> (usually within 2 business days) and email you. Once booking opens, we'll send a secure payment link.</li>
                 <li><strong>Send your assets:</strong> logo, a short blurb and your link.</li>
                 <li><strong>You go live</strong> on the start date we agree on.</li>
               </ol>
@@ -160,11 +166,10 @@ export default function AdvertisePage() {
             <div>
               <h2 className="heading-2 mb-4">Refunds and terms</h2>
               <p className="mb-4">
-                For full refund terms, removal policies, and all other conditions, see our{' '}
+                <strong>Our Sponsor Terms, including refunds, are being finalized with our attorney. We'll publish them before we take any payment.</strong>{' '}
                 <Link href="/sponsor-terms" className="text-[#6C39EF] hover:underline focus-ring rounded font-semibold">
-                  Sponsor Terms
+                  Draft outline
                 </Link>
-                .
               </p>
               <p className="text-sm text-[#5B657B]">
                 Also see:{' '}
@@ -185,7 +190,7 @@ export default function AdvertisePage() {
                 <p>
                   Email{' '}
                   <ContactEmailText className="text-[#6C39EF] hover:underline focus-ring rounded" />
-                  . A real person reads every message.
+                  . A person on our team reads and answers every message. We use AI to help us stay organized, never to replace a human reply.
                 </p>
               </div>
             )}

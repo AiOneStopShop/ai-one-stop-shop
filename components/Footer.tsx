@@ -110,6 +110,14 @@ export function Footer() {
                   About
                 </Link>
               </li>
+              <li>
+                <Link 
+                  href="/advertise" 
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                >
+                  Advertise
+                </Link>
+              </li>
             </ul>
           </div>
 

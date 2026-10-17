@@ -23,7 +23,7 @@ AI One Stop Shop is run by ${getOperatorLegalName()} (we are oneTomorrow) from W
 
 ## How we earn money
 
-We earn money from clearly labeled sponsored ads, our own kits (marked 'Made by us'), and, where active, paid (affiliate) links. Sponsored placements are labeled 'Sponsored ad' and are never part of our ranked order. A sponsor's normal directory listing is ranked the same way as any other tool's. Money never changes our ranking.
+We earn money from clearly labeled sponsored ads and our own kits (marked 'Made by us'). Sponsored placements are labeled 'Sponsored ad' and are never part of our ranked order. A sponsor's normal directory listing is ranked the same way as any other tool's. Money never changes our ranking.
 
 ## What you can find here
 

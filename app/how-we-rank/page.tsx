@@ -77,9 +77,6 @@ export default function HowWeRankPage() {
               <p className="text-lg mt-4">
                 If a sponsor's tool is also in our directory, its listing is reviewed the same way as every other tool's. We can decline any sponsor that doesn't fit our readers.
               </p>
-              <p className="mt-4 text-base">
-                Some links on this site are affiliate links. If you sign up through one, the tool maker may pay us a commission at no extra cost to you. That doesn't change the ranking either.
-              </p>
             </div>
 
             <div>

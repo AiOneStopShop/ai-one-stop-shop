@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'newsletter@aionestop.shop',
+            from: 'aionestopshop25@gmail.com',
             to: [contactEmail],
             reply_to: body.email,
             subject: `New sponsor request: ${body.toolName} (${packageLabels[body.package] || body.package})`,

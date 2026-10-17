@@ -80,7 +80,7 @@ export default function AdvertisePage() {
                 </p>
               </div>
               <p>
-                We'd rather be upfront: <strong>we're a new site.</strong> Our audience is still small and growing, so we don't promise traffic, clicks or sales. What we do promise is a clearly labeled, well-placed spot for the full term, honest first-party numbers at the end, and a person on our team to talk to.
+                We'd rather be upfront: <strong>we're a new site.</strong> Our audience is still small and growing, so we don't promise traffic, clicks or sales. What we do promise is a clearly labeled, well-placed spot for the full term, honest first-party numbers at the end, and responses from our team.
               </p>
             </div>
 
@@ -190,7 +190,7 @@ export default function AdvertisePage() {
                 <p>
                   Email{' '}
                   <ContactEmailText className="text-[#6C39EF] hover:underline focus-ring rounded" />
-                  . A person on our team reads and answers every message. We use AI to help us stay organized, never to replace a human reply.
+                  . A person on our team reviews every reply before it goes out. We use AI to help us sort and draft, never to replace human judgment.
                 </p>
               </div>
             )}

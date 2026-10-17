@@ -134,8 +134,8 @@ COMMENT ON COLUMN profiles.role IS 'User role: user or admin. Cannot be updated 
 -- Admin accounts must be created manually:
 
 -- Instructions for granting admin role:
--- To grant Kati (or any user) admin role:
+-- To grant any user admin role:
 -- 1. Create user manually in Supabase Dashboard (or use magic link with shouldCreateUser:false in code)
--- 2. Get the user's UUID from auth.users: SELECT id, email FROM auth.users WHERE email = 'kati@example.com';
+-- 2. Get the user's UUID from auth.users: SELECT id, email FROM auth.users WHERE email = 'admin@example.com';
 -- 3. Update their role: UPDATE profiles SET role = 'admin' WHERE id = '<user-uuid>';
--- 4. Verify: SELECT p.role, u.email FROM profiles p JOIN auth.users u ON p.id = u.id WHERE u.email = 'kati@example.com';
+-- 4. Verify: SELECT p.role, u.email FROM profiles p JOIN auth.users u ON p.id = u.id WHERE u.email = 'admin@example.com';

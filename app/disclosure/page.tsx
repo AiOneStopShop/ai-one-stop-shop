@@ -42,17 +42,7 @@ export default function DisclosurePage() {
               </div>
 
               <div>
-                <h3 className="heading-3 mb-3">2. Affiliate links</h3>
-                <p>
-                  Some &quot;Visit&quot; buttons are affiliate links. If you click one and later buy or subscribe, the tool maker may pay us a commission. You pay the same price either way.
-                </p>
-                <p>
-                  Every affiliate link is marked <strong className="text-[#C62810]">&quot;Paid link&quot;</strong> right next to it.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="heading-3 mb-3">3. Our own products</h3>
+                <h3 className="heading-3 mb-3">2. Our own products</h3>
                 <p>
                   We also make our own DIY packs and kits (like ApproveGate). When we mention one of our own projects, we say so right there. They&apos;re kept in a{' '}
                   <Link href="/our-kits" className="text-[#6C39EF] hover:underline focus-ring rounded">
@@ -79,7 +69,6 @@ export default function DisclosurePage() {
               <h3 className="heading-3 mb-3">What we don&apos;t do</h3>
               <ul className="space-y-2">
                 <li>• We don&apos;t accept free products in exchange for a positive review</li>
-                <li>• We don&apos;t hide affiliate relationships</li>
                 <li>• We don&apos;t use fake urgency (&quot;only 3 spots left&quot;)</li>
                 <li>• We don&apos;t make up ratings or review counts</li>
               </ul>

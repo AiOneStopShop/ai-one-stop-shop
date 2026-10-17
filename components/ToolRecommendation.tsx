@@ -83,12 +83,12 @@ export default function ToolRecommendation({ tools, selectedBudget, show }: Tool
               </ul>
 
               <p className="text-soft text-sm mt-6 pt-4 border-t border-line">
-                Prices as listed on each tool's site, checked Oct 10, 2026. Example picks; final suggestions come from our editors.
+                Prices as listed on each tool&apos;s site, checked Oct 10, 2026. Example picks; final suggestions come from our editors.
               </p>
             </>
           ) : (
             <p className="text-soft">
-              No free picks for this yet. Try "Set my budget".
+              No free picks for this yet. Try &quot;Set my budget&quot;.
             </p>
           )}
         </div>

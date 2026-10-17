@@ -38,12 +38,29 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'AI One Stop Shop',
+    description: 'Honest, budget-friendly AI tool recommendations for beginners',
+    url: 'https://aionestop.shop',
+    publisher: {
+      '@type': 'Organization',
+      name: 'oneTomorrow',
+      email: 'aionestopshop25@gmail.com',
+    },
+  }
+
   return (
     <html lang="en" className={`scroll-smooth ${fraunces.variable} ${inter.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className={`${inter.className} antialiased`}>
         {children}

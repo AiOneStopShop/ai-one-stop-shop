@@ -53,7 +53,7 @@ export default function TermsPage() {
             <div>
               <h2 className="heading-2 mb-4">Affiliate relationships</h2>
               <p>
-                Some links are affiliate links. We may earn a commission if you purchase through them. This doesn't affect the price you pay.
+                Some links may be paid (affiliate) links. If you buy through one, we may earn a commission. We don't add any fee; prices are set by the tool maker.
               </p>
             </div>
 

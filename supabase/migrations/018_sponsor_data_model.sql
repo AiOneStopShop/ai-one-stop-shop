@@ -1,5 +1,6 @@
 -- Migration 018: Sponsor data model
--- Creates tables for sponsorships, placements, intake, and event tracking
+-- Creates tables, indexes, policies, and triggers for sponsorships and placements
+-- Note: Some CREATE INDEX and policy statements may fail on re-run; apply once per database
 
 -- Create tables if they don't exist (idempotent)
 CREATE TABLE IF NOT EXISTS sponsors (
@@ -84,27 +85,27 @@ CREATE TABLE IF NOT EXISTS placement_events (
   UNIQUE(placement_id, event_type, day)
 );
 
--- Indexes for performance
-CREATE INDEX idx_sponsors_status ON sponsors(status);
-CREATE INDEX idx_sponsors_created_at ON sponsors(created_at DESC);
+-- Indexes for performance (idempotent)
+CREATE INDEX IF NOT EXISTS idx_sponsors_status ON sponsors(status);
+CREATE INDEX IF NOT EXISTS idx_sponsors_created_at ON sponsors(created_at DESC);
 
-CREATE INDEX idx_sponsor_placements_sponsor_id ON sponsor_placements(sponsor_id);
-CREATE INDEX idx_sponsor_placements_tool_id ON sponsor_placements(tool_id) WHERE tool_id IS NOT NULL;
-CREATE INDEX idx_sponsor_placements_category_id ON sponsor_placements(category_id) WHERE category_id IS NOT NULL;
-CREATE INDEX idx_sponsor_placements_status ON sponsor_placements(status);
-CREATE INDEX idx_sponsor_placements_dates ON sponsor_placements(starts_at, ends_at);
-CREATE INDEX idx_sponsor_placements_package ON sponsor_placements(package);
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_sponsor_id ON sponsor_placements(sponsor_id);
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_tool_id ON sponsor_placements(tool_id) WHERE tool_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_category_id ON sponsor_placements(category_id) WHERE category_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_status ON sponsor_placements(status);
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_dates ON sponsor_placements(starts_at, ends_at);
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_package ON sponsor_placements(package);
 
 -- Index for finding live placements efficiently
-CREATE INDEX idx_sponsor_placements_live ON sponsor_placements(status, starts_at, ends_at, package) 
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_live ON sponsor_placements(status, starts_at, ends_at, package) 
   WHERE status = 'live';
 
-CREATE INDEX idx_sponsor_intake_status ON sponsor_intake(status);
-CREATE INDEX idx_sponsor_intake_submitted_at ON sponsor_intake(submitted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_sponsor_intake_status ON sponsor_intake(status);
+CREATE INDEX IF NOT EXISTS idx_sponsor_intake_submitted_at ON sponsor_intake(submitted_at DESC);
 
-CREATE INDEX idx_placement_events_placement_id ON placement_events(placement_id);
-CREATE INDEX idx_placement_events_day ON placement_events(day DESC);
-CREATE INDEX idx_placement_events_lookup ON placement_events(placement_id, event_type, day);
+CREATE INDEX IF NOT EXISTS idx_placement_events_placement_id ON placement_events(placement_id);
+CREATE INDEX IF NOT EXISTS idx_placement_events_day ON placement_events(day DESC);
+CREATE INDEX IF NOT EXISTS idx_placement_events_lookup ON placement_events(placement_id, event_type, day);
 
 -- RLS Policies
 
@@ -161,17 +162,6 @@ CREATE POLICY placement_events_service_only ON placement_events
   USING (auth.role() = 'service_role');
 
 -- Update triggers for updated_at
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$;
 
 CREATE TRIGGER update_sponsors_updated_at BEFORE UPDATE ON sponsors
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -208,7 +198,6 @@ $$;
 
 -- Grant execute permissions
 GRANT EXECUTE ON FUNCTION increment_placement_event TO service_role;
-GRANT EXECUTE ON FUNCTION increment_placement_event TO authenticated;
 
 -- Comments for documentation
 COMMENT ON TABLE sponsors IS 'Sponsor companies that purchase advertising placements';
@@ -217,3 +206,5 @@ COMMENT ON TABLE sponsor_intake IS 'Raw sponsor intake form submissions awaiting
 COMMENT ON TABLE placement_events IS 'Daily aggregated impression and click counts per placement (no IP storage)';
 COMMENT ON VIEW public_live_placements IS 'Public view of currently live placements for anonymous users';
 COMMENT ON FUNCTION increment_placement_event IS 'Safely increment impression or click count for a placement';
+
+-- NOTE: This migration has been applied to production. Do not re-run.

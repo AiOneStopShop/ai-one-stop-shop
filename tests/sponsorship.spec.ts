@@ -1,14 +1,43 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+// Test seeding safety guard
+function requireTestSeeding() {
+  if (process.env.ALLOW_DB_SEED !== '1') {
+    throw new Error(
+      'ALLOW_DB_SEED=1 is required to run tests that modify the database. ' +
+      'Never run these tests against production.'
+    );
+  }
+  
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  let hostname: string;
+  try {
+    hostname = new URL(supabaseUrl).hostname;
+  } catch {
+    throw new Error(`Invalid NEXT_PUBLIC_SUPABASE_URL: ${supabaseUrl}`);
+  }
+  
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+  const isStaging = hostname.includes('staging') || hostname.includes('test');
+  
+  if (!isLocalhost && !isStaging) {
+    throw new Error(
+      'Tests with database seeding can only run against localhost or staging. ' +
+      `Current hostname: ${hostname}`
+    );
+  }
+}
+
 // Helper to seed a test sponsor placement (requires SERVICE_ROLE_KEY env var)
 async function seedTestSponsor(page: any) {
+  requireTestSeeding();
+  
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   
   if (!serviceRoleKey || !supabaseUrl) {
-    console.warn('Skipping sponsor seeding: SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_URL not set');
-    return null;
+    throw new Error('SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_SUPABASE_URL are required for seeding');
   }
 
   try {
@@ -30,8 +59,7 @@ async function seedTestSponsor(page: any) {
     });
 
     if (!sponsorResponse.ok) {
-      console.error('Failed to create test sponsor:', await sponsorResponse.text());
-      return null;
+      throw new Error(`Failed to create test sponsor: ${await sponsorResponse.text()}`);
     }
 
     const [sponsor] = await sponsorResponse.json();
@@ -45,18 +73,18 @@ async function seedTestSponsor(page: any) {
     });
 
     if (!toolsResponse.ok) {
-      return null;
+      throw new Error('Failed to fetch published tools');
     }
 
     const [tool] = await toolsResponse.json();
     
     if (!tool) {
-      return null;
+      throw new Error('No published tools found');
     }
 
-    // Create a live placement (today until 30 days from now)
+    // Create a live placement that expires in 10 minutes
     const startsAt = new Date().toISOString();
-    const endsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    const endsAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
     const placementResponse = await fetch(`${supabaseUrl}/rest/v1/sponsor_placements`, {
       method: 'POST',
@@ -80,15 +108,14 @@ async function seedTestSponsor(page: any) {
     });
 
     if (!placementResponse.ok) {
-      console.error('Failed to create test placement:', await placementResponse.text());
-      return null;
+      throw new Error(`Failed to create test placement: ${await placementResponse.text()}`);
     }
 
     const [placement] = await placementResponse.json();
     return { sponsor, tool, placement };
   } catch (error) {
     console.error('Error seeding test sponsor:', error);
-    return null;
+    throw error;
   }
 }
 
@@ -116,6 +143,16 @@ async function cleanupTestSponsor(sponsorId: string) {
 }
 
 test.describe('Sponsorship feature', () => {
+  let testSponsorId: string | null = null;
+
+  test.afterEach(async () => {
+    // Cleanup any test data created during the test
+    if (testSponsorId) {
+      await cleanupTestSponsor(testSponsorId);
+      testSponsorId = null;
+    }
+  });
+
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.setItem('cookieConsent', 'accepted');

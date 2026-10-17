@@ -9,6 +9,7 @@ const packages = [
   { value: 'category-spotlight', label: 'Category Spotlight ($69)', price: '$69' },
   { value: 'newsletter', label: 'Newsletter Sponsor ($29)', price: '$29', disabled: true },
   { value: 'founding-bundle', label: 'Founding Bundle ($99)', price: '$99' },
+  { value: 'partner_program', label: 'Partner Program', price: 'Contact' },
 ];
 
 interface SponsorRequestFormProps {
@@ -87,7 +88,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
 
       if (!response.ok) {
         if (response.status === 429) {
-          setErrorMessage('Too many requests. Please try again in an hour.');
+          setErrorMessage('Too many requests. Please try again in 15 minutes.');
         } else {
           setErrorMessage(result.error || 'Something went wrong. Please try again.');
         }

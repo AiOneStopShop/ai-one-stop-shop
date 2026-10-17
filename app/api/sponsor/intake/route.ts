@@ -266,6 +266,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Send notification email via Resend (if API key is configured)
+    // Requires: RESEND_API_KEY, NEXT_PUBLIC_SITE_CONTACT_EMAIL
+    // Resend errors (non-fatal, logged only):
+    // - 401: Invalid API key
+    // - 403: Email not verified in Resend account
+    // - 422: Invalid email format or missing required fields
+    // - 429: Rate limit exceeded (Resend free tier: 100/day, 3000/month)
     const resendApiKey = process.env.RESEND_API_KEY;
     const contactEmail = getSiteContactEmail();
 

@@ -72,6 +72,21 @@ export default async function BudgetPage(props: {
             <BudgetForm key={serializeBudgetSearchParams(query)} query={query} />
             <ToolkitResults result={result} query={query} affiliates={affiliates} />
           </div>
+
+          <div className="mt-8 p-6 bg-[#F0EDFF] border border-[#C7BDFF] rounded-lg">
+            <h2 className="text-lg font-semibold text-[#171C26] mb-2">
+              Comparing LLM API costs?
+            </h2>
+            <p className="text-[#5B657B] mb-3">
+              Check our LLM pricing comparison to estimate token costs for OpenAI, Anthropic, Google, and more.
+            </p>
+            <Link
+              href="/compare/llm-pricing"
+              className="inline-flex items-center text-[#6C39EF] hover:underline focus-ring rounded"
+            >
+              View LLM API pricing →
+            </Link>
+          </div>
         </div>
       </section>
     </div>

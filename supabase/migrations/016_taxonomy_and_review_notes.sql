@@ -23,7 +23,8 @@ VALUES
   ('design', 'Design', 'Layouts, graphics, and visual design', '🎨', 12),
   ('marketing', 'Marketing', 'Campaigns, social posts, and go-to-market copy', '📈', 13),
   ('productivity', 'Productivity', 'Everyday work tools that do not fit a more specific job', '⚡', 14),
-  ('local-open-source', 'Local and open-source models', 'Run models locally, self-host, or use open weights', '🏠', 15)
+  ('local-open-source', 'Local and open-source models', 'Run models locally, self-host, or use open weights', '🏠', 15),
+  ('skills', 'Skills', 'Skill packs, rules, and MCP integrations that teach your AI assistant new abilities', '🧩', 16)
 ON CONFLICT (slug) DO UPDATE
 SET
   name = EXCLUDED.name,
@@ -65,6 +66,7 @@ DECLARE
     'design',
     'marketing',
     'local-open-source',
+    'skills',
     'productivity'
   ];
 BEGIN
@@ -117,6 +119,9 @@ BEGIN
   END IF;
   IF hay ~ 'local-llm|self-hosted|offline|ollama|llama.cpp|localai|privategpt|open weights' THEN
     matched := array_append(matched, 'local-open-source');
+  END IF;
+  IF hay ~ 'skill|skills|mcp|integration|rule|prompt|extension|plugin|skill pack|teach' THEN
+    matched := array_append(matched, 'skills');
   END IF;
 
   IF pg_catalog.array_length(matched, 1) IS NULL THEN

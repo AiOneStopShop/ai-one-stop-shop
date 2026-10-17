@@ -64,24 +64,24 @@ export function CookieConsent() {
       ref={bannerRef}
       role="region"
       aria-label="Cookie notice"
-      className="cookie-banner fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-[#5B657B] shadow-lg"
+      className="cookie-banner fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#C7BDFF] shadow-sm"
     >
-      <div className="container-max py-2 sm:py-2.5">
-        <div className="flex flex-row items-center justify-between gap-2 sm:gap-4">
-          <p className="text-xs sm:text-sm text-[#171C26] leading-snug min-w-0">
-            <strong>We keep it simple.</strong> We don't use tracking or ad cookies. Your browser just remembers your compare list and this choice. Some links are paid links, and partner sites may set their own cookies after you click.{' '}
-            <Link href="/privacy#cookies" className="text-[#6C39EF] underline hover:no-underline focus-ring rounded">
+      <div className="container-max py-1.5 sm:py-2">
+        <div className="flex flex-row items-center justify-between gap-2 sm:gap-3">
+          <p className="text-xs text-[#171C26] leading-tight min-w-0 flex-1">
+            <strong className="font-semibold">Simple cookies:</strong> We don't track. Browser remembers your compare list.{' '}
+            <Link href="/privacy#cookies" className="text-[#6C39EF] underline hover:no-underline focus-ring rounded whitespace-nowrap">
               Privacy
             </Link>
-            <span aria-hidden="true"> · </span>
-            <button
-              type="button"
-              onClick={handleDismiss}
-              className="btn-primary text-xs sm:text-sm px-3 py-1.5 min-h-[36px] align-middle"
-            >
-              Got it
-            </button>
           </p>
+          <button
+            type="button"
+            onClick={handleDismiss}
+            aria-label="Dismiss cookie notice"
+            className="btn-primary text-xs px-3 py-1 shrink-0 whitespace-nowrap"
+          >
+            Got it
+          </button>
         </div>
       </div>
     </div>

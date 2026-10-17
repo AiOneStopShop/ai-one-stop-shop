@@ -16,6 +16,10 @@ export function getOperatorLegalName(): string {
   return (process.env.NEXT_PUBLIC_OPERATOR_LEGAL_NAME || '').trim() || 'TrgovinaCo LLC, a Washington limited liability company, d/b/a AI One Stop Shop and oneTomorrow';
 }
 
+export function isAffiliateLive(): boolean {
+  return process.env.NEXT_PUBLIC_AFFILIATE_LIVE === 'true';
+}
+
 export function getBrandUrl(): string | null {
   const url = (process.env.NEXT_PUBLIC_BRAND_URL || '').trim();
   return url || null;

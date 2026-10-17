@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { PRICE_CHECKED_ISO, PRICE_CHECKED_LABEL } from '@/lib/site-dates';
-import { getOperatorLegalName } from '@/lib/site-config';
+import { getOperatorLegalName, isAffiliateLive } from '@/lib/site-config';
 
 export async function GET() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aionestop.shop';
@@ -23,7 +23,10 @@ AI One Stop Shop is run by ${getOperatorLegalName()} (we are oneTomorrow) from W
 
 ## How we earn money
 
-We earn money from clearly labeled sponsored ads and our own kits (marked 'Made by us'). Sponsored placements are labeled 'Sponsored ad' and are never part of our ranked order. A sponsor's normal directory listing is ranked the same way as any other tool's. Money never changes our ranking.
+${isAffiliateLive() 
+  ? `We earn money from clearly labeled sponsored ads, our own kits (marked 'Made by us'), and some paid (affiliate) links. Every affiliate link is marked 'Paid link' right next to it. Sponsored placements are labeled 'Sponsored ad' and are never part of our ranked order. A sponsor's normal directory listing is ranked the same way as any other tool's. Money never changes our ranking.`
+  : `We earn money from clearly labeled sponsored ads and our own kits (marked 'Made by us'). Sponsored placements are labeled 'Sponsored ad' and are never part of our ranked order. A sponsor's normal directory listing is ranked the same way as any other tool's. Money never changes our ranking.`
+}
 
 ## What you can find here
 
@@ -47,6 +50,7 @@ GET /api/v1/tools returns public fields only: name, slug, tagline, description, 
 - How we rank tools: ${siteUrl}/how-we-rank
 - Disclosure (how we make money): ${siteUrl}/disclosure
 - About: ${siteUrl}/about
+- Partner with us: ${siteUrl}/partners
 - Submit a tool: ${siteUrl}/submit
 - Privacy: ${siteUrl}/privacy
 - Terms: ${siteUrl}/terms

@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { PRICE_CHECKED_ISO, PRICE_CHECKED_LABEL } from '@/lib/site-dates';
+import { getOperatorLegalName } from '@/lib/site-config';
 
 export async function GET() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aionestop.shop';
@@ -18,11 +19,11 @@ AI One Stop Shop is a curated directory of AI tools. We check each tool: what it
 
 ## Who runs it
 
-oneTomorrow runs AI One Stop Shop from Washington State. Tools are curated and ranked editorially.
+AI One Stop Shop is run by ${getOperatorLegalName()} (we are oneTomorrow) from Washington State. Tools are curated and ranked editorially.
 
 ## How we earn money
 
-Some links are paid (affiliate) links. If you sign up through one, we may earn a commission at no extra cost to you. Some tool makers pay for a clearly labeled "Sponsored" spot. Sponsored spots are kept separate from our ranked picks. Money never changes our ranking.
+We earn money from clearly labeled sponsored ads and our own kits (marked 'Made by us'). Sponsored placements are labeled 'Sponsored ad' and are never part of our ranked order. A sponsor's normal directory listing is ranked the same way as any other tool's. Money never changes our ranking.
 
 ## What you can find here
 

@@ -58,9 +58,6 @@ export function ToolsResults({
                       <HighlightedText text={tool.name} query={query} />
                     </Link>
                   </h2>
-                  {tool.is_sponsored && (
-                    <span className="badge-sponsored text-xs mb-2">Sponsored</span>
-                  )}
 
                   {tool.tagline && (
                     <p className="text-[#5B657B] mb-3 line-clamp-2">

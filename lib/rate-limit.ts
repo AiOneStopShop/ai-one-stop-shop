@@ -47,8 +47,8 @@ class InMemoryRatelimit {
 
 // Initialize rate limiters
 function createRateLimiter(requests: number, windowMinutes: number) {
-  const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
-  const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const upstashUrl = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+  const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
 
   if (upstashUrl && upstashToken) {
     // Use Upstash Redis for production
@@ -66,9 +66,9 @@ function createRateLimiter(requests: number, windowMinutes: number) {
     // Fallback to in-memory (dev only)
     if (process.env.NODE_ENV === 'production') {
       console.warn(
-        '⚠️  PRODUCTION WARNING: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN not set. ' +
+        '⚠️  PRODUCTION WARNING: Upstash Redis not configured. ' +
         'Using in-memory rate limiting which will NOT work correctly across multiple instances. ' +
-        'Set Upstash environment variables for proper distributed rate limiting.'
+        'Set UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN or connect via Vercel Marketplace (KV_REST_API_URL + KV_REST_API_TOKEN).'
       );
     }
     
@@ -79,7 +79,8 @@ function createRateLimiter(requests: number, windowMinutes: number) {
 }
 
 export const isUpstashConfigured = Boolean(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) ||
+  (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
 );
 
 // Cheap per-instance burst guard used only when Upstash is unset.
@@ -87,5 +88,8 @@ export const apiMemoryBurst = new InMemoryRatelimit(40, 10_000);
 
 // Export rate limiters for different endpoints
 export const submitToolRateLimit = createRateLimiter(5, 15); // 5 requests per 15 minutes
+export const sponsorRequestRateLimit = createRateLimiter(5, 15); // 5 requests per 15 minutes
+export const sponsorIntakeRateLimit = createRateLimiter(5, 60); // 5 requests per hour
+export const placementTrackRateLimit = createRateLimiter(30, 1); // 30 requests per minute
 export const affiliateRedirectRateLimit = createRateLimiter(30, 1); // 30 requests per minute
 export const apiRateLimit = createRateLimiter(100, 1); // 100 requests per minute for API

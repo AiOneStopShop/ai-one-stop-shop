@@ -46,7 +46,7 @@ export default function AboutPage() {
 
             <h2 className="heading-2 mt-12">How we make money</h2>
             <p>
-              Some links are paid (affiliate) links. If you sign up through one, the tool maker may pay us a commission at no extra cost to you. Some tool makers may also pay for a clearly labeled &quot;Sponsored&quot; spot.
+              We earn money from clearly labeled sponsored ads and our own kits. Payments never change how we rank tools.
             </p>
 
             <p className="font-semibold">

@@ -29,24 +29,20 @@ export default function DisclosurePage() {
 
             <div className="space-y-6">
               <div>
-                <h3 className="heading-3 mb-3">1. Affiliate links</h3>
+                <h3 className="heading-3 mb-3">1. Sponsorships (our main revenue)</h3>
                 <p>
-                  Some &quot;Visit&quot; buttons are affiliate links. If you click one and later buy or subscribe, the tool maker may pay us a commission. You pay the same price either way.
+                  Tool makers may pay for a labeled spot in our sponsored row, at the top of a category page, or in our newsletter. Every sponsored placement is clearly marked <strong>Sponsored ad</strong> and kept separate from our ranked picks. If a sponsor's tool is also in our directory, its normal listing is reviewed and ranked exactly like every other tool's.
                 </p>
                 <p>
-                  Every affiliate link is marked <strong className="text-[#C62810]">&quot;Paid link&quot;</strong> right next to it.
+                  <strong>Money buys a labeled spot, never our opinion.</strong> Sponsors can't buy a higher rank, a better write-up, inclusion in &quot;best of&quot; lists, or the removal of honest criticism. Sponsored spots are always labeled and kept apart from our picks.
                 </p>
-              </div>
-
-              <div>
-                <h3 className="heading-3 mb-3">2. Sponsored spots</h3>
                 <p>
-                  Tool makers may pay to be shown in a spot marked <strong className="badge-sponsored">Sponsored</strong>. Sponsored spots are always labeled, kept apart from our ranked picks, and never dressed up as a review.
+                  Learn more: <Link href="/advertise" className="text-[#6C39EF] hover:underline focus-ring rounded">Sponsor AI One Stop Shop</Link>
                 </p>
               </div>
 
               <div>
-                <h3 className="heading-3 mb-3">3. Our own products</h3>
+                <h3 className="heading-3 mb-3">2. Our own products</h3>
                 <p>
                   We also make our own DIY packs and kits (like ApproveGate). When we mention one of our own projects, we say so right there. They&apos;re kept in a{' '}
                   <Link href="/our-kits" className="text-[#6C39EF] hover:underline focus-ring rounded">
@@ -73,7 +69,6 @@ export default function DisclosurePage() {
               <h3 className="heading-3 mb-3">What we don&apos;t do</h3>
               <ul className="space-y-2">
                 <li>• We don&apos;t accept free products in exchange for a positive review</li>
-                <li>• We don&apos;t hide affiliate relationships</li>
                 <li>• We don&apos;t use fake urgency (&quot;only 3 spots left&quot;)</li>
                 <li>• We don&apos;t make up ratings or review counts</li>
               </ul>
@@ -101,7 +96,7 @@ export default function DisclosurePage() {
 
             <div className="mt-12">
               <p className="text-sm text-[#5B657B]">
-                Last updated: October 10, 2026
+                Last updated: October 17, 2026
               </p>
             </div>
           </div>

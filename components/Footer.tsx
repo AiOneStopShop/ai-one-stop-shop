@@ -110,6 +110,14 @@ export function Footer() {
                   About
                 </Link>
               </li>
+              <li>
+                <Link 
+                  href="/advertise" 
+                  className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                >
+                  Advertise
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -159,7 +167,7 @@ export function Footer() {
         {/* Disclosure */}
         <div className="border-t border-gray-700 pt-8 mb-8">
           <p className="text-sm text-gray-400 max-w-3xl">
-            Some links here are paid (affiliate) links. If you sign up through one, we may earn a commission at no extra cost to you. Payments never change how we rank tools.{' '}
+            We earn money from clearly labeled sponsored ads and our own kits. Payments never change how we rank tools.{' '}
             <Link href="/disclosure" className="text-white hover:underline focus-ring rounded">
               Read our disclosure
             </Link>

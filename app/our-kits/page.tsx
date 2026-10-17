@@ -139,7 +139,7 @@ export default function OurKitsPage() {
                   <h3 className="heading-3 mb-3">Questions?</h3>
                   {getSiteContactEmail() && (
                     <p className="text-[#5B657B] mb-4">
-                      <ContactEmailText prefix="Email us at " suffix=". A real person reads every message." />
+                      <ContactEmailText prefix="Email us at " suffix=". A person on our team reviews every reply before it goes out." />
                     </p>
                   )}
                   <Link href="/disclosure" className="text-[#6C39EF] font-medium hover:underline focus-ring rounded">

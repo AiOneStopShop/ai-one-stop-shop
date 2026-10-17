@@ -67,15 +67,15 @@ export default function HowWeRankPage() {
             </div>
 
             <div className="bg-[#4A2D86] text-white rounded-lg p-8">
-              <h2 className="heading-2 mb-4">Money and ranking: the rule we don&apos;t break</h2>
+              <h2 className="heading-2 mb-4">Editorial independence</h2>
+              <p className="text-lg font-semibold mb-4">
+                Money buys a labeled spot, never our opinion.
+              </p>
               <p className="text-lg">
-                Some links on this site are affiliate links. If you sign up through one, the tool maker may pay us a commission at no extra cost to you. Some tool makers may also pay for a clearly labeled <strong>Sponsored</strong> spot.
+                Sponsors can't buy a higher rank, a better write-up, inclusion in "best of" lists, or the removal of honest criticism. Sponsored ads are never mixed into our ranked lists, the finder, comparisons or 'best of' pages.
               </p>
-              <p className="text-lg mt-4 font-semibold">
-                None of that changes the ranking. A tool doesn&apos;t move up because it pays us, and it doesn&apos;t move down because it doesn&apos;t.
-              </p>
-              <p className="mt-4">
-                Sponsored placements are always labeled &quot;Sponsored&quot; and kept separate from our ranked picks.
+              <p className="text-lg mt-4">
+                If a sponsor's tool is also in our directory, its listing is reviewed the same way as every other tool's. We can decline any sponsor that doesn't fit our readers.
               </p>
             </div>
 

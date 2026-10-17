@@ -61,7 +61,12 @@ async function continueRequest(request: NextRequest): Promise<NextResponse> {
     const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error || !user) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+      const url = new URL('/admin/login', request.url);
+      const nextParam = request.nextUrl.searchParams.get('next');
+      if (nextParam) {
+        url.searchParams.set('next', nextParam);
+      }
+      return NextResponse.redirect(url);
     }
 
     const { data: profile } = await supabase
@@ -71,7 +76,12 @@ async function continueRequest(request: NextRequest): Promise<NextResponse> {
       .single()
 
     if (profile?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+      const url = new URL('/admin/login', request.url);
+      const nextParam = request.nextUrl.searchParams.get('next');
+      if (nextParam) {
+        url.searchParams.set('next', nextParam);
+      }
+      return NextResponse.redirect(url);
     }
 
     return response

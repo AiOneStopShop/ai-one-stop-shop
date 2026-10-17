@@ -234,7 +234,7 @@ All have:
 | Tool Detail | ✅ Built | Ready |
 | Category Pages | ✅ Built | Ready |
 | Our Kits | ✅ Built | ApproveGate copy included |
-| About | ✅ Built | Kati's story |
+| About | ✅ Built | Team story |
 | Disclosure | ✅ Built | Full affiliate disclosure |
 | How We Rank | ✅ Built | Methodology explained |
 | Privacy | ⚠️ Basic | Needs legal review (Lexi) |
@@ -318,7 +318,7 @@ All have:
 - Automated screenshots
 - Analytics dashboard
 
-## 🛠 For Kati: How to Manage Tools
+## 🛠 For the Team: How to Manage Tools
 
 ### Right Now (Before Admin Dashboard)
 Use Supabase Table Editor:
@@ -350,7 +350,7 @@ Use Supabase Table Editor:
 ## 📋 Launch Checklist
 
 ### Before Launch
-- [ ] Kati reviews and approves all copy
+- [ ] Team reviews and approves all copy
 - [ ] Lexi reviews privacy policy and terms
 - [ ] Create Supabase project
 - [ ] Seed database
@@ -462,6 +462,6 @@ Use Supabase Table Editor:
 
 **Built:** October 10, 2026  
 **By:** AI Cloud Agent  
-**For:** Kati Bartolec / AI One Stop Shop
+**For:** AI One Stop Shop
 
 🎯 **Ready to ship!**

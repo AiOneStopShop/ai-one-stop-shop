@@ -22,11 +22,17 @@ if (!supabaseUrl || !supabaseKey) {
 try {
   const supabase = createClient(supabaseUrl, supabaseKey);
   
-  // Query using is_active (not active)
-  const { count, error } = await supabase
+  // Query using is_active (not active) with 10s timeout
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Database query timed out after 10s')), 10000)
+  );
+  
+  const queryPromise = supabase
     .from('affiliate_links')
     .select('*', { count: 'exact', head: true })
     .eq('is_active', true);
+  
+  const { count, error } = await Promise.race([queryPromise, timeoutPromise]);
   
   if (error) {
     console.log(`⚠️  Warning: Could not query affiliate_links (${error.message})`);

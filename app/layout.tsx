@@ -1,38 +1,83 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
+import type { Metadata } from 'next';
+import { DM_Sans, Inter } from 'next/font/google';
+import './globals.css';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { CookieConsent } from '@/components/CookieConsent';
+import { getBrandUrl, getSiteUrl } from '@/lib/site-config';
 
-const inter = Inter({ subsets: ['latin'] })
+const brandUrl = getBrandUrl();
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
+  weight: ['600', '700'],
+  display: 'swap',
+  preload: true,
+  adjustFontFallback: true,
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  weight: '400',
+  display: 'swap',
+  preload: true,
+  adjustFontFallback: true,
+});
 
 export const metadata: Metadata = {
-  title: 'AI One Stop Shop - Your Ultimate AI Tools & Knowledge Hub',
-  description: 'Discover the best AI tools, learn from expert knowledge, and join a thriving AI community. Your one-stop destination for everything AI.',
-  keywords: 'AI tools, artificial intelligence, machine learning, AI community, AI knowledge, AI resources',
-  authors: [{ name: 'AI One Stop Shop' }],
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: 'AI One Stop Shop - Honest AI Tools Directory',
+    template: '%s | AI One Stop Shop'
+  },
+  description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
+  keywords: ['AI tools', 'artificial intelligence', 'productivity', 'coding assistants', 'AI directory'],
+  authors: brandUrl ? [{ name: 'oneTomorrow', url: brandUrl }] : [{ name: 'oneTomorrow' }],
+  creator: 'oneTomorrow',
+  publisher: 'AI One Stop Shop',
   openGraph: {
-    title: 'AI One Stop Shop - Your Ultimate AI Tools & Knowledge Hub',
-    description: 'Discover the best AI tools, learn from expert knowledge, and join a thriving AI community.',
     type: 'website',
     locale: 'en_US',
+    url: '/',
+    siteName: 'AI One Stop Shop',
+    title: 'AI One Stop Shop - Honest AI Tools Directory',
+    description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
+    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'AI One Stop Shop' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI One Stop Shop - Your Ultimate AI Tools & Knowledge Hub',
-    description: 'Discover the best AI tools, learn from expert knowledge, and join a thriving AI community.',
+    title: 'AI One Stop Shop',
+    description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
+    images: ['/og-image.svg'],
   },
-}
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased`}>
-        {children}
+    <html lang="en" className={`${dmSans.variable} ${inter.variable}`}>
+      <body className="min-h-screen bg-[#F9F8F5] text-[#171C26] font-inter antialiased">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "try{if(localStorage.getItem('cookieConsent')){document.documentElement.classList.add('cookie-consent-given')}else{document.documentElement.classList.add('has-cookie-banner')}}catch(e){document.documentElement.classList.add('has-cookie-banner')}",
+          }}
+        />
+        <CookieConsent />
+        <Header />
+        <main id="main" tabIndex={-1} className="min-h-screen focus:outline-none">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
-  )
+  );
 }
-

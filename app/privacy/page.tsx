@@ -1,0 +1,186 @@
+import { ContactEmailText } from '@/components/ContactEmail';
+import { getSiteContactEmail } from '@/lib/site-config';
+import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
+
+export const metadata = {
+  title: 'Privacy Policy',
+  description: 'Privacy policy for AI One Stop Shop',
+  alternates: { canonical: '/privacy' },
+};
+
+export default function PrivacyPage() {
+  return (
+    <div className="scroll-mt-16">
+      <section className="section-spacing">
+        <div className="container-max max-w-3xl">
+          <h1 className="heading-1 mb-8">Privacy Policy</h1>
+
+          <div className="prose prose-lg max-w-none space-y-6 text-[#171C26]">
+            <p className="text-sm text-[#5B657B]">
+              Last updated: {PRICE_CHECKED_LONG}
+            </p>
+
+            <div>
+              <h2 className="heading-2 mb-4">Who operates this site</h2>
+              <p>
+                AI One Stop Shop is operated by <strong>oneTomorrow</strong>, located in Washington State, United States.
+              </p>
+              {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS ? (
+                <p className="bg-blue-50 border border-blue-200 rounded px-4 py-3 text-sm whitespace-pre-line">
+                  <strong>Contact:</strong> {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS}
+                </p>
+              ) : (
+                <p className="bg-yellow-50 border border-yellow-200 rounded px-4 py-3 text-sm">
+                  <strong>Contact:</strong> Contact information will be added before any marketing emails are sent.
+                </p>
+              )}
+            </div>
+
+            <div>
+              <h2 className="heading-2 mb-4">What information we collect</h2>
+              
+              <h3 className="heading-3 mb-3 mt-6">Tool submission form</h3>
+              <p>When you submit a tool through our form, we collect:</p>
+              <ul className="space-y-2">
+                <li>• Tool name (up to 100 characters)</li>
+                <li>• Website URL (up to 500 characters)</li>
+                <li>• Your contact email address (up to 255 characters)</li>
+                <li>• Optional description (up to 1,000 characters)</li>
+              </ul>
+              <p className="text-sm text-[#5B657B] mt-2">
+                This data is stored in our database until we review and approve or reject the submission.
+              </p>
+
+              <h3 className="heading-3 mb-3 mt-6">Waitlist email addresses</h3>
+              <p>
+                If you sign up for our waitlist or newsletter, we store your email address in our database (Supabase). We keep these addresses until you unsubscribe.
+              </p>
+
+              <h3 className="heading-3 mb-3 mt-6">Affiliate click logs</h3>
+              <p>
+                When you click an affiliate link (marked as "Paid link"), we log the following for commission tracking and fraud prevention:
+              </p>
+              <ul className="space-y-2">
+                <li>• <strong>Hashed IP address:</strong> We hash your IP address using a secret key. Raw IP addresses are not stored.</li>
+                <li>• <strong>Browser type (user agent):</strong> Up to 255 characters of your browser's user-agent string</li>
+                <li>• <strong>Referrer:</strong> The page you came from (our site's path only, not external URLs)</li>
+                <li>• <strong>Timestamp:</strong> When you clicked the link</li>
+                <li>• <strong>Tool and link identifiers:</strong> Which tool and affiliate link you clicked</li>
+              </ul>
+              <p className="text-sm text-[#5B657B] mt-2">
+                <strong>Retention:</strong> Click logs are automatically deleted after 90 days.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="heading-2 mb-4">What we don't collect</h2>
+              <ul className="space-y-2">
+                <li>• <strong>Raw IP addresses:</strong> We hash IPs immediately and do not store the original</li>
+                <li>• <strong>Analytics or tracking cookies:</strong> We do not use Google Analytics, Facebook Pixel, or similar tracking services</li>
+                <li>• <strong>Advertising data:</strong> We do not track you across websites</li>
+                <li>• <strong>Precise location:</strong> We do not collect or store geolocation data</li>
+              </ul>
+            </div>
+
+            <div id="cookies" className="scroll-mt-20">
+              <h2 className="heading-2 mb-4">Cookies and local storage</h2>
+              <p>
+                We don't use analytics, advertising, or tracking cookies, and visitors who browse aren't given cookies by us.
+              </p>
+              <p className="mt-4">
+                Your browser's local storage keeps two small things on your own device: the tools you add to your compare list, and whether you've dismissed our cookie notice. You can clear them anytime in your browser settings.
+              </p>
+              <p className="mt-4">
+                If you're a site admin who signs in, we use login cookies so you stay signed in. Those are needed for the admin area to work.
+              </p>
+              <p className="mt-4">
+                Some links on this site are paid (affiliate) links. When you click one, we record the click (including a hashed, not raw, version of your IP address, your browser type, and the page you came from) so we can count referrals. After you land on the partner's site, that partner may set its own cookies under its own privacy policy, which we don't control.
+              </p>
+              <p className="mt-4">
+                We delete click records after 90 days.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="heading-2 mb-4">How we use your information</h2>
+              <ul className="space-y-2">
+                <li>• <strong>Tool submissions:</strong> To review and potentially list your submitted tool</li>
+                <li>• <strong>Waitlist emails:</strong> To send updates about new tools and site improvements (you can unsubscribe anytime)</li>
+                <li>• <strong>Click logs:</strong> To track affiliate link performance, prevent fraud, and earn commissions from tool makers</li>
+              </ul>
+              <p className="mt-4">
+                <strong>We never sell your data to third parties.</strong>
+              </p>
+            </div>
+
+            <div>
+              <h2 className="heading-2 mb-4">Third-party services</h2>
+              <p>We use these services to operate the site:</p>
+              <ul className="space-y-2">
+                <li>• <strong>Supabase:</strong> Database and authentication (see <a href="https://supabase.com/privacy" className="text-[#6C39EF] hover:underline" rel="noopener">Supabase Privacy Policy</a>)</li>
+                <li>• <strong>Vercel:</strong> Hosting and CDN (see <a href="https://vercel.com/legal/privacy-policy" className="text-[#6C39EF] hover:underline" rel="noopener">Vercel Privacy Policy</a>)</li>
+              </ul>
+              <p className="text-sm text-[#5B657B] mt-2">
+                These services may have access to data we store with them. They are bound by their own privacy policies.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="heading-2 mb-4">Data retention</h2>
+              <ul className="space-y-2">
+                <li>• <strong>Click logs:</strong> Automatically deleted after 90 days</li>
+                <li>• <strong>Tool submissions:</strong> Deleted after review (approved or rejected)</li>
+                <li>• <strong>Waitlist emails:</strong> Kept until you unsubscribe</li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="heading-2 mb-4">Your rights</h2>
+              <p>You have the right to:</p>
+              <ul className="space-y-2">
+                <li>• Request a copy of your data</li>
+                <li>• Request correction of inaccurate data</li>
+                <li>• Request deletion of your data</li>
+                <li>• Unsubscribe from emails at any time (use the unsubscribe link in any email we send)</li>
+              </ul>
+              {getSiteContactEmail() && (
+                <p className="mt-4">
+                  <ContactEmailText
+                    className="text-[#6C39EF] hover:underline"
+                    prefix="To exercise these rights, email us at: "
+                  />
+                </p>
+              )}
+            </div>
+
+            <div>
+              <h2 className="heading-2 mb-4">Children under 13</h2>
+              <p>
+                This site is not intended for children under 13. We do not knowingly collect information from children under 13. If you believe we have collected information from a child under 13, please contact us immediately and we will delete it.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="heading-2 mb-4">Changes to this policy</h2>
+              <p>
+                We may update this policy from time to time. The "Last updated" date at the top will change when we do. Continued use of the site after changes means you accept the updated policy.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="heading-2 mb-4">Contact us</h2>
+              {getSiteContactEmail() && (
+                <p>
+                  <ContactEmailText
+                    className="text-[#6C39EF] hover:underline"
+                    prefix="Questions about this privacy policy? Email us at: "
+                  />
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

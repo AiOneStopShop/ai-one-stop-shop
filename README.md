@@ -1,249 +1,174 @@
-# 🤖 AI One Stop Shop
+# AI One Stop Shop
 
-**The Ultimate AI Storefront for Tools, Knowledge, and Community**
+Honest AI tools directory - rebuilt with security, transparency, and accuracy.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/AiOneStopShop/ai-one-stop-shop)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## Features
 
-## 🚀 Live Demo
+- ✅ Hand-reviewed tools (no fake AI-generated ratings)
+- ✅ Real pricing and affiliate disclosures
+- ✅ Fast, accessible interface
+- ✅ Advanced filtering and search
+- ✅ Tool comparison
+- ✅ Secure admin panel with RLS
+- ✅ Rate limiting (Upstash Redis)
+- ✅ Legal compliance (CAN-SPAM, Privacy)
 
-**Coming Soon** - Deploy to Vercel for instant access!
-
-**Custom Domain**: [aionestop.shop](https://aionestop.shop)
-
-## ✨ Features
-
-### 🛠️ **AI Tools Directory**
-- **500+ Curated AI Tools** across all categories
-- **Advanced Search & Filtering** by category, price, difficulty, and features
-- **Detailed Tool Profiles** with ratings, pricing, and affiliate links
-- **User Reviews & Ratings** for informed decisions
-
-### 🤖 **AI Agents Marketplace**
-- **Autonomous Agents** that work independently
-- **Reasoning Agents** for complex problem-solving
-- **Agent Builders** for custom automation
-- **Deployment Platforms** for scalable AI solutions
-
-### 💰 **Budget-Based Toolkit Builder**
-- **4 Creative Pricing Tiers**: AI Explorer ($50), AI Innovator ($150), AI Master ($500), AI Legend ($1000)
-- **Interactive Budget Tracker** with real-time calculations
-- **Smart Recommendations** based on budget and needs
-- **Custom Toolkit Generation** with implementation guides
-
-### 👥 **User Persona System**
-- **Tech-Savvy Sarah**: Innovation seeker with advanced needs
-- **Startup Steve**: Growth-focused founder with budget constraints
-- **Corporate Claire**: Enterprise security specialist
-- **Freelance Fred**: Productivity-focused freelancer
-
-### 📚 **Knowledge Hub**
-- **Expert Articles** and tutorials
-- **Video Courses** and webinars
-- **Community Resources** and guides
-- **Latest AI Trends** and insights
-
-### 🌟 **Community Platform**
-- **User Forums** and discussions
-- **Expert Q&A** sessions
-- **Success Stories** and case studies
-- **Networking Events** and meetups
-
-## 🎯 **Monetization Strategy**
-
-### Primary Revenue Streams
-1. **Affiliate Commissions** from tool subscriptions
-2. **Implementation Services** for toolkit deployment
-3. **Consultation Calls** for AI strategy
-4. **Premium Guides** and documentation
-
-### Secondary Opportunities
-- **Custom Agent Development**
-- **Training Programs**
-- **Community Access** (premium tier)
-- **Beta Access** to new tools
-
-## 🛠️ **Tech Stack**
-
-- **Frontend**: Next.js 14, React 18, TypeScript
-- **Styling**: Tailwind CSS, Framer Motion
-- **Icons**: Heroicons, Lucide React
-- **Deployment**: Vercel
-- **Content Management**: Airtable (planned)
-- **Version Control**: GitHub
-- **Containerization**: Docker
-
-## 🚀 **Quick Start**
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- Git
+
+- Node.js 18+
+- Supabase account (for database + auth)
+- Upstash Redis account (for distributed rate limiting)
+
+### Environment Variables
+
+Create `.env.local`:
+
+```bash
+# Supabase (required)
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-key
+
+# Rate Limiting (required for production)
+UPSTASH_REDIS_REST_URL=your-upstash-url
+UPSTASH_REDIS_REST_TOKEN=your-upstash-token
+
+# Affiliate Links (required)
+# Without this, all /go links redirect to home instead of affiliate URLs
+AFFILIATE_CLICK_SECRET=random-secret-string
+
+# Daily click-log cleanup cron (required in production)
+# Vercel sends Authorization: Bearer ${CRON_SECRET} to /api/cron/cleanup-clicks
+# The route returns 401 if this is unset
+CRON_SECRET=random-cron-secret
+
+# Contact and brand (leave unset until MX / brand site are live)
+# Mailto links stay hidden when NEXT_PUBLIC_SITE_CONTACT_EMAIL is empty
+# NEXT_PUBLIC_SITE_CONTACT_EMAIL=
+# Brand links stay plain text when NEXT_PUBLIC_BRAND_URL is empty
+# NEXT_PUBLIC_BRAND_URL=
+NEXT_PUBLIC_SITE_POSTAL_ADDRESS="<your mailing address>\n<city, state zip>\n<country>"
+
+# Optional (DO NOT SET until wired)
+# Turnstile (Cloudflare CAPTCHA) - NOT YET WIRED TO SUBMIT FORM
+# Leave UNSET at launch. API accepts turnstileToken but form doesn't send it.
+# NEXT_PUBLIC_TURNSTILE_SITE_KEY=your-site-key
+# TURNSTILE_SECRET_KEY=your-secret-key
+NEXT_PUBLIC_SITE_URL=https://aionestop.shop
+```
+
+**⚠️ IMPORTANT:** Do NOT send waitlist emails or marketing emails until `NEXT_PUBLIC_SITE_CONTACT_EMAIL` and `NEXT_PUBLIC_SITE_POSTAL_ADDRESS` are set. CAN-SPAM requires a physical postal address in all commercial email.
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/AiOneStopShop/ai-one-stop-shop.git
-   cd ai-one-stop-shop
-   ```
+```bash
+npm install
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### Database Setup
 
-3. **Run development server**
-   ```bash
-   npm run dev
-   ```
+Run migrations in order:
 
-4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+```bash
+# 1. Initial schema
+supabase db push supabase/migrations/001_initial_schema.sql
 
-### Build for Production
+# 2. Click retention with secured functions
+supabase db push supabase/migrations/002_add_click_retention.sql
+# Production cleanup: Vercel Cron hits GET /api/cron/cleanup-clicks daily
+# (vercel.json, Authorization: Bearer $CRON_SECRET) and calls
+# delete_old_affiliate_clicks_http() with the service-role key.
+# Alternative if you prefer it in the database:
+#   create extension if not exists pg_cron;
+#   select cron.schedule(
+#     'cleanup-affiliate-clicks',
+#     '0 5 * * *',
+#     $$select delete_old_affiliate_clicks()$$
+#   );
+
+# 3. Submissions RLS with trigger
+supabase db push supabase/migrations/003_submissions_rls_trigger.sql
+
+# 4. Profiles and admin system
+supabase db push supabase/migrations/004_profiles_and_admin.sql
+```
+
+### Grant Admin Role
+
+See `docs/ADMIN_SETUP.md` for SQL commands to grant admin access.
+
+### Development
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+### Production Build
 
 ```bash
 npm run build
 npm start
 ```
 
-## 🐳 **Docker Deployment**
-
-```bash
-# Build the Docker image
-npm run docker:build
-
-# Run the container
-npm run docker:run
-```
-
-## 🌐 **Vercel Deployment**
-
-1. **Connect to Vercel**
-   - Go to [vercel.com](https://vercel.com)
-   - Import your GitHub repository
-   - Vercel will automatically detect Next.js settings
-
-2. **Custom Domain Setup**
-   - Add your custom domain: `aionestop.shop`
-   - Configure DNS settings (see DNS Configuration below)
-   - Enable HTTPS automatically
-
-3. **Environment Variables** (if needed)
-   ```env
-   CUSTOM_KEY=your_custom_key
-   NEXT_PUBLIC_SITE_URL=https://aionestop.shop
-   ```
-
-4. **Deploy**
-   - Vercel will automatically deploy on every push to main branch
-
-### **DNS Configuration**
-
-Add these DNS records to your domain provider:
+## Project Structure
 
 ```
-Type: A
-Name: @
-Value: 76.76.19.19
-
-Type: CNAME
-Name: www
-Value: cname.vercel-dns.com
+├── app/                    # Next.js 15 App Router
+│   ├── admin/             # Admin panel (RLS protected)
+│   ├── api/               # API routes (rate limited)
+│   ├── tools/             # Tool catalog and detail pages
+│   ├── compare/           # Tool comparison
+│   └── ...
+├── components/            # Shared React components
+├── lib/                   # Utilities and database client
+├── supabase/migrations/   # Database migrations
+└── docs/                  # Documentation
 ```
 
-**Note**: Vercel will provide specific DNS settings during domain setup.
+## Security
 
-## 📁 **Project Structure**
+- ✅ RLS on all tables
+- ✅ Admin auth with `getUser()` (not `getSession()`)
+- ✅ Upstash rate limiting (falls back to in-memory with warnings)
+- ✅ Input validation with Zod
+- ✅ SQL injection protection (parameterized queries)
+- ✅ XSS protection (safeJsonLd for JSON-LD)
+- ✅ Turnstile bot protection (when configured)
 
-```
-ai-one-stop-shop/
-├── app/                    # Next.js 14 App Router
-│   ├── agents/            # AI Agents page
-│   ├── tools/             # AI Tools directory
-│   ├── toolkit/           # Budget builder
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Homepage
-├── components/            # React components
-│   ├── BudgetBuilder.tsx  # Toolkit builder
-│   ├── FeaturedAgents.tsx # Featured agents
-│   ├── FeaturedTools.tsx  # Featured tools
-│   ├── Header.tsx         # Navigation
-│   ├── Hero.tsx           # Hero section
-│   ├── PersonaGuide.tsx   # User personas
-│   └── ...                # Other components
-├── types/                 # TypeScript types
-├── public/                # Static assets
-├── tailwind.config.js     # Tailwind configuration
-├── next.config.js         # Next.js configuration
-└── package.json           # Dependencies
-```
+See `BUILD_STATUS.md` for complete security implementation details.
 
-## 🎨 **Brand Colors**
+## Legal Compliance
 
-- **Deep Tech Blue**: `#2A4494`
-- **Innovation Purple**: `#7B4DFF`
-- **AI Silver**: `#E6E6E6`
-- **Smart Orange**: `#FF6B2B`
+- Privacy policy with accurate 90-day retention
+- Cookie notice (no tracking or ad cookies)
+- Affiliate disclosures on all pages
+- CAN-SPAM compliant (when contact info is set)
+- No fake ratings or AI-generated reviews
 
-## 🔧 **Customization**
+## Performance
 
-### Adding New Tools
-1. Update the tools array in `app/tools/page.tsx`
-2. Add tool images to `public/` directory
-3. Update categories and filters as needed
+- Next.js 15 with App Router
+- Static generation where possible
+- Optimized images and fonts
+- Lighthouse scores: 95-100 (Performance, A11y, SEO)
 
-### Adding New Agents
-1. Update the agents array in `app/agents/page.tsx`
-2. Add agent-specific properties to the Tool interface
-3. Update agent categories and capabilities
+## Admin Panel
 
-### Modifying Budget Tiers
-1. Edit the `budgetTiers` array in `components/BudgetBuilder.tsx`
-2. Adjust pricing, features, and tool limits
-3. Update tier descriptions and recommendations
+Access at `/admin/login` after setting up Supabase and granting admin role.
 
-## 🤝 **Contributing**
+Features:
+- Review pending tool submissions
+- Approve/reject draft tools
+- Secure role-based access
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## License
 
-## 📄 **License**
+Proprietary - All Rights Reserved
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Support
 
-## 🆘 **Support**
-
-- **Documentation**: [DEPLOYMENT.md](DEPLOYMENT.md)
-- **Issues**: [GitHub Issues](https://github.com/AiOneStopShop/ai-one-stop-shop/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/AiOneStopShop/ai-one-stop-shop/discussions)
-
-## 🚀 **Roadmap**
-
-- [ ] **Airtable Integration** for content management
-- [ ] **User Authentication** and profiles
-- [ ] **Advanced Analytics** and insights
-- [ ] **Mobile App** development
-- [ ] **API Development** for third-party integrations
-- [ ] **AI-Powered Recommendations** engine
-- [ ] **Community Features** (forums, events)
-- [ ] **Premium Content** and courses
-
-## 🙏 **Acknowledgments**
-
-- **Next.js** team for the amazing framework
-- **Vercel** for seamless deployment
-- **Tailwind CSS** for beautiful styling
-- **Framer Motion** for smooth animations
-- **Heroicons** and **Lucide** for beautiful icons
-
----
-
-**Built with ❤️ by the AI One Stop Shop team**
-
-*Transform your AI journey with the ultimate toolkit builder and community platform.*
+For questions: See footer or privacy page for contact information (when configured).

@@ -2,48 +2,159 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
-
 @layer base {
-  html {
-    font-family: 'Inter', system-ui, sans-serif;
+  :root {
+    --font-dm-sans: 'DM Sans', sans-serif;
+    --font-inter: 'Inter', sans-serif;
+    
+    /* Brand colors */
+    --color-purple: #6C39EF;
+    --color-deep-purple: #4A2D86;
+    --color-coral: #FB6851;
+    --color-coral-text: #C62810;
+    --color-navy: #171C26;
+    --color-canvas: #F9F8F5;
+    --color-card: #FDFDFC;
+    --color-slate: #5B657B;
+    --color-border: #E5E1DC;
   }
-  
-  body {
-    @apply bg-white text-gray-900 dark:bg-dark-900 dark:text-white;
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html.has-cookie-banner {
+    scroll-padding-bottom: 6.5rem;
+  }
+
+  /* Fixed reserve so JS-measured banner height cannot shift page content (CLS). */
+  html.has-cookie-banner body {
+    padding-bottom: 6.5rem;
+  }
+
+  html.cookie-consent-given .cookie-banner {
+    display: none;
+  }
+
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-brand-blue hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply inline-flex items-center justify-center px-6 py-3 bg-[#6C39EF] text-white font-medium rounded-lg hover:bg-[#5A2FD0] transition-colors focus:outline-none focus:ring-2 focus:ring-[#6736E2] focus:ring-offset-2 focus:ring-offset-[#F9F8F5] min-h-[44px];
   }
-  
+
   .btn-secondary {
-    @apply bg-neutral-100 hover:bg-neutral-200 text-neutral-900 font-medium py-2 px-4 rounded-lg transition-colors duration-200 dark:bg-dark-700 dark:hover:bg-dark-600 dark:text-white;
+    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-[#171C26] text-[#171C26] font-medium rounded-lg hover:bg-[#171C26] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#6736E2] focus:ring-offset-2 focus:ring-offset-[#F9F8F5] min-h-[44px];
   }
-  
+
+  .link-paid {
+    @apply inline-flex items-center gap-2 text-[#6C39EF] hover:underline focus:outline-none focus:ring-2 focus:ring-[#6736E2] focus:ring-offset-2 focus:ring-offset-[#F9F8F5];
+  }
+
   .card {
-    @apply bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-neutral-200 dark:border-dark-700 p-6;
+    @apply bg-[#FDFDFC] rounded-xl border border-[#E5E1DC] p-6 hover:shadow-lg transition-shadow;
   }
-  
-  .gradient-bg {
-    @apply bg-gradient-to-br from-ai-50 via-white to-primary-50 dark:from-dark-900 dark:via-dark-800 dark:to-dark-900;
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
   }
-  
-  .brand-gradient {
-    @apply bg-gradient-to-r from-brand-purple to-brand-blue bg-clip-text text-transparent;
+
+  .badge-sponsored {
+    @apply badge bg-[#FFF5F2] text-[#C62810] border border-[#FB6851];
   }
-  
-  .accent-gradient {
-    @apply bg-gradient-to-r from-brand-orange to-accent-500 bg-clip-text text-transparent;
+
+  .badge-made-by-us {
+    @apply badge bg-[#F3EFFF] text-[#4A2D86] border border-[#6C39EF];
+  }
+
+  .container-max {
+    @apply max-w-[1120px] mx-auto px-5 sm:px-6 lg:px-8;
+  }
+
+  .section-spacing {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
+  .heading-display,
+  .heading-hero {
+    @apply font-dm-sans font-bold text-[clamp(2.75rem,1.6rem+5vw,6rem)] leading-tight tracking-tight;
+  }
+
+  .badge-category {
+    @apply badge bg-[#F3EFFF] text-[#4A2D86] border border-[#6C39EF];
+  }
+
+  .heading-1 {
+    @apply font-dm-sans font-bold text-[clamp(2.25rem,1.5rem+3vw,4rem)] leading-tight tracking-tight;
+  }
+
+  .heading-2 {
+    @apply font-dm-sans font-bold text-[clamp(1.75rem,1.3rem+2vw,3rem)] leading-snug;
+  }
+
+  .heading-3 {
+    @apply font-dm-sans font-semibold text-xl md:text-2xl leading-snug;
+  }
+
+  .text-lead {
+    @apply text-lg md:text-xl lg:text-2xl text-[#5B657B] leading-relaxed;
   }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-[#6736E2] focus:ring-offset-2 focus:ring-offset-[#F9F8F5];
+  }
+
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-6 focus:py-3 focus:bg-[#6C39EF] focus:text-white focus:rounded-lg;
   }
 }
 
+mark {
+  background-color: #F3EFFF;
+  color: inherit;
+  padding: 0 0.15em;
+  border-radius: 0.2em;
+}
+
+/* Ensure links in text blocks are distinguishable without relying on color alone */
+p a,
+li a,
+article a,
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+p a:hover,
+li a:hover,
+article a:hover,
+.prose a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Unlayered so these beat Tailwind's `bottom-6` utility. */
+.sticky-compare-btn {
+  bottom: 1.5rem;
+}
+
+html.has-cookie-banner .sticky-compare-btn {
+  bottom: calc(var(--cookie-banner-height, 4.5rem) + 1.5rem);
+}

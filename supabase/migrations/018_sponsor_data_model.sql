@@ -88,23 +88,23 @@ CREATE TABLE IF NOT EXISTS placement_events (
 CREATE INDEX IF NOT EXISTS idx_sponsors_status ON sponsors(status);
 CREATE INDEX IF NOT EXISTS idx_sponsors_created_at ON sponsors(created_at DESC);
 
-CREATE INDEX idx_sponsor_placements_sponsor_id ON sponsor_placements(sponsor_id);
-CREATE INDEX idx_sponsor_placements_tool_id ON sponsor_placements(tool_id) WHERE tool_id IS NOT NULL;
-CREATE INDEX idx_sponsor_placements_category_id ON sponsor_placements(category_id) WHERE category_id IS NOT NULL;
-CREATE INDEX idx_sponsor_placements_status ON sponsor_placements(status);
-CREATE INDEX idx_sponsor_placements_dates ON sponsor_placements(starts_at, ends_at);
-CREATE INDEX idx_sponsor_placements_package ON sponsor_placements(package);
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_sponsor_id ON sponsor_placements(sponsor_id);
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_tool_id ON sponsor_placements(tool_id) WHERE tool_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_category_id ON sponsor_placements(category_id) WHERE category_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_status ON sponsor_placements(status);
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_dates ON sponsor_placements(starts_at, ends_at);
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_package ON sponsor_placements(package);
 
 -- Index for finding live placements efficiently
-CREATE INDEX idx_sponsor_placements_live ON sponsor_placements(status, starts_at, ends_at, package) 
+CREATE INDEX IF NOT EXISTS idx_sponsor_placements_live ON sponsor_placements(status, starts_at, ends_at, package) 
   WHERE status = 'live';
 
-CREATE INDEX idx_sponsor_intake_status ON sponsor_intake(status);
-CREATE INDEX idx_sponsor_intake_submitted_at ON sponsor_intake(submitted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_sponsor_intake_status ON sponsor_intake(status);
+CREATE INDEX IF NOT EXISTS idx_sponsor_intake_submitted_at ON sponsor_intake(submitted_at DESC);
 
-CREATE INDEX idx_placement_events_placement_id ON placement_events(placement_id);
-CREATE INDEX idx_placement_events_day ON placement_events(day DESC);
-CREATE INDEX idx_placement_events_lookup ON placement_events(placement_id, event_type, day);
+CREATE INDEX IF NOT EXISTS idx_placement_events_placement_id ON placement_events(placement_id);
+CREATE INDEX IF NOT EXISTS idx_placement_events_day ON placement_events(day DESC);
+CREATE INDEX IF NOT EXISTS idx_placement_events_lookup ON placement_events(placement_id, event_type, day);
 
 -- RLS Policies
 

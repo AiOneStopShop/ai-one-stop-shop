@@ -9,6 +9,7 @@ const FIELD_ERROR_TEXT = {
   url_invalid: 'Please enter a valid website URL.',
   email_invalid: 'Please enter a valid email address.',
   too_long: 'That field is too long.',
+  rights_required: 'You must confirm you have the rights to submit this content.',
 } as const;
 
 type FieldErrorCode = keyof typeof FIELD_ERROR_TEXT;
@@ -28,6 +29,7 @@ const FIELD_LABELS: Record<string, string> = {
   websiteUrl: 'Website URL',
   contactEmail: 'Your email',
   description: 'Why should we look at this tool?',
+  rightsConfirmed: 'Rights confirmation',
 };
 
 function textForFieldCode(code: string): string | null {
@@ -41,6 +43,7 @@ function validateClient(formData: {
   websiteUrl: string;
   contactEmail: string;
   description: string;
+  rightsConfirmed: boolean;
 }): Partial<Record<string, string>> {
   const errors: Partial<Record<string, string>> = {};
 
@@ -75,6 +78,11 @@ function validateClient(formData: {
     errors.description = FIELD_ERROR_TEXT.too_long;
   }
 
+  // Only validate rights checkbox when LEGAL_V2 flag is enabled
+  if (process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' && !formData.rightsConfirmed) {
+    errors.rightsConfirmed = FIELD_ERROR_TEXT.rights_required;
+  }
+
   return errors;
 }
 
@@ -84,6 +92,7 @@ export default function SubmitPage() {
     websiteUrl: '',
     contactEmail: '',
     description: '',
+    rightsConfirmed: false,
     extra_ref: '',
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
@@ -129,7 +138,7 @@ export default function SubmitPage() {
 
       if (response.ok) {
         setStatus('success');
-        setFormData({ toolName: '', websiteUrl: '', contactEmail: '', description: '', extra_ref: '' });
+        setFormData({ toolName: '', websiteUrl: '', contactEmail: '', description: '', rightsConfirmed: false, extra_ref: '' });
         return;
       }
 
@@ -359,6 +368,39 @@ export default function SubmitPage() {
                   </p>
                 )}
               </div>
+
+              {process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' && (
+                <div className="border-t border-gray-200 pt-6">
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      id="rightsConfirmed"
+                      name="rightsConfirmed"
+                      checked={formData.rightsConfirmed}
+                      onChange={(e) => setFormData({ ...formData, rightsConfirmed: e.target.checked })}
+                      className="mt-1 h-5 w-5 rounded border-[#5B657B] text-[#6C39EF] focus:ring-2 focus:ring-[#6C39EF] focus:ring-offset-2"
+                      aria-invalid={fieldErrors.rightsConfirmed ? true : undefined}
+                      aria-describedby={describedBy('rightsConfirmed', 'rights-description')}
+                    />
+                    <div className="flex-1">
+                      <label htmlFor="rightsConfirmed" className="block text-sm text-[#171C26]">
+                        I own or have permission to share this tool&apos;s name, logo, screenshots and description, and I agree to the{' '}
+                        <Link href="/terms" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                          Terms
+                        </Link>. <span className="text-red-600" aria-hidden="true">*</span>
+                      </label>
+                      <p id="rights-description" className="text-xs text-[#5B657B] mt-1 sr-only">
+                        This checkbox is required. By checking it, you confirm you have the legal rights to submit this information.
+                      </p>
+                      {fieldErrors.rightsConfirmed && (
+                        <p id="rightsConfirmed-error" className="text-sm text-red-700 mt-1" role="alert">
+                          {fieldErrors.rightsConfirmed}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <button
                 type="submit"

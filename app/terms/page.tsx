@@ -27,6 +27,15 @@ export default function TermsPage() {
               </p>
             </div>
 
+            {process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' && (
+              <div>
+                <h2 className="heading-2 mb-4">Eligibility</h2>
+                <p>
+                  You must be at least 13 to use this site. You must be 18 or older (or the age of majority where you live) to buy anything here. This site isn&apos;t directed to children under 13.
+                </p>
+              </div>
+            )}
+
             <div>
               <h2 className="heading-2 mb-4">What this site provides</h2>
               <p>

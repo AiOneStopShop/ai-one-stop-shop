@@ -9,6 +9,7 @@ const FIELD_ERROR_CODES = [
   'url_invalid',
   'email_invalid',
   'too_long',
+  'rights_required',
 ] as const;
 
 type FieldErrorCode = (typeof FIELD_ERROR_CODES)[number];
@@ -27,6 +28,7 @@ const submitToolSchema = z.object({
   websiteUrl: z.string().max(500).refine(isHttpOrHttpsUrl),
   contactEmail: z.string().email().max(200),
   description: z.string().max(2000).optional(),
+  rightsConfirmed: z.boolean().optional(),
   extra_ref: z.string().optional(),
 });
 
@@ -78,7 +80,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { toolName, websiteUrl, contactEmail, description, extra_ref } = parsed.data;
+    const { toolName, websiteUrl, contactEmail, description, rightsConfirmed, extra_ref } = parsed.data;
+
+    // When LEGAL_V2 flag is enabled, enforce the rights checkbox server-side
+    if (process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' && !rightsConfirmed) {
+      return NextResponse.json(
+        { errors: [{ field: 'rightsConfirmed', code: 'rights_required' }] },
+        { status: 400 }
+      );
+    }
 
     // Honeypot: same success body as a real submit so bots cannot probe
     if (extra_ref) {

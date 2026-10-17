@@ -135,6 +135,16 @@ export function Footer() {
                   Terms
                 </Link>
               </li>
+              {process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' && (
+                <li>
+                  <Link 
+                    href="/dmca" 
+                    className="inline-flex items-center min-h-11 text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded"
+                  >
+                    Copyright &amp; DMCA
+                  </Link>
+                </li>
+              )}
               {getSiteContactEmail() && (
                 <li>
                   <ContactEmail className="text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded">
@@ -154,6 +164,19 @@ export function Footer() {
               Read our disclosure
             </Link>
           </p>
+          {process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' && (
+            <p className="text-sm text-gray-400 max-w-3xl mt-4">
+              <strong>Terms:</strong> By submitting a tool or using this site, you agree to our{' '}
+              <Link href="/terms" className="text-white hover:underline focus-ring rounded">
+                Terms of Service
+              </Link>
+              . For copyright concerns, see our{' '}
+              <Link href="/dmca" className="text-white hover:underline focus-ring rounded">
+                Copyright &amp; DMCA policy
+              </Link>
+              .
+            </p>
+          )}
         </div>
 
         {/* Bottom */}

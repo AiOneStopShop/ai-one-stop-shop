@@ -1,24 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
-import { placementTrackRateLimit } from '@/lib/rate-limit';
+import { placementTrackRateLimit, dedupe } from '@/lib/rate-limit';
 import { getClientIP } from '@/lib/client-ip';
 import { createHash } from 'crypto';
 
-// In-memory deduplication for impressions and clicks (per IP hash + placement + day)
-const eventCache = new Map<string, number>();
-const EVENT_DEDUPE_WINDOW = 24 * 60 * 60 * 1000; // 24 hours
-
 function hashIP(ip: string): string {
-  return createHash('sha256').update(ip + (process.env.IP_HASH_SECRET || 'default-secret')).digest('hex');
-}
-
-function cleanupEventCache() {
-  const now = Date.now();
-  for (const [key, timestamp] of Array.from(eventCache.entries())) {
-    if (now - timestamp > EVENT_DEDUPE_WINDOW) {
-      eventCache.delete(key);
-    }
+  const secret = process.env.AFFILIATE_CLICK_SECRET || '';
+  if (!secret) {
+    throw new Error('AFFILIATE_CLICK_SECRET is required');
   }
+  return createHash('sha256').update(ip + secret).digest('hex');
 }
 
 /**
@@ -34,6 +25,15 @@ export async function POST(request: NextRequest) {
     if (!placementId || typeof placementId !== 'string') {
       return NextResponse.json(
         { error: 'Invalid placement ID' },
+        { status: 400 }
+      );
+    }
+
+    // Validate placementId as UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(placementId)) {
+      return NextResponse.json(
+        { error: 'Invalid placement ID format' },
         { status: 400 }
       );
     }
@@ -72,26 +72,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ tracked: false });
     }
 
-    // Deduplicate events per IP hash + placement + day
-    const ipHash = hashIP(ip);
-    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    const dedupeKey = `${ipHash}:${placementId}:${eventType}:${today}`;
-    const lastSeen = eventCache.get(dedupeKey);
-    const now = Date.now();
-
-    if (lastSeen && now - lastSeen < EVENT_DEDUPE_WINDOW) {
-      // Already counted today
-      return NextResponse.json({ tracked: false, reason: 'deduplicated' });
-    }
-
-    eventCache.set(dedupeKey, now);
-    
-    // Clean up old entries periodically (1% chance per request)
-    if (Math.random() < 0.01) {
-      cleanupEventCache();
-    }
-
-    // Verify placement is live before counting
+    // Verify placement is live before deduping or counting
     const supabase = getServiceSupabase();
     const { data: placement } = await supabase
       .from('public_live_placements')
@@ -101,6 +82,27 @@ export async function POST(request: NextRequest) {
 
     if (!placement) {
       return NextResponse.json({ tracked: false, reason: 'inactive' });
+    }
+
+    // Deduplicate events per IP hash + placement + event type + day using Redis
+    const ipHash = hashIP(ip);
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const dedupeKey = `dedupe:placement:${ipHash}:${placementId}:${eventType}:${today}`;
+    
+    try {
+      const isFirstOccurrence = await dedupe(dedupeKey, 86400); // 24 hours
+      
+      if (!isFirstOccurrence) {
+        // Already counted today
+        return NextResponse.json({ tracked: false, reason: 'deduplicated' });
+      }
+    } catch (err) {
+      // In production without Redis, dedupe throws - fail the request
+      console.error('Deduplication error:', err);
+      return NextResponse.json(
+        { error: 'Service unavailable' },
+        { status: 503 }
+      );
     }
 
     // Increment count

@@ -27,12 +27,12 @@
   }
 
   html.has-cookie-banner {
-    scroll-padding-bottom: 6.5rem;
+    scroll-padding-bottom: 4rem;
   }
 
   /* Fixed reserve so JS-measured banner height cannot shift page content (CLS). */
   html.has-cookie-banner body {
-    padding-bottom: 6.5rem;
+    padding-bottom: 4rem;
   }
 
   html.cookie-consent-given .cookie-banner {

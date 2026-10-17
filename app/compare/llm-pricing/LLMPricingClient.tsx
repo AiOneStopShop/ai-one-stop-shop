@@ -189,7 +189,7 @@ export function LLMPricingClient({ pricing }: Props) {
 
       {/* Monthly Cost Calculator */}
       {categoryFilter === 'all' || categoryFilter === 'api-model' ? (
-        <div className="bg-[#F0EDFF] border border-[#C7BDFF] rounded-lg p-6 mb-8 pb-20 sm:pb-6">
+        <div className="bg-[#F0EDFF] border border-[#C7BDFF] rounded-lg p-6 mb-8">
           <h2 className="text-lg font-semibold text-[#171C26] mb-4">Monthly Cost Calculator</h2>
           <p className="text-sm text-[#5B657B] mb-4">
             Estimate your monthly API costs based on token usage. Enter your expected monthly input and output tokens.

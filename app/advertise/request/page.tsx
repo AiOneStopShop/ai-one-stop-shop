@@ -12,6 +12,7 @@ const VALID_PACKAGES = [
   'category-spotlight',
   'newsletter',
   'founding-bundle',
+  'partner-program',
 ];
 
 export default async function AdvertiseRequestPage({

@@ -49,6 +49,7 @@ class InMemoryRatelimit {
 function createRateLimiter(requests: number, windowMinutes: number) {
   const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
   const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
 
   if (upstashUrl && upstashToken) {
     // Use Upstash Redis for production
@@ -63,14 +64,28 @@ function createRateLimiter(requests: number, windowMinutes: number) {
       analytics: true,
     });
   } else {
-    // Fallback to in-memory (dev only)
-    if (process.env.NODE_ENV === 'production') {
-      console.warn(
-        '⚠️  PRODUCTION WARNING: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN not set. ' +
-        'Using in-memory rate limiting which will NOT work correctly across multiple instances. ' +
-        'Set Upstash environment variables for proper distributed rate limiting.'
+    // Fail closed in production
+    if (isProduction) {
+      console.error(
+        '❌ PRODUCTION ERROR: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN must be set in production. ' +
+        'Rate limiting is unavailable.'
       );
+      // Return a limiter that always fails in production
+      return {
+        limit: async () => ({
+          success: false,
+          limit: 0,
+          remaining: 0,
+          reset: Date.now(),
+          pending: Promise.resolve(),
+        }),
+      };
     }
+    
+    // Fallback to in-memory for development only
+    console.warn(
+      '⚠️  Development: Using in-memory rate limiting (not suitable for production)'
+    );
     
     const windowMs = windowMinutes * 60 * 1000;
     
@@ -92,3 +107,53 @@ export const sponsorIntakeRateLimit = createRateLimiter(5, 60); // 5 requests pe
 export const placementTrackRateLimit = createRateLimiter(30, 1); // 30 requests per minute
 export const affiliateRedirectRateLimit = createRateLimiter(30, 1); // 30 requests per minute
 export const apiRateLimit = createRateLimiter(100, 1); // 100 requests per minute for API
+
+// Redis client and dedupe helper for click/impression tracking
+const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
+const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+export const redis = upstashUrl && upstashToken
+  ? new Redis({ url: upstashUrl, token: upstashToken })
+  : null;
+
+// In-memory fallback for dedupe (development only)
+const memoryDedupe = new Map<string, number>();
+
+/**
+ * Deduplicate events using Redis SET NX EX or in-memory Map.
+ * Returns true if this is the first occurrence, false if it's a duplicate.
+ */
+export async function dedupe(key: string, ttlSeconds: number): Promise<boolean> {
+  const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
+  
+  if (redis) {
+    const result = await redis.set(key, '1', { nx: true, ex: ttlSeconds });
+    return result === 'OK';
+  }
+  
+  if (isProduction) {
+    // Fail closed in production without Redis
+    throw new Error('Deduplication unavailable: Upstash Redis not configured');
+  }
+  
+  // Development fallback
+  const now = Date.now();
+  const expiry = memoryDedupe.get(key);
+  
+  if (expiry && now < expiry) {
+    return false; // Duplicate
+  }
+  
+  memoryDedupe.set(key, now + ttlSeconds * 1000);
+  
+  // Cleanup old entries periodically
+  if (Math.random() < 0.01) {
+    for (const [k, v] of Array.from(memoryDedupe.entries())) {
+      if (now >= v) {
+        memoryDedupe.delete(k);
+      }
+    }
+  }
+  
+  return true; // First occurrence
+}

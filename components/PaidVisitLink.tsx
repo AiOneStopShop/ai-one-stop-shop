@@ -18,6 +18,14 @@ export function PaidVisitLink({
 
   return (
     <span className={className}>
+      {paid ? (
+        <span id={noteId} className="block text-sm font-semibold text-[#C62810] mb-1">
+          Paid link: we may earn a commission if you sign up.{' '}
+          <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
+            How we make money
+          </Link>
+        </span>
+      ) : null}
       <a
         href={href}
         rel={paid ? 'sponsored nofollow noopener' : 'noopener'}
@@ -27,15 +35,6 @@ export function PaidVisitLink({
         Visit {name}
         {paid ? <span className="sr-only"> (paid link)</span> : null}
       </a>
-      {paid ? (
-        <span id={noteId} className="block text-xs text-[#5B657B] mt-1">
-          <span className="font-medium text-[#C62810]">Paid link:</span>{' '}
-          We may earn a commission if you sign up.{' '}
-          <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
-            How we make money
-          </Link>
-        </span>
-      ) : null}
     </span>
   );
 }

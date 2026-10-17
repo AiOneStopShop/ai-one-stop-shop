@@ -15,7 +15,7 @@ interface RequestBody {
   honeypot?: string;
 }
 
-const VALID_PACKAGES = ['featured-tool', 'category-spotlight', 'newsletter', 'founding-bundle'];
+const VALID_PACKAGES = ['featured-tool', 'category-spotlight', 'newsletter', 'founding-bundle', 'partner-program'];
 
 export async function POST(request: NextRequest) {
   try {

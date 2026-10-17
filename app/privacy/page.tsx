@@ -78,17 +78,20 @@ export default function PrivacyPage() {
                 If you sign up for our waitlist or newsletter, we store your email address in our database (Supabase). We keep these addresses until you unsubscribe.
               </p>
 
-              <h3 className="heading-3 mb-3 mt-6">Affiliate click logs</h3>
+              <h3 className="heading-3 mb-3 mt-6">Visit-link click logs</h3>
               <p>
-                When you click an affiliate link (marked as "Paid link"), we log the following for commission tracking and fraud prevention:
+                When you click any "Visit" link (paid or not), we log the following for tracking performance and preventing abuse:
               </p>
               <ul className="space-y-2">
                 <li>• <strong>Hashed IP address:</strong> We hash your IP address using a secret key. Raw IP addresses are not stored.</li>
                 <li>• <strong>Browser type (user agent):</strong> Up to 255 characters of your browser's user-agent string</li>
-                <li>• <strong>Referrer:</strong> The page you came from (our site's path only, not external URLs)</li>
+                <li>• <strong>Referrer:</strong> The page you came from (address without query details)</li>
                 <li>• <strong>Timestamp:</strong> When you clicked the link</li>
-                <li>• <strong>Tool and link identifiers:</strong> Which tool and affiliate link you clicked</li>
+                <li>• <strong>Tool and link identifiers:</strong> Which tool link you clicked</li>
               </ul>
+              <p className="mt-4">
+                Paid links may pass through an affiliate network (for example PartnerStack, Impact, Rewardful or Dub, depending on the program) and may add tracking codes to the address so the partner can credit the referral.
+              </p>
               <p className="text-sm text-[#5B657B] mt-2">
                 <strong>Retention:</strong> Click logs are automatically deleted after 90 days.
               </p>
@@ -116,7 +119,7 @@ export default function PrivacyPage() {
                 If you're a site admin who signs in, we use login cookies so you stay signed in. Those are needed for the admin area to work.
               </p>
               <p className="mt-4">
-                Some links on this site are paid (affiliate) links. When you click one, we record the click (including a hashed, not raw, version of your IP address, your browser type, and the page you came from) so we can count referrals. After you land on the partner's site, that partner may set its own cookies under its own privacy policy, which we don't control.
+                When you click a "Visit" link, we record the click (a hashed, not raw, version of your IP address, your browser type, and the page you came from) so we can count visits and paid referrals and stop abuse. After you land on the tool's site, that site, and any affiliate network it uses, may set its own cookies under its own privacy policy, which we don't control.
               </p>
               <p className="mt-4">
                 We delete click records after 90 days.

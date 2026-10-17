@@ -4,6 +4,7 @@ import { getClientIP } from '@/lib/client-ip';
 import { toPublicTool } from '@/lib/public-tool';
 import { searchPublishedCatalog } from '@/lib/search-catalog';
 import { sanitizeSearchQuery } from '@/lib/search-tools';
+import { getActiveAffiliateGoSlugs } from '@/lib/affiliate-links';
 
 const CORS_HEADERS = {
   'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
@@ -50,7 +51,9 @@ export async function GET(request: NextRequest) {
       offset,
     });
 
-    return jsonTools(result.tools.map((tool: any) => toPublicTool(tool)), result.total, limit, offset);
+    const affiliates = await getActiveAffiliateGoSlugs();
+    const affiliateSet = new Set(Object.keys(affiliates));
+    return jsonTools(result.tools.map((tool: any) => toPublicTool(tool, undefined, affiliateSet)), result.total, limit, offset);
   } catch (error) {
     console.error('Failed to fetch tools:', error);
     return NextResponse.json(

@@ -221,6 +221,16 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                       </p>
                     )}
 
+                    {/* Paid link disclosure - must appear immediately ABOVE the Visit button */}
+                    {isAffiliate && (
+                      <p id="paid-note" className="text-sm text-[#C62810] mb-2">
+                        Paid link: we may earn a commission.{' '}
+                        <Link href="/disclosure#paid-links" className="underline hover:text-[#A02010]">
+                          How we make money
+                        </Link>
+                      </p>
+                    )}
+
                     {/* Visit Button */}
                     <a
                       href={visitUrl}
@@ -241,18 +251,6 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     >
                       Compare with...
                     </Link>
-
-                    {isAffiliate && (
-                      <p id="paid-note" className="text-xs text-[#5B657B] mt-3 flex items-start gap-1">
-                        <span className="font-medium text-[#C62810]">Paid link:</span>
-                        <span>
-                          We may earn a commission if you sign up. It never changes our ranking.{' '}
-                          <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
-                            How we make money
-                          </Link>
-                        </span>
-                      </p>
-                    )}
                   </div>
 
                   {/* Last Verified */}

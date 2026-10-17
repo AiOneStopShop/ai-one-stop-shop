@@ -293,7 +293,7 @@ export async function POST(request: NextRequest) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'aionestopshop25@gmail.com',
+            from: 'notifications@aionestop.shop',
             to: [contactEmail],
             reply_to: email,
             subject: `Sponsor intake form: ${escapeHtml(toolName)} (${packageLabels[packageType]})`,

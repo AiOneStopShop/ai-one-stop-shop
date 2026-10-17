@@ -6,8 +6,8 @@
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER
 LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public, pg_temp
+SECURITY INVOKER
+SET search_path = ''
 AS $$
 BEGIN
   NEW.updated_at = NOW();
@@ -16,10 +16,11 @@ END;
 $$;
 
 -- 2. Revoke public EXECUTE on increment_placement_event
--- This function is SECURITY DEFINER and should only be callable by service role or authenticated users through the API
--- Revoking from PUBLIC and anon prevents direct RPC calls that could fake impression/click counts
+-- This function is SECURITY DEFINER and should only be callable by service role
+-- Revoking from PUBLIC, anon and authenticated prevents direct RPC calls that could fake impression/click counts
 REVOKE EXECUTE ON FUNCTION increment_placement_event(UUID, TEXT, DATE) FROM PUBLIC;
 REVOKE EXECUTE ON FUNCTION increment_placement_event(UUID, TEXT, DATE) FROM anon;
+REVOKE EXECUTE ON FUNCTION increment_placement_event(UUID, TEXT, DATE) FROM authenticated;
 
 -- Keep it available for the API to call (via service role)
 GRANT EXECUTE ON FUNCTION increment_placement_event(UUID, TEXT, DATE) TO service_role;

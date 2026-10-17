@@ -13,7 +13,7 @@ export function getSiteContactEmail(): string | null {
 }
 
 export function getOperatorLegalName(): string {
-  return (process.env.NEXT_PUBLIC_OPERATOR_LEGAL_NAME || '').trim() || 'oneTomorrow';
+  return (process.env.NEXT_PUBLIC_OPERATOR_LEGAL_NAME || '').trim() || 'TrgovinaCo LLC, a Washington limited liability company, d/b/a AI One Stop Shop and oneTomorrow';
 }
 
 export function getBrandUrl(): string | null {

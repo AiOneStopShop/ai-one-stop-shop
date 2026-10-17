@@ -1,14 +1,8 @@
 -- Migration 018: Sponsor data model
 -- Creates tables for sponsorships, placements, intake, and event tracking
 
--- Drop tables if they exist (for development resets)
-DROP TABLE IF EXISTS placement_events CASCADE;
-DROP TABLE IF EXISTS sponsor_placements CASCADE;
-DROP TABLE IF EXISTS sponsor_intake CASCADE;
-DROP TABLE IF EXISTS sponsors CASCADE;
-
--- Sponsors table
-CREATE TABLE sponsors (
+-- Create tables if they don't exist (idempotent)
+CREATE TABLE IF NOT EXISTS sponsors (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company TEXT NOT NULL,
   contact_email TEXT NOT NULL,
@@ -20,7 +14,7 @@ CREATE TABLE sponsors (
 );
 
 -- Sponsor placements table
-CREATE TABLE sponsor_placements (
+CREATE TABLE IF NOT EXISTS sponsor_placements (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   sponsor_id UUID NOT NULL REFERENCES sponsors(id) ON DELETE CASCADE,
   tool_id UUID REFERENCES tools(id) ON DELETE SET NULL,
@@ -49,7 +43,7 @@ CREATE TABLE sponsor_placements (
 );
 
 -- Sponsor intake table (raw form submissions)
-CREATE TABLE sponsor_intake (
+CREATE TABLE IF NOT EXISTS sponsor_intake (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_name TEXT NOT NULL,
   contact_name TEXT NOT NULL,
@@ -77,7 +71,7 @@ CREATE TABLE sponsor_intake (
 );
 
 -- Placement events table (aggregated daily counts)
-CREATE TABLE placement_events (
+CREATE TABLE IF NOT EXISTS placement_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   placement_id UUID NOT NULL REFERENCES sponsor_placements(id) ON DELETE CASCADE,
   event_type TEXT NOT NULL CHECK (event_type IN ('impression', 'click')),

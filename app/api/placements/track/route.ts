@@ -2,17 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { placementTrackRateLimit } from '@/lib/rate-limit';
 import { getClientIP } from '@/lib/client-ip';
+import { createHash } from 'crypto';
 
-// In-memory deduplication for impressions (per IP + placement within 5 minutes)
-const impressionCache = new Map<string, number>();
-const IMPRESSION_DEDUPE_WINDOW = 5 * 60 * 1000; // 5 minutes
+// In-memory deduplication for impressions and clicks (per IP hash + placement + day)
+const eventCache = new Map<string, number>();
+const EVENT_DEDUPE_WINDOW = 24 * 60 * 60 * 1000; // 24 hours
 
-function cleanupImpressionCache() {
+function hashIP(ip: string): string {
+  return createHash('sha256').update(ip + (process.env.IP_HASH_SECRET || 'default-secret')).digest('hex');
+}
+
+function cleanupEventCache() {
   const now = Date.now();
-  const entries = Array.from(impressionCache.entries());
-  for (const [key, timestamp] of entries) {
-    if (now - timestamp > IMPRESSION_DEDUPE_WINDOW) {
-      impressionCache.delete(key);
+  for (const [key, timestamp] of Array.from(eventCache.entries())) {
+    if (now - timestamp > EVENT_DEDUPE_WINDOW) {
+      eventCache.delete(key);
     }
   }
 }
@@ -68,23 +72,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ tracked: false });
     }
 
-    // Deduplicate impressions per IP + placement within 5 minutes
-    if (eventType === 'impression') {
-      const dedupeKey = `${ip}:${placementId}`;
-      const lastSeen = impressionCache.get(dedupeKey);
-      const now = Date.now();
+    // Deduplicate events per IP hash + placement + day
+    const ipHash = hashIP(ip);
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const dedupeKey = `${ipHash}:${placementId}:${eventType}:${today}`;
+    const lastSeen = eventCache.get(dedupeKey);
+    const now = Date.now();
 
-      if (lastSeen && now - lastSeen < IMPRESSION_DEDUPE_WINDOW) {
-        // Already counted within the window
-        return NextResponse.json({ tracked: false, reason: 'deduplicated' });
-      }
+    if (lastSeen && now - lastSeen < EVENT_DEDUPE_WINDOW) {
+      // Already counted today
+      return NextResponse.json({ tracked: false, reason: 'deduplicated' });
+    }
 
-      impressionCache.set(dedupeKey, now);
-      
-      // Clean up old entries periodically (1% chance per request)
-      if (Math.random() < 0.01) {
-        cleanupImpressionCache();
-      }
+    eventCache.set(dedupeKey, now);
+    
+    // Clean up old entries periodically (1% chance per request)
+    if (Math.random() < 0.01) {
+      cleanupEventCache();
     }
 
     // Verify placement is live before counting

@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'aionestopshop25@gmail.com',
+            from: 'notifications@aionestop.shop',
             to: [contactEmail],
             reply_to: body.email,
             subject: `New sponsor request: ${escapeHtml(body.toolName)} (${packageLabels[body.package] || body.package})`,

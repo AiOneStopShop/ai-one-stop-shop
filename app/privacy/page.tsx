@@ -143,9 +143,9 @@ export default function PrivacyPage() {
               <ul className="space-y-2">
                 <li>• <strong>Supabase:</strong> Database and authentication (see <a href="https://supabase.com/privacy" className="text-[#6C39EF] hover:underline" rel="noopener">Supabase Privacy Policy</a>)</li>
                 <li>• <strong>Vercel:</strong> Hosting and CDN (see <a href="https://vercel.com/legal/privacy-policy" className="text-[#6C39EF] hover:underline" rel="noopener">Vercel Privacy Policy</a>)</li>
-                <li>• <strong>Upstash:</strong> Blocking spam and abuse. It briefly processes your IP address when you submit a form or click a sponsored link. (see <a href="https://upstash.com/privacy" className="text-[#6C39EF] hover:underline" rel="noopener">Upstash Privacy Policy</a>)</li>
+                <li>• <strong>Upstash:</strong> Blocking spam and abuse. It briefly processes your IP address when you submit a form or click a sponsored link. (see <a href="https://upstash.com/trust/privacy.pdf" className="text-[#6C39EF] hover:underline" rel="noopener">Upstash Privacy Policy</a>)</li>
                 <li>• <strong>Gmail (Google):</strong> Our team mailbox for inquiries and sponsor emails (see <a href="https://policies.google.com/privacy" className="text-[#6C39EF] hover:underline" rel="noopener">Google Privacy Policy</a>)</li>
-                <li>• <strong>Resend:</strong> Transactional email delivery (confirmation emails, sponsor notifications) (see <a href="https://resend.com/legal/privacy-policy" className="text-[#6C39EF] hover:underline" rel="noopener">Resend Privacy Policy</a>)</li>
+                <li>• <strong>Resend:</strong> Transactional email delivery (sponsor notifications) (see <a href="https://resend.com/legal/privacy-policy" className="text-[#6C39EF] hover:underline" rel="noopener">Resend Privacy Policy</a>)</li>
               </ul>
               <p className="text-sm text-[#5B657B] mt-2">
                 These services may have access to data we store with them. They are bound by their own privacy policies.

@@ -59,7 +59,7 @@ export function ToolsResults({
                     </Link>
                   </h2>
                   {tool.is_sponsored && (
-                    <span className="badge-sponsored text-xs mb-2">Sponsored</span>
+                    <span className="badge-sponsored text-xs mb-2">Sponsored ad</span>
                   )}
 
                   {tool.tagline && (

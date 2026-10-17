@@ -13,7 +13,7 @@ const packages = [
     name: 'Featured Tool',
     price: '$39',
     duration: '30 days',
-    description: 'A "Sponsored ad" card in our homepage sponsored row and at the top of your category page, plus a "Sponsored ad" badge on your tool page.',
+    description: 'A "Sponsored ad" card in our homepage sponsored row, plus a "Sponsored ad" badge on your tool page.',
     package: 'featured-tool',
   },
   {
@@ -88,7 +88,7 @@ export default function AdvertisePage() {
             <div>
               <h2 className="heading-2 mb-6">Founding sponsor pricing</h2>
               <p className="mb-6">
-                We're opening <strong>5 founding sponsor spots</strong> at introductory prices. Founding sponsors can re-book the same package at their founding price up to 3 more times [within 12 months], whenever a slot is free. When we change prices, we'll post the new ones here first.
+                We're opening <strong>5 founding sponsor spots</strong> at introductory prices. Founding sponsors can re-book the same package at their founding price up to 3 more times, whenever a slot is free. When we change prices, we'll post the new ones here first.
               </p>
 
               <div className="space-y-4 not-prose">
@@ -203,8 +203,6 @@ export default function AdvertisePage() {
             <div className="mt-12">
               <p className="text-sm text-[#5B657B]">
                 Last updated: October 17, 2026
-                <br />
-                <strong>Note:</strong> Copy pending legal review.
               </p>
             </div>
           </div>

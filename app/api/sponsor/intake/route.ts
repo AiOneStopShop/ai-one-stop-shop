@@ -6,19 +6,57 @@ import { getSiteContactEmail } from '@/lib/site-config';
 
 const VALID_PACKAGES = ['featured_tool', 'category_spotlight', 'newsletter', 'founding_bundle'];
 
-// Basic SVG sanitization: remove script tags and event handlers
-function sanitizeSVG(svgContent: string): string {
-  // Remove script tags
-  let sanitized = svgContent.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+// Magic byte signatures for image validation
+const IMAGE_SIGNATURES = {
+  png: [0x89, 0x50, 0x4E, 0x47],
+  jpg: [0xFF, 0xD8, 0xFF],
+  webp: [0x52, 0x49, 0x46, 0x46], // RIFF (WebP container)
+};
+
+function validateImageMagicBytes(buffer: ArrayBuffer): boolean {
+  const bytes = new Uint8Array(buffer);
   
-  // Remove on* event handlers
-  sanitized = sanitized.replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '');
-  sanitized = sanitized.replace(/\son\w+\s*=\s*[^\s>]*/gi, '');
+  // Check PNG
+  if (bytes.length >= 4 && 
+      bytes[0] === IMAGE_SIGNATURES.png[0] &&
+      bytes[1] === IMAGE_SIGNATURES.png[1] &&
+      bytes[2] === IMAGE_SIGNATURES.png[2] &&
+      bytes[3] === IMAGE_SIGNATURES.png[3]) {
+    return true;
+  }
   
-  return sanitized;
+  // Check JPEG
+  if (bytes.length >= 3 && 
+      bytes[0] === IMAGE_SIGNATURES.jpg[0] &&
+      bytes[1] === IMAGE_SIGNATURES.jpg[1] &&
+      bytes[2] === IMAGE_SIGNATURES.jpg[2]) {
+    return true;
+  }
+  
+  // Check WebP (RIFF container with WEBP format)
+  if (bytes.length >= 12 && 
+      bytes[0] === IMAGE_SIGNATURES.webp[0] &&
+      bytes[1] === IMAGE_SIGNATURES.webp[1] &&
+      bytes[2] === IMAGE_SIGNATURES.webp[2] &&
+      bytes[3] === IMAGE_SIGNATURES.webp[3] &&
+      bytes[8] === 0x57 && // W
+      bytes[9] === 0x45 && // E
+      bytes[10] === 0x42 && // B
+      bytes[11] === 0x50) { // P
+    return true;
+  }
+  
+  return false;
 }
 
 export async function POST(request: NextRequest) {
+  // Intake is closed - return 410 Gone
+  return NextResponse.json(
+    { error: 'Sponsor intake is currently closed. Please use the request form at /advertise/request.' },
+    { status: 410 }
+  );
+  
+  /* INTAKE FORM CODE - DISABLED WHILE IN REQUEST-ONLY MODE
   try {
     // Rate limit check (5 requests per IP per hour)
     const ip = getClientIP(request);
@@ -95,11 +133,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // URL validation
+    // URL validation - only allow http and https schemes
     try {
-      new URL(toolUrl);
-      new URL(destinationUrl);
-      if (logoUrl) new URL(logoUrl);
+      const toolUrlObj = new URL(toolUrl);
+      const destUrlObj = new URL(destinationUrl);
+      
+      if (toolUrlObj.protocol !== 'http:' && toolUrlObj.protocol !== 'https:') {
+        return NextResponse.json(
+          { error: 'Only http:// and https:// URLs are allowed.' },
+          { status: 400 }
+        );
+      }
+      
+      if (destUrlObj.protocol !== 'http:' && destUrlObj.protocol !== 'https:') {
+        return NextResponse.json(
+          { error: 'Only http:// and https:// URLs are allowed.' },
+          { status: 400 }
+        );
+      }
+      
+      if (logoUrl) {
+        const logoUrlObj = new URL(logoUrl);
+        if (logoUrlObj.protocol !== 'http:' && logoUrlObj.protocol !== 'https:') {
+          return NextResponse.json(
+            { error: 'Only http:// and https:// URLs are allowed.' },
+            { status: 400 }
+          );
+        }
+      }
     } catch {
       return NextResponse.json(
         { error: 'Please enter valid URLs.' },
@@ -118,11 +179,13 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Validate file type
-      const validTypes = ['image/png', 'image/svg+xml'];
-      if (!validTypes.includes(logoFile.type)) {
+      // Read file content for validation
+      const fileContent = await logoFile.arrayBuffer();
+      
+      // Validate file type by magic bytes - reject SVG, only allow PNG/JPG/WebP
+      if (!validateImageMagicBytes(fileContent)) {
         return NextResponse.json(
-          { error: 'Logo must be PNG or SVG.' },
+          { error: 'Logo must be PNG, JPG, or WebP (SVG is not allowed).' },
           { status: 400 }
         );
       }
@@ -131,23 +194,23 @@ export async function POST(request: NextRequest) {
         const supabase = getServiceSupabase();
         const timestamp = Date.now();
         const safeName = toolName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-        const ext = logoFile.type === 'image/svg+xml' ? 'svg' : 'png';
-        const fileName = `${safeName}-${timestamp}.${ext}`;
-
-        let fileContent = await logoFile.arrayBuffer();
-
-        // Sanitize SVG if needed
-        if (logoFile.type === 'image/svg+xml') {
-          const textContent = new TextDecoder().decode(fileContent);
-          const sanitized = sanitizeSVG(textContent);
-          fileContent = new TextEncoder().encode(sanitized).buffer;
+        
+        // Determine extension from magic bytes
+        const bytes = new Uint8Array(fileContent);
+        let ext = 'png';
+        if (bytes[0] === 0xFF && bytes[1] === 0xD8) {
+          ext = 'jpg';
+        } else if (bytes[0] === 0x52 && bytes[1] === 0x49) {
+          ext = 'webp';
         }
+        
+        const fileName = `${safeName}-${timestamp}.${ext}`;
 
         const { data: uploadData, error: uploadError } = await supabase
           .storage
           .from('sponsor-assets')
           .upload(fileName, fileContent, {
-            contentType: logoFile.type,
+            contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
             upsert: false,
           });
 
@@ -215,6 +278,14 @@ export async function POST(request: NextRequest) {
           'founding_bundle': 'Founding Bundle ($99)',
         };
 
+        // HTML-escape helper
+        const escapeHtml = (text: string) => 
+          text.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+
         const emailResponse = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
@@ -225,21 +296,21 @@ export async function POST(request: NextRequest) {
             from: 'aionestopshop25@gmail.com',
             to: [contactEmail],
             reply_to: email,
-            subject: `Sponsor intake form: ${toolName} (${packageLabels[packageType]})`,
+            subject: `Sponsor intake form: ${escapeHtml(toolName)} (${packageLabels[packageType]})`,
             html: `
               <h2>Sponsor Intake Form Submitted</h2>
-              <p><strong>Company:</strong> ${companyName}</p>
-              <p><strong>Contact:</strong> ${contactName}</p>
-              <p><strong>Email:</strong> ${email}</p>
-              <p><strong>Tool:</strong> ${toolName}</p>
-              <p><strong>URL:</strong> <a href="${toolUrl}">${toolUrl}</a></p>
+              <p><strong>Company:</strong> ${escapeHtml(companyName)}</p>
+              <p><strong>Contact:</strong> ${escapeHtml(contactName)}</p>
+              <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+              <p><strong>Tool:</strong> ${escapeHtml(toolName)}</p>
+              <p><strong>URL:</strong> <a href="${escapeHtml(toolUrl)}">${escapeHtml(toolUrl)}</a></p>
               <p><strong>Package:</strong> ${packageLabels[packageType]}</p>
               <p><strong>Preferred start:</strong> ${preferredStartDate}</p>
-              ${categorySlug ? `<p><strong>Category:</strong> ${categorySlug}</p>` : ''}
-              <p><strong>Blurb:</strong><br>${blurb.replace(/\n/g, '<br>')}</p>
-              <p><strong>Destination URL:</strong> <a href="${destinationUrl}">${destinationUrl}</a></p>
-              ${logoUrl ? `<p><strong>Logo URL:</strong> ${logoUrl}</p>` : ''}
-              ${logoFilePath ? `<p><strong>Logo file:</strong> ${logoFilePath}</p>` : ''}
+              ${categorySlug ? `<p><strong>Category:</strong> ${escapeHtml(categorySlug)}</p>` : ''}
+              <p><strong>Blurb:</strong><br>${escapeHtml(blurb).replace(/\n/g, '<br>')}</p>
+              <p><strong>Destination URL:</strong> <a href="${escapeHtml(destinationUrl)}">${escapeHtml(destinationUrl)}</a></p>
+              ${logoUrl ? `<p><strong>Logo URL:</strong> ${escapeHtml(logoUrl)}</p>` : ''}
+              ${logoFilePath ? `<p><strong>Logo file:</strong> ${escapeHtml(logoFilePath)}</p>` : ''}
               <hr>
               <p><small>Submitted at ${new Date().toISOString()}</small></p>
               <p><small>Review in admin: <a href="https://aionestop.shop/admin/sponsors">/admin/sponsors</a></small></p>
@@ -266,4 +337,5 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+  */
 }

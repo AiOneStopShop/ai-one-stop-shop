@@ -97,8 +97,6 @@ export default function DisclosurePage() {
             <div className="mt-12">
               <p className="text-sm text-[#5B657B]">
                 Last updated: October 17, 2026
-                <br />
-                <strong>Note:</strong> Copy pending legal review.
               </p>
             </div>
           </div>

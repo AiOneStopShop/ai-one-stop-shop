@@ -16,7 +16,8 @@ import {
   parsePage,
 } from '@/lib/taxonomy';
 
-export const revalidate = 3600;
+// Revalidate every 5 minutes so category spotlights end on time
+export const revalidate = 300;
 
 function hrefFor(slug: string, page: number, sort: string, free: boolean, price: string) {
   const params = new URLSearchParams();

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
-import { submitToolRateLimit } from '@/lib/rate-limit';
+import { sponsorRequestRateLimit } from '@/lib/rate-limit';
 import { getClientIP } from '@/lib/client-ip';
 import { getSiteContactEmail } from '@/lib/site-config';
 
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limit check (5 requests per IP per 15 minutes)
     const ip = getClientIP(request);
-    const { success } = await submitToolRateLimit.limit(ip);
+    const { success } = await sponsorRequestRateLimit.limit(ip);
 
     if (!success) {
       return NextResponse.json(
@@ -62,9 +62,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // URL validation
+    // URL validation - only allow http and https schemes
     try {
-      new URL(body.toolUrl);
+      const url = new URL(body.toolUrl);
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        return NextResponse.json(
+          { error: 'Only http:// and https:// URLs are allowed.' },
+          { status: 400 }
+        );
+      }
     } catch {
       return NextResponse.json(
         { error: 'Please enter a valid URL for your tool website.' },
@@ -85,8 +91,8 @@ export async function POST(request: NextRequest) {
         package: body.package === 'founding-bundle' ? 'founding_bundle' : body.package.replace('-', '_'),
         blurb: body.message ? body.message.trim().substring(0, 500) : null,
         status: 'pending_review',
-        agreed_to_terms: true,
-        agreed_to_rights: true,
+        agreed_to_terms: false,
+        agreed_to_rights: false,
       })
       .select()
       .single();
@@ -112,6 +118,14 @@ export async function POST(request: NextRequest) {
           'founding-bundle': 'Founding Bundle ($99)',
         };
 
+        // HTML-escape helper
+        const escapeHtml = (text: string) => 
+          text.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#039;');
+
         const emailResponse = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
@@ -122,16 +136,16 @@ export async function POST(request: NextRequest) {
             from: 'aionestopshop25@gmail.com',
             to: [contactEmail],
             reply_to: body.email,
-            subject: `New sponsor request: ${body.toolName} (${packageLabels[body.package] || body.package})`,
+            subject: `New sponsor request: ${escapeHtml(body.toolName)} (${packageLabels[body.package] || body.package})`,
             html: `
               <h2>New Sponsor Request</h2>
-              <p><strong>Company:</strong> ${body.companyName}</p>
-              <p><strong>Contact:</strong> ${body.contactName}</p>
-              <p><strong>Email:</strong> ${body.email}</p>
-              <p><strong>Tool:</strong> ${body.toolName}</p>
-              <p><strong>URL:</strong> <a href="${body.toolUrl}">${body.toolUrl}</a></p>
+              <p><strong>Company:</strong> ${escapeHtml(body.companyName)}</p>
+              <p><strong>Contact:</strong> ${escapeHtml(body.contactName)}</p>
+              <p><strong>Email:</strong> ${escapeHtml(body.email)}</p>
+              <p><strong>Tool:</strong> ${escapeHtml(body.toolName)}</p>
+              <p><strong>URL:</strong> <a href="${escapeHtml(body.toolUrl)}">${escapeHtml(body.toolUrl)}</a></p>
               <p><strong>Package:</strong> ${packageLabels[body.package] || body.package}</p>
-              ${body.message ? `<p><strong>Message:</strong><br>${body.message.replace(/\n/g, '<br>')}</p>` : ''}
+              ${body.message ? `<p><strong>Message:</strong><br>${escapeHtml(body.message).replace(/\n/g, '<br>')}</p>` : ''}
               <hr>
               <p><small>Submitted at ${new Date().toISOString()}</small></p>
               <p><small>Review in admin: <a href="https://aionestop.shop/admin/sponsors">/admin/sponsors</a></small></p>

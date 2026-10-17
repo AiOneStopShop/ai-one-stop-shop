@@ -13,7 +13,7 @@ export function getSiteContactEmail(): string | null {
 }
 
 export function getOperatorLegalName(): string {
-  return (process.env.NEXT_PUBLIC_OPERATOR_LEGAL_NAME || '').trim() || '[LLC NAME]';
+  return (process.env.NEXT_PUBLIC_OPERATOR_LEGAL_NAME || '').trim() || 'oneTomorrow';
 }
 
 export function getBrandUrl(): string | null {

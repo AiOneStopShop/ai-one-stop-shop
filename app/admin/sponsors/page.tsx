@@ -1,50 +1,49 @@
+import { createServerClient } from '@supabase/ssr';
 import { redirect } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
 import { getServiceSupabase } from '@/lib/supabase';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { SponsorIntakeList } from './SponsorIntakeList';
 
-async function getAdminUser() {
+async function getServerSupabase() {
   const cookieStore = await cookies();
-  const authCookie = cookieStore.get('sb-access-token');
   
-  if (!authCookie) {
-    return null;
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
+}
+
+async function checkAuth() {
+  const supabase = await getServerSupabase();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  
+  if (error || !user) {
+    redirect('/admin/login?next=/admin/sponsors');
   }
 
-  try {
-    const serviceSupabase = getServiceSupabase();
-    const { data: { user } } = await serviceSupabase.auth.getUser(authCookie.value);
-    
-    if (!user) {
-      return null;
-    }
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
 
-    // Check if user has admin role
-    const { data: profile } = await serviceSupabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role !== 'admin') {
-      return null;
-    }
-
-    return user;
-  } catch (err) {
-    console.error('Admin auth check error:', err);
-    return null;
+  if (profile?.role !== 'admin') {
+    redirect('/admin/login?next=/admin/sponsors');
   }
+
+  return user;
 }
 
 export default async function AdminSponsorsPage() {
-  const user = await getAdminUser();
-
-  if (!user) {
-    redirect('/admin/login?next=/admin/sponsors');
-  }
+  await checkAuth();
 
   // Fetch sponsor intake records
   const serviceSupabase = getServiceSupabase();

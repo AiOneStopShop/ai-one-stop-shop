@@ -8,6 +8,9 @@ import { PERSONAS } from '@/lib/personas';
 import { PRICE_CHECKED_LABEL } from '@/lib/site-dates';
 import { HomeSponsoredRow } from '@/components/HomeSponsoredRow';
 
+// Revalidate every 60 seconds so sponsored placements appear/disappear on time
+export const revalidate = 60;
+
 async function getToolsCount(): Promise<number> {
   const { count } = await supabase
     .from('tools')

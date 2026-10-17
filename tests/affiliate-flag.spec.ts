@@ -70,7 +70,8 @@ test.describe('Affiliate flag and partners page', () => {
     await expect(page.getByRole('heading', { name: /3\. Newsletter sponsorships/i })).toBeVisible();
     
     // Should have "The rule" section
-    await expect(page.getByText('Payments never change how we rank tools')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /the rule/i })).toBeVisible();
+    await expect(page.getByText('Payments never change how we rank tools').first()).toBeVisible();
     
     // Should have call-to-action buttons
     await expect(page.getByRole('link', { name: /request a partnership/i })).toBeVisible();
@@ -179,7 +180,7 @@ test.describe('Affiliate flag and partners page', () => {
       }
       
       await expect(affiliateSection).toBeVisible();
-      await expect(page.getByText('Paid link')).toBeVisible();
+      await expect(page.getByText('Paid link', { exact: false }).first()).toBeVisible();
     });
 
     test('llms.txt mentions paid links', async ({ page }) => {
@@ -198,8 +199,8 @@ test.describe('Affiliate flag and partners page', () => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto('/tools', { waitUntil: 'domcontentloaded' });
       
-      // Find any paid link
-      const paidLabel = page.locator('text="Paid link: we may earn a commission"').first();
+      // Find any paid link label
+      const paidLabel = page.locator('p:has-text("Paid link: we may earn a commission")').first();
       
       // Skip if no paid links
       if (await paidLabel.count() === 0) {

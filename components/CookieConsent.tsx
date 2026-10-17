@@ -69,7 +69,7 @@ export function CookieConsent() {
       <div className="container-max py-2 sm:py-2.5">
         <div className="flex flex-row items-center justify-between gap-2 sm:gap-4">
           <p className="text-xs sm:text-sm text-[#171C26] leading-snug min-w-0">
-            <strong>We keep it simple.</strong> We don't use tracking or ad cookies. Your browser just remembers your compare list and this choice. Some links are paid links, and partner sites may set their own cookies after you click.{' '}
+            <strong>We keep it simple.</strong> We don't use tracking or ad cookies. Your browser just remembers your compare list and this choice. Some links may be paid links, and any site you visit from here may set its own cookies after you click.{' '}
             <Link href="/privacy#cookies" className="text-[#6C39EF] underline hover:no-underline focus-ring rounded">
               Privacy
             </Link>

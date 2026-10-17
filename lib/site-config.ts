@@ -17,6 +17,8 @@ export function getOperatorLegalName(): string {
 }
 
 export function isAffiliateLive(): boolean {
+  // Flag must be explicitly set to 'true' to enable
+  // When flag is on, it should match the data (see build-time check in next.config.js)
   return process.env.NEXT_PUBLIC_AFFILIATE_LIVE === 'true';
 }
 

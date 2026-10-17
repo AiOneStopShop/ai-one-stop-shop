@@ -72,6 +72,8 @@ export default async function ComparePage(props: {
     getActiveAffiliateGoSlugs(),
   ]);
 
+  const hasPaidLinks = tools.some((t: any) => toolHasAffiliate(affiliates, t.slug));
+
   if (tools.length < 2) {
     return (
       <div className="scroll-mt-16">
@@ -113,6 +115,11 @@ export default async function ComparePage(props: {
           </div>
 
           {/* Comparison Table */}
+          {hasPaidLinks && (
+            <p className="text-sm font-semibold text-[#C62810] mb-4 text-center">
+              Paid link: Some tools below have paid links that may earn us a commission.
+            </p>
+          )}
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <caption className="sr-only">
@@ -186,7 +193,12 @@ export default async function ComparePage(props: {
                   {tools.map((tool: any) => {
                     const paid = toolHasAffiliate(affiliates, tool.slug);
                     return (
-                      <td key={tool.id} className="p-4 border border-[#E5E1DC]">
+                      <td key={tool.id} className="p-4 border border-[#E5E1DC] align-top">
+                        {paid ? (
+                          <p className="text-sm font-semibold text-[#C62810] mb-2">
+                            Paid link: we may earn a commission if you sign up.
+                          </p>
+                        ) : null}
                         <a
                           href={visitHref(affiliates, tool.slug)}
                           rel={paid ? 'sponsored nofollow noopener' : 'noopener'}
@@ -195,12 +207,6 @@ export default async function ComparePage(props: {
                           Visit {tool.name}
                           {paid ? <span className="sr-only"> (paid link)</span> : null}
                         </a>
-                        {paid ? (
-                          <p className="text-xs text-[#5B657B] mt-1">
-                            <span className="font-medium text-[#C62810]">Paid link:</span>{' '}
-                            We may earn a commission if you sign up.
-                          </p>
-                        ) : null}
                       </td>
                     );
                   })}

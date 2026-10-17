@@ -24,7 +24,13 @@ const getToolRecommendations = (situation: string, budget: string, monthlyLimit:
 
   // Apply budget filter
   if (budget === 'free') {
-    tools = tools.filter((tool) => tool.priceRange === 'free' || tool.priceRange === 'freemium')
+    // Try to find free/freemium tools first
+    const freeTools = tools.filter((tool) => tool.priceRange === 'free' || tool.priceRange === 'freemium')
+    if (freeTools.length > 0) {
+      tools = freeTools
+    }
+    // If no free tools available, show the top tools anyway
+    // The UI will indicate they're paid
   } else if (budget === 'limit') {
     // Calculate total within budget
     const filtered: typeof tools = []

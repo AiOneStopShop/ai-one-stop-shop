@@ -16,12 +16,14 @@ interface ToolRecommendationProps {
 }
 
 export default function ToolRecommendation({ tools, selectedBudget, show }: ToolRecommendationProps) {
-  if (!show || tools.length === 0) return null
+  if (!show) return null
 
   const getHeading = () => {
     switch (selectedBudget) {
       case 'free':
-        return 'Free places to start'
+        return tools.length > 0 && tools.some(t => !t.hasFree) 
+          ? 'Good places to start (paid options)'
+          : 'Free places to start'
       case 'help':
         return 'Two good places to start'
       default:
@@ -30,6 +32,9 @@ export default function ToolRecommendation({ tools, selectedBudget, show }: Tool
   }
 
   const getDescription = () => {
+    if (selectedBudget === 'free' && tools.length > 0 && tools.some(t => !t.hasFree)) {
+      return 'These tools offer the most value for beginners. Many have free trials you can start with.'
+    }
     if (selectedBudget === 'help') {
       return 'Try the first one for a week on a real task. If it saves you time, keep it.'
     }

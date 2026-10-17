@@ -29,19 +29,25 @@ export default function DisclosurePage() {
 
             <div className="space-y-6">
               <div>
-                <h3 className="heading-3 mb-3">1. Affiliate links</h3>
+                <h3 className="heading-3 mb-3">1. Sponsorships (our main revenue)</h3>
+                <p>
+                  Tool makers may pay for a labeled spot in our sponsored row, at the top of a category page, or in our newsletter. Every sponsored placement is clearly marked <strong>Sponsored</strong> and kept separate from our ranked picks.
+                </p>
+                <p>
+                  <strong>Money buys a labeled spot, never our opinion.</strong> Sponsors can't buy a higher rank, a better write-up, inclusion in &quot;best of&quot; lists, or the removal of honest criticism. Sponsored spots are always labeled and kept apart from our picks.
+                </p>
+                <p>
+                  Learn more: <Link href="/advertise" className="text-[#6C39EF] hover:underline focus-ring rounded">Sponsor AI One Stop Shop</Link>
+                </p>
+              </div>
+
+              <div>
+                <h3 className="heading-3 mb-3">2. Affiliate links</h3>
                 <p>
                   Some &quot;Visit&quot; buttons are affiliate links. If you click one and later buy or subscribe, the tool maker may pay us a commission. You pay the same price either way.
                 </p>
                 <p>
                   Every affiliate link is marked <strong className="text-[#C62810]">&quot;Paid link&quot;</strong> right next to it.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="heading-3 mb-3">2. Sponsored spots</h3>
-                <p>
-                  Tool makers may pay to be shown in a spot marked <strong className="badge-sponsored">Sponsored</strong>. Sponsored spots are always labeled, kept apart from our ranked picks, and never dressed up as a review.
                 </p>
               </div>
 
@@ -101,7 +107,9 @@ export default function DisclosurePage() {
 
             <div className="mt-12">
               <p className="text-sm text-[#5B657B]">
-                Last updated: October 10, 2026
+                Last updated: October 17, 2026
+                <br />
+                <strong>Note:</strong> Copy pending legal review.
               </p>
             </div>
           </div>

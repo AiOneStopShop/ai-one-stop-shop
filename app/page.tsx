@@ -6,6 +6,7 @@ import { fallbackTools } from '@/lib/fallback-data';
 import { generateOrganizationSchema, generateWebSiteSchema, safeJsonLd } from '@/lib/json-ld';
 import { PERSONAS } from '@/lib/personas';
 import { PRICE_CHECKED_LABEL } from '@/lib/site-dates';
+import { HomeSponsoredRow } from '@/components/HomeSponsoredRow';
 
 async function getToolsCount(): Promise<number> {
   const { count } = await supabase
@@ -213,6 +214,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Sponsored Row */}
+      <HomeSponsoredRow />
 
       {/* CTA Section */}
       <section className="section-spacing bg-white">

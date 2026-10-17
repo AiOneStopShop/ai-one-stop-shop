@@ -2,9 +2,11 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { CatalogPager } from '@/components/CatalogPager';
 import { PaidVisitLink } from '@/components/PaidVisitLink';
+import { CategorySpotlight } from '@/components/CategorySpotlight';
 import { getActiveAffiliateGoSlugs, toolHasAffiliate } from '@/lib/affiliate-links';
 import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { getCategoryBySlug, listPublishedTools, searchPublishedCatalog } from '@/lib/search-catalog';
+import { getCategorySpotlight } from '@/lib/sponsor-placements';
 import { applyFallbackTaxonomy, taxonomyFallbackCategories } from '@/lib/taxonomy-fallback';
 import { fallbackTools } from '@/lib/fallback-data';
 import {
@@ -57,6 +59,9 @@ export default async function CategoryPage(props: {
 
   const category = await getCategoryBySlug(slug);
   if (!category) notFound();
+
+  // Fetch category spotlight if one exists
+  const spotlight = await getCategorySpotlight(category.id);
 
   const page = parsePage(searchParams.page);
   const sort = parseCategorySort(searchParams.sort);
@@ -147,6 +152,9 @@ export default async function CategoryPage(props: {
                 {listed.total} {listed.total === 1 ? 'tool' : 'tools'}
               </p>
             </div>
+
+            {/* Category Spotlight */}
+            {spotlight && <CategorySpotlight placement={spotlight} />}
 
             <form method="get" className="card mb-8 grid gap-4 md:grid-cols-3">
               <div>

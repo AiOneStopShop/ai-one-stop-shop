@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import type { Tool, Category } from '@/types/database';
 import { generateToolSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
+import { isToolSponsored } from '@/lib/sponsor-placements';
+import { SponsoredLabel } from '@/components/SponsoredLabel';
 import { ExternalLink } from 'lucide-react';
 
 async function getTool(slug: string) {
@@ -61,6 +63,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
   const categories = (tool.tool_categories as any[])?.map(tc => tc.categories).filter(Boolean) || [];
   const primaryCategory = (tool.tool_categories as any[])?.find(tc => tc.is_primary)?.categories;
   const affiliateSlug = await getAffiliateLink(tool.id);
+  const isSponsored = await isToolSponsored(tool.id);
 
   const breadcrumbs = generateBreadcrumbSchema([
     { name: 'Home', url: '/' },
@@ -112,10 +115,8 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
               {/* Main Content */}
               <div className="lg:col-span-2">
                 <div className="mb-6">
-                  {tool.is_sponsored && (
-                    <span className="badge-sponsored mb-3 inline-block">
-                      Sponsored
-                    </span>
+                  {isSponsored && (
+                    <SponsoredLabel className="mb-3" />
                   )}
                   <h1 className="heading-1 mb-3">{tool.name}</h1>
                   {tool.tagline && (

@@ -221,6 +221,16 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                       </p>
                     )}
 
+                    {/* Paid link disclosure - must appear immediately ABOVE the Visit button */}
+                    {isAffiliate && (
+                      <p id="paid-note" className="text-sm text-[#C62810] mb-2">
+                        Paid link: we may earn a commission.{' '}
+                        <Link href="/disclosure#paid-links" className="underline hover:text-[#A02010]">
+                          How we make money
+                        </Link>
+                      </p>
+                    )}
+
                     {/* Visit Button */}
                     <a
                       href={visitUrl}

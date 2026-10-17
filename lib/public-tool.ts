@@ -32,6 +32,11 @@ function primaryCategory(tool: any): { slug: string; name: string } | null {
 
 export function toPublicTool(tool: any, siteUrl = getSiteUrl(), affiliateGoSlugs: Set<string> = new Set()): PublicTool {
   const isPaid = affiliateGoSlugs.has(tool.slug);
+  // When tool has an affiliate link, go_url points to the signed affiliate redirect, not the direct website
+  const goUrl = isPaid 
+    ? `${siteUrl.replace(/\/$/, '')}/go/${tool.slug}` 
+    : tool.website_url ?? null;
+  
   return {
     name: tool.name,
     slug: tool.slug,
@@ -43,7 +48,7 @@ export function toPublicTool(tool: any, siteUrl = getSiteUrl(), affiliateGoSlugs
     pricing_summary: tool.pricing_summary ?? null,
     website_url: tool.website_url ?? null,
     logo_url: tool.logo_url ?? null,
-    go_url: `${siteUrl.replace(/\/$/, '')}/go/${tool.slug}`,
+    go_url: goUrl,
     paid_link: isPaid,
     disclosure: isPaid ? "Paid link: AI One Stop Shop may earn a commission if you sign up." : null,
     updated_at: tool.updated_at ?? null,

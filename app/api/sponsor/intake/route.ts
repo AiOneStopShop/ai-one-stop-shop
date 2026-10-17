@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { submitToolRateLimit } from '@/lib/rate-limit';
-import { getClientIp } from '@/lib/client-ip';
+import { getClientIP } from '@/lib/client-ip';
 import { getSiteContactEmail } from '@/lib/site-config';
 
 const VALID_PACKAGES = ['featured_tool', 'category_spotlight', 'newsletter', 'founding_bundle'];
@@ -21,7 +21,7 @@ function sanitizeSVG(svgContent: string): string {
 export async function POST(request: NextRequest) {
   try {
     // Rate limit check (5 requests per IP per hour)
-    const ip = getClientIp(request);
+    const ip = getClientIP(request);
     const { success } = await submitToolRateLimit.limit(ip);
 
     if (!success) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { submitToolRateLimit } from '@/lib/rate-limit';
-import { getClientIp } from '@/lib/client-ip';
+import { getClientIP } from '@/lib/client-ip';
 import { getSiteContactEmail } from '@/lib/site-config';
 
 interface RequestBody {
@@ -20,7 +20,7 @@ const VALID_PACKAGES = ['featured-tool', 'category-spotlight', 'newsletter', 'fo
 export async function POST(request: NextRequest) {
   try {
     // Rate limit check (5 requests per IP per 15 minutes)
-    const ip = getClientIp(request);
+    const ip = getClientIP(request);
     const { success } = await submitToolRateLimit.limit(ip);
 
     if (!success) {

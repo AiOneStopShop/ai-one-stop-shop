@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { affiliateRedirectRateLimit } from '@/lib/rate-limit';
-import { getClientIp } from '@/lib/client-ip';
+import { getClientIP } from '@/lib/client-ip';
 
 /**
  * Sponsor link redirect with click tracking.
@@ -18,7 +18,7 @@ export async function GET(
 
   try {
     // Rate limit check
-    const ip = getClientIp(request);
+    const ip = getClientIP(request);
     const { success } = await affiliateRedirectRateLimit.limit(ip);
 
     if (!success) {

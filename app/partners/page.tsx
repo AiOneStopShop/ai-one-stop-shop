@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ContactEmailText } from '@/components/ContactEmail';
-import { getSiteContactEmail } from '@/lib/site-config';
+import { getSiteContactEmail, isAffiliateLive } from '@/lib/site-config';
 
 export const metadata = {
   title: 'Partner with AI One Stop Shop',
@@ -23,7 +23,7 @@ export default function PartnersPage() {
             <div>
               <h2 className="heading-2 mb-4">Who we are</h2>
               <p>
-                <strong>We are oneTomorrow.</strong> We run AI One Stop Shop, a curated directory of AI tools for people who want technology to give them more time for the work only they can do. We check each tool's pricing and features, write down what we find in plain English, and put the tool we'd actually suggest first.
+                <strong>We are oneTomorrow.</strong> We run AI One Stop Shop, a curated directory of AI tools for people who want technology to give them more time for the work only they can do. We gather each tool's pricing and features from its own site, explain them in plain English, and keep improving our checks over time. Always confirm current pricing on the tool's site.
               </p>
               <p>
                 Our readers trust us because we're upfront: <strong>money never changes our ranking.</strong> Tools that pay us are clearly labeled, and they stay separate from our editorial picks.
@@ -36,7 +36,7 @@ export default function PartnersPage() {
                 Payments never change how we rank tools.
               </p>
               <p className="text-lg">
-                If you pay for a sponsored spot, you get a clearly labeled placement kept separate from our picks. If we link to you with a paid referral link, it's marked "Paid link" right next to it. Your tool's position in our directory is decided the same way as every other tool's—by how well it fits the category and how we'd explain it to a friend.
+                If you pay for a sponsored spot, you get a clearly labeled placement kept separate from our picks. If we link to you with a paid referral link, it's marked "Paid link" right next to it. Your tool's position in our directory is decided the same way as every other tool's, using our <Link href="/how-we-rank" className="text-white underline hover:no-underline">published ranking approach</Link>. Whether you pay us plays no part.
               </p>
             </div>
 
@@ -50,11 +50,17 @@ export default function PartnersPage() {
                     If you have a partner or affiliate program, we may add a referral link to your tool's page. Every paid link is clearly marked <strong className="text-[#C62810]">"Paid link"</strong> right next to it, and we use <code>rel="sponsored nofollow noopener"</code> so search engines know it's a commercial relationship.
                   </p>
                   <p className="mb-4">
-                    We don't promise placements or coverage. If we add your tool to our directory, it's because it fits our editorial standards. If we link to you with a referral code, it's because your program terms work for us and our readers.
+                    We don't promise placements, coverage, reviews or a better rank. A commission pays for referrals, not for a review or a listing, and joining your program won't change what we write. If we add a referral link, it's because your program terms work for us and our readers.
                   </p>
-                  <p className="text-sm text-[#5B657B]">
-                    <strong>Note:</strong> No paid links are active yet. We review each program before we add any referral code.
-                  </p>
+                  {!isAffiliateLive() ? (
+                    <p className="text-sm text-[#5B657B]">
+                      <strong>Note:</strong> No paid links are active yet. We review each program before we add any referral code.
+                    </p>
+                  ) : (
+                    <p className="text-sm text-[#5B657B]">
+                      <strong>Note:</strong> Some listings now have paid links. Each one is marked "Paid link" next to it.
+                    </p>
+                  )}
                 </div>
 
                 <div className="card">
@@ -73,7 +79,7 @@ export default function PartnersPage() {
                 <div className="card">
                   <h3 className="heading-3 mb-3">3. Newsletter sponsorships</h3>
                   <p className="mb-4">
-                    Once our newsletter launches, tool makers can sponsor an issue with a clearly labeled block. We keep the list small and curated, so every reader sees tools that matter.
+                    Once our newsletter launches, tool makers can sponsor an issue with a clearly labeled block.
                   </p>
                   <p className="text-sm text-[#5B657B] italic">
                     Opening once the list launches. See{' '}

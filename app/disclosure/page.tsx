@@ -47,7 +47,7 @@ export default function DisclosurePage() {
                 <div>
                   <h3 className="heading-3 mb-3">2. Paid links (affiliate programs)</h3>
                   <p>
-                    Some &quot;Visit&quot; buttons are affiliate links. If you click one and later buy or subscribe, the tool maker may pay us a commission. You pay the same price either way.
+                    Some &quot;Visit&quot; buttons are affiliate links. If you click one and later buy or subscribe, the tool maker may pay us a commission. Using a paid link doesn't add a fee from us. Prices are set by the tool maker, and offers can differ by link, so check the price before you buy.
                   </p>
                   <p>
                     Every affiliate link is marked <strong className="text-[#C62810]">&quot;Paid link&quot;</strong> right next to it, and we use <code>rel="sponsored nofollow noopener"</code> so search engines know it's a commercial relationship.

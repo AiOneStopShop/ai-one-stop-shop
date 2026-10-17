@@ -53,7 +53,7 @@ export default function PricingPage() {
               <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6">
                 <h3 className="heading-3 mb-3">How we make money</h3>
                 <p>
-                  Some links are affiliate links. If you sign up through one, we may earn a commission at no extra cost to you. We also have a separate section for our own products (like ApproveGate).
+                  Some links may be paid (affiliate) links. If you sign up through one, we may earn a commission. We don't add any fee. We also have a separate section for our own products (like ApproveGate).
                 </p>
                 <p className="mt-3">
                   <strong>Money never changes our ranking.</strong> A tool doesn't move up because it pays us.

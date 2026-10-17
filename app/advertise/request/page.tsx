@@ -7,11 +7,20 @@ export const metadata: Metadata = {
   description: 'Reach a quality audience of builders, founders, and tech buyers with sponsored placements on AI One Stop Shop.',
 };
 
+<<<<<<< HEAD
 const VALID_PACKAGES = [
   'featured-tool',
   'category-spotlight',
   'newsletter',
   'founding-bundle',
+=======
+const packages = [
+  { value: 'featured-tool', label: 'Featured Tool ($39)', price: '$39' },
+  { value: 'category-spotlight', label: 'Category Spotlight ($69)', price: '$69' },
+  { value: 'newsletter', label: 'Newsletter Sponsor ($29)', price: '$29', disabled: true },
+  { value: 'founding-bundle', label: 'Founding Bundle ($99)', price: '$99' },
+  { value: 'partner-program', label: 'Affiliate / partner program (free to discuss)', price: 'Free' },
+>>>>>>> afb0e9b (Apply Lexi legal review fixes A1-A12 and B1-B7 for PR #8)
 ];
 
 export default async function AdvertiseRequestPage({

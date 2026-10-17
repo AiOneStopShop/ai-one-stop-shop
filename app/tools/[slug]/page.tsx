@@ -241,18 +241,6 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     >
                       Compare with...
                     </Link>
-
-                    {isAffiliate && (
-                      <p id="paid-note" className="text-xs text-[#5B657B] mt-3 flex items-start gap-1">
-                        <span className="font-medium text-[#C62810]">Paid link:</span>
-                        <span>
-                          We may earn a commission if you sign up. It never changes our ranking.{' '}
-                          <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
-                            How we make money
-                          </Link>
-                        </span>
-                      </p>
-                    )}
                   </div>
 
                   {/* Last Verified */}

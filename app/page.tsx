@@ -1,79 +1,132 @@
 'use client'
 
-import { Suspense, useState } from 'react'
-import { motion } from 'framer-motion'
-import { SparklesIcon } from '@heroicons/react/24/outline'
-import Header from '@/components/Header'
-import Hero from '@/components/Hero'
-import PersonaGuide from '@/components/PersonaGuide'
-import FeaturedTools from '@/components/FeaturedTools'
-import FeaturedAgents from '@/components/FeaturedAgents'
-import Categories from '@/components/Categories'
-import KnowledgeHub from '@/components/KnowledgeHub'
-import Community from '@/components/Community'
-import Newsletter from '@/components/Newsletter'
+import { useState } from 'react'
+import OptionDHeader from '@/components/OptionDHeader'
+import OptionDHero from '@/components/OptionDHero'
+import SituationPicker from '@/components/SituationPicker'
+import BudgetPicker from '@/components/BudgetPicker'
+import ToolRecommendation from '@/components/ToolRecommendation'
+import HonestySection from '@/components/HonestySection'
 import Footer from '@/components/Footer'
-import Loading from '@/components/Loading'
+import aiTools from '@/data/aiTools'
+
+// Tool recommendation logic based on situation and budget
+const getToolRecommendations = (situation: string, budget: string, monthlyLimit: number) => {
+  // Define situation-based tool mappings
+  const situationMap: Record<string, number[]> = {
+    work: [18, 2, 10], // Grammarly, ChatGPT Plus, Canva AI
+    business: [10, 19, 14, 18], // Canva AI, Notion AI, Descript, Grammarly
+    everyday: [18, 19, 2], // Grammarly, Notion AI, ChatGPT Plus
+  }
+
+  const toolIds = situationMap[situation] || situationMap.everyday
+  let tools = aiTools.filter((tool) => toolIds.includes(tool.id))
+
+  // Apply budget filter
+  if (budget === 'free') {
+    // Try to find free/freemium tools first
+    const freeTools = tools.filter((tool) => tool.priceRange === 'free' || tool.priceRange === 'freemium')
+    if (freeTools.length > 0) {
+      tools = freeTools
+    }
+    // If no free tools available, show the top tools anyway
+    // The UI will indicate they're paid
+  } else if (budget === 'limit') {
+    // Calculate total within budget
+    const filtered: typeof tools = []
+    let total = 0
+    for (const tool of tools) {
+      const price = extractPrice(tool.price)
+      if (total + price <= monthlyLimit) {
+        filtered.push(tool)
+        total += price
+      }
+    }
+    tools = filtered
+  } else if (budget === 'help') {
+    // Show top 2
+    tools = tools.slice(0, 2)
+  }
+
+  // Limit to 3 tools max
+  return tools.slice(0, 3).map((tool) => ({
+    name: tool.name,
+    description: tool.description,
+    price: tool.price,
+    hasFree: tool.priceRange === 'free' || tool.priceRange === 'freemium',
+  }))
+}
+
+// Extract numeric price from string like "$20/month"
+const extractPrice = (priceStr: string): number => {
+  const match = priceStr.match(/\$(\d+)/)
+  return match ? parseInt(match[1], 10) : 0
+}
 
 export default function Home() {
-  const [selectedPersona, setSelectedPersona] = useState<any>(null)
+  const [selectedSituation, setSelectedSituation] = useState('work')
+  const [selectedBudget, setSelectedBudget] = useState('free')
+  const [monthlyLimit, setMonthlyLimit] = useState(30)
+  const [showResults, setShowResults] = useState(false)
+
+  const recommendations = getToolRecommendations(selectedSituation, selectedBudget, monthlyLimit)
+
+  const handleShowResults = () => {
+    setShowResults(true)
+    // Smooth scroll to results
+    setTimeout(() => {
+      const resultsElement = document.getElementById('results')
+      if (resultsElement) {
+        resultsElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }, 100)
+  }
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen">
-        <Hero />
+      <a 
+        href="#main" 
+        className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-2 focus:z-50 focus:bg-green focus:text-white focus:px-4 focus:py-2 focus:rounded-lg"
+      >
+        Skip to main content
+      </a>
+      
+      <OptionDHeader />
+      
+      <main id="main">
+        <OptionDHero />
         
-        <PersonaGuide 
-          onPersonaSelect={setSelectedPersona}
-          selectedPersona={selectedPersona}
+        <SituationPicker
+          selectedSituation={selectedSituation}
+          onSituationChange={(situation) => {
+            setSelectedSituation(situation)
+            setShowResults(false)
+          }}
         />
         
-        <Suspense fallback={<Loading />}>
-          <FeaturedTools />
-        </Suspense>
+        <BudgetPicker
+          selectedBudget={selectedBudget}
+          monthlyLimit={monthlyLimit}
+          onBudgetChange={(budget) => {
+            setSelectedBudget(budget)
+            setShowResults(false)
+          }}
+          onLimitChange={setMonthlyLimit}
+          onShowResults={handleShowResults}
+        />
         
-        <Suspense fallback={<Loading />}>
-          <FeaturedAgents />
-        </Suspense>
+        <div id="results">
+          <ToolRecommendation
+            tools={recommendations}
+            selectedBudget={selectedBudget}
+            show={showResults}
+          />
+        </div>
         
-        {/* Toolkit Builder CTA */}
-        <section className="py-20 bg-gradient-to-r from-brand-purple to-brand-blue">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Build Your Perfect AI Toolkit
-              </h2>
-              <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-                Choose your budget tier and let us help you create the ideal combination of AI tools and agents for your specific needs
-              </p>
-              <a
-                href="/toolkit"
-                className="bg-white text-brand-purple font-medium py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors inline-flex items-center"
-              >
-                <SparklesIcon className="w-5 h-5 mr-2" />
-                Start Building
-              </a>
-            </motion.div>
-          </div>
-        </section>
-        
-        <Categories />
-        
-        <Suspense fallback={<Loading />}>
-          <KnowledgeHub />
-        </Suspense>
-        
-        <Community />
-        <Newsletter />
-        <Footer />
+        <HonestySection />
       </main>
+      
+      <Footer />
     </>
   )
 }
-

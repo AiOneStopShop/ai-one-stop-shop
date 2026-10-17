@@ -4,14 +4,27 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap');
 
 @layer base {
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Source Sans 3', 'Inter', system-ui, sans-serif;
   }
   
   body {
-    @apply bg-white text-gray-900 dark:bg-dark-900 dark:text-white;
+    @apply bg-cream text-ink antialiased;
+  }
+
+  ::selection {
+    @apply bg-green/20 text-green;
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-green-light rounded-md;
   }
 }
 

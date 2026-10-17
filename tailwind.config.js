@@ -15,6 +15,23 @@ module.exports = {
           silver: '#E6E6E6',    // AI Silver
           orange: '#FF6B2B',    // Smart Orange
         },
+        // Option D Colors (Everyday Guide)
+        cream: {
+          DEFAULT: '#FBF4E6',
+          dark: '#F4EAD6',
+        },
+        green: {
+          DEFAULT: '#1E3B2C',
+          light: '#2E5A43',
+        },
+        ink: '#22201B',
+        soft: '#5A5348',
+        line: '#E2D6BF',
+        cardBg: '#FFFDF8',
+        orangeAccent: {
+          DEFAULT: '#E2562B',
+          dark: '#B8360F',
+        },
         primary: {
           50: '#f0f4ff',
           100: '#e0e9ff',
@@ -79,6 +96,8 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
+        serif: ['Fraunces', 'Georgia', 'serif'],
+        body: ['Source Sans 3', 'system-ui', 'sans-serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

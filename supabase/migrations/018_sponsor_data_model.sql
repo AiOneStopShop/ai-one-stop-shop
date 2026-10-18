@@ -142,36 +142,44 @@ GRANT SELECT ON public_live_placements TO authenticated;
 -- All direct table access requires service role
 
 -- Sponsors: service role only
+DROP POLICY IF EXISTS sponsors_service_only ON sponsors;
 CREATE POLICY sponsors_service_only ON sponsors
   FOR ALL
   USING (auth.role() = 'service_role');
 
 -- Sponsor placements: service role only  
+DROP POLICY IF EXISTS sponsor_placements_service_only ON sponsor_placements;
 CREATE POLICY sponsor_placements_service_only ON sponsor_placements
   FOR ALL
   USING (auth.role() = 'service_role');
 
 -- Sponsor intake: service role only
+DROP POLICY IF EXISTS sponsor_intake_service_only ON sponsor_intake;
 CREATE POLICY sponsor_intake_service_only ON sponsor_intake
   FOR ALL
   USING (auth.role() = 'service_role');
 
 -- Placement events: service role only
+DROP POLICY IF EXISTS placement_events_service_only ON placement_events;
 CREATE POLICY placement_events_service_only ON placement_events
   FOR ALL
   USING (auth.role() = 'service_role');
 
 -- Update triggers for updated_at
 
+DROP TRIGGER IF EXISTS update_sponsors_updated_at ON sponsors;
 CREATE TRIGGER update_sponsors_updated_at BEFORE UPDATE ON sponsors
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_sponsor_placements_updated_at ON sponsor_placements;
 CREATE TRIGGER update_sponsor_placements_updated_at BEFORE UPDATE ON sponsor_placements
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_sponsor_intake_updated_at ON sponsor_intake;
 CREATE TRIGGER update_sponsor_intake_updated_at BEFORE UPDATE ON sponsor_intake
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_placement_events_updated_at ON placement_events;
 CREATE TRIGGER update_placement_events_updated_at BEFORE UPDATE ON placement_events
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 

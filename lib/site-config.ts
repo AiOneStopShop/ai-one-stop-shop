@@ -7,6 +7,20 @@ export function getSiteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_URL;
 }
 
+/**
+ * Absolute URL on this site. Prefers NEXT_PUBLIC_SITE_URL, then the request origin
+ * (so previews and local runs point at themselves), then the canonical default.
+ */
+export function absoluteSiteUrl(path: string, requestOrigin?: string | null): string {
+  const base = (process.env.NEXT_PUBLIC_SITE_URL || requestOrigin || DEFAULT_SITE_URL).replace(/\/$/, '');
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
+/** Where Stripe Payment Links should send people after paying. */
+export function getStripeThanksUrl(requestOrigin?: string | null): string {
+  return absoluteSiteUrl('/advertise/thanks?source=stripe', requestOrigin);
+}
+
 export function getSiteContactEmail(): string | null {
   const email = (process.env.NEXT_PUBLIC_SITE_CONTACT_EMAIL || '').trim();
   return email || null;

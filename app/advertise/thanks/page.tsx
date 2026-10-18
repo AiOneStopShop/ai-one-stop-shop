@@ -3,12 +3,19 @@ import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
 
 export const metadata = {
-  title: 'Thank You - AI One Stop Shop',
+  title: 'Thank you',
   description: 'Next steps for your sponsorship request',
   alternates: { canonical: '/advertise/thanks' },
+  robots: { index: false, follow: true },
 };
 
-export default function AdvertiseThanksPage() {
+export default async function AdvertiseThanksPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ source?: string }>;
+}) {
+  const { source } = await searchParams;
+  const fromStripe = source === 'stripe';
   return (
     <div className="scroll-mt-16">
       <section className="section-spacing">
@@ -21,7 +28,9 @@ export default function AdvertiseThanksPage() {
             </div>
             <h1 className="heading-1 mb-4">Thank you!</h1>
             <p className="text-xl text-soft">
-              We received your sponsorship request.
+              {fromStripe
+                ? 'If you just paid through Stripe, Stripe emails your receipt. We will email you to confirm your start date.'
+                : 'We received your sponsorship request.'}
             </p>
           </div>
 

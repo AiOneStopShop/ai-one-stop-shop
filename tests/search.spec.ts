@@ -137,12 +137,17 @@ test('public tools API exposes only public fields and short cache headers', asyn
   expect(response.headers()['cache-control']).toBe('public, s-maxage=300, stale-while-revalidate=600');
   const body = await response.json();
   expect(body.tools.length).toBeGreaterThan(0);
+  // M11: paid tools route through /go/<slug> (labeled redirect); unpaid tools link straight
+  // to the maker's site with no redirect (lib/public-tool.ts).
+  for (const tool of body.tools) {
+    expect(tool).toEqual(expect.objectContaining({ name: expect.any(String), slug: expect.any(String) }));
+    if (tool.paid_link) {
+      expect(tool.go_url).toMatch(/\/go\//);
+    } else {
+      expect(tool.go_url).toBe(tool.website_url ?? null);
+    }
+  }
   const tool = body.tools[0];
-  expect(tool).toEqual(expect.objectContaining({
-    name: expect.any(String),
-    slug: expect.any(String),
-    go_url: expect.stringMatching(/\/go\//),
-  }));
   expect(tool).not.toHaveProperty('editorial_why');
   expect(tool).not.toHaveProperty('review_notes');
   expect(tool).not.toHaveProperty('source_url');

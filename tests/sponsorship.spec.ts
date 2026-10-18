@@ -1,29 +1,33 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-// Test seeding safety guard
+// Test seeding safety guard (M8).
+// Without ALLOW_DB_SEED=1 the DB-writing tests are skipped, not failed.
+// Writes are allowed only against localhost or a host listed exactly in ALLOW_DB_SEED_HOSTS
+// (comma-separated). A hostname merely containing "staging" or "test" is not enough.
 function requireTestSeeding() {
   if (process.env.ALLOW_DB_SEED !== '1') {
-    throw new Error(
-      'ALLOW_DB_SEED=1 is required to run tests that modify the database. ' +
-      'Never run these tests against production.'
-    );
+    test.skip(true, 'ALLOW_DB_SEED=1 not set: skipping a test that writes to the database.');
+    return;
   }
-  
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
   let hostname: string;
   try {
-    hostname = new URL(supabaseUrl).hostname;
+    hostname = new URL(supabaseUrl).hostname.toLowerCase();
   } catch {
     throw new Error(`Invalid NEXT_PUBLIC_SUPABASE_URL: ${supabaseUrl}`);
   }
-  
+
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
-  const isStaging = hostname.includes('staging') || hostname.includes('test');
-  
-  if (!isLocalhost && !isStaging) {
+  const allowed = (process.env.ALLOW_DB_SEED_HOSTS || '')
+    .split(',')
+    .map((h) => h.trim().toLowerCase())
+    .filter(Boolean);
+
+  if (!isLocalhost && !allowed.includes(hostname)) {
     throw new Error(
-      'Tests with database seeding can only run against localhost or staging. ' +
+      'Tests with database seeding can only run against localhost or a host listed in ALLOW_DB_SEED_HOSTS. ' +
       `Current hostname: ${hostname}`
     );
   }
@@ -534,8 +538,8 @@ test.describe('Sponsorship feature', () => {
     await page.goto('/sponsor-terms', { waitUntil: 'domcontentloaded' });
     
     // Should have clear DRAFT warnings
-    await expect(page.getByText(/DRAFT/i)).toBeVisible();
-    await expect(page.getByText(/pending legal review/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /DRAFT/i })).toBeVisible();
+    await expect(page.getByText(/Not in effect/i).first()).toBeVisible();
   });
 
   // Navigation tests

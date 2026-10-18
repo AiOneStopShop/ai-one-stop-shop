@@ -196,30 +196,44 @@ test.describe('Affiliate flag and partners page', () => {
     });
 
     test('Paid link label appears before Visit link at 390px width', async ({ page }) => {
-      await page.setViewportSize({ width: 390, height: 844 });
-      await page.goto('/tools', { waitUntil: 'domcontentloaded' });
-      
-      // Find any paid link label (span, not p)
-      const paidLabel = page.locator('span:has-text("Paid link: we may earn a commission")').first();
-      
-      // Count paid links on this page
-      const count = await paidLabel.count();
-      
-      // If flag is OFF, this test should be skipped
-      if (process.env.NEXT_PUBLIC_AFFILIATE_LIVE !== '1') {
-        expect(count).toBe(0);
+      // The app enables affiliate mode only for the exact string 'true' (lib/site-config.ts).
+      if (process.env.NEXT_PUBLIC_AFFILIATE_LIVE !== 'true') {
+        await page.goto('/tools', { waitUntil: 'domcontentloaded' });
+        expect(await page.locator('[id^="visit-note-"]').count()).toBe(0);
         test.skip(true, 'Flag OFF: no paid labels expected');
         return;
       }
-      
-      // With flag ON, we expect at least one paid label to be visible
-      expect(count).toBeGreaterThan(0);
-      
-      // Verify label is visible and at least 14px
-      await expect(paidLabel).toBeVisible();
-      const fontSize = await paidLabel.evaluate((el) => window.getComputedStyle(el).fontSize);
-      const fontSizeNum = parseFloat(fontSize);
-      expect(fontSizeNum).toBeGreaterThanOrEqual(14);
+
+      await page.setViewportSize({ width: 390, height: 844 });
+
+      // Find a tool that really has a paid link, so the test does not depend on page 1 ordering.
+      const api = await page.request.get('/api/v1/tools?limit=100');
+      expect(api.ok()).toBeTruthy();
+      const { tools } = await api.json();
+      const paidTool = (tools as any[]).find((t) => t.paid_link === true);
+      expect(paidTool, 'flag is on, so at least one tool must have a paid link').toBeTruthy();
+
+      await page.goto(`/tools?q=${encodeURIComponent(paidTool.name)}`, { waitUntil: 'domcontentloaded' });
+
+      const note = page.locator(`#visit-note-${paidTool.slug}`);
+      await expect(note).toBeVisible();
+      await expect(note).toContainText('Paid link: we may earn a commission');
+      const fontSize = parseFloat(await note.evaluate((el) => window.getComputedStyle(el).fontSize));
+      expect(fontSize).toBeGreaterThanOrEqual(14);
+
+      const visit = page.locator(`a[aria-describedby="visit-note-${paidTool.slug}"]`);
+      await expect(visit).toBeVisible();
+      await expect(visit).toHaveAttribute('rel', /sponsored/);
+
+      // Label must come before the Visit link, both in reading order and on screen.
+      const labelFirst = await note.evaluate((el, id) => {
+        const link = document.querySelector(`a[aria-describedby="${id}"]`);
+        return !!link && !!(el.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING);
+      }, `visit-note-${paidTool.slug}`);
+      expect(labelFirst).toBe(true);
+      const noteBox = await note.boundingBox();
+      const visitBox = await visit.boundingBox();
+      expect(noteBox && visitBox && noteBox.y < visitBox.y).toBe(true);
     });
 
     test('API includes paid_link field', async ({ page }) => {

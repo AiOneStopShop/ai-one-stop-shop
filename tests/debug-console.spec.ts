@@ -42,8 +42,10 @@ test(' /tools hydrates without CSP or MIME errors', async ({ page }) => {
 
   expect(failedAssets, `static assets failed:\n${failedAssets.join('\n')}`).toEqual([]);
   expect(cspViolations, `CSP violations:\n${cspViolations.join('\n')}`).toEqual([]);
+  // /_vercel/insights is only served on Vercel; locally it 404s as HTML, which is expected.
   const blocking = [...consoleErrors, ...pageErrors].filter(msg =>
     /Refused to|CSP|Content Security Policy|MIME type|400 \(Bad Request\)/i.test(msg)
+    && !msg.includes('/_vercel/insights/')
   );
   expect(blocking, `hydration blockers:\n${blocking.join('\n')}`).toEqual([]);
 });

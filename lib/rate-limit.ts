@@ -45,6 +45,15 @@ class InMemoryRatelimit {
   }
 }
 
+/**
+ * Local test runs of a production build (`next start`) have no Redis. They may opt in to the
+ * in-memory limiter with RATE_LIMIT_LOCAL_MEMORY=1. This is ignored on Vercel (VERCEL is set),
+ * so deployed environments still fail closed.
+ */
+function localMemoryAllowed(): boolean {
+  return process.env.RATE_LIMIT_LOCAL_MEMORY === '1' && !process.env.VERCEL && process.env.VERCEL_ENV === undefined;
+}
+
 // Initialize rate limiters
 function createRateLimiter(requests: number, windowMinutes: number) {
   const upstashUrl = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
@@ -65,7 +74,7 @@ function createRateLimiter(requests: number, windowMinutes: number) {
     });
   } else {
     // Fail closed in production
-    if (isProduction) {
+    if (isProduction && !localMemoryAllowed()) {
       console.error(
         '❌ PRODUCTION ERROR: Upstash Redis not configured. ' +
         'Rate limiting is unavailable. Set UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN ' +
@@ -133,7 +142,7 @@ export async function dedupe(key: string, ttlSeconds: number): Promise<boolean> 
     return result === 'OK';
   }
   
-  if (isProduction) {
+  if (isProduction && !localMemoryAllowed()) {
     // Fail closed in production without Redis
     throw new Error('Deduplication unavailable: Upstash Redis not configured');
   }

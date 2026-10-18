@@ -1,16 +1,14 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'http://localhost:3100';
-
 test.describe('Quinn QA Round 3 Verification', () => {
   test.beforeEach(async ({ page }) => {
     // Clear localStorage before each test
-    await page.goto(BASE_URL);
+    await page.goto('/');
     await page.evaluate(() => localStorage.clear());
   });
 
   test('1. Compare checkbox multi-select on /tools', async ({ page }) => {
-    await page.goto(`${BASE_URL}/tools`);
+    await page.goto(`/tools`);
     
     // Find first 3 tool cards with checkboxes
     const checkboxes = await page.getByRole('checkbox', { name: /^Compare / }).all();
@@ -50,7 +48,7 @@ test.describe('Quinn QA Round 3 Verification', () => {
   });
 
   test('2. Compare with button on tool detail page', async ({ page }) => {
-    await page.goto(`${BASE_URL}/tools`);
+    await page.goto(`/tools`);
     
     // Click first tool
     const firstTool = page.locator('article.card h2 a').first();
@@ -66,7 +64,7 @@ test.describe('Quinn QA Round 3 Verification', () => {
   });
 
   test('3. Footer accessibility - no heading skips', async ({ page }) => {
-    await page.goto(BASE_URL);
+    await page.goto('/');
     
     // Scroll to footer
     await page.locator('footer').scrollIntoViewIfNeeded();
@@ -82,12 +80,12 @@ test.describe('Quinn QA Round 3 Verification', () => {
 
   test('4. SEO metadata in head', async ({ page }) => {
     // Test tool page
-    await page.goto(`${BASE_URL}/tools`);
+    await page.goto(`/tools`);
     const toolsTitle = await page.title();
     console.log(`Tools page title: ${toolsTitle}`);
     
     // Test category page
-    const response = await page.goto(`${BASE_URL}/tools`);
+    const response = await page.goto(`/tools`);
     const html = await response?.text();
     const hasMetaInHead = html?.includes('<head>') && html?.includes('<title>');
     

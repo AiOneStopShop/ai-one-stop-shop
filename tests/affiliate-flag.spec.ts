@@ -8,8 +8,11 @@ test.describe('Affiliate flag and partners page', () => {
     });
   });
 
-  // Flag OFF tests (default state)
+  // Flag OFF tests (default state). The app enables affiliate mode only for the exact
+  // string 'true' (lib/site-config.ts); set the same env when testing a flag-on build.
+  const flagOn = process.env.NEXT_PUBLIC_AFFILIATE_LIVE === 'true';
   test('footer shows M9 wording when NEXT_PUBLIC_AFFILIATE_LIVE is false', async ({ page }) => {
+    test.skip(flagOn, 'Flag ON build: flag-off wording not expected');
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     
     const footer = page.locator('footer');
@@ -25,6 +28,7 @@ test.describe('Affiliate flag and partners page', () => {
   });
 
   test('disclosure page shows 2 sections when flag is false', async ({ page }) => {
+    test.skip(flagOn, 'Flag ON build: flag-off wording not expected');
     await page.goto('/disclosure', { waitUntil: 'domcontentloaded' });
     
     // Should have section 1 (Sponsorships) and section 2 (Our own products)
@@ -37,6 +41,7 @@ test.describe('Affiliate flag and partners page', () => {
   });
 
   test('llms.txt shows M9 wording when flag is false', async ({ page }) => {
+    test.skip(flagOn, 'Flag ON build: flag-off wording not expected');
     const response = await page.goto('/llms.txt', { waitUntil: 'domcontentloaded' });
     const content = await response?.text() || '';
     
@@ -208,10 +213,15 @@ test.describe('Affiliate flag and partners page', () => {
       await page.setViewportSize({ width: 390, height: 844 });
 
       // Find a tool that really has a paid link, so the test does not depend on page 1 ordering.
-      const api = await page.request.get('/api/v1/tools?limit=100');
-      expect(api.ok()).toBeTruthy();
-      const { tools } = await api.json();
-      const paidTool = (tools as any[]).find((t) => t.paid_link === true);
+      // The API caps limit at 50, so page through it.
+      let paidTool: any;
+      for (let offset = 0; offset < 1000 && !paidTool; offset += 50) {
+        const api = await page.request.get(`/api/v1/tools?limit=50&offset=${offset}`);
+        expect(api.ok()).toBeTruthy();
+        const { tools, pagination } = await api.json();
+        paidTool = (tools as any[]).find((t) => t.paid_link === true);
+        if (!pagination?.hasMore) break;
+      }
       expect(paidTool, 'flag is on, so at least one tool must have a paid link').toBeTruthy();
 
       await page.goto(`/tools?q=${encodeURIComponent(paidTool.name)}`, { waitUntil: 'domcontentloaded' });

@@ -11,7 +11,7 @@ test('a tool without an affiliate row shows no Paid link text', async ({ page })
   await expect(page.getByText('Paid link:')).toHaveCount(0);
 
   // Pick a real tool without a paid link from the API so the test does not depend on one slug.
-  const api = await page.request.get('/api/v1/tools?limit=100');
+  const api = await page.request.get('/api/v1/tools?limit=50');
   const { tools } = await api.json();
   const unpaid = (tools as any[]).find((t) => t.paid_link === false);
   expect(unpaid, 'expected at least one tool without a paid link').toBeTruthy();

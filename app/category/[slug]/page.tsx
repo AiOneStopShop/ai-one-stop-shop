@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
 import { notFound, redirect } from 'next/navigation';
 import { CatalogPager } from '@/components/CatalogPager';
 import { PaidVisitLink } from '@/components/PaidVisitLink';
@@ -127,9 +128,9 @@ export default async function CategoryPage(props: {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(itemList) }} />
 
       <div className="scroll-mt-16">
-        <section className="section-spacing">
-          <div className="container-max">
-            <nav aria-label="Breadcrumb" className="mb-8">
+        <PageIntro
+          above={
+            <nav aria-label="Breadcrumb">
               <ol className="flex items-center gap-2 text-sm">
                 <li>
                   <Link href="/" className="text-soft hover:text-green focus-ring rounded">Home</Link>
@@ -142,25 +143,20 @@ export default async function CategoryPage(props: {
                 <li aria-current="page" className="text-ink font-medium">{category.name}</li>
               </ol>
             </nav>
-
-            <div className="mb-8">
-              <h1 className="heading-1 mb-4">
-                {category.icon ? <span aria-hidden="true">{category.icon} </span> : null}
-                Best {category.name} AI Tools
-              </h1>
-              {category.description && <p className="text-lead">{category.description}</p>}
-              <p className="text-soft mt-2">
-                {listed.total} {listed.total === 1 ? 'tool' : 'tools'}
-              </p>
-            </div>
-
+          }
+          title={<>Best {category.name} AI tools</>}
+          accent="notebook"
+          lead={<>{category.description ? <>{category.description} </> : null}<span className="text-soft">{listed.total} {listed.total === 1 ? 'tool' : 'tools'}</span></>}
+        />
+        <section className="py-10 md:py-12">
+          <div className="container-max">
             {/* Category Spotlight */}
             {spotlight && <CategorySpotlight placement={spotlight} />}
 
             <form method="get" className="card mb-8 grid gap-4 md:grid-cols-3">
               <div>
                 <label htmlFor="sort" className="block text-sm font-medium mb-2">Sort</label>
-                <select id="sort" name="sort" defaultValue={sort} className="w-full px-3 py-2 border border-soft rounded-lg focus-ring bg-white min-h-11">
+                <select id="sort" name="sort" defaultValue={sort} className="w-full px-3 py-2 border border-soft rounded-xl focus-ring bg-white min-h-12">
                   <option value="relevance">Relevance</option>
                   <option value="free">Free first</option>
                   <option value="newest">Newest</option>
@@ -168,7 +164,7 @@ export default async function CategoryPage(props: {
               </div>
               <div>
                 <label htmlFor="price" className="block text-sm font-medium mb-2">Pricing</label>
-                <select id="price" name="price" defaultValue={price || 'all'} className="w-full px-3 py-2 border border-soft rounded-lg focus-ring bg-white min-h-11">
+                <select id="price" name="price" defaultValue={price || 'all'} className="w-full px-3 py-2 border border-soft rounded-xl focus-ring bg-white min-h-12">
                   <option value="all">All pricing</option>
                   <option value="free">Free</option>
                   <option value="subscription">Subscription</option>
@@ -238,7 +234,7 @@ export default async function CategoryPage(props: {
                 We review each tool&apos;s public pricing and features. A tool can appear in more than one category.
               </p>
               <Link href="/how-we-rank" className="text-green font-medium hover:underline focus-ring rounded">
-                Read our full ranking method →
+                Read our full ranking method
               </Link>
             </div>
           </div>

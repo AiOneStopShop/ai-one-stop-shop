@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
 import { PaidVisitLink } from '@/components/PaidVisitLink';
 import type { AffiliateGoMap } from '@/lib/affiliate-links';
 import { toolHasAffiliate } from '@/lib/affiliate-links';
@@ -22,6 +23,13 @@ export default function FinderClient({
   const [focusFirstQuestion, setFocusFirstQuestion] = useState(false);
   const resultsHeadingRef = useRef<HTMLHeadingElement>(null);
   const firstQuestionRef = useRef<HTMLFieldSetElement>(null);
+
+  // Home page cards link here with ?situation=work|business|everyday; start from a sensible first answer.
+  useEffect(() => {
+    const situation = new URLSearchParams(window.location.search).get('situation');
+    const map: Record<string, UseCase> = { work: 'writing', business: 'productivity', everyday: 'other' };
+    if (situation && map[situation]) setUseCase((current) => current || map[situation]);
+  }, []);
 
   useEffect(() => {
     if (showResults) {
@@ -146,70 +154,38 @@ export default function FinderClient({
   const recommendations = showResults ? getRecommendations() : [];
 
   const useCaseOptions = [
-    { value: 'coding', emoji: '💻', label: 'Coding & Development' },
-    { value: 'writing', emoji: '✍️', label: 'Writing & Content' },
-    { value: 'design', emoji: '🎨', label: 'Design & Creative' },
-    { value: 'productivity', emoji: '⚡', label: 'Productivity & Organization' },
-    { value: 'other', emoji: '🔍', label: 'Something else' },
+    { value: 'writing', label: 'Writing: CVs, emails, posts' },
+    { value: 'productivity', label: 'Planning and organizing' },
+    { value: 'design', label: 'Design: flyers, images, social posts' },
+    { value: 'coding', label: 'Coding and building apps' },
+    { value: 'other', label: 'Something else, just exploring' },
   ] as const;
 
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        title="Find your starting point"
+        accent="notebook"
+        lead="Three quick questions. We'll suggest up to three tools to try first, and you stay in charge of every choice."
+      />
+      <section className="py-10 md:py-14">
         <div className="container-max max-w-2xl">
-          <div className="mb-8 text-center">
-            <h1 className="heading-1 mb-4">Find Your Perfect AI Tool</h1>
-            <p className="text-lead">
-              Answer a few questions and we'll suggest the best tools for your needs.
-            </p>
-          </div>
-
           {!showResults ? (
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl border border-line">
+            <form onSubmit={handleSubmit} className="card !p-6 md:!p-8 space-y-8">
               <fieldset ref={firstQuestionRef} tabIndex={-1} className="border-0 p-0 m-0 focus:outline-none">
-                <legend className="block text-sm font-medium text-ink mb-3">
+                <legend className="block font-fraunces font-bold text-green text-[1.35rem] mb-3">
                   What will you mainly use it for? <span className="text-red-600" aria-hidden="true">*</span>
                 </legend>
                 <div className="space-y-2">
                   {useCaseOptions.map(option => (
-                    <label key={option.value} className="flex items-center gap-3 p-3 border border-soft rounded-lg cursor-pointer hover:bg-cream transition-colors">
+                    <label key={option.value} className="flex items-center gap-3 p-3 min-h-[52px] border-[1.5px] border-line rounded-xl bg-white cursor-pointer hover:border-green transition-colors has-[:checked]:border-green has-[:checked]:bg-leaf has-[:checked]:shadow-[0_0_0_1px_#1E3B2C] has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-green-2 has-[:focus-visible]:outline-offset-2">
                       <input
                         type="radio"
                         name="useCase"
                         value={option.value}
                         checked={useCase === option.value}
                         onChange={(e) => setUseCase(e.target.value as UseCase)}
-                        className="w-6 h-6 text-green focus-ring"
-                        required
-                      />
-                      <span>
-                        <span aria-hidden="true">{option.emoji} </span>
-                        {option.label}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-
-              <fieldset className="border-0 p-0 m-0">
-                <legend className="block text-sm font-medium text-ink mb-3">
-                  What's your budget? <span className="text-red-600" aria-hidden="true">*</span>
-                </legend>
-                <div className="space-y-2">
-                  {[
-                    { value: 'free', label: 'Free only' },
-                    { value: 'low', label: 'Up to $15/month' },
-                    { value: 'medium', label: '$15-30/month' },
-                    { value: 'high', label: '$30+ per month' },
-                  ].map(option => (
-                    <label key={option.value} className="flex items-center gap-3 p-3 border border-soft rounded-lg cursor-pointer hover:bg-cream transition-colors">
-                      <input
-                        type="radio"
-                        name="budget"
-                        value={option.value}
-                        checked={budget === option.value}
-                        onChange={(e) => setBudget(e.target.value as Budget)}
-                        className="w-6 h-6 text-green focus-ring"
+                        className="w-5 h-5 accent-[#1E3B2C] shrink-0"
                         required
                       />
                       <span>{option.label}</span>
@@ -219,7 +195,34 @@ export default function FinderClient({
               </fieldset>
 
               <fieldset className="border-0 p-0 m-0">
-                <legend className="block text-sm font-medium text-ink mb-3">
+                <legend className="block font-fraunces font-bold text-green text-[1.35rem] mb-3">
+                  What's your budget? <span className="text-red-600" aria-hidden="true">*</span>
+                </legend>
+                <div className="space-y-2">
+                  {[
+                    { value: 'free', label: 'Free only' },
+                    { value: 'low', label: 'Up to $15/month' },
+                    { value: 'medium', label: '$15-30/month' },
+                    { value: 'high', label: '$30+ per month' },
+                  ].map(option => (
+                    <label key={option.value} className="flex items-center gap-3 p-3 min-h-[52px] border-[1.5px] border-line rounded-xl bg-white cursor-pointer hover:border-green transition-colors has-[:checked]:border-green has-[:checked]:bg-leaf has-[:checked]:shadow-[0_0_0_1px_#1E3B2C] has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-green-2 has-[:focus-visible]:outline-offset-2">
+                      <input
+                        type="radio"
+                        name="budget"
+                        value={option.value}
+                        checked={budget === option.value}
+                        onChange={(e) => setBudget(e.target.value as Budget)}
+                        className="w-5 h-5 accent-[#1E3B2C] shrink-0"
+                        required
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <fieldset className="border-0 p-0 m-0">
+                <legend className="block font-fraunces font-bold text-green text-[1.35rem] mb-3">
                   How would you describe your experience with AI tools? <span className="text-red-600" aria-hidden="true">*</span>
                 </legend>
                 <div className="space-y-2">
@@ -228,14 +231,14 @@ export default function FinderClient({
                     { value: 'intermediate', label: "Intermediate - I've used a few" },
                     { value: 'advanced', label: "Advanced - I'm very familiar with AI tools" },
                   ].map(option => (
-                    <label key={option.value} className="flex items-center gap-3 p-3 border border-soft rounded-lg cursor-pointer hover:bg-cream transition-colors">
+                    <label key={option.value} className="flex items-center gap-3 p-3 min-h-[52px] border-[1.5px] border-line rounded-xl bg-white cursor-pointer hover:border-green transition-colors has-[:checked]:border-green has-[:checked]:bg-leaf has-[:checked]:shadow-[0_0_0_1px_#1E3B2C] has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-green-2 has-[:focus-visible]:outline-offset-2">
                       <input
                         type="radio"
                         name="experience"
                         value={option.value}
                         checked={experience === option.value}
                         onChange={(e) => setExperience(e.target.value as Experience)}
-                        className="w-6 h-6 text-green focus-ring"
+                        className="w-5 h-5 accent-[#1E3B2C] shrink-0"
                         required
                       />
                       <span>{option.label}</span>
@@ -250,7 +253,7 @@ export default function FinderClient({
             </form>
           ) : (
             <div>
-              <div className="bg-card border-2 border-green rounded-xl p-6 mb-8">
+              <div className="note mb-8">
                 <h2
                   ref={resultsHeadingRef}
                   tabIndex={-1}
@@ -264,12 +267,12 @@ export default function FinderClient({
                   {useCase === 'design' && "You're looking for design tools"}
                   {useCase === 'productivity' && "You're looking for productivity tools"}
                   {useCase === 'other' && "You're exploring AI tools"}
-                  {' • '}
+                  {' · '}
                   {budget === 'free' && 'Free only'}
                   {budget === 'low' && 'Up to $15/month'}
                   {budget === 'medium' && '$15-30/month'}
                   {budget === 'high' && '$30+/month'}
-                  {' • '}
+                  {' · '}
                   {experience === 'beginner' && 'Beginner level'}
                   {experience === 'intermediate' && 'Intermediate level'}
                   {experience === 'advanced' && 'Advanced user'}
@@ -283,8 +286,8 @@ export default function FinderClient({
                   <li key={rec.slug} className="card">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl font-bold text-green" aria-hidden="true">
-                          #{index + 1}
+                        <span className="w-9 h-9 rounded-full bg-leaf text-green font-fraunces font-bold grid place-items-center" aria-hidden="true">
+                          {index + 1}
                         </span>
                         <h3 className="heading-3">{rec.name}</h3>
                       </div>
@@ -323,7 +326,7 @@ export default function FinderClient({
             </div>
           )}
 
-          <div className="mt-8 p-4 bg-cream-2 border border-line rounded-lg text-sm text-ink">
+          <div className="mt-8 note text-sm">
             <strong>Note:</strong> These are general recommendations based on common use cases. Always check the full tool details to make sure it fits your specific needs.
           </div>
         </div>

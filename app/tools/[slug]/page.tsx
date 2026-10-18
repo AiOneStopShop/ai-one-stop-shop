@@ -5,7 +5,8 @@ import type { Tool, Category } from '@/types/database';
 import { generateToolSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { isToolSponsored } from '@/lib/sponsor-placements';
 import { SponsoredLabel } from '@/components/SponsoredLabel';
-import { Check, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Check, ExternalLink } from 'lucide-react';
+import { OrangeSwoosh } from '@/components/OrangeSwoosh';
 
 async function getTool(slug: string) {
   const { data } = await supabase
@@ -88,7 +89,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
       />
 
       <div className="scroll-mt-16">
-        <section className="section-spacing">
+        <section className="py-10 md:py-14">
           <div className="container-max">
             {/* Breadcrumbs */}
             <nav aria-label="Breadcrumb" className="mb-8">
@@ -118,9 +119,10 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                   {isSponsored && (
                     <SponsoredLabel className="mb-3" />
                   )}
-                  <h1 className="heading-1 mb-3">{tool.name}</h1>
+                  <h1 className="heading-page mb-1">{tool.name}</h1>
+                  <OrangeSwoosh />
                   {tool.tagline && (
-                    <p className="text-xl text-soft">{tool.tagline}</p>
+                    <p className="text-lead">{tool.tagline}</p>
                   )}
                 </div>
 
@@ -131,9 +133,8 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                       <Link
                         key={cat.id}
                         href={`/category/${cat.slug}`}
-                        className="badge bg-cream-2 text-ink border border-line hover:bg-cream-2 transition-colors focus-ring rounded"
+                        className="badge-category hover:border-green transition-colors focus-ring min-h-[32px]"
                       >
-                        {cat.icon ? <span aria-hidden="true">{cat.icon} </span> : null}
                         {cat.name}
                       </Link>
                     ))}
@@ -141,8 +142,8 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                 )}
 
                 {/* Description */}
-                {tool.description && (
-                  <div className="prose prose-lg max-w-none mb-8">
+                {tool.description && tool.description.trim() !== (tool.tagline || '').trim() && (
+                  <div className="guide-prose mb-8">
                     <p>{tool.description}</p>
                   </div>
                 )}
@@ -189,7 +190,9 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
               <div className="lg:col-span-1">
                 <div className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto space-y-6">
                   {/* Pricing Card */}
-                  <div className="card">
+                  <div className="card !p-0 overflow-hidden">
+                    <div aria-hidden="true" className="h-3 bg-leaf" />
+                    <div className="p-6">
                     <h2 className="heading-3 mb-4">Pricing</h2>
                     
                     {tool.pricing_summary && (
@@ -205,8 +208,8 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     )}
 
                     {tool.pricing_model && (
-                      <p className="text-sm text-soft mb-4 capitalize">
-                        {tool.pricing_model.replace(/-/g, ' ')} pricing
+                      <p className="text-sm text-soft mb-4">
+                        {(() => { const m = tool.pricing_model.replace(/-/g, ' '); return m.charAt(0).toUpperCase() + m.slice(1); })()} pricing
                       </p>
                     )}
 
@@ -225,7 +228,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     {isAffiliate && (
                       <p id="paid-note" className="text-sm text-orange-ink mb-2">
                         Paid link: we may earn a commission.{' '}
-                        <Link href="/disclosure#paid-links" className="underline hover:text-[#A02010]">
+                        <Link href="/disclosure#paid-links" className="underline hover:text-ink">
                           How we make money
                         </Link>
                       </p>
@@ -247,10 +250,11 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     {/* Compare Button */}
                     <Link
                       href={`/compare?tools=${tool.slug}`}
-                      className="btn-secondary w-full block text-center mt-3"
+                      className="btn-secondary w-full mt-3"
                     >
                       Compare with...
                     </Link>
+                    </div>
                   </div>
 
                   {/* Last Verified */}
@@ -267,7 +271,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                           ? 'Official pricing page'
                           : 'Official site'}
                         <span className="sr-only"> (opens in new tab)</span>
-                        <span aria-hidden="true"> ↗</span>
+                        <ExternalLink className="inline h-3.5 w-3.5 ml-1 -mt-0.5" aria-hidden="true" />
                       </a>
                     </div>
                   )}
@@ -277,8 +281,9 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
 
             {/* Back to tools */}
             <div className="mt-12 pt-12 border-t border-line">
-              <Link href="/tools" className="text-green hover:underline focus-ring rounded">
-                ← Back to all tools
+              <Link href="/tools" className="inline-flex items-center gap-2 text-green font-semibold underline underline-offset-4 focus-ring rounded">
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                Back to all tools
               </Link>
             </div>
           </div>

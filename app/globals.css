@@ -147,6 +147,17 @@
     @apply hover:border-green hover:bg-cream-2 transition-all duration-200;
   }
 
+  /* For use on the deep green panel */
+  .btn-light {
+    @apply inline-flex items-center justify-center gap-3 min-h-[56px] px-7 rounded-xl bg-cream text-green font-bold text-lg;
+    @apply hover:bg-white transition-all duration-200;
+  }
+
+  .btn-light:focus-visible {
+    outline: 3px solid #FFFFFF;
+    outline-offset: 3px;
+  }
+
   .btn-coral {
     @apply btn-primary;
   }
@@ -279,7 +290,7 @@ mark {
   color: #FFFFFF;
 }
 
-.panel-honest a {
+.panel-honest a:not(.btn-light):not(.btn-primary):not(.btn-secondary) {
   color: #FFFFFF;
   text-decoration: underline;
 }
@@ -321,4 +332,10 @@ article a:hover,
 
 html.has-cookie-banner .sticky-compare-btn {
   bottom: calc(var(--cookie-banner-height, 4.5rem) + 1.5rem);
+}
+
+/* Whole-card links carry their own affordance (arrow, hover lift); no underline on their text */
+a.card,
+a.card * {
+  text-decoration: none;
 }

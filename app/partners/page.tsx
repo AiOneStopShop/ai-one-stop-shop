@@ -112,7 +112,7 @@ export default function PartnersPage() {
               </p>
               <div className="flex gap-4 flex-wrap">
                 <Link href="/advertise/request?package=partner-program" className="btn-primary">
-                  Request a partnership →
+                  Request a partnership
                 </Link>
                 <Link href="/submit" className="btn-secondary">
                   Submit your tool

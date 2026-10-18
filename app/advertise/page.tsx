@@ -160,7 +160,7 @@ export default function AdvertisePage() {
               </ol>
               <div className="mt-6">
                 <Link href="/advertise/request" className="btn-primary">
-                  Request a sponsored spot →
+                  Request a sponsored spot
                 </Link>
               </div>
             </div>

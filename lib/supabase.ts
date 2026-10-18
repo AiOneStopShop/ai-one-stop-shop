@@ -40,6 +40,7 @@ const mockSupabase = {
         limit: (n: number) => createChainableQuery(currentData.slice(0, n)),
         range: (from: number, to: number) => createChainableQuery(currentData.slice(from, to + 1)),
         single: () => Promise.resolve({ data: currentData[0] || null, error: null }),
+        maybeSingle: () => Promise.resolve({ data: currentData[0] || null, error: null }),
         then: (resolve: any) => resolve({ data: currentData, error: null, count: currentData.length }),
       });
 

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
 import { isAffiliateLive } from '@/lib/site-config';
 import { CatalogPager } from '@/components/CatalogPager';
 import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
@@ -77,21 +78,19 @@ export default async function ToolsPage(props: {
       />
 
       <div className="scroll-mt-16">
-        <section className="section-spacing">
+        <PageIntro
+          title="All AI tools"
+          accent="magnifier"
+          lead={<>{publishedPool.length} curated tools. No fake ratings. Real prices, with the date we checked them.</>}
+        />
+        <section className="py-10 md:py-12">
           <div className="container-max">
-            <div className="mb-8">
-              <h1 className="heading-1 mb-4">All AI Tools</h1>
-              <p className="text-xl text-ink leading-relaxed">
-                {publishedPool.length} curated tools. No fake ratings.
-              </p>
-            </div>
-
-            <div className="mb-8 p-6 bg-card border border-line rounded-2xl">
-              <p className="text-sm text-ink">
+            <div className="note mb-8 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <p className="text-ink m-0">
                 {isAffiliateLive()
                   ? 'Some links are paid links. They never change our ranking.'
                   : 'No tool can pay to rank higher here. Sponsored spots are labeled and kept separate.'}{' '}
-                <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
+                <Link href="/disclosure" className="text-green underline focus-ring rounded">
                   How we make money
                 </Link>
               </p>
@@ -135,10 +134,10 @@ export default async function ToolsPage(props: {
               }}
             />
 
-            <div className="mt-16 bg-card border-2 border-green rounded-2xl p-8 text-center">
+            <div className="mt-16 panel-honest text-center">
               <h2 className="heading-2 mb-4">Can't find a tool?</h2>
-              <p className="text-xl text-ink mb-6">Suggest a tool for us to review</p>
-              <Link href="/submit" className="btn-primary">
+              <p className="text-xl mb-6">Suggest a tool for us to review</p>
+              <Link href="/submit" className="btn-light">
                 Submit a tool
               </Link>
             </div>

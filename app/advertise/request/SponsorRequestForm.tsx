@@ -110,7 +110,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
       <PageIntro
         above={
           <Link href="/advertise" className="text-green underline underline-offset-4 focus-ring rounded inline-flex min-h-11 items-center">
-            ← Back to sponsorship options
+            Back to sponsorship options
           </Link>
         }
         title="Request a sponsored spot"

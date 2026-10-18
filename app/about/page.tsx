@@ -59,7 +59,7 @@ export default function AboutPage() {
 
             <p>
               <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
-                Read our full disclosure →
+                Read our full disclosure
               </Link>
             </p>
 

@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
 import { supabase } from '@/lib/supabase';
 import { knownSlugsInOrder, orderBySlug } from '@/lib/compare-tools';
 import { getActiveAffiliateGoSlugs, toolHasAffiliate, visitHref } from '@/lib/affiliate-links';
@@ -60,7 +61,7 @@ export default async function ComparePage(props: {
     .select('slug, name')
     .eq('status', 'published')
     .order('name')
-    .limit(200);
+    .limit(1000);
 
   const availableTools = (allTools && allTools.length > 0)
     ? allTools
@@ -77,13 +78,13 @@ export default async function ComparePage(props: {
   if (tools.length < 2) {
     return (
       <div className="scroll-mt-16">
-        <section className="section-spacing">
+        <PageIntro
+          title="Compare AI tools"
+          accent="scales"
+          lead="Pick two or three tools and see price, category and what each one is for, side by side."
+        />
+        <section className="py-10 md:py-14">
           <div className="container-max max-w-4xl">
-            <h1 className="heading-1 mb-4 text-center">Compare AI Tools</h1>
-            <p className="text-lg text-soft mb-8 text-center">
-              Compare AI tools side-by-side to find the best fit for your needs.
-            </p>
-
             <div id="compare-selector" tabIndex={-1}>
               <Suspense fallback={<p className="text-soft">Loading selector…</p>}>
                 <CompareSelector tools={availableTools} />
@@ -92,7 +93,7 @@ export default async function ComparePage(props: {
 
             <div className="text-center mt-8">
               <Link href="/tools" className="btn-secondary">
-                ← Back to All Tools
+                Back to all tools
               </Link>
             </div>
           </div>
@@ -103,38 +104,35 @@ export default async function ComparePage(props: {
 
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        above={<ChangeSelectionLink />}
+        title={<>Compare {tools.map((t: any) => t.name).join(' vs ')}</>}
+        accent="scales"
+        lead="Prices as listed on each tool's site. A person checks them; dates are in the last row."
+      />
+      <section className="py-10 md:py-14">
         <div className="container-max">
-          <div className="mb-8">
-            <div className="mb-4 text-center">
-              <ChangeSelectionLink />
-            </div>
-            <h1 className="heading-1 mb-6 text-center">
-              Compare {tools.map((t: any) => t.name).join(' vs ')}
-            </h1>
-          </div>
-
           {/* Comparison Table */}
           {hasPaidLinks && (
             <p className="text-sm font-semibold text-orange-ink mb-4 text-center">
               Paid link: Some tools below have paid links that may earn us a commission.
             </p>
           )}
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+          <div className="overflow-x-auto rounded-2xl border border-line bg-card">
+            <table className="w-full border-collapse compare-table">
               <caption className="sr-only">
                 Side-by-side comparison of {tools.map((t: any) => t.name).join(', ')}
               </caption>
               <thead>
-                <tr className="bg-cream">
-                  <th scope="col" className="text-left p-4 border border-line font-semibold text-ink min-w-[200px]">
+                <tr className="bg-cream-2/60">
+                  <th scope="col" className="text-left p-4 border-b border-line font-fraunces font-bold text-green min-w-[180px]">
                     Feature
                   </th>
                   {tools.map((tool: any) => (
-                    <th key={tool.id} scope="col" className="p-4 border border-line min-w-[250px]">
+                    <th key={tool.id} scope="col" className="text-left p-4 border-b border-l border-line min-w-[240px]">
                       <Link 
                         href={`/tools/${tool.slug}`}
-                        className="font-semibold text-ink hover:text-green transition-colors focus-ring rounded block"
+                        className="font-fraunces font-bold text-xl text-green underline decoration-line underline-offset-4 hover:decoration-green focus-ring rounded inline-block"
                       >
                         {tool.name}
                       </Link>
@@ -144,35 +142,35 @@ export default async function ComparePage(props: {
               </thead>
               <tbody>
                 <tr>
-                  <th scope="row" className="text-left p-4 border border-line font-medium text-soft">
+                  <th scope="row" className="text-left p-4 border-b border-line font-semibold text-soft align-top">
                     Description
                   </th>
                   {tools.map((tool: any) => (
-                    <td key={tool.id} className="p-4 border border-line">
+                    <td key={tool.id} className="p-4 border-b border-l border-line align-top">
                       {tool.description || tool.tagline || 'No description available'}
                     </td>
                   ))}
                 </tr>
                 
-                <tr className="bg-cream">
-                  <th scope="row" className="text-left p-4 border border-line font-medium text-soft">
+                <tr className="bg-cream-2/60">
+                  <th scope="row" className="text-left p-4 border-b border-line font-semibold text-soft align-top">
                     Pricing
                   </th>
                   {tools.map((tool: any) => (
-                    <td key={tool.id} className="p-4 border border-line">
+                    <td key={tool.id} className="p-4 border-b border-l border-line align-top">
                       {tool.pricing_summary || 'See website'}
                     </td>
                   ))}
                 </tr>
 
                 <tr>
-                  <th scope="row" className="text-left p-4 border border-line font-medium text-soft">
+                  <th scope="row" className="text-left p-4 border-b border-line font-semibold text-soft align-top">
                     Main category
                   </th>
                   {tools.map((tool: any) => {
                     const primaryCat = (tool.tool_categories as any[])?.find(tc => tc.is_primary)?.categories;
                     return (
-                      <td key={tool.id} className="p-4 border border-line">
+                      <td key={tool.id} className="p-4 border-b border-l border-line align-top">
                         {primaryCat ? (
                           <Link 
                             href={`/category/${primaryCat.slug}`}
@@ -186,14 +184,14 @@ export default async function ComparePage(props: {
                   })}
                 </tr>
 
-                <tr className="bg-cream">
-                  <th scope="row" className="text-left p-4 border border-line font-medium text-soft">
+                <tr className="bg-cream-2/60">
+                  <th scope="row" className="text-left p-4 border-b border-line font-semibold text-soft align-top">
                     Website
                   </th>
                   {tools.map((tool: any) => {
                     const paid = toolHasAffiliate(affiliates, tool.slug);
                     return (
-                      <td key={tool.id} className="p-4 border border-line align-top">
+                      <td key={tool.id} className="p-4 border-b border-l border-line align-top">
                         {paid ? (
                           <p className="text-sm font-semibold text-orange-ink mb-2">
                             Paid link: we may earn a commission if you sign up.
@@ -213,11 +211,11 @@ export default async function ComparePage(props: {
                 </tr>
 
                 <tr>
-                  <th scope="row" className="text-left p-4 border border-line font-medium text-soft">
+                  <th scope="row" className="text-left p-4 border-b border-line font-semibold text-soft align-top">
                     Info last checked
                   </th>
                   {tools.map((tool: any) => (
-                    <td key={tool.id} className="p-4 border border-line">
+                    <td key={tool.id} className="p-4 border-b border-l border-line align-top">
                       {tool.updated_at ? new Date(tool.updated_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -244,7 +242,7 @@ export default async function ComparePage(props: {
 
           <div className="mt-8 text-center">
             <Link href="/tools" className="btn-secondary">
-              ← Back to All Tools
+              Back to all tools
             </Link>
           </div>
         </div>

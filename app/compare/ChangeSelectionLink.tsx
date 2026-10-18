@@ -13,7 +13,7 @@ export function ChangeSelectionLink() {
         firstControl?.focus();
       }}
     >
-      ← Change selection
+      Change selection
     </a>
   );
 }

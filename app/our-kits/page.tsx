@@ -80,7 +80,7 @@ export default function OurKitsPage() {
                 <div className="mb-6">
                   <h3 className="font-semibold mb-2">How it works with you</h3>
                   <p className="text-soft">
-                    AI drafts → it stops and holds → <strong>you decide</strong> → then it goes.
+                    AI drafts. It stops and holds. <strong>You decide.</strong> Then it goes.
                   </p>
                 </div>
 
@@ -142,7 +142,7 @@ export default function OurKitsPage() {
                     </p>
                   )}
                   <Link href="/disclosure" className="text-green font-medium hover:underline focus-ring rounded">
-                    Read our full disclosure →
+                    Read our full disclosure
                   </Link>
                 </div>
               </div>

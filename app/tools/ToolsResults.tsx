@@ -44,7 +44,7 @@ export function ToolsResults({
           return (
             <Fragment key={tool.id || tool.slug}>
               {'\n'}
-              <article className="card group relative">
+              <article className="card group relative transition-shadow duration-200 hover:shadow-[0_14px_28px_-20px_rgba(30,59,44,0.55)]">
                 <div className="absolute top-4 right-4 z-10">
                   <CompareCheckbox toolSlug={tool.slug} toolName={tool.name} />
                 </div>
@@ -68,9 +68,6 @@ export function ToolsResults({
                   <div className="flex flex-wrap gap-2 mb-3">
                     {primaryCategory && (
                       <span className="badge-category text-xs">
-                        {primaryCategory.icon ? (
-                          <span aria-hidden="true">{primaryCategory.icon} </span>
-                        ) : null}
                         {primaryCategory.name}
                       </span>
                     )}

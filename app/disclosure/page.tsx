@@ -41,7 +41,7 @@ export default function DisclosurePage() {
 
           {affiliateLive && (
             <>
-              <h3>2. Paid links (affiliate programs)</h3>
+              <h3 id="paid-links">2. Paid links (affiliate programs)</h3>
               <p>
                 Some &quot;Visit&quot; buttons are affiliate links. If you click one and later buy or subscribe, the tool maker may pay us a commission. Using a paid link doesn&apos;t add a fee from us. Prices are set by the tool maker, and offers can differ by link, so check the price before you buy.
               </p>

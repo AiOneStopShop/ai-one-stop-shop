@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { apiMemoryBurst, apiRateLimit, isUpstashConfigured } from '@/lib/rate-limit';
-import { getClientIP } from '@/lib/client-ip';
+import { getClientKey } from '@/lib/client-ip';
 import { toPublicTool } from '@/lib/public-tool';
 import { searchPublishedCatalog } from '@/lib/search-catalog';
 import { sanitizeSearchQuery } from '@/lib/search-tools';
@@ -25,7 +25,7 @@ function jsonTools(tools: any[], total: number, limit: number, offset: number) {
 }
 
 export async function GET(request: NextRequest) {
-  const ip = getClientIP(request);
+  const ip = getClientKey(request);
   const limiter = isUpstashConfigured ? apiRateLimit : apiMemoryBurst;
   const { success } = await limiter.limit(`api-tools-${ip}`);
 

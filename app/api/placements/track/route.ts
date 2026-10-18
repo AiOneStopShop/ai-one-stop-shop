@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { placementTrackRateLimit, dedupe } from '@/lib/rate-limit';
-import { getClientIP } from '@/lib/client-ip';
+import { getClientKey } from '@/lib/client-ip';
 import { createHash } from 'crypto';
 
 function hashIP(ip: string): string {
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Rate limit check (30 requests per minute per IP)
-    const ip = getClientIP(request);
+    const ip = getClientKey(request);
     const { success } = await placementTrackRateLimit.limit(ip);
 
     if (!success) {

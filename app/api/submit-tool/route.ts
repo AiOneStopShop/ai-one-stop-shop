@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { z } from 'zod';
 import { submitToolRateLimit } from '@/lib/rate-limit';
-import { getClientIP } from '@/lib/client-ip';
+import { getClientKey } from '@/lib/client-ip';
 
 const FIELD_ERROR_CODES = [
   'name_missing',
@@ -59,7 +59,7 @@ const NEUTRAL_SUCCESS = { success: true };
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = getClientIP(request);
+    const ip = getClientKey(request);
     const { success: rateLimitOk } = await submitToolRateLimit.limit(ip);
 
     if (!rateLimitOk) {

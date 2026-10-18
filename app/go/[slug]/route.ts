@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { after } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { affiliateRedirectRateLimit, dedupe } from '@/lib/rate-limit';
-import { getClientIP } from '@/lib/client-ip';
+import { getClientKey } from '@/lib/client-ip';
 import crypto from 'crypto';
 
 // Hash IP address for privacy
@@ -29,7 +29,7 @@ export async function GET(
   const { slug } = params;
 
   // Rate limiting with Upstash
-  const ip = getClientIP(request);
+  const ip = getClientKey(request);
   const { success: rateLimitOk } = await affiliateRedirectRateLimit.limit(ip);
   
   if (!rateLimitOk) {

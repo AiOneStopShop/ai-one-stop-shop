@@ -91,7 +91,7 @@ export default function AdvertisePage() {
             <div>
               <h2 className="heading-2 mb-6">Founding sponsor pricing</h2>
               <p className="mb-6">
-                We're opening <strong>5 founding sponsor spots</strong> at introductory prices. Founding sponsors can re-book the same package at their founding price up to 3 more times, whenever a slot is free. When we change prices, we'll post the new ones here first.
+                We're opening <strong>5 founding sponsor spots</strong> at introductory prices. Founding sponsors can re-book the same package at their founding price up to 3 more times within 6 months of their first placement's start date, whenever a slot is free. When we change prices, we'll post the new ones here first.
               </p>
 
               <div className="space-y-4 not-prose">

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
 import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
 
@@ -18,28 +19,21 @@ export default async function AdvertiseThanksPage({
   const fromStripe = source === 'stripe';
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
-        <div className="container-max max-w-2xl text-center">
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-leaf text-green mb-6">
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h1 className="heading-1 mb-4">Thank you!</h1>
-            <p className="text-xl text-soft">
-              {fromStripe
-                ? 'If you just paid through Stripe, Stripe emails your receipt. We will email you to confirm your start date.'
-                : 'We received your sponsorship request.'}
-            </p>
-          </div>
-
+      <PageIntro
+        title="Thank you!"
+        accent="mug"
+        lead={fromStripe
+          ? 'If you just paid through Stripe, Stripe emails your receipt. We will email you to confirm your start date.'
+          : 'We received your sponsorship request.'}
+      />
+      <section className="py-10 md:py-14">
+        <div className="container-max max-w-2xl">
           <div className="card text-left space-y-4">
             <h2 className="heading-2 mb-4">What happens next</h2>
             
             <div className="space-y-4">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-card text-green flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-leaf text-green flex items-center justify-center font-bold font-fraunces">
                   1
                 </div>
                 <div>
@@ -51,7 +45,7 @@ export default async function AdvertiseThanksPage({
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-card text-green flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-leaf text-green flex items-center justify-center font-bold font-fraunces">
                   2
                 </div>
                 <div>
@@ -63,7 +57,7 @@ export default async function AdvertiseThanksPage({
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-card text-green flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-leaf text-green flex items-center justify-center font-bold font-fraunces">
                   3
                 </div>
                 <div>
@@ -75,7 +69,7 @@ export default async function AdvertiseThanksPage({
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-card text-green flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-leaf text-green flex items-center justify-center font-bold font-fraunces">
                   4
                 </div>
                 <div>
@@ -89,7 +83,7 @@ export default async function AdvertiseThanksPage({
           </div>
 
           {getSiteContactEmail() && (
-            <div className="mt-8 text-center text-soft">
+            <div className="mt-8 text-soft">
               <p>
                 Questions in the meantime?{' '}
                 <ContactEmailText className="text-green hover:underline focus-ring rounded" />
@@ -97,7 +91,7 @@ export default async function AdvertiseThanksPage({
             </div>
           )}
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
             <Link href="/" className="btn-primary">
               Back to home
             </Link>

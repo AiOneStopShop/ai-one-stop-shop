@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ContactEmail, ContactEmailText } from '@/components/ContactEmail';
 import { generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { getSiteContactEmail } from '@/lib/site-config';
+import { PageIntro } from '@/components/PageIntro';
 
 export const metadata = {
   title: 'Our Own Kits - Made by AI One Stop Shop',
@@ -23,22 +24,20 @@ export default function OurKitsPage() {
       />
 
       <div className="scroll-mt-16">
-        <section className="section-spacing">
+        <PageIntro
+          title="Our own kits"
+          accent="lamp"
+          lead="Packs and kits we made ourselves. Clearly marked, and never part of our rankings."
+        />
+        <section className="py-12 md:py-16">
           <div className="container-max">
-            {/* Header */}
-            <div className="mb-12 max-w-3xl">
-              <h1 className="heading-1 mb-4">Our Own Kits</h1>
-              <p className="text-lead mb-6">
-                Packs and kits we made ourselves. Clearly marked, and never part of our rankings.
+            <div className="note mb-12 max-w-3xl">
+              <p className="text-ink m-0">
+                <strong>Full disclosure:</strong> We made these and earn money if you buy them. They&apos;re kept separate from our tool directory and never appear in ranked lists.{' '}
+                <Link href="/disclosure" className="text-green underline focus-ring rounded">
+                  Read more about how we handle our own products
+                </Link>
               </p>
-              <div className="bg-cream-2 border border-line rounded-lg p-4">
-                <p className="text-sm text-ink">
-                  <strong>Full disclosure:</strong> We made these and earn money if you buy them. They're kept separate from our tool directory and never appear in ranked lists.{' '}
-                  <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
-                    Read more about how we handle our own products
-                  </Link>
-                </p>
-              </div>
             </div>
 
             {/* ApproveGate Kit */}
@@ -54,7 +53,7 @@ export default function OurKitsPage() {
 
                 <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
                   <p className="text-sm font-medium text-amber-900">
-                    ⏱ Status: In testing
+                    Status: In testing
                   </p>
                   <p className="text-sm text-amber-900 mt-1">
                     Free sample coming soon. Join the list to hear when it's ready.
@@ -70,11 +69,11 @@ export default function OurKitsPage() {
 
                 <div className="mb-6">
                   <h3 className="font-semibold mb-2">What's inside</h3>
-                  <ul className="space-y-2 text-soft">
-                    <li>✓ 4 gate skills (send, pay, post, publish)</li>
-                    <li>✓ Install card</li>
-                    <li>✓ Decision checklist</li>
-                    <li>✓ 3 worked examples</li>
+                  <ul className="space-y-2 text-soft list-disc pl-5">
+                    <li>4 gate skills (send, pay, post, publish)</li>
+                    <li>Install card</li>
+                    <li>Decision checklist</li>
+                    <li>3 worked examples</li>
                   </ul>
                 </div>
 
@@ -127,11 +126,11 @@ export default function OurKitsPage() {
 
                 <div className="card">
                   <h3 className="heading-3 mb-3">What to expect</h3>
-                  <ul className="space-y-2 text-soft">
-                    <li>• This is a DIY pack you implement yourself</li>
-                    <li>• You keep final judgment on every decision</li>
-                    <li>• Skills and examples, not a managed service</li>
-                    <li>• Your responsibility for legal and compliance needs</li>
+                  <ul className="space-y-2 text-soft list-disc pl-5">
+                    <li>This is a DIY pack you implement yourself</li>
+                    <li>You keep final judgment on every decision</li>
+                    <li>Skills and examples, not a managed service</li>
+                    <li>Your responsibility for legal and compliance needs</li>
                   </ul>
                 </div>
 

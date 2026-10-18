@@ -1,4 +1,7 @@
 import Link from 'next/link';
+import { ArrowRight, Check } from 'lucide-react';
+import { PageIntro } from '@/components/PageIntro';
+import { isAffiliateLive } from '@/lib/site-config';
 import { PRICE_CHECKED_LABEL } from '@/lib/site-dates';
 
 export const metadata = {
@@ -8,77 +11,61 @@ export const metadata = {
 };
 
 export default function PricingPage() {
-  // Directory browsing is free; this page states that instead of a paid plan.
-  // redirect('/');
-  
-  // Or show a simple "it's free" page:
+  const affiliateLive = isAffiliateLive();
+  const included = [
+    'Browse all tools, no account needed',
+    `Real pricing info (price checked ${PRICE_CHECKED_LABEL})`,
+    'Curated tools, no fake ratings',
+    'Search and filter by category',
+    'Compare tools side by side',
+  ];
+
   return (
-      <div className="scroll-mt-16">
-        <section className="section-spacing">
-          <div className="container-max max-w-3xl">
-            <div className="text-center mb-12">
-              <h1 className="heading-1 mb-4">It's free</h1>
-              <p className="text-lead">
-                It's free to use. No subscriptions, no paid memberships.
-              </p>
-            </div>
+    <div className="scroll-mt-16">
+      <PageIntro
+        title="It's free"
+        accent="jar"
+        lead="It's free to use. No subscriptions, no paid memberships."
+      >
+        <Link href="/tools" className="btn-primary">
+          Start browsing tools
+          <ArrowRight className="w-5 h-5" aria-hidden="true" />
+        </Link>
+      </PageIntro>
 
-            <div className="space-y-8 text-lg text-ink">
-              <div>
-                <h2 className="heading-2 mb-4">What you get</h2>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-3">
-                    <span className="text-green text-xl">✓</span>
-                    <span>Browse all tools - no account needed</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-green text-xl">✓</span>
-                    <span>Real pricing info (price checked {PRICE_CHECKED_LABEL})</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-green text-xl">✓</span>
-                    <span>Curated tools (no fake ratings)</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-green text-xl">✓</span>
-                    <span>Search and filter by category</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-green text-xl">✓</span>
-                    <span>Compare tools side by side</span>
-                  </li>
-                </ul>
-              </div>
+      <section className="py-12 md:py-16">
+        <div className="container-max grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
+          <div>
+            <h2 className="heading-2 mb-5">What you get</h2>
+            <ul className="space-y-3 text-lg list-none p-0 m-0">
+              {included.map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <Check className="w-5 h-5 mt-1.5 shrink-0 text-green-2" aria-hidden="true" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
 
-              <div className="note">
-                <h3 className="heading-3 mb-3">How we make money</h3>
-                <p>
-                  Some links may be paid (affiliate) links. If you sign up through one, we may earn a commission. We don't add any fee. We also have a separate section for our own products (like ApproveGate).
-                </p>
-                <p className="mt-3">
-                  <strong>Money never changes our ranking.</strong> A tool doesn't move up because it pays us.
-                </p>
-                <Link href="/disclosure" className="text-green hover:underline focus-ring rounded mt-2 inline-block">
-                  Read our full disclosure →
-                </Link>
-              </div>
+            <h2 className="heading-3 mt-10 mb-3">Will you ever charge?</h2>
+            <p className="text-lg">The directory is free to use. No account required.</p>
+            <p className="text-lg mt-3">We may offer optional paid features in the future, but the core directory will remain free.</p>
+          </div>
 
-              <div>
-                <h3 className="heading-3 mb-3">Will you ever charge?</h3>
-                <p>
-                  The directory is free to use. No account required.
-                </p>
-                <p className="mt-3">
-                  We may offer optional paid features in the future, but the core directory will remain free.
-                </p>
-              </div>
-
-              <div className="text-center pt-8">
-                <Link href="/tools" className="btn-primary inline-block">
-                  Start browsing tools
-                </Link>
-              </div>
-            </div>
+          <div className="panel-honest">
+            <h2 className="heading-3 mb-3">How we make money</h2>
+            <p>
+              {affiliateLive
+                ? 'Some links may be paid (affiliate) links. If you sign up through one, we may earn a commission. We don’t add any fee. '
+                : 'Tool makers can pay for clearly labeled sponsored spots. '}
+              We also have a separate section for our own products (like ApproveGate).
+            </p>
+            <p className="mt-3">
+              <strong>Money never changes our ranking.</strong> A tool doesn&apos;t move up because it pays us.
+            </p>
+            <p className="mt-4 mb-0">
+              <Link href="/disclosure">Read our full disclosure</Link>
+            </p>
+          </div>
         </div>
       </section>
     </div>

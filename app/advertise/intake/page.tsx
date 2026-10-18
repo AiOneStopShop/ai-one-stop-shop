@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
 
 const packages = [
   { value: 'featured_tool', label: 'Featured Tool ($39)' },
@@ -156,31 +157,32 @@ function IntakeFormContent() {
 
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        above={
+          <Link href="/advertise" className="text-green underline underline-offset-4 focus-ring rounded inline-flex min-h-11 items-center">
+            ← Back to sponsorship options
+          </Link>
+        }
+        title="Sponsorship intake form"
+        accent="notebook"
+        lead="Provide your assets and details for your sponsored placement."
+      />
+      <section className="py-10 md:py-14">
         <div className="container-max max-w-2xl">
-          <div className="mb-8">
-            <Link href="/advertise" className="text-green hover:underline focus-ring rounded mb-4 inline-block">
-              ← Back to sponsorship options
-            </Link>
-            <h1 className="heading-1 mb-4">Sponsorship intake form</h1>
-            <div className="bg-amber-50 border-2 border-amber-400 rounded-lg p-4 mb-6">
-              <p className="text-amber-900 font-semibold">
-                <strong>Booking isn't open yet.</strong> Please{' '}
-                <Link href="/advertise/request" className="text-green hover:underline focus-ring rounded">
-                  request a spot
-                </Link>{' '}
-                first. We'll send you this form after we've agreed on your placement.
-              </p>
-            </div>
-            <p className="text-lg text-soft">
-              Provide your assets and details for your sponsored placement.
+          <div className="bg-amber-50 border border-amber-400 rounded-2xl p-5 mb-8" role="note">
+            <p className="text-amber-900 m-0">
+              <strong>Booking isn&apos;t open yet.</strong> Please{' '}
+              <Link href="/advertise/request" className="text-green underline focus-ring rounded">
+                request a spot
+              </Link>{' '}
+              first. We&apos;ll send you this form after we&apos;ve agreed on your placement.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="card space-y-6">
             {/* Company Info */}
             <div>
-              <label htmlFor="companyName" className="block text-sm font-medium mb-2">
+              <label htmlFor="companyName" className="block font-semibold text-ink mb-2">
                 Company name <span className="text-red-600">*</span>
               </label>
               <input
@@ -191,13 +193,13 @@ function IntakeFormContent() {
                 maxLength={100}
                 value={formData.companyName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
 
             <div>
-              <label htmlFor="contactName" className="block text-sm font-medium mb-2">
+              <label htmlFor="contactName" className="block font-semibold text-ink mb-2">
                 Contact name <span className="text-red-600">*</span>
               </label>
               <input
@@ -208,13 +210,13 @@ function IntakeFormContent() {
                 maxLength={100}
                 value={formData.contactName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
+              <label htmlFor="email" className="block font-semibold text-ink mb-2">
                 Email address <span className="text-red-600">*</span>
               </label>
               <input
@@ -225,14 +227,14 @@ function IntakeFormContent() {
                 maxLength={255}
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
 
             {/* Tool Info */}
             <div>
-              <label htmlFor="toolName" className="block text-sm font-medium mb-2">
+              <label htmlFor="toolName" className="block font-semibold text-ink mb-2">
                 Tool name <span className="text-red-600">*</span>
               </label>
               <input
@@ -243,13 +245,13 @@ function IntakeFormContent() {
                 maxLength={100}
                 value={formData.toolName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
 
             <div>
-              <label htmlFor="toolUrl" className="block text-sm font-medium mb-2">
+              <label htmlFor="toolUrl" className="block font-semibold text-ink mb-2">
                 Tool website URL <span className="text-red-600">*</span>
               </label>
               <input
@@ -261,14 +263,14 @@ function IntakeFormContent() {
                 placeholder="https://"
                 value={formData.toolUrl}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
 
             {/* Package & Dates */}
             <div>
-              <label htmlFor="package" className="block text-sm font-medium mb-2">
+              <label htmlFor="package" className="block font-semibold text-ink mb-2">
                 Package <span className="text-red-600">*</span>
               </label>
               <select
@@ -277,7 +279,7 @@ function IntakeFormContent() {
                 required
                 value={formData.package}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring bg-white"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring bg-white"
                 disabled={status === 'submitting'}
               >
                 <option value="">Select a package...</option>
@@ -290,7 +292,7 @@ function IntakeFormContent() {
             </div>
 
             <div>
-              <label htmlFor="preferredStartDate" className="block text-sm font-medium mb-2">
+              <label htmlFor="preferredStartDate" className="block font-semibold text-ink mb-2">
                 Preferred start date <span className="text-red-600">*</span>
               </label>
               <input
@@ -301,7 +303,7 @@ function IntakeFormContent() {
                 value={formData.preferredStartDate}
                 onChange={handleChange}
                 min={new Date().toISOString().split('T')[0]}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
@@ -309,7 +311,7 @@ function IntakeFormContent() {
             {/* Category (for spotlight) */}
             {(formData.package === 'category_spotlight' || formData.package === 'founding_bundle') && (
               <div>
-                <label htmlFor="categorySlug" className="block text-sm font-medium mb-2">
+                <label htmlFor="categorySlug" className="block font-semibold text-ink mb-2">
                   Category <span className="text-red-600">*</span>
                 </label>
                 <select
@@ -318,7 +320,7 @@ function IntakeFormContent() {
                   required
                   value={formData.categorySlug}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring bg-white"
+                  className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring bg-white"
                   disabled={status === 'submitting'}
                 >
                   <option value="">Select a category...</option>
@@ -333,7 +335,7 @@ function IntakeFormContent() {
 
             {/* Marketing Content */}
             <div>
-              <label htmlFor="blurb" className="block text-sm font-medium mb-2">
+              <label htmlFor="blurb" className="block font-semibold text-ink mb-2">
                 Marketing blurb (40 words max) <span className="text-red-600">*</span>
               </label>
               <textarea
@@ -344,7 +346,7 @@ function IntakeFormContent() {
                 maxLength={240}
                 value={formData.blurb}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 placeholder="Describe your tool in plain English. We may edit for clarity."
                 disabled={status === 'submitting'}
               />
@@ -355,7 +357,7 @@ function IntakeFormContent() {
 
             {/* Logo */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block font-semibold text-ink mb-2">
                 Logo
               </label>
               <div className="space-y-3">
@@ -371,7 +373,7 @@ function IntakeFormContent() {
                     placeholder="https://example.com/logo.png"
                     value={formData.logoUrl}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                    className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                     disabled={status === 'submitting'}
                   />
                 </div>
@@ -386,7 +388,7 @@ function IntakeFormContent() {
                     name="logoFile"
                     accept=".png,.svg,image/png,image/svg+xml"
                     onChange={handleFileChange}
-                    className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                    className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                     disabled={status === 'submitting'}
                   />
                 </div>
@@ -395,7 +397,7 @@ function IntakeFormContent() {
 
             {/* Destination URL */}
             <div>
-              <label htmlFor="destinationUrl" className="block text-sm font-medium mb-2">
+              <label htmlFor="destinationUrl" className="block font-semibold text-ink mb-2">
                 Destination URL <span className="text-red-600">*</span>
               </label>
               <input
@@ -407,7 +409,7 @@ function IntakeFormContent() {
                 placeholder="https://yourtool.com/signup"
                 value={formData.destinationUrl}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
               />
               <p className="text-sm text-soft mt-1">Where should the sponsored link go?</p>

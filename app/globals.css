@@ -273,6 +273,12 @@ mark {
   color: #FFFFFF;
 }
 
+.panel-honest strong,
+.panel-honest b,
+.panel-honest em {
+  color: #FFFFFF;
+}
+
 .panel-honest a {
   color: #FFFFFF;
   text-decoration: underline;

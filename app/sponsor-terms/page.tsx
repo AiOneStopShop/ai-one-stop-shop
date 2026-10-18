@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
 import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail, getOperatorLegalName } from '@/lib/site-config';
 
@@ -15,13 +16,16 @@ export const metadata = {
 export default function SponsorTermsPage() {
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        title="Sponsor Terms (DRAFT)"
+        accent="notebook"
+        lead="The topics our Sponsor Terms will cover. Not an offer, not a contract, and not in effect yet."
+      />
+      <section className="py-12 md:py-16">
         <div className="container-max max-w-3xl">
-          <div className="bg-amber-50 border-2 border-amber-400 rounded-xl p-6 mb-8">
-            <h2 className="text-2xl font-bold text-amber-900 mb-3">
-              ⚠️ DRAFT outline. Not in effect.
-            </h2>
-            <p className="text-amber-900">
+          <div className="bg-amber-50 border border-amber-400 rounded-2xl p-6 mb-10" role="note">
+            <p className="text-amber-900 m-0">
+              <strong>DRAFT outline. Not in effect.</strong>{' '}
               This page lists the topics our Sponsor Terms will cover. It is <strong>not an offer and not a contract</strong>, and nothing here binds you or us. We're finalizing the terms with our attorney and aren't taking paid bookings until they're published. You can still{' '}
               <Link href="/advertise/request" className="text-green hover:underline focus-ring rounded">
                 request a sponsored spot
@@ -30,9 +34,7 @@ export default function SponsorTermsPage() {
             </p>
           </div>
 
-          <h1 className="heading-1 mb-8">Sponsor Terms</h1>
-
-          <div className="prose prose-lg max-w-none space-y-8 text-ink">
+          <div className="guide-prose">
             <p className="text-sm text-soft">
               Last updated: October 17, 2026 (DRAFT)
             </p>

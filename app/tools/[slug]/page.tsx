@@ -5,7 +5,7 @@ import type { Tool, Category } from '@/types/database';
 import { generateToolSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { isToolSponsored } from '@/lib/sponsor-placements';
 import { SponsoredLabel } from '@/components/SponsoredLabel';
-import { ExternalLink } from 'lucide-react';
+import { Check, ExternalLink } from 'lucide-react';
 
 async function getTool(slug: string) {
   const { data } = await supabase
@@ -162,7 +162,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {tool.features.map((feature: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <span className="text-green mt-1" aria-hidden="true">✓</span>
+                          <Check className="w-4 h-4 mt-1 shrink-0 text-green-2" aria-hidden="true" />
                           <span>{feature}</span>
                         </li>
                       ))}
@@ -200,7 +200,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     
                     {tool.has_free_tier === true && (
                       <span className="badge bg-leaf text-green border border-leaf-line mb-4 inline-block">
-                        <span aria-hidden="true">✓ </span>Free tier available
+                        Free tier available
                       </span>
                     )}
 

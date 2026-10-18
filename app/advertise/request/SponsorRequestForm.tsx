@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
 
 const packages = [
   { value: 'featured-tool', label: 'Featured Tool ($39)', price: '$39' },
@@ -106,18 +107,18 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
 
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        above={
+          <Link href="/advertise" className="text-green underline underline-offset-4 focus-ring rounded inline-flex min-h-11 items-center">
+            ← Back to sponsorship options
+          </Link>
+        }
+        title="Request a sponsored spot"
+        accent="envelope"
+        lead="Tell us about your tool. We'll review your request (usually within 2 business days) and email you next steps."
+      />
+      <section className="py-10 md:py-14">
         <div className="container-max max-w-2xl">
-          <div className="mb-8">
-            <Link href="/advertise" className="text-green hover:underline focus-ring rounded mb-4 inline-block">
-              ← Back to sponsorship options
-            </Link>
-            <h1 className="heading-1 mb-4">Request a sponsored spot</h1>
-            <p className="text-lg text-soft">
-              Tell us about your tool. We'll review your request (usually within 2 business days) and email you next steps.
-            </p>
-          </div>
-
           {/* Validation Error Summary */}
           {validationErrors.length > 0 && (
             <div
@@ -141,7 +142,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
           <form onSubmit={handleSubmit} className="card space-y-6">
             {/* Company Info */}
             <div>
-              <label htmlFor="companyName" className="block text-sm font-medium mb-2">
+              <label htmlFor="companyName" className="block font-semibold text-ink mb-2">
                 Company name <span className="text-red-600">*</span>
               </label>
               <input
@@ -152,14 +153,14 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={100}
                 value={formData.companyName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('Company name'))}
               />
             </div>
 
             <div>
-              <label htmlFor="contactName" className="block text-sm font-medium mb-2">
+              <label htmlFor="contactName" className="block font-semibold text-ink mb-2">
                 Your name <span className="text-red-600">*</span>
               </label>
               <input
@@ -170,14 +171,14 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={100}
                 value={formData.contactName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('Your name'))}
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
+              <label htmlFor="email" className="block font-semibold text-ink mb-2">
                 Email <span className="text-red-600">*</span>
               </label>
               <input
@@ -188,7 +189,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={100}
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('Email'))}
               />
@@ -196,7 +197,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
 
             {/* Tool Info */}
             <div>
-              <label htmlFor="toolName" className="block text-sm font-medium mb-2">
+              <label htmlFor="toolName" className="block font-semibold text-ink mb-2">
                 Tool name <span className="text-red-600">*</span>
               </label>
               <input
@@ -207,14 +208,14 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={200}
                 value={formData.toolName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('Tool name'))}
               />
             </div>
 
             <div>
-              <label htmlFor="toolUrl" className="block text-sm font-medium mb-2">
+              <label htmlFor="toolUrl" className="block font-semibold text-ink mb-2">
                 Tool website URL <span className="text-red-600">*</span>
               </label>
               <input
@@ -225,7 +226,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={500}
                 value={formData.toolUrl}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 placeholder="https://"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('Tool website URL'))}
@@ -234,7 +235,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
 
             {/* Package Selection */}
             <div>
-              <label htmlFor="package" className="block text-sm font-medium mb-2">
+              <label htmlFor="package" className="block font-semibold text-ink mb-2">
                 Sponsorship package <span className="text-red-600">*</span>
               </label>
               <select
@@ -243,7 +244,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 required
                 value={formData.package}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('package'))}
               >
@@ -258,7 +259,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
 
             {/* Message */}
             <div>
-              <label htmlFor="message" className="block text-sm font-medium mb-2">
+              <label htmlFor="message" className="block font-semibold text-ink mb-2">
                 Additional details (optional)
               </label>
               <textarea
@@ -268,7 +269,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={1000}
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring resize-none"
+                className="w-full px-4 py-3 min-h-[52px] border border-soft rounded-xl bg-white focus-ring resize-none"
                 placeholder="Any special requests, preferred dates, or questions?"
                 disabled={status === 'submitting'}
               />

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PageIntro } from '@/components/PageIntro';
 import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
 
@@ -35,7 +36,7 @@ const packages = [
     name: 'Founding Bundle',
     price: '$99',
     duration: '30 days',
-    description: 'Featured Tool + Category Spotlight + 2 newsletter slots. Limited to 5.',
+    description: 'Featured Tool + Category Spotlight + 2 newsletter slots (once the newsletter launches). Limited to 5.',
     package: 'founding-bundle',
   },
 ];
@@ -43,21 +44,23 @@ const packages = [
 export default function AdvertisePage() {
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        title="Sponsor AI One Stop Shop"
+        accent="mug"
+        lead="Put your AI tool in front of people choosing tools to work smarter. Clearly labeled sponsored spots on an honest, curated directory. Founding sponsor pricing."
+      >
+        <Link href="/advertise/request" className="btn-primary">Request a spot</Link>
+        <Link href="/partners" className="btn-secondary">Other ways to work with us</Link>
+      </PageIntro>
+      <section className="py-12 md:py-16">
         <div className="container-max max-w-4xl">
-          <h1 className="heading-1 mb-6">Sponsor AI One Stop Shop</h1>
-          
-          <div className="bg-amber-50 border-2 border-amber-400 rounded-lg p-4 mb-8">
-            <p className="text-amber-900 font-semibold">
-              <strong>Booking opens soon.</strong> You can request a spot today. Requesting is free and doesn't commit you to anything. We won't take any payment until our Sponsor Terms are final.
+          <div className="bg-amber-50 border border-amber-400 rounded-2xl p-5 mb-10" role="note">
+            <p className="text-amber-900 m-0">
+              <strong>Booking opens soon.</strong> You can request a spot today. Requesting is free and doesn&apos;t commit you to anything. We won&apos;t take any payment until our Sponsor Terms are final.
             </p>
           </div>
 
-          <p className="text-lead text-ink mb-12">
-            Put your AI tool in front of people choosing tools to work smarter. Clearly labeled sponsored spots on an honest, curated directory. Founding sponsor pricing.
-          </p>
-
-          <div className="prose prose-lg max-w-none space-y-12">
+          <div className="guide-prose !max-w-none space-y-12">
             {/* Introduction */}
             <div className="space-y-4">
               <p>
@@ -71,7 +74,7 @@ export default function AdvertisePage() {
             {/* How sponsorship works */}
             <div>
               <h2 className="heading-2 mb-4">How sponsorship works here</h2>
-              <div className="bg-card border-2 border-green rounded-xl p-6 mb-6">
+              <div className="panel-honest mb-6">
                 <p className="text-lg font-semibold mb-2">
                   Money buys a labeled spot, never our opinion.
                 </p>

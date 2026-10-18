@@ -60,7 +60,7 @@ export default function SponsorTermsPage() {
             <div>
               <h2 className="heading-2 mb-4">3. Refund Policy</h2>
               <p className="text-soft italic">
-                [To be completed: Full refund if declined by us or sponsor cancels before go-live; no refund for elapsed time after go-live; pro-rata refund if we remove placement for non-breach reasons; day-for-day extension for downtime over 24 hours in total; no refund for breach (misleading claims, unlawful content, etc.).]
+                [To be completed: Full refund if declined by us or sponsor cancels before go-live; no refund for elapsed time after go-live; pro-rata refund if we remove placement for non-breach reasons; day-for-day extension for downtime over 24 hours in total; if a newsletter issue is sent more than 48 hours after the promised send time, the sponsor may move the slot or get a refund; no refund for breach (misleading claims, unlawful content, etc.).]
               </p>
             </div>
 

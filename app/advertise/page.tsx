@@ -169,7 +169,7 @@ export default function AdvertisePage() {
             <div>
               <h2 className="heading-2 mb-4">Refunds and terms</h2>
               <p className="mb-4">
-                <strong>Our Sponsor Terms, including refunds, are being finalized with our attorney. We'll publish them before we take any payment.</strong>{' '}
+                <strong>Our Sponsor Terms, including refunds, are being finalized with our attorney. We'll publish them before we take any payment.</strong> One rule is already set: if a newsletter issue goes out more than 48 hours after the promised send time, you can move your slot or get a refund.{' '}
                 <Link href="/sponsor-terms" className="text-green hover:underline focus-ring rounded font-semibold">
                   Draft outline
                 </Link>

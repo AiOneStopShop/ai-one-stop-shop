@@ -5,6 +5,12 @@ import { FormEvent } from 'react';
 import { BUDGET_PRESETS, budgetPath, type BudgetQuery } from '@/lib/budget-url';
 import { BUDGET_FORM_GOALS, PERSONAS } from '@/lib/personas';
 
+/** Same option style as the finder: a bordered row that turns leaf-green when chosen. */
+const CHOICE =
+  'flex items-start gap-3 p-3 min-h-[52px] border-[1.5px] border-line rounded-xl bg-white cursor-pointer hover:border-green transition-colors has-[:checked]:border-green has-[:checked]:bg-leaf has-[:checked]:shadow-[0_0_0_1px_#1E3B2C] has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-green-2 has-[:focus-visible]:outline-offset-2';
+const CHIP =
+  'inline-flex items-center gap-2 px-3 min-h-11 border-[1.5px] border-line rounded-full bg-white cursor-pointer hover:border-green transition-colors has-[:checked]:border-green has-[:checked]:bg-leaf has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-green-2 has-[:focus-visible]:outline-offset-2';
+
 function selectedValues(form: HTMLFormElement, name: string): string[] {
   return Array.from(form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`))
     .map((input) => input.value);
@@ -45,11 +51,11 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
   const presetMatch = BUDGET_PRESETS.includes(query.budget as (typeof BUDGET_PRESETS)[number]);
 
   return (
-    <form method="get" action="/budget" onSubmit={onSubmit} className="card space-y-8">
+    <form method="get" action="/budget" onSubmit={onSubmit} className="card space-y-8 !p-5 md:!p-7">
       <fieldset>
-        <legend className="heading-3 mb-3">Persona</legend>
-        <div className="grid gap-2">
-          <label className="flex items-start gap-3 min-h-11 cursor-pointer">
+        <legend className="heading-3 mb-3">Who is it for?</legend>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <label className={CHOICE}>
             <input
               type="radio"
               name="persona"
@@ -57,10 +63,13 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
               defaultChecked={!query.persona}
               className="mt-1"
             />
-            <span>Choose by goals only</span>
+            <span>
+              <span className="font-medium">Just me</span>
+              <span className="block text-sm text-soft">Choose by goals below</span>
+            </span>
           </label>
           {PERSONAS.map((persona) => (
-            <label key={persona.slug} className="flex items-start gap-3 min-h-11 cursor-pointer">
+            <label key={persona.slug} className={CHOICE}>
               <input
                 type="radio"
                 name="persona"
@@ -70,7 +79,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
               />
               <span>
                 <span className="font-medium">{persona.name}</span>
-                <span className="text-soft"> — {persona.title}</span>
+                <span className="block text-sm text-soft">{persona.title}</span>
               </span>
             </label>
           ))}
@@ -81,7 +90,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
         <legend className="heading-3 mb-3">Monthly budget</legend>
         <div className="grid gap-2 sm:grid-cols-2">
           {BUDGET_PRESETS.map((amount) => (
-            <label key={amount} className="flex items-center gap-3 min-h-11 cursor-pointer">
+            <label key={amount} className={`${CHOICE} items-center`}>
               <input
                 type="radio"
                 name="budget"
@@ -91,7 +100,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
               <span>{amount === 0 ? '$0 (free tools only)' : `Up to $${amount}/month`}</span>
             </label>
           ))}
-          <label className="flex items-center gap-3 min-h-11 cursor-pointer sm:col-span-2">
+          <label className={`${CHOICE} items-center sm:col-span-2`}>
             <input
               type="radio"
               name="budget"
@@ -109,7 +118,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
               className="w-32 px-3 py-2 border border-soft rounded-lg focus-ring bg-white"
               aria-label="Custom monthly budget in US dollars"
             />
-            <span>/month</span>
+            <span>a month (your own amount)</span>
           </label>
         </div>
       </fieldset>
@@ -118,7 +127,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
         <legend className="heading-3 mb-3">Goals</legend>
         <div className="grid gap-2 sm:grid-cols-2">
           {BUDGET_FORM_GOALS.map((goal) => (
-            <label key={goal.id} className="flex items-start gap-3 min-h-11 cursor-pointer">
+            <label key={goal.id} className={CHOICE}>
               <input
                 type="checkbox"
                 name="goals"
@@ -140,9 +149,9 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
         <p className="text-sm text-soft mb-3">
           We fill these slots first when the budget is tight.
         </p>
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="flex flex-wrap gap-2">
           {BUDGET_FORM_GOALS.map((goal) => (
-            <label key={goal.id} className="flex items-center gap-3 min-h-11 cursor-pointer">
+            <label key={goal.id} className={CHIP}>
               <input
                 type="checkbox"
                 name="need"
@@ -155,7 +164,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
         </div>
       </fieldset>
 
-      <label className="flex items-start gap-3 min-h-11 cursor-pointer">
+      <label className={CHOICE}>
         <input
           type="checkbox"
           name="free"

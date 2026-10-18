@@ -80,7 +80,7 @@ export default function PersonasPage() {
                     <div className="flex flex-col gap-3 p-6 flex-1">
                       <span className="font-semibold text-ink">{persona.title}</span>
                       <span className="text-soft">{persona.whoFor}</span>
-                      <span className="block border-l-[3px] border-orange pl-3 italic text-ink">
+                      <span className="block font-fraunces text-[1.1rem] leading-snug text-green">
                         &ldquo;{persona.voice}&rdquo;
                       </span>
                       <span className="mt-auto inline-flex items-center gap-2 font-semibold text-green">

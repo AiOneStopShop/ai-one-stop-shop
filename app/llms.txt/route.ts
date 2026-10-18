@@ -8,7 +8,7 @@ export async function GET() {
   // Get tool count
   const { count } = await supabase
     .from('tools')
-    .select('*', { count: 'exact', head: true })
+    .select('id', { count: 'exact', head: true })
     .eq('status', 'published');
 
   const content = `# AI One Stop Shop

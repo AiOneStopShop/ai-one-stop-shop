@@ -16,7 +16,7 @@ export const revalidate = 60;
 async function getToolsCount(): Promise<number> {
   const { count } = await supabase
     .from('tools')
-    .select('*', { count: 'exact', head: true })
+    .select('id', { count: 'exact', head: true })
     .eq('status', 'published');
   
   return count || 0;

@@ -1,6 +1,7 @@
 import { getFeaturedToolPlacements } from '@/lib/sponsor-placements';
 import { SponsoredToolCard } from './SponsoredToolCard';
 import { supabase } from '@/lib/supabase';
+import { PUBLIC_TOOL_COLUMNS } from '@/lib/tool-columns';
 import type { Tool } from '@/types/database';
 
 /**
@@ -24,7 +25,7 @@ export async function HomeSponsoredRow() {
   if (toolIds.length > 0) {
     const { data } = await supabase
       .from('tools')
-      .select('*')
+      .select(PUBLIC_TOOL_COLUMNS)
       .in('id', toolIds)
       .eq('status', 'published');
     tools = data || [];

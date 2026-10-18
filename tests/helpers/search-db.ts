@@ -67,6 +67,16 @@ export async function createSearchDb(migrations: string[]): Promise<PGlite> {
   for (const tc of fixture.tool_categories) {
     await db.query('INSERT INTO public.tool_categories (tool_id, category_id) VALUES ($1, $2)', [tc.tool_id, tc.category_id]);
   }
+  // Mirror production privileges (migration 025): anon/authenticated get column-level SELECT on
+  // tools (no review_notes) and read access to the category tables. Searches run as anon, so a
+  // function that touches a hidden column fails here exactly as it would in Supabase.
+  await db.exec(`
+    GRANT USAGE ON SCHEMA public, extensions TO anon, authenticated;
+    GRANT SELECT ON public.categories, public.tool_categories TO anon, authenticated;
+    GRANT SELECT (id, slug, name, tagline, description, website_url, pricing_summary, pricing_model, has_free_tier,
+      platforms, features, logo_url, editorial_score, editorial_why, source_url, last_verified_at, status, is_sponsored,
+      created_at, updated_at, tags, search_categories, search_features, search_vector) ON public.tools TO anon, authenticated;
+  `);
   for (const m of migrations) await db.exec(readMigration(m));
   return db;
 }
@@ -81,5 +91,9 @@ export async function runSearch(db: PGlite, q: string, opts: { exact?: boolean; 
     ? 'SELECT * FROM public.search_tools(q => $1, free_only => $2, "limit" => $3, exact => $4)'
     : 'SELECT * FROM public.search_tools(q => $1, free_only => $2, "limit" => $3)';
   const params = hasExact ? [q, opts.freeOnly ?? false, opts.limit ?? 50, opts.exact ?? false] : [q, opts.freeOnly ?? false, opts.limit ?? 50];
-  return (await db.query<SearchRow>(sql, params)).rows;
+  // Run as anon, like the website's Supabase client.
+  return db.transaction(async (tx) => {
+    await tx.exec('SET LOCAL ROLE anon');
+    return (await tx.query<SearchRow>(sql, params)).rows;
+  });
 }

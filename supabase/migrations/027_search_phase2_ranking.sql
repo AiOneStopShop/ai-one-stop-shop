@@ -264,7 +264,12 @@ BEGIN
 
   RETURN QUERY
   WITH base AS (
-    SELECT t.*
+    -- Explicit columns, never t.*: this function runs as the caller, and anon/authenticated
+    -- cannot read tools.review_notes (migration 025).
+    SELECT t.id, t.slug, t.name, t.tagline, t.description, t.website_url, t.pricing_summary, t.pricing_model,
+      t.has_free_tier, t.platforms, t.features, t.logo_url, t.editorial_score, t.editorial_why, t.source_url,
+      t.last_verified_at, t.status, t.is_sponsored, t.created_at, t.updated_at, t.tags,
+      t.search_categories, t.search_features, t.search_vector
     FROM public.tools t
     WHERE t.status = 'published'
       -- Candidate pre-filter (GIN index on search_vector); name-similarity catches the rest.

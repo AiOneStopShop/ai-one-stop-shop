@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { sponsorRequestRateLimit } from '@/lib/rate-limit';
-import { getClientIP } from '@/lib/client-ip';
-import { getSiteContactEmail } from '@/lib/site-config';
+import { getClientKey } from '@/lib/client-ip';
+import { getSiteContactEmail, getSiteUrl } from '@/lib/site-config';
 
 interface RequestBody {
   companyName: string;
@@ -20,7 +20,7 @@ const VALID_PACKAGES = ['featured-tool', 'category-spotlight', 'newsletter', 'fo
 export async function POST(request: NextRequest) {
   try {
     // Rate limit check (5 requests per IP per 15 minutes)
-    const ip = getClientIP(request);
+    const ip = getClientKey(request);
     const { success } = await sponsorRequestRateLimit.limit(ip);
 
     if (!success) {
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
         contact_email: body.email.trim().toLowerCase().substring(0, 255),
         tool_name: body.toolName.trim().substring(0, 100),
         tool_url: body.toolUrl.trim().substring(0, 500),
-        package: body.package === 'founding-bundle' ? 'founding_bundle' : body.package.replace('-', '_'),
+        package: body.package.replace(/-/g, '_'),
         blurb: body.message ? body.message.trim().substring(0, 500) : null,
         status: 'pending_review',
         agreed_to_terms: false,
@@ -122,6 +122,7 @@ export async function POST(request: NextRequest) {
           'category-spotlight': 'Category Spotlight ($69)',
           'newsletter': 'Newsletter Sponsor ($29)',
           'founding-bundle': 'Founding Bundle ($99)',
+          'partner-program': 'Partner Program',
         };
 
         // HTML-escape helper
@@ -154,7 +155,7 @@ export async function POST(request: NextRequest) {
               ${body.message ? `<p><strong>Message:</strong><br>${escapeHtml(body.message).replace(/\n/g, '<br>')}</p>` : ''}
               <hr>
               <p><small>Submitted at ${new Date().toISOString()}</small></p>
-              <p><small>Review in admin: <a href="https://aionestop.shop/admin/sponsors">/admin/sponsors</a></small></p>
+              <p><small>Review in admin: <a href="${getSiteUrl().replace(/\/$/, '')}/admin/sponsors">/admin/sponsors</a></small></p>
             `,
           }),
         });

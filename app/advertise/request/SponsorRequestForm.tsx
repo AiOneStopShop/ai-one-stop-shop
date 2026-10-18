@@ -9,7 +9,7 @@ const packages = [
   { value: 'category-spotlight', label: 'Category Spotlight ($69)', price: '$69' },
   { value: 'newsletter', label: 'Newsletter Sponsor ($29)', price: '$29', disabled: true },
   { value: 'founding-bundle', label: 'Founding Bundle ($99)', price: '$99' },
-  { value: 'partner_program', label: 'Partner Program', price: 'Contact' },
+  { value: 'partner-program', label: 'Partner Program', price: 'Contact' },
 ];
 
 interface SponsorRequestFormProps {
@@ -53,7 +53,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
     if (!formData.email.trim()) errors.push('Email is required');
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.push('Email must be valid');
     if (!formData.toolName.trim()) errors.push('Tool name is required');
-    if (!formData.toolUrl.trim()) errors.push('Tool URL is required');
+    if (!formData.toolUrl.trim()) errors.push('Tool website URL is required');
     if (!formData.package) errors.push('Please select a sponsorship package');
     return errors;
   };
@@ -215,7 +215,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
 
             <div>
               <label htmlFor="toolUrl" className="block text-sm font-medium mb-2">
-                Tool URL <span className="text-red-600">*</span>
+                Tool website URL <span className="text-red-600">*</span>
               </label>
               <input
                 type="url"
@@ -228,7 +228,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
                 placeholder="https://"
                 disabled={status === 'submitting'}
-                aria-invalid={validationErrors.some(e => e.includes('Tool URL'))}
+                aria-invalid={validationErrors.some(e => e.includes('Tool website URL'))}
               />
             </div>
 
@@ -274,16 +274,19 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
               />
             </div>
 
-            {/* Honeypot */}
-            <input
-              type="text"
-              name="honeypot"
-              value={formData.honeypot}
-              onChange={handleChange}
-              style={{ position: 'absolute', left: '-9999px' }}
-              tabIndex={-1}
-              autoComplete="off"
-            />
+            {/* Honeypot: hidden from people and assistive tech, labelled for audits */}
+            <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }}>
+              <label htmlFor="sponsor-hp-website">Leave this field empty</label>
+              <input
+                type="text"
+                id="sponsor-hp-website"
+                name="honeypot"
+                value={formData.honeypot}
+                onChange={handleChange}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
 
             {/* Error Message */}
             {status === 'error' && errorMessage && (

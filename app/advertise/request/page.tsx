@@ -3,7 +3,8 @@ import { Suspense } from 'react';
 import { SponsorRequestForm } from './SponsorRequestForm';
 
 export const metadata: Metadata = {
-  title: 'Advertise with Us - AI One Stop Shop',
+  title: 'Request a sponsored spot',
+  alternates: { canonical: '/advertise/request' },
   description: 'Reach a quality audience of builders, founders, and tech buyers with sponsored placements on AI One Stop Shop.',
 };
 

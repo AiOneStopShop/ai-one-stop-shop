@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { sponsorRequestRateLimit } from '@/lib/rate-limit';
 import { getClientKey } from '@/lib/client-ip';
+import { sendNotificationEmail } from '@/lib/notify-email';
 import { getSiteContactEmail, getSiteUrl } from '@/lib/site-config';
 
 interface RequestBody {
@@ -105,72 +106,46 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send notification email via Resend (if API key is configured)
-    // Requires: RESEND_API_KEY, NEXT_PUBLIC_SITE_CONTACT_EMAIL
-    // Resend errors (non-fatal, logged only):
-    // - 401: Invalid API key
-    // - 403: Email not verified in Resend account
-    // - 422: Invalid email format or missing required fields
-    // - 429: Rate limit exceeded (Resend free tier: 100/day, 3000/month)
-    const resendApiKey = process.env.RESEND_API_KEY;
-    const contactEmail = getSiteContactEmail();
+    // Notification email via Resend (non-fatal). See lib/notify-email.ts for env vars
+    // (RESEND_API_KEY, optional RESEND_FROM) and the logged error format.
+    const contactEmail = getSiteContactEmail() ?? '';
 
-    if (resendApiKey && contactEmail) {
-      try {
-        const packageLabels: Record<string, string> = {
-          'featured-tool': 'Featured Tool ($39)',
-          'category-spotlight': 'Category Spotlight ($69)',
-          'newsletter': 'Newsletter Sponsor ($29)',
-          'founding-bundle': 'Founding Bundle ($99)',
-          'partner-program': 'Partner Program',
-        };
+    {
+      const packageLabels: Record<string, string> = {
+        'featured-tool': 'Featured Tool ($39)',
+        'category-spotlight': 'Category Spotlight ($69)',
+        'newsletter': 'Newsletter Sponsor ($29)',
+        'founding-bundle': 'Founding Bundle ($99)',
+        'partner-program': 'Partner Program',
+      };
 
-        // HTML-escape helper
-        const escapeHtml = (text: string) => 
-          text.replace(/&/g, '&amp;')
-              .replace(/</g, '&lt;')
-              .replace(/>/g, '&gt;')
-              .replace(/"/g, '&quot;')
-              .replace(/'/g, '&#039;');
+      // HTML-escape helper
+      const escapeHtml = (text: string) => 
+        text.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
 
-        const emailResponse = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${resendApiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            from: 'notifications@aionestop.shop',
-            to: [contactEmail],
-            reply_to: body.email,
-            subject: `New sponsor request: ${escapeHtml(body.toolName)} (${packageLabels[body.package] || body.package})`,
-            html: `
-              <h2>New Sponsor Request</h2>
-              <p><strong>Company:</strong> ${escapeHtml(body.companyName)}</p>
-              <p><strong>Contact:</strong> ${escapeHtml(body.contactName)}</p>
-              <p><strong>Email:</strong> ${escapeHtml(body.email)}</p>
-              <p><strong>Tool:</strong> ${escapeHtml(body.toolName)}</p>
-              <p><strong>URL:</strong> <a href="${escapeHtml(body.toolUrl)}">${escapeHtml(body.toolUrl)}</a></p>
-              <p><strong>Package:</strong> ${packageLabels[body.package] || body.package}</p>
-              ${body.message ? `<p><strong>Message:</strong><br>${escapeHtml(body.message).replace(/\n/g, '<br>')}</p>` : ''}
-              <hr>
-              <p><small>Submitted at ${new Date().toISOString()}</small></p>
-              <p><small>Review in admin: <a href="${getSiteUrl().replace(/\/$/, '')}/admin/sponsors">/admin/sponsors</a></small></p>
-            `,
-          }),
-        });
-
-        if (!emailResponse.ok) {
-          const errorData = await emailResponse.json();
-          console.error('Resend API error:', errorData);
-          // Don't fail the request if email fails, just log it
-        }
-      } catch (emailError) {
-        console.error('Error sending notification email:', emailError);
-        // Don't fail the request if email fails
-      }
-    } else {
-      console.warn('RESEND_API_KEY or NEXT_PUBLIC_SITE_CONTACT_EMAIL not set, skipping notification email');
+      await sendNotificationEmail({
+        context: 'sponsor-request',
+        to: contactEmail,
+        replyTo: body.email,
+        subject: `New sponsor request: ${escapeHtml(body.toolName)} (${packageLabels[body.package] || body.package})`,
+        html: `
+          <h2>New Sponsor Request</h2>
+          <p><strong>Company:</strong> ${escapeHtml(body.companyName)}</p>
+          <p><strong>Contact:</strong> ${escapeHtml(body.contactName)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(body.email)}</p>
+          <p><strong>Tool:</strong> ${escapeHtml(body.toolName)}</p>
+          <p><strong>URL:</strong> <a href="${escapeHtml(body.toolUrl)}">${escapeHtml(body.toolUrl)}</a></p>
+          <p><strong>Package:</strong> ${packageLabels[body.package] || body.package}</p>
+          ${body.message ? `<p><strong>Message:</strong><br>${escapeHtml(body.message).replace(/\n/g, '<br>')}</p>` : ''}
+          <hr>
+          <p><small>Submitted at ${new Date().toISOString()}</small></p>
+          <p><small>Review in admin: <a href="${getSiteUrl().replace(/\/$/, '')}/admin/sponsors">/admin/sponsors</a></small></p>
+        `,
+      });
     }
 
     return NextResponse.json({ success: true, id: data.id });

@@ -16,6 +16,8 @@
     - 403: Domain not verified in Resend
     - 422: Invalid email format
     - 429: Rate limit exceeded
+  - Failures are logged as `[notify-email:sponsor-request] Resend send failed: status=... name=... message="..."` (no key or recipient)
+- `RESEND_FROM` - Optional sender override (default `notifications@aionestop.shop`). Must be on a domain verified in the same Resend account as the key.
 - `NEXT_PUBLIC_SITE_CONTACT_EMAIL` - Contact email for receiving notifications (e.g., aionestopshop25@gmail.com)
 - `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` - Upstash Redis for rate limiting (required in production)
   - Without Redis configured, rate limiting fails closed in production (rejects all requests)

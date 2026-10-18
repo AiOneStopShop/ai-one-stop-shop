@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { submitToolRateLimit } from '@/lib/rate-limit';
 import { getClientKey } from '@/lib/client-ip';
+import { sendNotificationEmail } from '@/lib/notify-email';
 import { getSiteContactEmail } from '@/lib/site-config';
 
 const VALID_PACKAGES = ['featured_tool', 'category_spotlight', 'newsletter', 'founding_bundle'];
@@ -265,74 +266,50 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send notification email via Resend (if API key is configured)
-    // Requires: RESEND_API_KEY, NEXT_PUBLIC_SITE_CONTACT_EMAIL
-    // Resend errors (non-fatal, logged only):
-    // - 401: Invalid API key
-    // - 403: Email not verified in Resend account
-    // - 422: Invalid email format or missing required fields
-    // - 429: Rate limit exceeded (Resend free tier: 100/day, 3000/month)
-    const resendApiKey = process.env.RESEND_API_KEY;
-    const contactEmail = getSiteContactEmail();
+    // Notification email via Resend (non-fatal). See lib/notify-email.ts for env vars
+    // (RESEND_API_KEY, optional RESEND_FROM) and the logged error format.
+    const contactEmail = getSiteContactEmail() ?? '';
 
-    if (resendApiKey && contactEmail) {
-      try {
-        const packageLabels: Record<string, string> = {
-          'featured_tool': 'Featured Tool ($39)',
-          'category_spotlight': 'Category Spotlight ($69)',
-          'newsletter': 'Newsletter Sponsor ($29)',
-          'founding_bundle': 'Founding Bundle ($99)',
-        };
+    {
+      const packageLabels: Record<string, string> = {
+        'featured_tool': 'Featured Tool ($39)',
+        'category_spotlight': 'Category Spotlight ($69)',
+        'newsletter': 'Newsletter Sponsor ($29)',
+        'founding_bundle': 'Founding Bundle ($99)',
+      };
 
-        // HTML-escape helper
-        const escapeHtml = (text: string) => 
-          text.replace(/&/g, '&amp;')
-              .replace(/</g, '&lt;')
-              .replace(/>/g, '&gt;')
-              .replace(/"/g, '&quot;')
-              .replace(/'/g, '&#039;');
+      // HTML-escape helper
+      const escapeHtml = (text: string) => 
+        text.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
 
-        const emailResponse = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${resendApiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            from: 'notifications@aionestop.shop',
-            to: [contactEmail],
-            reply_to: email,
-            subject: `Sponsor intake form: ${escapeHtml(toolName)} (${packageLabels[packageType]})`,
-            html: `
-              <h2>Sponsor Intake Form Submitted</h2>
-              <p><strong>Company:</strong> ${escapeHtml(companyName)}</p>
-              <p><strong>Contact:</strong> ${escapeHtml(contactName)}</p>
-              <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-              <p><strong>Tool:</strong> ${escapeHtml(toolName)}</p>
-              <p><strong>URL:</strong> <a href="${escapeHtml(toolUrl)}">${escapeHtml(toolUrl)}</a></p>
-              <p><strong>Package:</strong> ${packageLabels[packageType]}</p>
-              <p><strong>Preferred start:</strong> ${preferredStartDate}</p>
-              ${categorySlug ? `<p><strong>Category:</strong> ${escapeHtml(categorySlug)}</p>` : ''}
-              <p><strong>Blurb:</strong><br>${escapeHtml(blurb).replace(/\n/g, '<br>')}</p>
-              <p><strong>Destination URL:</strong> <a href="${escapeHtml(destinationUrl)}">${escapeHtml(destinationUrl)}</a></p>
-              ${logoUrl ? `<p><strong>Logo URL:</strong> ${escapeHtml(logoUrl)}</p>` : ''}
-              ${logoFilePath ? `<p><strong>Logo file:</strong> ${escapeHtml(logoFilePath)}</p>` : ''}
-              <hr>
-              <p><small>Submitted at ${new Date().toISOString()}</small></p>
-              <p><small>Review in admin: <a href="https://aionestop.shop/admin/sponsors">/admin/sponsors</a></small></p>
-            `,
-          }),
-        });
-
-        if (!emailResponse.ok) {
-          const errorData = await emailResponse.json();
-          console.error('Resend API error:', errorData);
-        }
-      } catch (emailError) {
-        console.error('Error sending notification email:', emailError);
-      }
-    } else {
-      console.warn('RESEND_API_KEY or NEXT_PUBLIC_SITE_CONTACT_EMAIL not set, skipping notification email');
+      await sendNotificationEmail({
+        context: 'sponsor-intake',
+        to: contactEmail,
+        replyTo: email,
+        subject: `Sponsor intake form: ${escapeHtml(toolName)} (${packageLabels[packageType]})`,
+        html: `
+          <h2>Sponsor Intake Form Submitted</h2>
+          <p><strong>Company:</strong> ${escapeHtml(companyName)}</p>
+          <p><strong>Contact:</strong> ${escapeHtml(contactName)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+          <p><strong>Tool:</strong> ${escapeHtml(toolName)}</p>
+          <p><strong>URL:</strong> <a href="${escapeHtml(toolUrl)}">${escapeHtml(toolUrl)}</a></p>
+          <p><strong>Package:</strong> ${packageLabels[packageType]}</p>
+          <p><strong>Preferred start:</strong> ${preferredStartDate}</p>
+          ${categorySlug ? `<p><strong>Category:</strong> ${escapeHtml(categorySlug)}</p>` : ''}
+          <p><strong>Blurb:</strong><br>${escapeHtml(blurb).replace(/\n/g, '<br>')}</p>
+          <p><strong>Destination URL:</strong> <a href="${escapeHtml(destinationUrl)}">${escapeHtml(destinationUrl)}</a></p>
+          ${logoUrl ? `<p><strong>Logo URL:</strong> ${escapeHtml(logoUrl)}</p>` : ''}
+          ${logoFilePath ? `<p><strong>Logo file:</strong> ${escapeHtml(logoFilePath)}</p>` : ''}
+          <hr>
+          <p><small>Submitted at ${new Date().toISOString()}</small></p>
+          <p><small>Review in admin: <a href="https://aionestop.shop/admin/sponsors">/admin/sponsors</a></small></p>
+        `,
+      });
     }
 
     return NextResponse.json({ success: true, id: data.id });

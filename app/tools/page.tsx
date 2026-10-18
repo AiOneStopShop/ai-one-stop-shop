@@ -80,15 +80,15 @@ export default async function ToolsPage(props: {
           <div className="container-max">
             <div className="mb-8">
               <h1 className="heading-1 mb-4">All AI Tools</h1>
-              <p className="text-lead">
+              <p className="text-xl text-ink leading-relaxed">
                 {publishedPool.length} curated tools. No fake ratings.
               </p>
             </div>
 
-            <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-[#171C26]">
+            <div className="mb-8 p-6 bg-card border border-line rounded-2xl">
+              <p className="text-sm text-ink">
                 Some links are paid links. They never change our ranking.{' '}
-                <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
                   How we make money
                 </Link>
               </p>
@@ -132,9 +132,9 @@ export default async function ToolsPage(props: {
               }}
             />
 
-            <div className="mt-16 bg-[#F3EFFF] border border-[#6C39EF] rounded-2xl p-8 text-center">
+            <div className="mt-16 bg-card border-2 border-green rounded-2xl p-8 text-center">
               <h2 className="heading-2 mb-4">Can't find a tool?</h2>
-              <p className="text-lead mb-6">Suggest a tool for us to review</p>
+              <p className="text-xl text-ink mb-6">Suggest a tool for us to review</p>
               <Link href="/submit" className="btn-primary">
                 Submit a tool
               </Link>

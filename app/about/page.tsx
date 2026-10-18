@@ -16,8 +16,8 @@ export default function AboutPage() {
         <div className="container-max max-w-3xl">
           <h1 className="heading-1 mb-8">About AI One Stop Shop</h1>
 
-          <div className="prose prose-lg max-w-none space-y-6 text-[#171C26]">
-            <p className="text-lead text-[#5B657B]">
+          <div className="prose prose-lg max-w-none space-y-6">
+            <p className="text-xl text-ink leading-relaxed">
               We are oneTomorrow. We run AI One Stop Shop from Washington State.
             </p>
 

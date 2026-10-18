@@ -34,19 +34,19 @@ export default async function CategoriesPage() {
       <section className="section-spacing">
         <div className="container-max">
           <h1 className="heading-1 mb-4">Categories</h1>
-          <p className="text-lead max-w-3xl mb-10">
+          <p className="text-xl text-ink leading-relaxed max-w-3xl mb-10">
             Each tool can sit in more than one category. These pages stay paginated as the catalog grows.
           </p>
           <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {categories.map((category: any) => (
               <li key={category.id || category.slug}>
-                <Link href={`/category/${category.slug}`} className="card block h-full hover:shadow-lg focus-ring">
-                  <h2 className="heading-3 mb-2">
+                <Link href={`/category/${category.slug}`} className="card block h-full hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 focus-ring group">
+                  <h2 className="heading-3 mb-2 group-hover:text-green-2 transition-colors">
                     {category.icon ? <span aria-hidden="true">{category.icon} </span> : null}
                     {category.name}
                   </h2>
                   {category.description && (
-                    <p className="text-[#5B657B]">{category.description}</p>
+                    <p className="text-soft">{category.description}</p>
                   )}
                 </Link>
               </li>

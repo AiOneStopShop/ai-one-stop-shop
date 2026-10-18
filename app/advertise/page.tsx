@@ -36,7 +36,7 @@ const packages = [
     name: 'Founding Bundle',
     price: '$99',
     duration: '30 days',
-    description: 'Featured Tool + Category Spotlight + 2 newsletter slots (once the newsletter launches; if it has not launched within 48 hours of the promised launch time, you can move your newsletter slots to a later issue or get a refund for the unused portion of your $99 Bundle). Limited to 5.',
+    description: 'Featured Tool + Category Spotlight + 2 newsletter slots (once the newsletter launches). If the newsletter launch or a Bundle issue is more than 48 hours late, we first offer to move your slot to a later issue; if that does not work, we refund that slot at its share of the Bundle price, plus the matching sales tax. The Founding Bundle costs $99, and its parts are worth $166 at our normal prices (Featured Tool $39 + Category Spotlight $69 + 2 newsletter slots at $29). Each part\u2019s refund value is its normal price \u00d7 $99 \u00f7 $166: Featured Tool $23.26, Category Spotlight $41.15, newsletter slots $34.59 together ($17.30 + $17.29). Limited to 20.',
     package: 'founding-bundle',
   },
 ];
@@ -91,7 +91,7 @@ export default function AdvertisePage() {
             <div>
               <h2 className="heading-2 mb-6">Founding sponsor pricing</h2>
               <p className="mb-6">
-                We're opening every package at introductory founding prices, and the Founding Bundle is limited to <strong>5 Founding Bundles</strong> in total. The other packages are limited only by open slots. Founding sponsors can re-book the same package at their founding price up to 3 more times within 6 months of their first placement's start date, whenever a slot is free. When we change prices, we'll post the new ones here first.
+                We're opening every package at introductory founding prices, and the Founding Bundle is limited to <strong>20 Founding Bundles</strong> in total. The other packages are limited only by open slots. Founding sponsors can re-book the same package at their founding price up to 3 more times within 6 months of their first placement's start date, whenever a slot is free. When we change prices, we'll post the new ones here first.
               </p>
 
               <div className="space-y-4 not-prose">

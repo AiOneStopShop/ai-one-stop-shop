@@ -82,7 +82,7 @@ export function ToolSearchForm({
             enterKeyHint="search"
             inputMode="search"
             maxLength={100}
-            className="w-full pl-10 pr-4 py-3 text-base border border-[#5B657B] rounded-lg focus-ring bg-white min-h-11"
+            className="w-full pl-10 pr-4 py-3 text-base border border-soft rounded-xl focus-ring bg-white min-h-11"
             {...(isControlled
               ? { value: value ?? '', onChange: (event) => onQueryChange(event.target.value) }
               : { defaultValue })}

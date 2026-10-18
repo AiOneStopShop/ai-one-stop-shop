@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { isAffiliateLive } from '@/lib/site-config';
 import { CatalogPager } from '@/components/CatalogPager';
 import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { getActiveAffiliateGoSlugs } from '@/lib/affiliate-links';
@@ -87,7 +88,9 @@ export default async function ToolsPage(props: {
 
             <div className="mb-8 p-6 bg-card border border-line rounded-2xl">
               <p className="text-sm text-ink">
-                Some links are paid links. They never change our ranking.{' '}
+                {isAffiliateLive()
+                  ? 'Some links are paid links. They never change our ranking.'
+                  : 'No tool can pay to rank higher here. Sponsored spots are labeled and kept separate.'}{' '}
                 <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
                   How we make money
                 </Link>

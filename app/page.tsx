@@ -7,6 +7,8 @@ import { generateOrganizationSchema, generateWebSiteSchema, safeJsonLd } from '@
 import { DeskIllustration } from '@/components/DeskIllustration';
 import { OrangeSwoosh } from '@/components/OrangeSwoosh';
 import { HomeSponsoredRow } from '@/components/HomeSponsoredRow';
+import { isAffiliateLive } from '@/lib/site-config';
+import { ToolSearchForm } from '@/components/ToolSearchForm';
 
 // Revalidate every 60 seconds so sponsored placements appear/disappear on time
 export const revalidate = 60;
@@ -165,6 +167,12 @@ export default async function HomePage() {
             </Link>
             <span className="text-soft">Or browse <Link href="/tools" className="text-green hover:underline focus-ring rounded">all {toolsCount} tools</Link></span>
           </div>
+
+          <div className="mt-12 pb-12 max-w-2xl">
+            <h2 className="heading-3 mb-2">Already know what you need?</h2>
+            <p className="text-soft mb-4">Search by tool name, a job like &ldquo;writing&rdquo;, or a category.</p>
+            <ToolSearchForm id="home-search" shortcut={false} />
+          </div>
         </div>
       </section>
 
@@ -183,7 +191,9 @@ export default async function HomePage() {
                 We list {toolsCount} AI tools today, with real prices and the date we last checked them. No fake ratings, no made-up numbers.
               </p>
               <p className="text-[#E3EADF] m-0">
-                Some links are paid links. If you sign up through one, the tool maker may pay us. You pay the same, and it never changes the order.{' '}
+                {isAffiliateLive()
+                  ? 'Some links are paid links. If you sign up through one, the tool maker may pay us. You pay the same, and it never changes the order.'
+                  : 'Sponsored spots are clearly labeled and kept apart from our list. Paying us never changes the order.'}{' '}
                 <Link href="/how-we-rank" className="text-white hover:underline focus-ring rounded">
                   How we rank
                 </Link>

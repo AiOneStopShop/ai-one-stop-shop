@@ -87,11 +87,10 @@ test('free chatbot: only free-tier tools, chat assistants first', async () => {
   expect(r.names.slice(0, 3)).toEqual(expect.arrayContaining(['Gemini']));
 });
 
-test('text to speech: TTS tools, ElevenLabs included, no unrelated tools', async () => {
+test('text to speech: TTS tools, ElevenLabs in the top 5', async () => {
   const r = await names('text to speech');
   expect(r.total).toBeLessThanOrEqual(25);
-  expect(r.names.slice(0, 5)).toEqual(expect.arrayContaining(['Murf AI', 'Speechify']));
-  expect(r.names).toContain('ElevenLabs');
+  expect(r.names.slice(0, 5)).toEqual(expect.arrayContaining(['Murf AI', 'Speechify', 'ElevenLabs']));
 });
 
 test('chatgpt and notion: exact product first', async () => {

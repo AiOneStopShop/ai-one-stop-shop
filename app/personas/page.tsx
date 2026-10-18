@@ -40,12 +40,12 @@ export default function PersonasPage() {
           <nav aria-label="Breadcrumb" className="mb-8">
             <ol className="flex items-center gap-2 text-sm">
               <li>
-                <Link href="/" className="text-[#5B657B] hover:text-[#6C39EF] focus-ring rounded">
+                <Link href="/" className="text-soft hover:text-green focus-ring rounded">
                   Home
                 </Link>
               </li>
-              <li aria-hidden="true" className="text-[#5B657B]">/</li>
-              <li aria-current="page" className="text-[#171C26] font-medium">
+              <li aria-hidden="true" className="text-soft">/</li>
+              <li aria-current="page" className="text-ink font-medium">
                 Personas
               </li>
             </ol>
@@ -69,8 +69,8 @@ export default function PersonasPage() {
                   className="card block h-full hover:shadow-lg focus-ring"
                 >
                   <h2 className="heading-3 mb-2">{persona.name}</h2>
-                  <p className="font-medium text-[#6C39EF] mb-3">{persona.title}</p>
-                  <p className="text-[#5B657B]">{persona.whoFor}</p>
+                  <p className="font-medium text-green mb-3">{persona.title}</p>
+                  <p className="text-soft">{persona.whoFor}</p>
                 </Link>
               </li>
             ))}

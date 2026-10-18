@@ -87,29 +87,29 @@ export default async function PersonaPage(props: {
           <nav aria-label="Breadcrumb" className="mb-8">
             <ol className="flex items-center gap-2 text-sm">
               <li>
-                <Link href="/" className="text-[#5B657B] hover:text-[#6C39EF] focus-ring rounded">
+                <Link href="/" className="text-soft hover:text-green focus-ring rounded">
                   Home
                 </Link>
               </li>
-              <li aria-hidden="true" className="text-[#5B657B]">/</li>
+              <li aria-hidden="true" className="text-soft">/</li>
               <li>
-                <Link href="/personas" className="text-[#5B657B] hover:text-[#6C39EF] focus-ring rounded">
+                <Link href="/personas" className="text-soft hover:text-green focus-ring rounded">
                   Personas
                 </Link>
               </li>
-              <li aria-hidden="true" className="text-[#5B657B]">/</li>
-              <li aria-current="page" className="text-[#171C26] font-medium">
+              <li aria-hidden="true" className="text-soft">/</li>
+              <li aria-current="page" className="text-ink font-medium">
                 {persona.name}
               </li>
             </ol>
           </nav>
 
           <h1 className="heading-1 mb-3">{persona.name}</h1>
-          <p className="text-xl text-[#6C39EF] font-medium mb-4">{persona.title}</p>
+          <p className="text-xl text-green font-medium mb-4">{persona.title}</p>
           <p className="text-lead mb-8">{persona.whoFor}</p>
 
           <h2 className="heading-2 mb-4">Top jobs</h2>
-          <ul className="list-disc pl-6 mb-10 space-y-2 text-[#171C26]">
+          <ul className="list-disc pl-6 mb-10 space-y-2 text-ink">
             {persona.jobs.map((job) => (
               <li key={job}>{job}</li>
             ))}

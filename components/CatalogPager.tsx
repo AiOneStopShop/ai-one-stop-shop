@@ -18,7 +18,7 @@ export function CatalogPager({
 
   return (
     <nav aria-label="Pagination" className="mt-10 flex flex-wrap items-center justify-between gap-3">
-      <p className="text-sm text-[#5B657B]">
+      <p className="text-sm text-soft">
         Page {page} of {pageCount}
       </p>
       <div className="flex gap-3">

@@ -60,18 +60,18 @@ export function ToolSearchForm({
       onSubmit={onSearchSubmit}
       className={className}
     >
-      <label htmlFor={id} className="block text-sm font-medium text-[#171C26] mb-2">
+      <label htmlFor={id} className="block text-sm font-medium text-ink mb-2">
         Search tools
         {shortcut ? (
-          <span className="ml-2 font-normal text-[#5B657B]">
-            <kbd className="rounded border border-[#E5E1DC] bg-white px-1.5 py-0.5 text-xs">/</kbd>
+          <span className="ml-2 font-normal text-soft">
+            <kbd className="rounded border border-line bg-white px-1.5 py-0.5 text-xs">/</kbd>
             {' '}to focus
           </span>
         ) : null}
       </label>
       <div className="relative flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#5B657B]" aria-hidden="true" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-soft" aria-hidden="true" />
           <input
             ref={inputRef}
             id={id}

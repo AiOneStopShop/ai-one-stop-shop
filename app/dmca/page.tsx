@@ -47,8 +47,8 @@ export default function DmcaPage() {
         <div className="container-max max-w-3xl">
           <h1 className="heading-1 mb-8">Copyright &amp; DMCA</h1>
 
-          <div className="prose prose-lg max-w-none space-y-6 text-[#171C26]">
-            <p className="text-sm text-[#5B657B]">
+          <div className="prose prose-lg max-w-none space-y-6 text-ink">
+            <p className="text-sm text-soft">
               Last updated: {LEGAL_DMCA_UPDATED}
             </p>
 
@@ -97,7 +97,7 @@ export default function DmcaPage() {
                     <p className="font-medium mb-2">{agentInfo.name}</p>
                     <p className="text-sm whitespace-pre-line mb-2">{agentInfo.address}</p>
                     <p className="text-sm mb-2">
-                      Email: <a href={`mailto:${agentInfo.email}`} className="text-[#6C39EF] hover:underline">{agentInfo.email}</a>
+                      Email: <a href={`mailto:${agentInfo.email}`} className="text-green hover:underline">{agentInfo.email}</a>
                     </p>
                     <p className="text-sm">Phone: {agentInfo.phone}</p>
                   </>

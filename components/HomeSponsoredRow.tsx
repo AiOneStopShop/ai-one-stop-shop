@@ -40,7 +40,7 @@ export async function HomeSponsoredRow() {
       <div className="container-max">
         <div className="mb-8">
           <h2 className="heading-2">Sponsored ads</h2>
-          <p className="text-[#5B657B] mt-2">
+          <p className="text-soft mt-2">
             Paid placements. Our picks are above and aren't affected.
           </p>
         </div>

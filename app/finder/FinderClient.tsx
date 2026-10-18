@@ -250,7 +250,7 @@ export default function FinderClient({
             </form>
           ) : (
             <div>
-              <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-xl p-6 mb-8">
+              <div className="bg-card border-2 border-green rounded-xl p-6 mb-8">
                 <h2
                   ref={resultsHeadingRef}
                   tabIndex={-1}

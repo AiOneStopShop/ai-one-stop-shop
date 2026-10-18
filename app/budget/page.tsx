@@ -39,12 +39,12 @@ export default async function BudgetPage(props: {
           <nav aria-label="Breadcrumb" className="mb-8">
             <ol className="flex items-center gap-2 text-sm">
               <li>
-                <Link href="/" className="text-[#5B657B] hover:text-[#6C39EF] focus-ring rounded">
+                <Link href="/" className="text-soft hover:text-green focus-ring rounded">
                   Home
                 </Link>
               </li>
-              <li aria-hidden="true" className="text-[#5B657B]">/</li>
-              <li aria-current="page" className="text-[#171C26] font-medium">
+              <li aria-hidden="true" className="text-soft">/</li>
+              <li aria-current="page" className="text-ink font-medium">
                 Budget calculator
               </li>
             </ol>
@@ -56,11 +56,11 @@ export default async function BudgetPage(props: {
           </p>
           <PriceHonesty className="mb-8" />
           {persona && (
-            <p className="mb-8 text-[#171C26]">
+            <p className="mb-8 text-ink">
               Building for{' '}
               <Link
                 href={`/personas/${persona.slug}`}
-                className="text-[#6C39EF] hover:underline focus-ring rounded"
+                className="text-green hover:underline focus-ring rounded"
               >
                 {persona.name}
               </Link>

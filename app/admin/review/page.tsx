@@ -104,23 +104,23 @@ export default async function AdminReviewPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-[#F9F8F5]">
-      <header className="border-b border-[#E5E1DC] bg-white">
+    <div className="min-h-screen bg-cream">
+      <header className="border-b border-line bg-white">
         <div className="container-max py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <span className="text-2xl" aria-hidden="true">✨</span>
-              <span className="font-dm-sans font-bold text-lg text-[#171C26]">
+              <span className="font-dm-sans font-bold text-lg text-ink">
                 AI One Stop Shop
               </span>
             </Link>
-            <span className="text-[#5B657B]" aria-hidden="true">/</span>
-            <h1 className="font-dm-sans font-semibold text-lg text-[#171C26]">
+            <span className="text-soft" aria-hidden="true">/</span>
+            <h1 className="font-dm-sans font-semibold text-lg text-ink">
               Admin Review
             </h1>
           </div>
           <nav aria-label="Admin">
-            <Link href="/" className="text-sm text-[#6C39EF] hover:underline">
+            <Link href="/" className="text-sm text-green hover:underline">
               View Site <span aria-hidden="true">→</span>
             </Link>
           </nav>
@@ -136,7 +136,7 @@ export default async function AdminReviewPage() {
           
           {submissions.length === 0 ? (
             <div className="card text-center py-12">
-              <p className="text-[#5B657B]">No pending submissions</p>
+              <p className="text-soft">No pending submissions</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -149,7 +149,7 @@ export default async function AdminReviewPage() {
                         href={submission.website_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-[#6C39EF] hover:underline"
+                        className="text-sm text-green hover:underline"
                       >
                         {submission.website_url}
                         <span className="sr-only"> (opens in new tab)</span>
@@ -162,11 +162,11 @@ export default async function AdminReviewPage() {
                   </div>
                   
                   {submission.description && (
-                    <p className="text-[#5B657B] mb-4">{submission.description}</p>
+                    <p className="text-soft mb-4">{submission.description}</p>
                   )}
                   
-                  <div className="flex items-center justify-between pt-4 border-t border-[#E5E1DC]">
-                    <div className="text-sm text-[#5B657B]">
+                  <div className="flex items-center justify-between pt-4 border-t border-line">
+                    <div className="text-sm text-soft">
                       <p>Contact: {submission.contact_email}</p>
                       <p>Submitted: {new Date(submission.created_at).toLocaleDateString()}</p>
                     </div>
@@ -188,14 +188,14 @@ export default async function AdminReviewPage() {
           </h2>
           {held.length === 0 ? (
             <div className="card text-center py-12">
-              <p className="text-[#5B657B]">No tools on hold</p>
+              <p className="text-soft">No tools on hold</p>
             </div>
           ) : (
             <div className="space-y-4">
               {held.map((tool: any) => (
                 <div key={tool.id} className="card">
                   <h3 className="heading-3 mb-2">{tool.name}</h3>
-                  {tool.tagline && <p className="text-[#5B657B] mb-3">{tool.tagline}</p>}
+                  {tool.tagline && <p className="text-soft mb-3">{tool.tagline}</p>}
                   <form
                     action={async (formData) => {
                       'use server';
@@ -230,7 +230,7 @@ export default async function AdminReviewPage() {
           
           {drafts.length === 0 ? (
             <div className="card text-center py-12">
-              <p className="text-[#5B657B]">No draft tools</p>
+              <p className="text-soft">No draft tools</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -240,13 +240,13 @@ export default async function AdminReviewPage() {
                     <div className="flex-1">
                       <h3 className="heading-3 mb-2">{tool.name}</h3>
                       {tool.tagline && (
-                        <p className="text-[#5B657B] mb-2">{tool.tagline}</p>
+                        <p className="text-soft mb-2">{tool.tagline}</p>
                       )}
                       <a
                         href={tool.website_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-[#6C39EF] hover:underline"
+                        className="text-sm text-green hover:underline"
                       >
                         {tool.website_url}
                         <span className="sr-only"> (opens in new tab)</span>
@@ -259,11 +259,11 @@ export default async function AdminReviewPage() {
                   </div>
                   
                   {tool.description && (
-                    <p className="text-[#5B657B] mb-4">{tool.description}</p>
+                    <p className="text-soft mb-4">{tool.description}</p>
                   )}
                   
-                  <div className="flex items-center justify-between pt-4 border-t border-[#E5E1DC]">
-                    <div className="text-sm text-[#5B657B]">
+                  <div className="flex items-center justify-between pt-4 border-t border-line">
+                    <div className="text-sm text-soft">
                       <p>Created: {new Date(tool.created_at).toLocaleDateString()}</p>
                       {tool.pricing_summary && <p>Pricing: {tool.pricing_summary}</p>}
                     </div>

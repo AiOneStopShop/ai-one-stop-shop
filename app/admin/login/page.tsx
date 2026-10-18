@@ -32,10 +32,10 @@ function LoginForm() {
   // Only create client if env vars are set
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9F8F5] p-4">
+      <div className="min-h-screen flex items-center justify-center bg-cream p-4">
         <div className="text-center">
           <h1 className="heading-2 mb-4">Supabase Not Configured</h1>
-          <p className="text-[#5B657B]">Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to enable admin login.</p>
+          <p className="text-soft">Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to enable admin login.</p>
         </div>
       </div>
     );
@@ -105,24 +105,24 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F9F8F5] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-cream py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <Link href="/" className="flex items-center justify-center gap-2 mb-8">
             <span className="text-4xl" aria-hidden="true">✨</span>
-            <span className="font-dm-sans font-bold text-2xl text-[#171C26]">
+            <span className="font-dm-sans font-bold text-2xl text-ink">
               AI One Stop Shop
             </span>
           </Link>
           <h1 className="mt-6 text-center heading-2">
             Admin Login
           </h1>
-          <p className="mt-2 text-center text-sm text-[#5B657B]">
+          <p className="mt-2 text-center text-sm text-soft">
             Sign in with your admin account
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-[#E5E1DC] p-8">
+        <div className="bg-white rounded-lg shadow-sm border border-line p-8">
           <div className="flex gap-2 mb-6" role="group" aria-label="Sign-in method">
             <button
               type="button"
@@ -131,7 +131,7 @@ function LoginForm() {
               className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                 mode === 'signin'
                   ? 'bg-[#6C39EF] text-white'
-                  : 'bg-[#F3EFFF] text-[#6C39EF] hover:bg-[#E5D9FF]'
+                  : 'bg-card text-green hover:bg-[#E5D9FF]'
               }`}
             >
               Password
@@ -143,7 +143,7 @@ function LoginForm() {
               className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                 mode === 'magic'
                   ? 'bg-[#6C39EF] text-white'
-                  : 'bg-[#F3EFFF] text-[#6C39EF] hover:bg-[#E5D9FF]'
+                  : 'bg-card text-green hover:bg-[#E5D9FF]'
               }`}
             >
               Magic Link
@@ -164,7 +164,7 @@ function LoginForm() {
 
           <form onSubmit={mode === 'signin' ? handleSignIn : handleMagicLink} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[#171C26] mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-ink mb-2">
                 Email address
               </label>
               <input
@@ -182,7 +182,7 @@ function LoginForm() {
 
             {mode === 'signin' && (
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-[#171C26] mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-ink mb-2">
                   Password
                 </label>
                 <input
@@ -209,13 +209,13 @@ function LoginForm() {
           </form>
 
           <div className="mt-6 text-center">
-            <Link href="/" className="text-sm text-[#6C39EF] hover:underline focus-ring rounded">
+            <Link href="/" className="text-sm text-green hover:underline focus-ring rounded">
               ← Back to home
             </Link>
           </div>
         </div>
 
-        <p className="text-center text-xs text-[#5B657B]">
+        <p className="text-center text-xs text-soft">
           Admin access only. Unauthorized access attempts are logged.
         </p>
       </div>
@@ -226,8 +226,8 @@ function LoginForm() {
 export default function AdminLoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-[#F9F8F5]">
-        <div className="text-[#5B657B]">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-cream">
+        <div className="text-soft">Loading...</div>
       </div>
     }>
       <LoginForm />

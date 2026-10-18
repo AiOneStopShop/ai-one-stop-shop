@@ -132,14 +132,14 @@ export default async function CategoryPage(props: {
             <nav aria-label="Breadcrumb" className="mb-8">
               <ol className="flex items-center gap-2 text-sm">
                 <li>
-                  <Link href="/" className="text-[#5B657B] hover:text-[#6C39EF] focus-ring rounded">Home</Link>
+                  <Link href="/" className="text-soft hover:text-green focus-ring rounded">Home</Link>
                 </li>
-                <li aria-hidden="true" className="text-[#5B657B]">/</li>
+                <li aria-hidden="true" className="text-soft">/</li>
                 <li>
-                  <Link href="/categories" className="text-[#5B657B] hover:text-[#6C39EF] focus-ring rounded">Categories</Link>
+                  <Link href="/categories" className="text-soft hover:text-green focus-ring rounded">Categories</Link>
                 </li>
-                <li aria-hidden="true" className="text-[#5B657B]">/</li>
-                <li aria-current="page" className="text-[#171C26] font-medium">{category.name}</li>
+                <li aria-hidden="true" className="text-soft">/</li>
+                <li aria-current="page" className="text-ink font-medium">{category.name}</li>
               </ol>
             </nav>
 
@@ -149,7 +149,7 @@ export default async function CategoryPage(props: {
                 Best {category.name} AI Tools
               </h1>
               {category.description && <p className="text-lead">{category.description}</p>}
-              <p className="text-[#5B657B] mt-2">
+              <p className="text-soft mt-2">
                 {listed.total} {listed.total === 1 ? 'tool' : 'tools'}
               </p>
             </div>
@@ -189,12 +189,12 @@ export default async function CategoryPage(props: {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
                         {showRanks && (
-                          <span className="text-[#6C39EF] font-bold" aria-hidden="true">
+                          <span className="text-green font-bold" aria-hidden="true">
                             #{(page - 1) * CATALOG_PAGE_SIZE + index + 1}
                           </span>
                         )}
                         <h2 className="heading-3">
-                          <Link href={`/tools/${tool.slug}`} className="hover:text-[#6C39EF] focus-ring rounded">
+                          <Link href={`/tools/${tool.slug}`} className="hover:text-green focus-ring rounded">
                             {tool.name}
                           </Link>
                         </h2>
@@ -203,9 +203,9 @@ export default async function CategoryPage(props: {
                         <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">Free</span>
                       )}
                     </div>
-                    {tool.tagline && <p className="text-[#5B657B] mb-3 line-clamp-2">{tool.tagline}</p>}
+                    {tool.tagline && <p className="text-soft mb-3 line-clamp-2">{tool.tagline}</p>}
                     {tool.pricing_summary && (
-                      <p className="text-sm font-medium text-[#171C26] mb-4">{tool.pricing_summary}</p>
+                      <p className="text-sm font-medium text-ink mb-4">{tool.pricing_summary}</p>
                     )}
                     <div className="space-y-3">
                       <PaidVisitLink
@@ -220,9 +220,9 @@ export default async function CategoryPage(props: {
                 ))}
               </ol>
             ) : (
-              <div className="text-center py-12 bg-[#F9F8F5] rounded-xl">
-                <p className="text-lg text-[#5B657B] mb-4">No tools in this category match those filters.</p>
-                <Link href="/tools" className="text-[#6C39EF] hover:underline focus-ring rounded">Browse all tools</Link>
+              <div className="text-center py-12 bg-cream rounded-xl">
+                <p className="text-lg text-soft mb-4">No tools in this category match those filters.</p>
+                <Link href="/tools" className="text-green hover:underline focus-ring rounded">Browse all tools</Link>
               </div>
             )}
 
@@ -232,12 +232,12 @@ export default async function CategoryPage(props: {
               hrefForPage={(nextPage) => hrefFor(category.slug, nextPage, sort, free, price)}
             />
 
-            <div className="mt-16 bg-[#F3EFFF] border border-[#6C39EF] rounded-xl p-8">
+            <div className="mt-16 bg-card border border-green rounded-xl p-8">
               <h2 className="heading-2 mb-4">How we chose these tools</h2>
               <p className="text-lg mb-4">
                 We review each tool&apos;s public pricing and features. A tool can appear in more than one category.
               </p>
-              <Link href="/how-we-rank" className="text-[#6C39EF] font-medium hover:underline focus-ring rounded">
+              <Link href="/how-we-rank" className="text-green font-medium hover:underline focus-ring rounded">
                 Read our full ranking method →
               </Link>
             </div>

@@ -32,7 +32,7 @@ export function ToolkitResults({
             {heading}
           </h2>
           <p
-            className="text-lg text-[#171C26] mt-2"
+            className="text-lg text-ink mt-2"
             data-testid="toolkit-total"
             data-monthly-total={result.monthlyTotal}
             data-has-unknown={result.hasUnknown ? '1' : '0'}
@@ -52,7 +52,7 @@ export function ToolkitResults({
       />
 
       {result.emptySlots.length > 0 && (
-        <p className="text-sm text-[#5B657B]">
+        <p className="text-sm text-soft">
           No listed tool with a known monthly price fit {result.emptySlots.join(', ')} within this budget.
         </p>
       )}
@@ -71,7 +71,7 @@ export function ToolkitResults({
             <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
               <h3 className="heading-3">{row.slot.label}</h3>
               {row.mustHave && (
-                <span className="badge bg-[#F3EFFF] text-[#4A2D86] border border-[#6C39EF]">
+                <span className="badge bg-card text-[#4A2D86] border border-green">
                   Must-have
                 </span>
               )}
@@ -82,18 +82,18 @@ export function ToolkitResults({
                 <p className="text-lg font-medium">
                   <Link
                     href={`/tools/${row.pick.tool.slug}`}
-                    className="text-[#171C26] hover:text-[#6C39EF] focus-ring rounded"
+                    className="text-ink hover:text-green focus-ring rounded"
                   >
                     {row.pick.tool.name}
                   </Link>
                 </p>
                 {row.pick.tool.tagline && (
-                  <p className="text-[#5B657B] mt-1">{row.pick.tool.tagline}</p>
+                  <p className="text-soft mt-1">{row.pick.tool.tagline}</p>
                 )}
                 <p className="mt-2 text-sm">
                   <span className="font-medium">{row.pick.price.label}</span>
                   {row.pick.price.source && row.pick.price.label !== row.pick.price.source && (
-                    <span className="text-[#5B657B]"> · listed as {row.pick.price.source}</span>
+                    <span className="text-soft"> · listed as {row.pick.price.source}</span>
                   )}
                 </p>
                 <div className="mt-4">
@@ -106,14 +106,14 @@ export function ToolkitResults({
                 </div>
               </div>
             ) : (
-              <p className="text-[#5B657B]">
+              <p className="text-soft">
                 No listed tool fits this slot within the budget. Raise the budget or pick a free-first stack.
               </p>
             )}
 
             {showSwap && query && row.alternatives.length > 0 && (
               <details className="mt-4">
-                <summary className="cursor-pointer text-[#6C39EF] focus-ring rounded min-h-11 inline-flex items-center">
+                <summary className="cursor-pointer text-green focus-ring rounded min-h-11 inline-flex items-center">
                   Swap this tool
                 </summary>
                 <ul className="mt-3 space-y-2">
@@ -121,11 +121,11 @@ export function ToolkitResults({
                     <li key={alt.tool.slug}>
                       <Link
                         href={budgetPath(withPick(query, row.slot.id, alt.tool.slug))}
-                        className="text-[#171C26] hover:text-[#6C39EF] underline focus-ring rounded"
+                        className="text-ink hover:text-green underline focus-ring rounded"
                       >
                         {alt.tool.name}
                       </Link>
-                      <span className="text-[#5B657B]"> — {alt.price.label}</span>
+                      <span className="text-soft"> — {alt.price.label}</span>
                     </li>
                   ))}
                 </ul>
@@ -134,7 +134,7 @@ export function ToolkitResults({
 
             {row.freeAlternatives.length > 0 && (
               <details className="mt-3">
-                <summary className="cursor-pointer text-[#6C39EF] focus-ring rounded min-h-11 inline-flex items-center">
+                <summary className="cursor-pointer text-green focus-ring rounded min-h-11 inline-flex items-center">
                   Free alternatives
                 </summary>
                 <ul className="mt-3 space-y-2">
@@ -143,19 +143,19 @@ export function ToolkitResults({
                       {query ? (
                         <Link
                           href={budgetPath(withPick(query, row.slot.id, alt.tool.slug))}
-                          className="text-[#171C26] hover:text-[#6C39EF] underline focus-ring rounded"
+                          className="text-ink hover:text-green underline focus-ring rounded"
                         >
                           {alt.tool.name}
                         </Link>
                       ) : (
                         <Link
                           href={`/tools/${alt.tool.slug}`}
-                          className="text-[#171C26] hover:text-[#6C39EF] underline focus-ring rounded"
+                          className="text-ink hover:text-green underline focus-ring rounded"
                         >
                           {alt.tool.name}
                         </Link>
                       )}
-                      <span className="text-[#5B657B]"> — has a free tier</span>
+                      <span className="text-soft"> — has a free tier</span>
                     </li>
                   ))}
                 </ul>

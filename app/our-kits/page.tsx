@@ -32,9 +32,9 @@ export default function OurKitsPage() {
                 Packs and kits we made ourselves. Clearly marked, and never part of our rankings.
               </p>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-[#171C26]">
+                <p className="text-sm text-ink">
                   <strong>Full disclosure:</strong> We made these and earn money if you buy them. They're kept separate from our tool directory and never appear in ranked lists.{' '}
-                  <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                  <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
                     Read more about how we handle our own products
                   </Link>
                 </p>
@@ -47,7 +47,7 @@ export default function OurKitsPage() {
                 <div className="mb-4">
                   <span className="badge-made-by-us mb-3 inline-block">Made by us</span>
                   <h2 className="heading-2 mb-2">ApproveGate Skill Pack</h2>
-                  <p className="text-lg text-[#5B657B]">
+                  <p className="text-lg text-soft">
                     Draft with AI. Ship with judgment.
                   </p>
                 </div>
@@ -63,14 +63,14 @@ export default function OurKitsPage() {
 
                 <div className="mb-6">
                   <h3 className="font-semibold mb-2">What's the problem?</h3>
-                  <p className="text-[#5B657B]">
+                  <p className="text-soft">
                     Your agent drafts emails, posts, and payments. Who decides before they go out?
                   </p>
                 </div>
 
                 <div className="mb-6">
                   <h3 className="font-semibold mb-2">What's inside</h3>
-                  <ul className="space-y-2 text-[#5B657B]">
+                  <ul className="space-y-2 text-soft">
                     <li>✓ 4 gate skills (send, pay, post, publish)</li>
                     <li>✓ Install card</li>
                     <li>✓ Decision checklist</li>
@@ -80,18 +80,18 @@ export default function OurKitsPage() {
 
                 <div className="mb-6">
                   <h3 className="font-semibold mb-2">How it works with you</h3>
-                  <p className="text-[#5B657B]">
+                  <p className="text-soft">
                     AI drafts → it stops and holds → <strong>you decide</strong> → then it goes.
                   </p>
                 </div>
 
                 <div className="mb-6">
                   <h3 className="font-semibold mb-2">Pricing (when available)</h3>
-                  <p className="text-2xl font-bold text-[#171C26]">$29 intro / $49 list</p>
-                  <p className="text-sm text-[#5B657B] mt-1">One-time purchase</p>
+                  <p className="text-2xl font-bold text-ink">$29 intro / $49 list</p>
+                  <p className="text-sm text-soft mt-1">One-time purchase</p>
                 </div>
 
-                <div className="mb-6 text-sm text-[#5B657B]">
+                <div className="mb-6 text-sm text-soft">
                   <p className="mb-2">
                     <strong>Add-on planned:</strong> HumanHold Outreach Kit, for AI-drafted outreach
                   </p>
@@ -107,27 +107,27 @@ export default function OurKitsPage() {
                   </ContactEmail>
                 )}
 
-                <p className="text-xs text-[#5B657B] mt-4">
-                  <strong>About the waitlist:</strong> By emailing, you agree we'll store your email address (Supabase database) to notify you when ApproveGate launches. We'll email you no more than once per month with updates. Unsubscribe anytime by replying "unsubscribe". Your email is covered by our <a href="/privacy" className="text-[#6C39EF] hover:underline">Privacy Policy</a>.
+                <p className="text-xs text-soft mt-4">
+                  <strong>About the waitlist:</strong> By emailing, you agree we'll store your email address (Supabase database) to notify you when ApproveGate launches. We'll email you no more than once per month with updates. Unsubscribe anytime by replying "unsubscribe". Your email is covered by our <a href="/privacy" className="text-green hover:underline">Privacy Policy</a>.
                 </p>
 
-                <p className="text-xs text-[#5B657B] mt-2">
+                <p className="text-xs text-soft mt-2">
                   <strong>Important:</strong> A checkpoint is your judgment, not legal, compliance, or security clearance.
                 </p>
               </article>
 
               {/* Info Panel */}
               <div className="space-y-6">
-                <div className="card bg-[#F3EFFF]">
+                <div className="card bg-card">
                   <h3 className="heading-3 mb-3">Who this is for</h3>
-                  <p className="text-[#5B657B]">
+                  <p className="text-soft">
                     Solo operators already running Cursor, Claude Projects, or similar agents who want to keep human judgment in the loop before drafts go out.
                   </p>
                 </div>
 
                 <div className="card">
                   <h3 className="heading-3 mb-3">What to expect</h3>
-                  <ul className="space-y-2 text-[#5B657B]">
+                  <ul className="space-y-2 text-soft">
                     <li>• This is a DIY pack you implement yourself</li>
                     <li>• You keep final judgment on every decision</li>
                     <li>• Skills and examples, not a managed service</li>
@@ -138,11 +138,11 @@ export default function OurKitsPage() {
                 <div className="card">
                   <h3 className="heading-3 mb-3">Questions?</h3>
                   {getSiteContactEmail() && (
-                    <p className="text-[#5B657B] mb-4">
+                    <p className="text-soft mb-4">
                       <ContactEmailText prefix="Email us at " suffix=". A person on our team reviews every reply before it goes out." />
                     </p>
                   )}
-                  <Link href="/disclosure" className="text-[#6C39EF] font-medium hover:underline focus-ring rounded">
+                  <Link href="/disclosure" className="text-green font-medium hover:underline focus-ring rounded">
                     Read our full disclosure →
                   </Link>
                 </div>

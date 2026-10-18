@@ -94,18 +94,18 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
             <nav aria-label="Breadcrumb" className="mb-8">
               <ol className="flex items-center gap-2 text-sm">
                 <li>
-                  <Link href="/" className="text-[#5B657B] hover:text-[#6C39EF] focus-ring rounded">
+                  <Link href="/" className="text-soft hover:text-green focus-ring rounded">
                     Home
                   </Link>
                 </li>
-                <li aria-hidden="true" className="text-[#5B657B]">/</li>
+                <li aria-hidden="true" className="text-soft">/</li>
                 <li>
-                  <Link href="/tools" className="text-[#5B657B] hover:text-[#6C39EF] focus-ring rounded">
+                  <Link href="/tools" className="text-soft hover:text-green focus-ring rounded">
                     Tools
                   </Link>
                 </li>
-                <li aria-hidden="true" className="text-[#5B657B]">/</li>
-                <li aria-current="page" className="text-[#171C26] font-medium">
+                <li aria-hidden="true" className="text-soft">/</li>
+                <li aria-current="page" className="text-ink font-medium">
                   {tool.name}
                 </li>
               </ol>
@@ -120,7 +120,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                   )}
                   <h1 className="heading-1 mb-3">{tool.name}</h1>
                   {tool.tagline && (
-                    <p className="text-xl text-[#5B657B]">{tool.tagline}</p>
+                    <p className="text-xl text-soft">{tool.tagline}</p>
                   )}
                 </div>
 
@@ -149,9 +149,9 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
 
                 {/* Editorial Why */}
                 {tool.editorial_why && (
-                  <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6 mb-8">
+                  <div className="bg-card border border-green rounded-lg p-6 mb-8">
                     <h2 className="heading-3 mb-2">Why we picked this</h2>
-                    <p className="text-[#171C26]">{tool.editorial_why}</p>
+                    <p className="text-ink">{tool.editorial_why}</p>
                   </div>
                 )}
 
@@ -162,7 +162,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {tool.features.map((feature: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <span className="text-[#6C39EF] mt-1" aria-hidden="true">✓</span>
+                          <span className="text-green mt-1" aria-hidden="true">✓</span>
                           <span>{feature}</span>
                         </li>
                       ))}
@@ -193,7 +193,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     <h2 className="heading-3 mb-4">Pricing</h2>
                     
                     {tool.pricing_summary && (
-                      <p className="text-2xl font-bold text-[#171C26] mb-2">
+                      <p className="text-2xl font-bold text-ink mb-2">
                         {tool.pricing_summary}
                       </p>
                     )}
@@ -205,13 +205,13 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     )}
 
                     {tool.pricing_model && (
-                      <p className="text-sm text-[#5B657B] mb-4 capitalize">
+                      <p className="text-sm text-soft mb-4 capitalize">
                         {tool.pricing_model.replace(/-/g, ' ')} pricing
                       </p>
                     )}
 
                     {tool.last_verified_at && (
-                      <p className="text-xs text-[#5B657B] mb-6">
+                      <p className="text-xs text-soft mb-6">
                         Price checked {new Date(tool.last_verified_at).toLocaleDateString('en-US', { 
                           month: 'short', 
                           day: 'numeric', 
@@ -261,7 +261,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                         href={tool.source_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-[#6C39EF] hover:underline focus-ring rounded"
+                        className="text-sm text-green hover:underline focus-ring rounded"
                       >
                         {/\/(pricing|plans|price)(\/|$|\?)/i.test(tool.source_url)
                           ? 'Official pricing page'
@@ -276,8 +276,8 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
             </div>
 
             {/* Back to tools */}
-            <div className="mt-12 pt-12 border-t border-[#E5E1DC]">
-              <Link href="/tools" className="text-[#6C39EF] hover:underline focus-ring rounded">
+            <div className="mt-12 pt-12 border-t border-line">
+              <Link href="/tools" className="text-green hover:underline focus-ring rounded">
                 ← Back to all tools
               </Link>
             </div>

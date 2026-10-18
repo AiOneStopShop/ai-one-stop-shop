@@ -17,11 +17,11 @@ export default function DisclosurePage() {
         <div className="container-max max-w-3xl">
           <h1 className="heading-1 mb-8">How we make money</h1>
 
-          <p className="text-lead text-[#5B657B] mb-12">
+          <p className="text-lead text-soft mb-12">
             In plain English
           </p>
 
-          <div className="prose prose-lg max-w-none space-y-8 text-[#171C26]">
+          <div className="prose prose-lg max-w-none space-y-8 text-ink">
             <div>
               <h2 className="heading-2 mb-4">The short version</h2>
               <p className="text-lg">
@@ -39,7 +39,7 @@ export default function DisclosurePage() {
                   <strong>Money buys a labeled spot, never our opinion.</strong> Sponsors can't buy a higher rank, a better write-up, inclusion in &quot;best of&quot; lists, or the removal of honest criticism. Sponsored spots are always labeled and kept apart from our picks.
                 </p>
                 <p>
-                  Learn more: <Link href="/advertise" className="text-[#6C39EF] hover:underline focus-ring rounded">Sponsor AI One Stop Shop</Link>
+                  Learn more: <Link href="/advertise" className="text-green hover:underline focus-ring rounded">Sponsor AI One Stop Shop</Link>
                 </p>
               </div>
 
@@ -59,7 +59,7 @@ export default function DisclosurePage() {
                 <h3 className="heading-3 mb-3">{affiliateLive ? '3' : '2'}. Our own products</h3>
                 <p>
                   We also make our own DIY packs and kits (like ApproveGate). When we mention one of our own projects, we say so right there. They&apos;re kept in a{' '}
-                  <Link href="/our-kits" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                  <Link href="/our-kits" className="text-green hover:underline focus-ring rounded">
                     separate section
                   </Link>{' '}
                   and never part of the ranked directory.
@@ -97,11 +97,11 @@ export default function DisclosurePage() {
             </div>
 
             {getSiteContactEmail() && (
-              <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6">
+              <div className="bg-card border border-green rounded-lg p-6">
                 <h3 className="heading-3 mb-3">Questions?</h3>
                 <p>
                   <ContactEmailText
-                    className="text-[#6C39EF] hover:underline focus-ring rounded"
+                    className="text-green hover:underline focus-ring rounded"
                     prefix="Email us at "
                     suffix=". We're happy to explain anything about how this works."
                   />
@@ -110,7 +110,7 @@ export default function DisclosurePage() {
             )}
 
             <div className="mt-12">
-              <p className="text-sm text-[#5B657B]">
+              <p className="text-sm text-soft">
                 Last updated: October 17, 2026
               </p>
             </div>

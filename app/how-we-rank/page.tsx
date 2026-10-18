@@ -15,7 +15,7 @@ export default function HowWeRankPage() {
         <div className="container-max max-w-3xl">
           <h1 className="heading-1 mb-8">How we choose and rank AI tools</h1>
 
-          <div className="prose prose-lg max-w-none space-y-8 text-[#171C26]">
+          <div className="prose prose-lg max-w-none space-y-8 text-ink">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
               <p className="text-lg font-semibold mb-2">The short version</p>
               <p>
@@ -106,7 +106,7 @@ export default function HowWeRankPage() {
               </p>
             </div>
 
-            <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6">
+            <div className="bg-card border border-green rounded-lg p-6">
               <h2 className="heading-3 mb-3">Spotted a mistake?</h2>
               <p>
                 Please tell us. Prices change and we&apos;re human.
@@ -114,7 +114,7 @@ export default function HowWeRankPage() {
               {getSiteContactEmail() && (
                 <p className="mt-4">
                   <strong>Email:</strong>{' '}
-                  <ContactEmailText className="text-[#6C39EF] hover:underline focus-ring rounded" />
+                  <ContactEmailText className="text-green hover:underline focus-ring rounded" />
                 </p>
               )}
               <p className="mt-2 text-sm">
@@ -123,7 +123,7 @@ export default function HowWeRankPage() {
             </div>
 
             <div className="mt-12">
-              <p className="text-sm text-[#5B657B]">
+              <p className="text-sm text-soft">
                 — oneTomorrow<br />
                 Last updated: {PRICE_CHECKED_LONG}
               </p>

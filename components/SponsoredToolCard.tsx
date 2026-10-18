@@ -31,7 +31,7 @@ export function SponsoredToolCard({ placement, tool }: SponsoredToolCardProps) {
         {tool ? (
           <Link
             href={`/tools/${tool.slug}`}
-            className="hover:text-[#6C39EF] focus-ring rounded"
+            className="hover:text-green focus-ring rounded"
           >
             {toolName}
           </Link>
@@ -40,10 +40,10 @@ export function SponsoredToolCard({ placement, tool }: SponsoredToolCardProps) {
         )}
       </h3>
 
-      {tagline && <p className="text-[#5B657B] mb-3 line-clamp-2">{tagline}</p>}
+      {tagline && <p className="text-soft mb-3 line-clamp-2">{tagline}</p>}
 
       {pricingSummary && (
-        <p className="text-sm font-medium text-[#171C26] mb-4">{pricingSummary}</p>
+        <p className="text-sm font-medium text-ink mb-4">{pricingSummary}</p>
       )}
 
       <div className="space-y-3">

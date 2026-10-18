@@ -63,7 +63,7 @@ export default async function AdminSponsorsPage() {
           <div className="mb-8 flex items-center justify-between">
             <div>
               <h1 className="heading-1 mb-2">Sponsor Management</h1>
-              <p className="text-[#5B657B]">
+              <p className="text-soft">
                 Review sponsor requests and intake forms
               </p>
             </div>
@@ -82,8 +82,8 @@ export default async function AdminSponsorsPage() {
             <SponsorIntakeList records={intakeRecords} />
           ) : (
             <div className="card text-center py-12">
-              <p className="text-lg text-[#5B657B] mb-4">No sponsor requests yet</p>
-              <Link href="/advertise" className="text-[#6C39EF] hover:underline focus-ring rounded">
+              <p className="text-lg text-soft mb-4">No sponsor requests yet</p>
+              <Link href="/advertise" className="text-green hover:underline focus-ring rounded">
                 View sponsorship page
               </Link>
             </div>

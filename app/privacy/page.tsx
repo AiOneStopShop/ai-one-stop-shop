@@ -15,8 +15,8 @@ export default function PrivacyPage() {
         <div className="container-max max-w-3xl">
           <h1 className="heading-1 mb-8">Privacy Policy</h1>
 
-          <div className="prose prose-lg max-w-none space-y-6 text-[#171C26]">
-            <p className="text-sm text-[#5B657B]">
+          <div className="prose prose-lg max-w-none space-y-6 text-ink">
+            <p className="text-sm text-soft">
               Last updated: October 17, 2026
             </p>
 
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
                 <li>• Your contact email address (up to 255 characters)</li>
                 <li>• Optional description (up to 1,000 characters)</li>
               </ul>
-              <p className="text-sm text-[#5B657B] mt-2">
+              <p className="text-sm text-soft mt-2">
                 This data is stored in our database until we review and approve or reject the submission.
               </p>
 
@@ -64,7 +64,7 @@ export default function PrivacyPage() {
                 <li>• Your optional note about why your tool is a good fit</li>
                 <li>• Consent checkboxes (terms agreement, content rights)</li>
               </ul>
-              <p className="text-sm text-[#5B657B] mt-2">
+              <p className="text-sm text-soft mt-2">
                 <strong>Retention:</strong> We keep requests we decline, or that don't go ahead, for 6 months. We keep records of paid sponsorships for 5 years because tax law requires it. Then we delete them.
               </p>
 
@@ -92,7 +92,7 @@ export default function PrivacyPage() {
               <p className="mt-4">
                 Paid links may pass through an affiliate network (for example PartnerStack, Impact, Rewardful or Dub, depending on the program) and may add tracking codes to the address so the partner can credit the referral.
               </p>
-              <p className="text-sm text-[#5B657B] mt-2">
+              <p className="text-sm text-soft mt-2">
                 <strong>Retention:</strong> Click logs are automatically deleted after 90 days.
               </p>
             </div>
@@ -144,14 +144,14 @@ export default function PrivacyPage() {
               <h2 className="heading-2 mb-4">Third-party services (data processors)</h2>
               <p>We use these services to operate the site:</p>
               <ul className="space-y-2">
-                <li>• <strong>Supabase:</strong> Database and authentication (see <a href="https://supabase.com/privacy" className="text-[#6C39EF] hover:underline" rel="noopener">Supabase Privacy Policy</a>)</li>
-                <li>• <strong>Vercel:</strong> Hosting and CDN (see <a href="https://vercel.com/legal/privacy-policy" className="text-[#6C39EF] hover:underline" rel="noopener">Vercel Privacy Policy</a>)</li>
-                <li>• <strong>Vercel Web Analytics:</strong> Cookieless aggregate page view counts. No personal data or cookies. (see <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-[#6C39EF] hover:underline" rel="noopener">Vercel Analytics Privacy</a>)</li>
-                <li>• <strong>Upstash:</strong> Blocking spam and abuse. It briefly processes your IP address when you submit a form or click a sponsored link. (see <a href="https://upstash.com/trust/privacy.pdf" className="text-[#6C39EF] hover:underline" rel="noopener">Upstash Privacy Policy</a>)</li>
-                <li>• <strong>Gmail (Google):</strong> Our team mailbox for inquiries and sponsor emails (see <a href="https://policies.google.com/privacy" className="text-[#6C39EF] hover:underline" rel="noopener">Google Privacy Policy</a>)</li>
-                <li>• <strong>Resend:</strong> Transactional email delivery (sponsor notifications) (see <a href="https://resend.com/legal/privacy-policy" className="text-[#6C39EF] hover:underline" rel="noopener">Resend Privacy Policy</a>)</li>
+                <li>• <strong>Supabase:</strong> Database and authentication (see <a href="https://supabase.com/privacy" className="text-green hover:underline" rel="noopener">Supabase Privacy Policy</a>)</li>
+                <li>• <strong>Vercel:</strong> Hosting and CDN (see <a href="https://vercel.com/legal/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel Privacy Policy</a>)</li>
+                <li>• <strong>Vercel Web Analytics:</strong> Cookieless aggregate page view counts. No personal data or cookies. (see <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel Analytics Privacy</a>)</li>
+                <li>• <strong>Upstash:</strong> Blocking spam and abuse. It briefly processes your IP address when you submit a form or click a sponsored link. (see <a href="https://upstash.com/trust/privacy.pdf" className="text-green hover:underline" rel="noopener">Upstash Privacy Policy</a>)</li>
+                <li>• <strong>Gmail (Google):</strong> Our team mailbox for inquiries and sponsor emails (see <a href="https://policies.google.com/privacy" className="text-green hover:underline" rel="noopener">Google Privacy Policy</a>)</li>
+                <li>• <strong>Resend:</strong> Transactional email delivery (sponsor notifications) (see <a href="https://resend.com/legal/privacy-policy" className="text-green hover:underline" rel="noopener">Resend Privacy Policy</a>)</li>
               </ul>
-              <p className="text-sm text-[#5B657B] mt-2">
+              <p className="text-sm text-soft mt-2">
                 These services may have access to data we store with them. They are bound by their own privacy policies.
               </p>
             </div>
@@ -178,7 +178,7 @@ export default function PrivacyPage() {
               {getSiteContactEmail() && (
                 <p className="mt-4">
                   <ContactEmailText
-                    className="text-[#6C39EF] hover:underline"
+                    className="text-green hover:underline"
                     prefix="To exercise these rights, email us at: "
                   />
                 </p>
@@ -204,7 +204,7 @@ export default function PrivacyPage() {
               {getSiteContactEmail() && (
                 <p>
                   <ContactEmailText
-                    className="text-[#6C39EF] hover:underline"
+                    className="text-green hover:underline"
                     prefix="Questions about this privacy policy? Email us at: "
                   />
                 </p>

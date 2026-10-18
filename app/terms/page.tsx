@@ -15,8 +15,8 @@ export default function TermsPage() {
         <div className="container-max max-w-3xl">
           <h1 className="heading-1 mb-8">Terms of Service</h1>
 
-          <div className="prose prose-lg max-w-none space-y-6 text-[#171C26]">
-            <p className="text-sm text-[#5B657B]">
+          <div className="prose prose-lg max-w-none space-y-6 text-ink">
+            <p className="text-sm text-soft">
               Last updated: {PRICE_CHECKED_LONG}
             </p>
 

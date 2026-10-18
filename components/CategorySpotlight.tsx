@@ -30,13 +30,13 @@ export function CategorySpotlight({ placement }: CategorySpotlightProps) {
         <div className="flex-1 min-w-0">
           <div className="mb-2 flex items-center gap-2">
             <SponsoredLabel />
-            <span className="text-sm text-[#5B657B]">· Paid placement</span>
+            <span className="text-sm text-soft">· Paid placement</span>
           </div>
 
           <h2 className="heading-2 mb-3">{placement.company}</h2>
 
           {placement.blurb && (
-            <p className="text-lg text-[#171C26] mb-4 max-w-2xl">{placement.blurb}</p>
+            <p className="text-lg text-ink mb-4 max-w-2xl">{placement.blurb}</p>
           )}
 
           <a

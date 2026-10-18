@@ -20,7 +20,7 @@ export default function AdvertiseThanksPage() {
               </svg>
             </div>
             <h1 className="heading-1 mb-4">Thank you!</h1>
-            <p className="text-xl text-[#5B657B]">
+            <p className="text-xl text-soft">
               We received your sponsorship request.
             </p>
           </div>
@@ -30,48 +30,48 @@ export default function AdvertiseThanksPage() {
             
             <div className="space-y-4">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F3EFFF] text-[#6C39EF] flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-card text-green flex items-center justify-center font-bold">
                   1
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">We'll review your request</h3>
-                  <p className="text-[#5B657B]">
+                  <p className="text-soft">
                     Usually within 2 business days, we'll check whether your tool is a good fit for our readers.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F3EFFF] text-[#6C39EF] flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-card text-green flex items-center justify-center font-bold">
                   2
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">We'll reply by email</h3>
-                  <p className="text-[#5B657B]">
+                  <p className="text-soft">
                     We'll tell you whether your tool is a fit and what happens next.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F3EFFF] text-[#6C39EF] flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-card text-green flex items-center justify-center font-bold">
                   3
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Send your assets</h3>
-                  <p className="text-[#5B657B]">
+                  <p className="text-soft">
                     When booking opens, we'll send you a form for your logo, blurb and link.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F3EFFF] text-[#6C39EF] flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-card text-green flex items-center justify-center font-bold">
                   4
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">You go live</h3>
-                  <p className="text-[#5B657B]">
+                  <p className="text-soft">
                     On the start date we agree on, your sponsored spot goes live for the full term.
                   </p>
                 </div>
@@ -80,10 +80,10 @@ export default function AdvertiseThanksPage() {
           </div>
 
           {getSiteContactEmail() && (
-            <div className="mt-8 text-center text-[#5B657B]">
+            <div className="mt-8 text-center text-soft">
               <p>
                 Questions in the meantime?{' '}
-                <ContactEmailText className="text-[#6C39EF] hover:underline focus-ring rounded" />
+                <ContactEmailText className="text-green hover:underline focus-ring rounded" />
               </p>
             </div>
           )}

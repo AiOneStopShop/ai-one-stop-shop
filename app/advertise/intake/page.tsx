@@ -159,20 +159,20 @@ function IntakeFormContent() {
       <section className="section-spacing">
         <div className="container-max max-w-2xl">
           <div className="mb-8">
-            <Link href="/advertise" className="text-[#6C39EF] hover:underline focus-ring rounded mb-4 inline-block">
+            <Link href="/advertise" className="text-green hover:underline focus-ring rounded mb-4 inline-block">
               ← Back to sponsorship options
             </Link>
             <h1 className="heading-1 mb-4">Sponsorship intake form</h1>
             <div className="bg-amber-50 border-2 border-amber-400 rounded-lg p-4 mb-6">
               <p className="text-amber-900 font-semibold">
                 <strong>Booking isn't open yet.</strong> Please{' '}
-                <Link href="/advertise/request" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                <Link href="/advertise/request" className="text-green hover:underline focus-ring rounded">
                   request a spot
                 </Link>{' '}
                 first. We'll send you this form after we've agreed on your placement.
               </p>
             </div>
-            <p className="text-lg text-[#5B657B]">
+            <p className="text-lg text-soft">
               Provide your assets and details for your sponsored placement.
             </p>
           </div>
@@ -348,7 +348,7 @@ function IntakeFormContent() {
                 placeholder="Describe your tool in plain English. We may edit for clarity."
                 disabled={status === 'submitting'}
               />
-              <p className="text-sm text-[#5B657B] mt-1">
+              <p className="text-sm text-soft mt-1">
                 {formData.blurb.split(/\s+/).filter(Boolean).length}/40 words
               </p>
             </div>
@@ -360,7 +360,7 @@ function IntakeFormContent() {
               </label>
               <div className="space-y-3">
                 <div>
-                  <label htmlFor="logoUrl" className="block text-xs text-[#5B657B] mb-1">
+                  <label htmlFor="logoUrl" className="block text-xs text-soft mb-1">
                     Logo URL (optional)
                   </label>
                   <input
@@ -375,9 +375,9 @@ function IntakeFormContent() {
                     disabled={status === 'submitting'}
                   />
                 </div>
-                <div className="text-center text-sm text-[#5B657B]">or</div>
+                <div className="text-center text-sm text-soft">or</div>
                 <div>
-                  <label htmlFor="logoFile" className="block text-xs text-[#5B657B] mb-1">
+                  <label htmlFor="logoFile" className="block text-xs text-soft mb-1">
                     Upload logo file (PNG or SVG, max 200KB)
                   </label>
                   <input
@@ -410,7 +410,7 @@ function IntakeFormContent() {
                 className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
                 disabled={status === 'submitting'}
               />
-              <p className="text-sm text-[#5B657B] mt-1">Where should the sponsored link go?</p>
+              <p className="text-sm text-soft mt-1">Where should the sponsored link go?</p>
             </div>
 
             {/* Under-13 question */}
@@ -427,7 +427,7 @@ function IntakeFormContent() {
                 <span className="text-sm">
                   <strong>My tool is designed for or marketed to children under 13</strong>
                   <br />
-                  <span className="text-[#5B657B]">
+                  <span className="text-soft">
                     (If checked, we cannot accept your sponsorship)
                   </span>
                 </span>
@@ -499,9 +499,9 @@ function IntakeFormContent() {
               {status === 'submitting' ? 'Submitting...' : 'Submit intake form'}
             </button>
 
-            <p className="text-sm text-[#5B657B] text-center">
+            <p className="text-sm text-soft text-center">
               We'll review your submission and be in touch within 2 business days. We use these details only to review and run your sponsorship. See our{' '}
-              <Link href="/privacy" className="text-[#6C39EF] hover:underline focus-ring rounded">
+              <Link href="/privacy" className="text-green hover:underline focus-ring rounded">
                 Privacy page
               </Link>
               .
@@ -520,7 +520,7 @@ export default function AdvertiseIntakePage() {
         <section className="section-spacing">
           <div className="container-max max-w-2xl">
             <div className="card p-12 text-center">
-              <p className="text-[#5B657B]">Loading...</p>
+              <p className="text-soft">Loading...</p>
             </div>
           </div>
         </section>

@@ -53,7 +53,7 @@ export default function AdvertisePage() {
             </p>
           </div>
 
-          <p className="text-lead text-[#171C26] mb-12">
+          <p className="text-lead text-ink mb-12">
             Put your AI tool in front of people choosing tools to work smarter. Clearly labeled sponsored spots on an honest, curated directory. Founding sponsor pricing.
           </p>
 
@@ -71,7 +71,7 @@ export default function AdvertisePage() {
             {/* How sponsorship works */}
             <div>
               <h2 className="heading-2 mb-4">How sponsorship works here</h2>
-              <div className="bg-[#F3EFFF] border-2 border-[#6C39EF] rounded-xl p-6 mb-6">
+              <div className="bg-card border-2 border-green rounded-xl p-6 mb-6">
                 <p className="text-lg font-semibold mb-2">
                   Money buys a labeled spot, never our opinion.
                 </p>
@@ -98,17 +98,17 @@ export default function AdvertisePage() {
                       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                         <div className="flex-1">
                           <h3 className="heading-3 mb-2">{pkg.name}</h3>
-                          <p className="text-[#5B657B] mb-4">{pkg.description}</p>
+                          <p className="text-soft mb-4">{pkg.description}</p>
                         </div>
                         <div className="flex flex-col items-start md:items-end gap-2 md:text-right">
                           <div>
-                            <span className="text-2xl font-bold text-[#171C26]">{pkg.price}</span>
+                            <span className="text-2xl font-bold text-ink">{pkg.price}</span>
                             {pkg.duration && (
-                              <span className="text-[#5B657B] ml-2">· {pkg.duration}</span>
+                              <span className="text-soft ml-2">· {pkg.duration}</span>
                             )}
                           </div>
                           {pkg.isDisabled ? (
-                            <span className="text-sm text-[#5B657B] italic mt-2">
+                            <span className="text-sm text-soft italic mt-2">
                               Opening once the list launches
                             </span>
                           ) : (
@@ -121,7 +121,7 @@ export default function AdvertisePage() {
                           )}
                         </div>
                       </div>
-                      <p className="text-xs text-[#5B657B] mt-4">
+                      <p className="text-xs text-soft mt-4">
                         one-time · {pkg.duration} · no auto-renewal · plus sales tax where it applies
                       </p>
                     </div>
@@ -167,17 +167,17 @@ export default function AdvertisePage() {
               <h2 className="heading-2 mb-4">Refunds and terms</h2>
               <p className="mb-4">
                 <strong>Our Sponsor Terms, including refunds, are being finalized with our attorney. We'll publish them before we take any payment.</strong>{' '}
-                <Link href="/sponsor-terms" className="text-[#6C39EF] hover:underline focus-ring rounded font-semibold">
+                <Link href="/sponsor-terms" className="text-green hover:underline focus-ring rounded font-semibold">
                   Draft outline
                 </Link>
               </p>
-              <p className="text-sm text-[#5B657B]">
+              <p className="text-sm text-soft">
                 Also see:{' '}
-                <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
                   How we make money
                 </Link>
                 {' · '}
-                <Link href="/how-we-rank" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                <Link href="/how-we-rank" className="text-green hover:underline focus-ring rounded">
                   How we rank
                 </Link>
               </p>
@@ -185,23 +185,23 @@ export default function AdvertisePage() {
 
             {/* Questions */}
             {getSiteContactEmail() && (
-              <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6">
+              <div className="bg-card border border-green rounded-lg p-6">
                 <h2 className="heading-2 mb-3">Questions?</h2>
                 <p>
                   Email{' '}
-                  <ContactEmailText className="text-[#6C39EF] hover:underline focus-ring rounded" />
+                  <ContactEmailText className="text-green hover:underline focus-ring rounded" />
                   . A person on our team reviews every reply before it goes out. We use AI to help us sort and draft, never to replace human judgment.
                 </p>
               </div>
             )}
 
             {/* Footer quote */}
-            <div className="text-center text-lg text-[#5B657B] italic border-t border-[#E5E1DC] pt-8">
+            <div className="text-center text-lg text-soft italic border-t border-line pt-8">
               The best AI tools don't replace you. They give you more time for the work only you can do.
             </div>
 
             <div className="mt-12">
-              <p className="text-sm text-[#5B657B]">
+              <p className="text-sm text-soft">
                 Last updated: October 17, 2026
               </p>
             </div>

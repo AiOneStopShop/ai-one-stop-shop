@@ -54,7 +54,7 @@ export default function AboutPage() {
             </p>
 
             <p>
-              <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
+              <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
                 Read our full disclosure →
               </Link>
             </p>
@@ -62,7 +62,7 @@ export default function AboutPage() {
             <h2 className="heading-2 mt-12">A oneTomorrow venture</h2>
             <p>
               AI One Stop Shop is part of{' '}
-              <BrandName className="text-[#6C39EF] hover:underline focus-ring rounded" />
+              <BrandName className="text-green hover:underline focus-ring rounded" />
               , our collection of projects that help people use technology while staying in control.
             </p>
 
@@ -71,7 +71,7 @@ export default function AboutPage() {
                 <h2 className="heading-2 mt-12">Contact</h2>
                 <p>
                   <ContactEmailText
-                    className="text-[#6C39EF] hover:underline focus-ring rounded"
+                    className="text-green hover:underline focus-ring rounded"
                     prefix="Questions? Spotted a mistake? Email us at "
                     suffix=". We read every message."
                   />
@@ -79,7 +79,7 @@ export default function AboutPage() {
               </>
             )}
 
-            <div className="mt-12 p-6 bg-[#F3EFFF] border border-[#6C39EF] rounded-lg">
+            <div className="mt-12 p-6 bg-card border border-green rounded-lg">
               <p className="font-semibold mb-2">The promise</p>
               <p>
                 The best AI tools don&apos;t replace you. They give you more time for the work only you can do.

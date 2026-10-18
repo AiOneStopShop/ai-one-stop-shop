@@ -15,11 +15,11 @@ export default function PartnersPage() {
         <div className="container-max max-w-3xl">
           <h1 className="heading-1 mb-8">Partner with AI One Stop Shop</h1>
 
-          <p className="text-lead text-[#5B657B] mb-12">
+          <p className="text-lead text-soft mb-12">
             Three ways to work with us
           </p>
 
-          <div className="prose prose-lg max-w-none space-y-8 text-[#171C26]">
+          <div className="prose prose-lg max-w-none space-y-8 text-ink">
             <div>
               <h2 className="heading-2 mb-4">Who we are</h2>
               <p>
@@ -53,11 +53,11 @@ export default function PartnersPage() {
                     We don't promise placements, coverage, reviews or a better rank. A commission pays for referrals, not for a review or a listing, and joining your program won't change what we write. If we add a referral link, it's because your program terms work for us and our readers.
                   </p>
                   {!isAffiliateLive() ? (
-                    <p className="text-sm text-[#5B657B]">
+                    <p className="text-sm text-soft">
                       <strong>Note:</strong> No paid links are active yet. We review each program before we add any referral code.
                     </p>
                   ) : (
-                    <p className="text-sm text-[#5B657B]">
+                    <p className="text-sm text-soft">
                       <strong>Note:</strong> Some listings now have paid links. Each one is marked "Paid link" next to it.
                     </p>
                   )}
@@ -70,7 +70,7 @@ export default function PartnersPage() {
                   </p>
                   <p>
                     Learn more:{' '}
-                    <Link href="/advertise" className="text-[#6C39EF] hover:underline focus-ring rounded font-semibold">
+                    <Link href="/advertise" className="text-green hover:underline focus-ring rounded font-semibold">
                       Sponsor AI One Stop Shop
                     </Link>
                   </p>
@@ -81,9 +81,9 @@ export default function PartnersPage() {
                   <p className="mb-4">
                     Once our newsletter launches, tool makers can sponsor an issue with a clearly labeled block.
                   </p>
-                  <p className="text-sm text-[#5B657B] italic">
+                  <p className="text-sm text-soft italic">
                     Opening once the list launches. See{' '}
-                    <Link href="/advertise" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                    <Link href="/advertise" className="text-green hover:underline focus-ring rounded">
                       sponsorship options
                     </Link>
                     .
@@ -121,11 +121,11 @@ export default function PartnersPage() {
             </div>
 
             {getSiteContactEmail() && (
-              <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6">
+              <div className="bg-card border border-green rounded-lg p-6">
                 <h2 className="heading-2 mb-3">Questions?</h2>
                 <p>
                   Email{' '}
-                  <ContactEmailText className="text-[#6C39EF] hover:underline focus-ring rounded" />
+                  <ContactEmailText className="text-green hover:underline focus-ring rounded" />
                   . We're happy to explain how any of this works.
                 </p>
               </div>
@@ -135,19 +135,19 @@ export default function PartnersPage() {
               <h2 className="heading-2 mb-4">Read more</h2>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                  <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
                     How we make money
                   </Link>{' '}
                   – Full disclosure of revenue streams
                 </li>
                 <li>
-                  <Link href="/how-we-rank" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                  <Link href="/how-we-rank" className="text-green hover:underline focus-ring rounded">
                     How we rank tools
                   </Link>{' '}
                   – Our editorial methodology
                 </li>
                 <li>
-                  <Link href="/about" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                  <Link href="/about" className="text-green hover:underline focus-ring rounded">
                     About us
                   </Link>{' '}
                   – Who we are and why we built this
@@ -155,7 +155,7 @@ export default function PartnersPage() {
               </ul>
             </div>
 
-            <div className="text-center text-lg text-[#5B657B] italic border-t border-[#E5E1DC] pt-8">
+            <div className="text-center text-lg text-soft italic border-t border-line pt-8">
               The best AI tools don't replace you. They give you more time for the work only you can do.
             </div>
           </div>

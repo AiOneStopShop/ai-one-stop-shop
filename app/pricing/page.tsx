@@ -23,34 +23,34 @@ export default function PricingPage() {
               </p>
             </div>
 
-            <div className="space-y-8 text-lg text-[#171C26]">
+            <div className="space-y-8 text-lg text-ink">
               <div>
                 <h2 className="heading-2 mb-4">What you get</h2>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
-                    <span className="text-[#6C39EF] text-xl">✓</span>
+                    <span className="text-green text-xl">✓</span>
                     <span>Browse all tools - no account needed</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#6C39EF] text-xl">✓</span>
+                    <span className="text-green text-xl">✓</span>
                     <span>Real pricing info (price checked {PRICE_CHECKED_LABEL})</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#6C39EF] text-xl">✓</span>
+                    <span className="text-green text-xl">✓</span>
                     <span>Curated tools (no fake ratings)</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#6C39EF] text-xl">✓</span>
+                    <span className="text-green text-xl">✓</span>
                     <span>Search and filter by category</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <span className="text-[#6C39EF] text-xl">✓</span>
+                    <span className="text-green text-xl">✓</span>
                     <span>Compare tools side by side</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-[#F3EFFF] border border-[#6C39EF] rounded-lg p-6">
+              <div className="bg-card border border-green rounded-lg p-6">
                 <h3 className="heading-3 mb-3">How we make money</h3>
                 <p>
                   Some links may be paid (affiliate) links. If you sign up through one, we may earn a commission. We don't add any fee. We also have a separate section for our own products (like ApproveGate).
@@ -58,7 +58,7 @@ export default function PricingPage() {
                 <p className="mt-3">
                   <strong>Money never changes our ranking.</strong> A tool doesn't move up because it pays us.
                 </p>
-                <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded mt-2 inline-block">
+                <Link href="/disclosure" className="text-green hover:underline focus-ring rounded mt-2 inline-block">
                   Read our full disclosure →
                 </Link>
               </div>

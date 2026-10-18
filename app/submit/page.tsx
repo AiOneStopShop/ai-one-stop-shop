@@ -184,24 +184,24 @@ export default function SubmitPage() {
           <nav aria-label="Breadcrumb" className="mb-8">
             <ol className="flex items-center gap-2 text-sm">
               <li>
-                <Link href="/" className="text-[#5B657B] hover:text-[#6C39EF] focus-ring rounded">
+                <Link href="/" className="text-soft hover:text-green focus-ring rounded">
                   Home
                 </Link>
               </li>
-              <li aria-hidden="true" className="text-[#5B657B]">/</li>
-              <li aria-current="page" className="text-[#171C26] font-medium">
+              <li aria-hidden="true" className="text-soft">/</li>
+              <li aria-current="page" className="text-ink font-medium">
                 Submit a Tool
               </li>
             </ol>
           </nav>
 
           <h1 className="heading-1 mb-4">Submit a Tool</h1>
-          <p className="text-lead mb-8 text-[#5B657B]">
+          <p className="text-lead mb-8 text-soft">
             Know an AI tool we should look at? Submit it here.
           </p>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-            <p className="text-sm text-[#171C26]">
+            <p className="text-sm text-ink">
               <strong>What happens next:</strong> Your submission goes into our review queue. A person will check it out and decide whether to add it. We don't auto-publish submissions.
             </p>
           </div>
@@ -252,7 +252,7 @@ export default function SubmitPage() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-              <p className="text-sm text-[#5B657B]">
+              <p className="text-sm text-soft">
                 Fields marked <span aria-hidden="true">*</span><span className="sr-only">asterisk</span> are required.
               </p>
               <div
@@ -272,7 +272,7 @@ export default function SubmitPage() {
               </div>
 
               <div>
-                <label htmlFor="toolName" className="block text-sm font-medium text-[#171C26] mb-2">
+                <label htmlFor="toolName" className="block text-sm font-medium text-ink mb-2">
                   Tool name <span className="text-red-600" aria-hidden="true">*</span>
                 </label>
                 <input
@@ -296,7 +296,7 @@ export default function SubmitPage() {
               </div>
 
               <div>
-                <label htmlFor="websiteUrl" className="block text-sm font-medium text-[#171C26] mb-2">
+                <label htmlFor="websiteUrl" className="block text-sm font-medium text-ink mb-2">
                   Website URL <span className="text-red-600" aria-hidden="true">*</span>
                 </label>
                 <input
@@ -320,7 +320,7 @@ export default function SubmitPage() {
               </div>
 
               <div>
-                <label htmlFor="contactEmail" className="block text-sm font-medium text-[#171C26] mb-2">
+                <label htmlFor="contactEmail" className="block text-sm font-medium text-ink mb-2">
                   Your email <span className="text-red-600" aria-hidden="true">*</span>
                 </label>
                 <input
@@ -336,7 +336,7 @@ export default function SubmitPage() {
                   aria-invalid={fieldErrors.contactEmail ? true : undefined}
                   aria-describedby={describedBy('contactEmail', 'email-hint')}
                 />
-                <p id="email-hint" className="text-sm text-[#5B657B] mt-1">
+                <p id="email-hint" className="text-sm text-soft mt-1">
                   We'll only use this to follow up about your submission
                 </p>
                 {fieldErrors.contactEmail && (
@@ -347,7 +347,7 @@ export default function SubmitPage() {
               </div>
 
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-[#171C26] mb-2">
+                <label htmlFor="description" className="block text-sm font-medium text-ink mb-2">
                   Why should we look at this tool? (optional)
                 </label>
                 <textarea
@@ -378,18 +378,18 @@ export default function SubmitPage() {
                       name="rightsConfirmed"
                       checked={formData.rightsConfirmed}
                       onChange={(e) => setFormData({ ...formData, rightsConfirmed: e.target.checked })}
-                      className="mt-1 h-5 w-5 rounded border-[#5B657B] text-[#6C39EF] focus:ring-2 focus:ring-[#6C39EF] focus:ring-offset-2"
+                      className="mt-1 h-5 w-5 rounded border-[#5B657B] text-green focus:ring-2 focus:ring-[#6C39EF] focus:ring-offset-2"
                       aria-invalid={fieldErrors.rightsConfirmed ? true : undefined}
                       aria-describedby={describedBy('rightsConfirmed', 'rights-description')}
                     />
                     <div className="flex-1">
-                      <label htmlFor="rightsConfirmed" className="block text-sm text-[#171C26]">
+                      <label htmlFor="rightsConfirmed" className="block text-sm text-ink">
                         I own or have permission to share this tool&apos;s name, logo, screenshots and description, and I agree to the{' '}
-                        <Link href="/terms" className="text-[#6C39EF] hover:underline focus-ring rounded">
+                        <Link href="/terms" className="text-green hover:underline focus-ring rounded">
                           Terms
                         </Link>. <span className="text-red-600" aria-hidden="true">*</span>
                       </label>
-                      <p id="rights-description" className="text-xs text-[#5B657B] mt-1 sr-only">
+                      <p id="rights-description" className="text-xs text-soft mt-1 sr-only">
                         This checkbox is required. By checking it, you confirm you have the legal rights to submit this information.
                       </p>
                       {fieldErrors.rightsConfirmed && (

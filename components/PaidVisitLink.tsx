@@ -21,7 +21,7 @@ export function PaidVisitLink({
       {paid ? (
         <span id={noteId} className="block text-sm font-semibold text-[#C62810] mb-1">
           Paid link: we may earn a commission if you sign up.{' '}
-          <Link href="/disclosure" className="text-[#6C39EF] hover:underline focus-ring rounded">
+          <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
             How we make money
           </Link>
         </span>
@@ -29,7 +29,7 @@ export function PaidVisitLink({
       <a
         href={href}
         rel={paid ? 'sponsored nofollow noopener' : 'noopener'}
-        className={paid ? 'link-paid inline-flex items-center min-h-11' : 'inline-flex items-center min-h-11 text-[#6C39EF] hover:underline focus-ring rounded'}
+        className={paid ? 'link-paid inline-flex items-center min-h-11' : 'inline-flex items-center min-h-11 text-green hover:underline focus-ring rounded'}
         aria-describedby={paid ? noteId : undefined}
       >
         Visit {name}

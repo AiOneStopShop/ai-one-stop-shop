@@ -1,6 +1,6 @@
 -- Rollback for 025_hide_tools_review_notes.sql (not a migration; run by hand only if needed).
--- Restores table-level SELECT for anon/authenticated (re-exposes review_notes) and the
--- original search_tools() from 015. The explicit-column app code keeps working either way.
+-- Restores table-level SELECT for anon/authenticated (this re-exposes review_notes).
+-- The explicit-column app code keeps working either way.
 BEGIN;
 REVOKE SELECT (
   id,

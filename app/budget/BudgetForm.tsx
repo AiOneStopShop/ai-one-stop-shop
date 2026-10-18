@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { FormEvent } from 'react';
 import { BUDGET_PRESETS, budgetPath, type BudgetQuery } from '@/lib/budget-url';
-import { PERSONAS, TOOLKIT_GOALS } from '@/lib/personas';
+import { BUDGET_FORM_GOALS, PERSONAS } from '@/lib/personas';
 
 function selectedValues(form: HTMLFormElement, name: string): string[] {
   return Array.from(form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`))
@@ -117,7 +117,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
       <fieldset>
         <legend className="heading-3 mb-3">Goals</legend>
         <div className="grid gap-2 sm:grid-cols-2">
-          {TOOLKIT_GOALS.map((goal) => (
+          {BUDGET_FORM_GOALS.map((goal) => (
             <label key={goal.id} className="flex items-start gap-3 min-h-11 cursor-pointer">
               <input
                 type="checkbox"
@@ -141,7 +141,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
           We fill these slots first when the budget is tight.
         </p>
         <div className="grid gap-2 sm:grid-cols-2">
-          {TOOLKIT_GOALS.map((goal) => (
+          {BUDGET_FORM_GOALS.map((goal) => (
             <label key={goal.id} className="flex items-center gap-3 min-h-11 cursor-pointer">
               <input
                 type="checkbox"

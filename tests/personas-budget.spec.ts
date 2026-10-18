@@ -4,12 +4,22 @@ import { publishedFallbackTools } from '../lib/catalog-tools';
 import { parseBudgetSearchParams, serializeBudgetSearchParams } from '../lib/budget-url';
 import { parseListedPrice, priceForStack } from '../lib/pricing';
 import { PERSONAS } from '../lib/personas';
-import { buildToolkit } from '../lib/toolkit';
+import { buildToolkit, starterToolkitForPersona } from '../lib/toolkit';
 
 const catalog = publishedFallbackTools();
 
 test('persona list covers the four launch personas', () => {
   expect(PERSONAS.map((persona) => persona.slug)).toEqual(['sarah', 'fred', 'claire', 'steve']);
+});
+
+test('each persona has its own audience, goals and starter picks', () => {
+  const audiences = new Set(PERSONAS.map((persona) => persona.audience));
+  expect(audiences.size).toBe(PERSONAS.length);
+  const slotIds = PERSONAS.flatMap((persona) => persona.slotIds);
+  expect(new Set(slotIds).size).toBe(slotIds.length);
+  const picks = PERSONAS.flatMap((persona) => starterToolkitForPersona(catalog, persona.slug).pickedSlugs);
+  expect(picks.length).toBeGreaterThan(0);
+  expect(new Set(picks).size).toBe(picks.length);
 });
 
 test('unknown listed prices stay check price', () => {

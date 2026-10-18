@@ -73,7 +73,7 @@ function rankForSlot(tools: CatalogTool[], slot: ToolkitSlot, query: BudgetQuery
       score: scoreToolForSlot(tool, slot),
       price: priceForStack(tool, options),
     }))
-    .filter((row) => row.score >= MIN_SCORE)
+    .filter((row) => row.score >= (slot.minScore ?? MIN_SCORE))
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       const aCost = a.price.monthlyUsd;

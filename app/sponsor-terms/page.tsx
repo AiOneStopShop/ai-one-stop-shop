@@ -53,14 +53,14 @@ export default function SponsorTermsPage() {
             <div>
               <h2 className="heading-2 mb-4">2. Payment and Pricing</h2>
               <p className="text-soft italic">
-                [To be completed: One-time payment terms, no auto-renewal, sales tax application, founding sponsor pricing lock (up to 3 renewals), payment processor (Stripe).]
+                [To be completed: One-time payment terms, no auto-renewal, sales tax application, founding sponsor pricing for re-bookings (up to 3 more times within 6 months of the first placement's start date), payment processor (Stripe).]
               </p>
             </div>
 
             <div>
               <h2 className="heading-2 mb-4">3. Refund Policy</h2>
               <p className="text-soft italic">
-                [To be completed: Full refund if declined by us or sponsor cancels before go-live; no refund for elapsed time after go-live; pro-rata refund if we remove placement for non-breach reasons; day-for-day extension for downtime over 24 hours in total; no refund for breach (misleading claims, unlawful content, etc.).]
+                [To be completed: Full refund if declined by us or sponsor cancels before go-live; no refund for elapsed time after go-live; pro-rata refund if we remove placement for non-breach reasons; day-for-day extension for downtime over 24 hours in total; if a newsletter issue is sent more than 48 hours after the promised send time, the sponsor may move the slot or get a refund; if the newsletter hasn't launched within 48 hours of the promised launch time, Bundle sponsors may move their newsletter slots to a later issue or get a refund for the unused portion of the $99 Bundle (calculation method to be set); no refund for breach (misleading claims, unlawful content, etc.).]
               </p>
             </div>
 

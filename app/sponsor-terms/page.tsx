@@ -3,7 +3,7 @@ import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail, getOperatorLegalName } from '@/lib/site-config';
 
 export const metadata = {
-  title: 'Sponsor Terms (DRAFT) - AI One Stop Shop',
+  title: 'Sponsor Terms (DRAFT)',
   description: 'Draft outline of our future Sponsor Terms. Not in effect.',
   alternates: { canonical: '/sponsor-terms' },
   robots: {

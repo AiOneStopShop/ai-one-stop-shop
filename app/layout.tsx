@@ -53,10 +53,6 @@ export const metadata: Metadata = {
     description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
     images: ['/og-image.svg'],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
 };
 
 export default function RootLayout({

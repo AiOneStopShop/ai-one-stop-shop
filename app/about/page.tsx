@@ -4,7 +4,7 @@ import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
 
 export const metadata = {
-  title: 'About - AI One Stop Shop',
+  title: 'About',
   description: 'Learn about AI One Stop Shop, a oneTomorrow venture and honest AI tools directory.',
   alternates: { canonical: '/about' },
 };

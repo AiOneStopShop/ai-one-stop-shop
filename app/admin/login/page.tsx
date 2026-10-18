@@ -12,6 +12,13 @@ const AUTH_QUERY_MESSAGES = {
   auth: "That sign-in link didn't work or has expired. Request a new one.",
 } as const;
 
+/** Only same-site admin paths are allowed as a post-login destination. */
+function safeAdminNext(raw: string | null): string {
+  if (!raw || !raw.startsWith('/admin') || raw.startsWith('//') || raw.includes('\\')) return '/admin/review';
+  if (raw.startsWith('/admin/login')) return '/admin/review';
+  return raw;
+}
+
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -74,7 +81,7 @@ function LoginForm() {
         return;
       }
 
-      router.push('/admin/review');
+      router.push(safeAdminNext(searchParams.get('next')));
       router.refresh();
     } catch {
       setError('Sign-in failed.');

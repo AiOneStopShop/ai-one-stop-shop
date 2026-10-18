@@ -8,95 +8,35 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Brand Colors
-        brand: {
-          blue: '#2A4494',      // Deep Tech Blue
-          purple: '#7B4DFF',    // Innovation Purple
-          silver: '#E6E6E6',    // AI Silver
-          orange: '#FF6B2B',    // Smart Orange
-        },
-        primary: {
-          50: '#f0f4ff',
-          100: '#e0e9ff',
-          200: '#c7d6ff',
-          300: '#a3b8ff',
-          400: '#7b8fff',
-          500: '#2A4494',       // Deep Tech Blue
-          600: '#1f3370',
-          700: '#1a2a5c',
-          800: '#162248',
-          900: '#0f1a3a',
-        },
-        ai: {
-          50: '#f8f5ff',
-          100: '#f0ebff',
-          200: '#e6d9ff',
-          300: '#d4bfff',
-          400: '#7B4DFF',       // Innovation Purple
-          500: '#6b3dff',
-          600: '#5a2dff',
-          700: '#4a1dff',
-          800: '#3a0dff',
-          900: '#2a00ff',
-        },
-        accent: {
-          50: '#fff7ed',
-          100: '#ffedd5',
-          200: '#fed7aa',
-          300: '#fdba74',
-          400: '#fb923c',
-          500: '#FF6B2B',       // Smart Orange
-          600: '#ea580c',
-          700: '#c2410c',
-          800: '#9a3412',
-          900: '#7c2d12',
-        },
-        neutral: {
-          50: '#fafafa',
-          100: '#f5f5f5',
-          200: '#e5e5e5',
-          300: '#d4d4d4',
-          400: '#a3a3a3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
-        },
-        dark: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-        }
+        cream: '#FBF4E6',
+        'cream-2': '#F4EAD6',
+        green: '#1E3B2C',
+        'green-2': '#2E5A43',
+        ink: '#22201B',
+        soft: '#5A5348',
+        line: '#E2D6BF',
+        orange: '#E2562B',
+        'orange-ink': '#B8360F',
+        card: '#FFFDF8',
+        leaf: { DEFAULT: '#DCEBD9', line: '#9FBFA6' },
+        // Legacy colors for backward compat
+        purple: '#6C39EF',
+        'deep-purple': '#4A2D86',
+        coral: '#FB6851',
+        'coral-text': '#C62810',
+        navy: '#171C26',
+        canvas: '#F9F8F5',
+        slate: '#5B657B',
+        border: '#E5E1DC',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-      },
-      animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        slideUp: {
-          '0%': { transform: 'translateY(10px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
+        'fraunces': ['var(--font-fraunces)', 'Georgia', 'serif'],
+        'source-sans': ['var(--font-source-sans)', 'system-ui', 'sans-serif'],
+        // Legacy fonts for backward compat
+        'dm-sans': ['var(--font-dm-sans)', 'sans-serif'],
+        'inter': ['var(--font-inter)', 'sans-serif'],
       },
     },
   },
   plugins: [],
-}
-
+};

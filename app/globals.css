@@ -2,48 +2,340 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
-
+/* Option D: Everyday Guide Design System */
 @layer base {
-  html {
-    font-family: 'Inter', system-ui, sans-serif;
+  :root {
+    --cream: #FBF4E6;
+    --cream-2: #F4EAD6;
+    --green: #1E3B2C;
+    --green-2: #2E5A43;
+    --ink: #22201B;
+    --soft: #5A5348;
+    --line: #E2D6BF;
+    --orange: #E2562B;
+    --orange-ink: #B8360F;
+    --card: #FFFDF8;
   }
-  
-  body {
-    @apply bg-white text-gray-900 dark:bg-dark-900 dark:text-white;
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html.has-cookie-banner {
+    scroll-padding-bottom: 6.5rem;
+  }
+
+  html.has-cookie-banner body {
+    padding-bottom: 6.5rem;
+  }
+
+  html.cookie-consent-given .cookie-banner {
+    display: none;
+  }
+
+  ::selection {
+    background: #CFE3D4;
+    color: var(--green);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-fraunces text-green;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  a {
+    @apply text-green;
+    text-underline-offset: 0.2em;
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--green-2);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
 @layer components {
+  /* Containers */
+  .container-max {
+    @apply max-w-[1180px] mx-auto px-7;
+  }
+
+  .wrap {
+    @apply container-max;
+  }
+
+  /* Section spacing */
+  .section-spacing {
+    @apply py-12 md:py-16;
+  }
+
+  /* Typography */
+  .heading-1 {
+    @apply text-[clamp(2.9rem,1.6rem+4.4vw,5.4rem)] font-fraunces font-bold text-green leading-[1.05];
+  }
+
+  /* Kept for pages that still use the old name (H7). Same scale as .heading-1. */
+  .heading-hero {
+    @apply heading-1;
+  }
+
+  /* Inner-page H1: a step below the home hero */
+  .heading-page {
+    @apply font-fraunces font-bold text-green leading-[1.05];
+    font-size: clamp(2.3rem, 1.5rem + 3vw, 4rem);
+  }
+
+  .heading-2 {
+    @apply text-[clamp(2rem,1.4rem+2vw,3rem)] font-fraunces font-bold text-green;
+  }
+
+  .heading-3 {
+    @apply text-[1.6rem] font-fraunces font-bold text-green;
+  }
+
+  .text-lead {
+    @apply text-xl text-ink leading-relaxed;
+  }
+
+  /* Buttons */
   .btn-primary {
-    @apply bg-brand-blue hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply inline-flex items-center justify-center gap-3 min-h-[56px] px-7 rounded-xl bg-green text-white font-bold text-lg;
+    @apply hover:bg-green-2 transition-all duration-200;
+    box-shadow: 0 10px 22px -14px rgba(30, 59, 44, 0.9);
   }
-  
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+  }
+
+  /* M16: dark ring with a cream gap so it reads at >3:1 on cream, cards and green */
+  .btn-primary:focus-visible,
+  .btn-secondary:focus-visible {
+    outline: 3px solid var(--green);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px var(--cream), 0 0 0 6px var(--green);
+  }
+
+  /* Honesty panel: deep green box with cream text. Headings stay light (H6). */
+  .panel-honest {
+    @apply bg-green rounded-2xl p-8;
+    color: #F3EEE2;
+  }
+
   .btn-secondary {
-    @apply bg-neutral-100 hover:bg-neutral-200 text-neutral-900 font-medium py-2 px-4 rounded-lg transition-colors duration-200 dark:bg-dark-700 dark:hover:bg-dark-600 dark:text-white;
+    @apply inline-flex items-center justify-center gap-3 min-h-[56px] px-7 rounded-xl;
+    @apply bg-card border-2 border-line text-ink font-semibold;
+    @apply hover:border-green hover:bg-cream-2 transition-all duration-200;
   }
-  
+
+  /* For use on the deep green panel */
+  .btn-light {
+    @apply inline-flex items-center justify-center gap-3 min-h-[56px] px-7 rounded-xl bg-cream text-green font-bold text-lg;
+    @apply hover:bg-white transition-all duration-200;
+  }
+
+  .btn-light:focus-visible {
+    outline: 3px solid #FFFFFF;
+    outline-offset: 3px;
+  }
+
+  .btn-coral {
+    @apply btn-primary;
+  }
+
+  .btn-outline {
+    @apply btn-secondary;
+  }
+
+  /* Cards */
   .card {
-    @apply bg-white dark:bg-dark-800 rounded-xl shadow-sm border border-neutral-200 dark:border-dark-700 p-6;
+    @apply bg-card border border-line rounded-2xl p-6;
   }
-  
-  .gradient-bg {
-    @apply bg-gradient-to-br from-ai-50 via-white to-primary-50 dark:from-dark-900 dark:via-dark-800 dark:to-dark-900;
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
   }
-  
-  .brand-gradient {
-    @apply bg-gradient-to-r from-brand-purple to-brand-blue bg-clip-text text-transparent;
+
+  .badge-sponsored {
+    @apply badge bg-[#FDEBE3] text-orange-ink border border-[#F0B9A3];
   }
-  
-  .accent-gradient {
-    @apply bg-gradient-to-r from-brand-orange to-accent-500 bg-clip-text text-transparent;
+
+  .badge-made-by-us {
+    @apply badge bg-[#DCEBD9] text-green border border-[#9FBFA6];
+  }
+
+  .badge-category {
+    @apply badge bg-cream-2 text-green border border-line;
+  }
+
+  /* Soft callout on cream */
+  .note {
+    @apply bg-cream-2 border border-line rounded-2xl p-5 md:p-6 text-ink;
+  }
+
+  /* Long-form reading: legal pages, about, disclosure */
+  .guide-prose {
+    @apply text-[1.075rem] leading-[1.7] text-ink;
+    max-width: 68ch;
+  }
+  .guide-prose > * + * {
+    margin-top: 1rem;
+  }
+  .guide-prose h2 {
+    @apply font-fraunces font-bold text-green;
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+    margin-top: 2.75rem;
+    margin-bottom: 0.25rem;
+  }
+  .guide-prose h3 {
+    @apply font-fraunces font-bold text-green text-[1.3rem];
+    margin-top: 2rem;
+  }
+  .guide-prose ul {
+    @apply list-disc pl-6 space-y-2;
+  }
+  .guide-prose ol {
+    @apply list-decimal pl-6 space-y-2;
+  }
+  .guide-prose strong {
+    @apply text-ink font-semibold;
+  }
+
+  /* Orange swoosh decoration (never for text) */
+  .swoosh {
+    @apply block w-[140px] h-[14px] my-4;
+  }
+
+  /* Focus ring */
+  .focus-ring {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-2 focus-visible:rounded;
+  }
+
+  /* Legacy headings for backward compat */
+  .heading-large {
+    @apply heading-page;
+  }
+
+  .heading-medium {
+    @apply heading-2;
+  }
+
+  .heading-small {
+    @apply heading-3;
+  }
+
+  .link-paid {
+    @apply inline-flex items-center gap-2 text-green hover:underline focus-ring;
   }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  /* Screen reader only */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  /* Skip link */
+  .skip-link {
+    @apply absolute left-[-999px] top-2 bg-green text-white px-4 py-3 rounded-lg z-50 font-semibold;
+  }
+
+  .skip-link:focus {
+    @apply left-3;
   }
 }
 
+/* Unlayered overrides */
+mark {
+  background-color: #F7E3B5;
+  color: inherit;
+  padding: 0 0.15em;
+  border-radius: 0.2em;
+}
+
+/* H6: headings and links inside dark panels must not inherit the dark green */
+.panel-honest h1,
+.panel-honest h2,
+.panel-honest h3,
+.panel-honest h4,
+.panel-honest .heading-2,
+.panel-honest .heading-3 {
+  color: #FFFFFF;
+}
+
+.panel-honest strong,
+.panel-honest b,
+.panel-honest em {
+  color: #FFFFFF;
+}
+
+.panel-honest a:not(.btn-light):not(.btn-primary):not(.btn-secondary) {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.panel-honest :focus-visible {
+  outline-color: #F3EEE2;
+}
+
+/* M15: links inside running text are underlined, not colour-only */
+footer p a,
+main p a,
+.prose a,
+.guide-prose a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Ensure links in text blocks are distinguishable */
+p a,
+li a,
+article a,
+.prose a,
+.guide-prose a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+p a:hover,
+li a:hover,
+article a:hover,
+.prose a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Sticky compare button positioning */
+.sticky-compare-btn {
+  bottom: 1.5rem;
+}
+
+html.has-cookie-banner .sticky-compare-btn {
+  bottom: calc(var(--cookie-banner-height, 4.5rem) + 1.5rem);
+}
+
+/* Whole-card links carry their own affordance (arrow, hover lift); no underline on their text */
+a.card,
+a.card * {
+  text-decoration: none;
+}

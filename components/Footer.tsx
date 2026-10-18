@@ -1,177 +1,115 @@
-'use client'
+import Link from 'next/link';
+import { ContactEmail } from '@/components/ContactEmail';
+import { getSiteContactEmail, isAffiliateLive } from '@/lib/site-config';
 
-import { motion } from 'framer-motion'
-import { SparklesIcon } from '@heroicons/react/24/outline'
-import { Twitter, Linkedin, Instagram, Youtube, Github, Mail } from 'lucide-react'
+type FooterLink = { href: string; label: string };
 
-const socialLinks = [
+const GROUPS: { title: string; links: FooterLink[] }[] = [
   {
-    name: 'Twitter',
-    href: 'https://twitter.com/yourusername',
-    icon: Twitter,
-    color: 'hover:text-blue-400'
+    title: 'Find tools',
+    links: [
+      { href: '/tools', label: 'AI tools' },
+      { href: '/categories', label: 'Categories' },
+      { href: '/finder', label: 'Tool finder' },
+      { href: '/personas', label: 'Toolkits by role' },
+      { href: '/budget', label: 'Budget planner' },
+    ],
   },
   {
-    name: 'LinkedIn',
-    href: 'https://linkedin.com/in/yourusername',
-    icon: Linkedin,
-    color: 'hover:text-blue-600'
+    title: 'How we work',
+    links: [
+      { href: '/how-we-rank', label: 'How we rank' },
+      { href: '/disclosure', label: 'Disclosure' },
+      { href: '/our-kits', label: 'Our kits' },
+      { href: '/about', label: 'About' },
+      { href: '/newsletter', label: 'Newsletter' },
+    ],
   },
   {
-    name: 'Instagram',
-    href: 'https://instagram.com/yourusername',
-    icon: Instagram,
-    color: 'hover:text-pink-500'
+    title: 'Work with us',
+    links: [
+      { href: '/submit', label: 'Submit a tool' },
+      { href: '/partners', label: 'Partners' },
+      { href: '/advertise', label: 'Advertise' },
+    ],
   },
   {
-    name: 'YouTube',
-    href: 'https://youtube.com/@yourusername',
-    icon: Youtube,
-    color: 'hover:text-red-500'
+    title: 'Legal',
+    links: [
+      { href: '/privacy', label: 'Privacy' },
+      { href: '/terms', label: 'Terms' },
+      ...(process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' ? [{ href: '/dmca', label: 'Copyright & DMCA' }] : []),
+    ],
   },
-  {
-    name: 'GitHub',
-    href: 'https://github.com/yourusername',
-    icon: Github,
-    color: 'hover:text-gray-400'
-  },
-  {
-    name: 'Email',
-    href: 'mailto:hello@aionestop.shop',
-    icon: Mail,
-    color: 'hover:text-green-500'
-  }
-]
+];
 
-const quickLinks = [
-  { name: 'AI Tools', href: '/tools' },
-  { name: 'AI Agents', href: '/agents' },
-  { name: 'Toolkit Builder', href: '/toolkit' },
-  { name: 'Knowledge Hub', href: '/knowledge' },
-  { name: 'Community', href: '/community' },
-  { name: 'About', href: '/about' }
-]
+const linkClass = 'text-green underline decoration-line decoration-1 underline-offset-4 hover:decoration-green focus-ring rounded';
 
-const categories = [
-  { name: 'AI Assistants', href: '/tools?category=AI%20Assistant' },
-  { name: 'Image Generation', href: '/tools?category=Image%20Generation' },
-  { name: 'Video Creation', href: '/tools?category=Video%20Creation' },
-  { name: 'Text & Writing', href: '/tools?category=Text%20%26%20Writing' },
-  { name: 'Code & Development', href: '/tools?category=Code%20%26%20Development' },
-  { name: 'Data & Analytics', href: '/tools?category=Data%20%26%20Analytics' }
-]
+export function Footer() {
+  const siteContactEmail = getSiteContactEmail();
+  const affiliateLive = isAffiliateLive();
 
-export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* Brand Section */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-brand-purple to-brand-blue rounded-full flex items-center justify-center mr-3">
-                <SparklesIcon className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-bold">AIOneStop</span>
-                <span className="text-xs text-brand-orange font-medium -mt-1">shop</span>
-              </div>
+    <footer className="border-t border-line bg-cream-2/60 pt-12 pb-10 text-[0.95rem] text-soft">
+      <div className="container-max">
+        <nav aria-label="Footer" className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8 pb-10">
+          {GROUPS.map((group) => (
+            <div key={group.title}>
+              <p className="font-fraunces font-bold text-green text-lg mb-3">{group.title}</p>
+              <ul className="space-y-2 list-none m-0 p-0">
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className={linkClass}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+                {group.title === 'Work with us' && siteContactEmail && (
+                  <li>
+                    <ContactEmail className={linkClass}>Contact</ContactEmail>
+                  </li>
+                )}
+              </ul>
             </div>
-            <p className="text-gray-400 mb-6">
-              The ultimate AI storefront for tools, knowledge, and community. 
-              Discover, learn, and master AI with our curated collection.
-            </p>
-            {/* Social Media Links */}
-            <div className="flex space-x-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`text-gray-400 transition-colors duration-200 ${social.color}`}
-                  aria-label={social.name}
-                >
-                  <social.icon className="w-5 h-5" />
-                </a>
-              ))}
-            </div>
-          </div>
+          ))}
+        </nav>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors duration-200"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Tool Categories */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Tool Categories</h3>
-            <ul className="space-y-2">
-              {categories.map((category) => (
-                <li key={category.name}>
-                  <a
-                    href={category.href}
-                    className="text-gray-400 hover:text-white transition-colors duration-200"
-                  >
-                    {category.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Newsletter Signup */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Stay Updated</h3>
-            <p className="text-gray-400 mb-4">
-              Get the latest AI tool updates and insights delivered to your inbox.
-            </p>
-            <div className="flex">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-purple"
-              />
-              <button className="px-4 py-2 bg-brand-purple hover:bg-brand-blue transition-colors duration-200 rounded-r-lg">
-                Subscribe
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="border-t border-gray-800 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-gray-400 text-sm mb-4 md:mb-0">
-              © 2024 AIOneStop.shop. All rights reserved.
-            </div>
-            <div className="flex space-x-6 text-sm">
-              <a href="/privacy" className="text-gray-400 hover:text-white transition-colors">
-                Privacy Policy
-              </a>
-              <a href="/terms" className="text-gray-400 hover:text-white transition-colors">
+        <div className="border-t border-line pt-6 space-y-3">
+          <p className="text-sm text-soft max-w-3xl">
+            {affiliateLive
+              ? 'We earn money from clearly labeled sponsored ads, some paid links, and our own kits. Payments never change how we rank tools.'
+              : 'We earn money from clearly labeled sponsored ads and our own kits. Payments never change how we rank tools.'}{' '}
+            <Link href="/disclosure" className="text-green underline underline-offset-2 focus-ring rounded">
+              Read our disclosure
+            </Link>
+          </p>
+          {process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' && (
+            <p className="text-sm text-soft max-w-3xl">
+              <strong>Terms:</strong> By submitting a tool or using this site, you agree to our{' '}
+              <Link href="/terms" className="text-green underline underline-offset-2 focus-ring rounded">
                 Terms of Service
-              </a>
-              <a href="/contact" className="text-gray-400 hover:text-white transition-colors">
-                Contact
-              </a>
-            </div>
-          </div>
+              </Link>
+              . For copyright concerns, see our{' '}
+              <Link href="/dmca" className="text-green underline underline-offset-2 focus-ring rounded">
+                Copyright &amp; DMCA policy
+              </Link>
+              .
+            </p>
+          )}
+          <p className="text-sm m-0">
+            © 2026 AI One Stop Shop · A oneTomorrow venture
+            {siteContactEmail && (
+              <>
+                {' · '}
+                <ContactEmail className="text-green underline underline-offset-2 focus-ring rounded" />
+              </>
+            )}
+          </p>
+          {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS && (
+            <p className="text-xs text-soft whitespace-pre-line">{process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS}</p>
+          )}
         </div>
       </div>
     </footer>
-  )
+  );
 }

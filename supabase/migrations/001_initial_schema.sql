@@ -1,0 +1,184 @@
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Categories table
+CREATE TABLE IF NOT EXISTS categories (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  slug TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT,
+  icon TEXT,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tools table with length limits
+CREATE TABLE IF NOT EXISTS tools (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  slug TEXT UNIQUE NOT NULL CHECK (char_length(slug) <= 100),
+  name TEXT NOT NULL CHECK (char_length(name) <= 200),
+  tagline TEXT CHECK (char_length(tagline) <= 255),
+  description TEXT CHECK (char_length(description) <= 5000),
+  website_url TEXT NOT NULL CHECK (char_length(website_url) <= 500),
+  pricing_summary TEXT CHECK (char_length(pricing_summary) <= 255),
+  pricing_model TEXT CHECK (pricing_model IN ('free', 'freemium', 'subscription', 'one-time', 'usage-based', 'contact')),
+  has_free_tier BOOLEAN DEFAULT false,
+  platforms TEXT[] DEFAULT ARRAY[]::TEXT[],
+  features TEXT[] DEFAULT ARRAY[]::TEXT[],
+  logo_url TEXT CHECK (char_length(logo_url) <= 500),
+  editorial_score INTEGER CHECK (editorial_score >= 1 AND editorial_score <= 100),
+  editorial_why TEXT CHECK (char_length(editorial_why) <= 2000),
+  source_url TEXT CHECK (char_length(source_url) <= 500),
+  last_verified_at TIMESTAMPTZ,
+  status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived', 'needs_review', 'pending')),
+  is_sponsored BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tool categories (many-to-many)
+CREATE TABLE IF NOT EXISTS tool_categories (
+  tool_id UUID REFERENCES tools(id) ON DELETE CASCADE,
+  category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
+  is_primary BOOLEAN DEFAULT false,
+  PRIMARY KEY (tool_id, category_id)
+);
+
+-- Affiliate links (server-only, not exposed to browser)
+CREATE TABLE IF NOT EXISTS affiliate_links (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  tool_id UUID REFERENCES tools(id) ON DELETE CASCADE,
+  go_slug TEXT UNIQUE NOT NULL,
+  destination_url TEXT NOT NULL,
+  program_name TEXT,
+  network TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Affiliate clicks (no raw IPs stored, only hashed)
+CREATE TABLE IF NOT EXISTS affiliate_clicks (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  link_id UUID REFERENCES affiliate_links(id) ON DELETE CASCADE,
+  tool_id UUID REFERENCES tools(id) ON DELETE CASCADE,
+  clicked_at TIMESTAMPTZ DEFAULT NOW(),
+  ip_hash TEXT NOT NULL,
+  user_agent TEXT,
+  referrer TEXT,
+  page_path TEXT,
+  is_bot BOOLEAN DEFAULT false
+);
+
+-- User profiles removed from this migration (see 004_profiles_and_admin.sql for full schema)
+
+-- Subscriptions (for future use)
+CREATE TABLE IF NOT EXISTS subscriptions (
+  stripe_subscription_id TEXT PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  stripe_customer_id TEXT NOT NULL,
+  price_id TEXT NOT NULL,
+  plan TEXT CHECK (plan IN ('member', 'power')),
+  interval TEXT CHECK (interval IN ('month', 'year')),
+  status TEXT NOT NULL,
+  current_period_end TIMESTAMPTZ,
+  cancel_at_period_end BOOLEAN DEFAULT false,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Stripe events (webhook deduplication)
+CREATE TABLE IF NOT EXISTS stripe_events (
+  event_id TEXT PRIMARY KEY,
+  type TEXT NOT NULL,
+  received_at TIMESTAMPTZ DEFAULT NOW(),
+  processed_at TIMESTAMPTZ
+);
+
+-- Tool submissions (for public "Submit your tool" form)
+CREATE TABLE IF NOT EXISTS tool_submissions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  tool_name TEXT NOT NULL,
+  website_url TEXT NOT NULL,
+  contact_email TEXT NOT NULL,
+  description TEXT,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  reviewed_by UUID REFERENCES auth.users(id),
+  reviewed_at TIMESTAMPTZ,
+  review_notes TEXT,
+  submitted_at TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Create indexes
+CREATE INDEX idx_tools_slug ON tools(slug);
+CREATE INDEX idx_tools_status ON tools(status);
+CREATE INDEX idx_tools_last_verified ON tools(last_verified_at);
+CREATE INDEX idx_categories_slug ON categories(slug);
+CREATE INDEX idx_affiliate_links_go_slug ON affiliate_links(go_slug);
+CREATE INDEX idx_affiliate_clicks_clicked_at ON affiliate_clicks(clicked_at);
+CREATE INDEX idx_tool_categories_tool_id ON tool_categories(tool_id);
+CREATE INDEX idx_tool_categories_category_id ON tool_categories(category_id);
+
+-- Enable Row Level Security
+ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tools ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tool_categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE affiliate_links ENABLE ROW LEVEL SECURITY;
+ALTER TABLE affiliate_clicks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE stripe_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tool_submissions ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies for categories (public read)
+CREATE POLICY "Anyone can read categories"
+  ON categories FOR SELECT
+  USING (true);
+
+-- RLS Policies for tools (public read for published only)
+CREATE POLICY "Anyone can read published tools"
+  ON tools FOR SELECT
+  USING (status = 'published');
+
+-- RLS Policies for tool_categories (public read for published tools)
+CREATE POLICY "Anyone can read tool categories for published tools"
+  ON tool_categories FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM tools
+      WHERE tools.id = tool_categories.tool_id
+      AND tools.status = 'published'
+    )
+  );
+
+-- Affiliate links should NOT be readable by the public (server-only)
+-- No public SELECT policy
+
+-- Affiliate clicks should NOT be readable by the public
+-- No public SELECT policy
+
+-- Tool submissions: RLS policies added in migration 003 and 005
+
+-- Create updated_at trigger function
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Add updated_at triggers
+CREATE TRIGGER update_tools_updated_at
+  BEFORE UPDATE ON tools
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_categories_updated_at
+  BEFORE UPDATE ON categories
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_subscriptions_updated_at
+  BEFORE UPDATE ON subscriptions
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();

@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { knownSlugsInOrder, orderBySlug } from '@/lib/compare-tools';
 import { getActiveAffiliateGoSlugs, toolHasAffiliate, visitHref } from '@/lib/affiliate-links';
 import { fallbackTools } from '@/lib/fallback-data';
+import { PUBLIC_TOOL_COLUMNS } from '@/lib/tool-columns';
 import { ChangeSelectionLink } from './ChangeSelectionLink';
 import { CompareSelector } from './CompareSelector';
 
@@ -19,12 +20,14 @@ async function getToolsForComparison(slugs: string[]) {
     const { data, error } = await supabase
       .from('tools')
       .select(`
-        *,
+        ${PUBLIC_TOOL_COLUMNS},
         tool_categories(
           is_primary,
           categories(*)
         )
-      `);
+      `)
+      .in('slug', slugs)
+      .eq('status', 'published');
 
     if (error) {
       console.error('Supabase error in compare:', error);

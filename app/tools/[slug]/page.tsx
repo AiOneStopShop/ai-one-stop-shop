@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { PUBLIC_TOOL_COLUMNS } from '@/lib/tool-columns';
 import type { Tool, Category } from '@/types/database';
 import { generateToolSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { isToolSponsored } from '@/lib/sponsor-placements';
@@ -12,7 +13,7 @@ async function getTool(slug: string) {
   const { data } = await supabase
     .from('tools')
     .select(`
-      *,
+      ${PUBLIC_TOOL_COLUMNS},
       tool_categories(
         is_primary,
         categories(*)

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { getSiteContactEmail } from '@/lib/site-config';
+import { PageIntro } from '@/components/PageIntro';
 
 const FIELD_ERROR_TEXT = {
   name_missing: 'Please enter a tool name.',
@@ -179,35 +180,32 @@ export default function SubmitPage() {
 
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
-        <div className="container-max max-w-2xl">
-          <nav aria-label="Breadcrumb" className="mb-8">
+      <PageIntro
+        accent="magnifier"
+        title="Suggest a tool"
+        lead="Know an AI tool that helps people get real work done? Tell us about it. A person on our team looks at every suggestion."
+        above={
+          <nav aria-label="Breadcrumb">
             <ol className="flex items-center gap-2 text-sm">
               <li>
-                <Link href="/" className="text-soft hover:text-green focus-ring rounded">
+                <Link href="/" className="text-soft hover:text-green focus-ring rounded underline underline-offset-2">
                   Home
                 </Link>
               </li>
               <li aria-hidden="true" className="text-soft">/</li>
               <li aria-current="page" className="text-ink font-medium">
-                Submit a Tool
+                Submit a tool
               </li>
             </ol>
           </nav>
+        }
+      />
 
-          <h1 className="heading-1 mb-4">Submit a Tool</h1>
-          <p className="text-lead mb-8 text-soft">
-            Know an AI tool we should look at? Submit it here.
-          </p>
-
-          <div className="bg-cream-2 border border-line rounded-lg p-6 mb-8">
-            <p className="text-sm text-ink">
-              <strong>What happens next:</strong> Your submission goes into our review queue. A person will check it out and decide whether to add it. We don't auto-publish submissions.
-            </p>
-          </div>
-
+      <section className="py-10 md:py-14">
+        <div className="container-max grid gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] items-start">
+          <div className="min-w-0">
           {status === 'success' ? (
-            <div className="bg-leaf border border-leaf-line rounded-lg p-8 text-center" role="status">
+            <div className="card bg-leaf border-leaf-line text-center !p-8" role="status">
               <h2
                 ref={successRef}
                 tabIndex={-1}
@@ -251,7 +249,7 @@ export default function SubmitPage() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+              <form onSubmit={handleSubmit} className="card space-y-6 !p-5 md:!p-7" noValidate>
               <p className="text-sm text-soft">
                 Fields marked <span aria-hidden="true">*</span><span className="sr-only">asterisk</span> are required.
               </p>
@@ -283,7 +281,7 @@ export default function SubmitPage() {
                   autoComplete="organization"
                   value={formData.toolName}
                   onChange={(e) => setFormData({ ...formData, toolName: e.target.value })}
-                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                  className="w-full px-4 py-3 border border-soft rounded-lg bg-white focus-ring"
                   placeholder="e.g., ChatGPT"
                   aria-invalid={fieldErrors.toolName ? true : undefined}
                   aria-describedby={describedBy('toolName')}
@@ -307,7 +305,7 @@ export default function SubmitPage() {
                   autoComplete="url"
                   value={formData.websiteUrl}
                   onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
-                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                  className="w-full px-4 py-3 border border-soft rounded-lg bg-white focus-ring"
                   placeholder="https://..."
                   aria-invalid={fieldErrors.websiteUrl ? true : undefined}
                   aria-describedby={describedBy('websiteUrl')}
@@ -331,7 +329,7 @@ export default function SubmitPage() {
                   autoComplete="email"
                   value={formData.contactEmail}
                   onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
-                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                  className="w-full px-4 py-3 border border-soft rounded-lg bg-white focus-ring"
                   placeholder="you@example.com"
                   aria-invalid={fieldErrors.contactEmail ? true : undefined}
                   aria-describedby={describedBy('contactEmail', 'email-hint')}
@@ -357,7 +355,7 @@ export default function SubmitPage() {
                   autoComplete="off"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                  className="w-full px-4 py-3 border border-soft rounded-lg bg-white focus-ring"
                   placeholder="Tell us what this tool does..."
                   aria-invalid={fieldErrors.description ? true : undefined}
                   aria-describedby={describedBy('description')}
@@ -412,6 +410,34 @@ export default function SubmitPage() {
               </form>
             </>
           )}
+          </div>
+
+          <aside aria-labelledby="submit-next-heading" className="lg:sticky lg:top-24">
+            <h2 id="submit-next-heading" className="heading-3 mb-4">What happens next</h2>
+            <ol className="space-y-4 list-none p-0 m-0">
+              {[
+                ['It goes into our review queue.', 'Nothing is published automatically.'],
+                ['A person checks it.', 'We look at what it does, who it helps, and its public pricing page.'],
+                ['We decide whether to list it.', 'If we have questions, we email you. Submitting is free and never buys a place or a ranking.'],
+              ].map(([title, body], index) => (
+                <li key={title} className="flex gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="flex-none w-8 h-8 rounded-full bg-leaf border border-leaf-line text-green font-semibold grid place-items-center"
+                  >
+                    {index + 1}
+                  </span>
+                  <span>
+                    <span className="block font-semibold text-ink">{title}</span>
+                    <span className="block text-soft">{body}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p className="note mt-6">
+              How we choose what to list: <Link href="/how-we-rank" className="underline underline-offset-2 focus-ring rounded">How we rank</Link>.
+            </p>
+          </aside>
         </div>
       </section>
     </div>

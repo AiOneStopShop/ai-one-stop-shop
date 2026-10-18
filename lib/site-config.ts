@@ -27,7 +27,7 @@ export function getSiteContactEmail(): string | null {
 }
 
 export function getOperatorLegalName(): string {
-  return (process.env.NEXT_PUBLIC_OPERATOR_LEGAL_NAME || '').trim() || 'TrgovinaCo LLC';
+  return 'TrgovinaCo LLC';
 }
 
 export function isAffiliateLive(): boolean {

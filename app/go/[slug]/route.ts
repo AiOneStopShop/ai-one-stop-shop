@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { after } from 'next/server';
-import { getServiceSupabase } from '@/lib/supabase';
+import { supabase as publicSupabase, getServiceSupabase } from '@/lib/supabase';
 import { affiliateRedirectRateLimit, dedupe } from '@/lib/rate-limit';
 import { getClientKey } from '@/lib/client-ip';
 import crypto from 'crypto';
@@ -37,10 +37,10 @@ export async function GET(
   }
 
   try {
-    const supabase = getServiceSupabase();
-
-    // Look up the affiliate link and ensure tool is published
-    const { data: link, error } = await supabase
+    // Destination lookups use the public (anon) client: published tools and
+    // active affiliate links are readable under RLS. The redirect must not
+    // depend on the service-role key; that key is only needed to log the click.
+    const { data: link, error } = await publicSupabase
       .from('affiliate_links')
       .select(`
         id,
@@ -59,7 +59,7 @@ export async function GET(
     let linkId = link?.id || null;
 
     if (error || !link) {
-      const { data: tool } = await supabase
+      const { data: tool } = await publicSupabase
         .from('tools')
         .select('id, website_url')
         .eq('slug', slug)
@@ -95,7 +95,8 @@ export async function GET(
     after(async () => {
       try {
         if (!toolId) return;
-        
+
+        const supabase = getServiceSupabase();
         const ipHash = hashIP(ip);
         
         // Deduplicate clicks per IP hash + tool + day
@@ -123,7 +124,18 @@ export async function GET(
       }
     });
 
-    return NextResponse.redirect(destination, 302);
+    // Only redirect to absolute http(s) URLs that came from the database.
+    let safeDestination: URL;
+    try {
+      safeDestination = new URL(destination as string);
+    } catch {
+      return NextResponse.redirect(new URL('/', request.url), 302);
+    }
+    if (safeDestination.protocol !== 'https:' && safeDestination.protocol !== 'http:') {
+      return NextResponse.redirect(new URL('/', request.url), 302);
+    }
+
+    return NextResponse.redirect(safeDestination, 302);
   } catch (error) {
     console.error('Error in /go redirect:', error);
     return NextResponse.redirect(new URL('/', request.url), 302);

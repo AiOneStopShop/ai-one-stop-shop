@@ -118,6 +118,7 @@ export const sponsorIntakeRateLimit = createRateLimiter(5, 60); // 5 requests pe
 export const placementTrackRateLimit = createRateLimiter(30, 1); // 30 requests per minute
 export const affiliateRedirectRateLimit = createRateLimiter(30, 1); // 30 requests per minute
 export const apiRateLimit = createRateLimiter(100, 1); // 100 requests per minute for API
+export const newsletterRateLimit = createRateLimiter(5, 15); // 5 signups per 15 minutes
 
 // Redis client and dedupe helper for click/impression tracking
 const upstashUrl = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;

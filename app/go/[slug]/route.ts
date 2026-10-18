@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { after } from 'next/server';
 import { supabase as publicSupabase, getServiceSupabase } from '@/lib/supabase';
-import { affiliateRedirectRateLimit, dedupe } from '@/lib/rate-limit';
+import { affiliateRedirectRateLimit, dedupe, releaseDedupe } from '@/lib/rate-limit';
+import { logAffiliateClick } from '@/lib/click-logging';
 import { getClientKey } from '@/lib/client-ip';
 import crypto from 'crypto';
 
@@ -91,39 +92,6 @@ export async function GET(
       }
     }
 
-    // Log click asynchronously using after() to avoid blocking the redirect
-    after(async () => {
-      try {
-        if (!toolId) return;
-
-        const supabase = getServiceSupabase();
-        const ipHash = hashIP(ip);
-        
-        // Deduplicate clicks per IP hash + tool + day
-        const today = new Date().toISOString().split('T')[0];
-        const dedupeKey = `dedupe:click:${ipHash}:${toolId}:${today}`;
-        
-        const isFirstClick = await dedupe(dedupeKey, 86400); // 24 hours
-        
-        if (!isFirstClick) {
-          // Already logged this click today
-          return;
-        }
-
-        await supabase.from('affiliate_clicks').insert({
-          link_id: linkId,
-          tool_id: toolId,
-          ip_hash: ipHash,
-          user_agent: userAgent?.substring(0, 255),
-          referrer: referrerOrigin + referrerPathname,
-          page_path: referrerPathname,
-          is_bot: isBot(userAgent),
-        });
-      } catch (err) {
-        console.error('Failed to log affiliate click:', err);
-      }
-    });
-
     // Only redirect to absolute http(s) URLs that came from the database.
     let safeDestination: URL;
     try {
@@ -134,6 +102,31 @@ export async function GET(
     if (safeDestination.protocol !== 'https:' && safeDestination.protocol !== 'http:') {
       return NextResponse.redirect(new URL('/', request.url), 302);
     }
+
+    // Log the click after the response is sent. after() runs the callback inside
+    // the platform's waitUntil, so the function stays alive until it settles.
+    after(() =>
+      logAffiliateClick(
+        {
+          ip,
+          toolId,
+          linkId,
+          userAgent,
+          referrerOrigin,
+          referrerPathname,
+          isBot: isBot(userAgent),
+        },
+        {
+          hashIp: hashIP,
+          dedupe,
+          releaseDedupe,
+          insert: async (row) => {
+            const { error } = await getServiceSupabase().from('affiliate_clicks').insert(row);
+            return { error };
+          },
+        }
+      ).then(() => undefined)
+    );
 
     return NextResponse.redirect(safeDestination, 302);
   } catch (error) {

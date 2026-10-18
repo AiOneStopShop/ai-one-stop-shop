@@ -1,6 +1,7 @@
 'use client';
 
 import type { SponsorIntake } from '@/types/database';
+import { IntakeReviewActions } from './IntakeReviewActions';
 
 interface SponsorIntakeListProps {
   records: SponsorIntake[];
@@ -24,6 +25,7 @@ export function SponsorIntakeList({ records }: SponsorIntakeListProps) {
       newsletter: 'Newsletter ($29)',
       founding_bundle: 'Founding Bundle ($99)',
       request: 'Request Only',
+      partner_program: 'Partner Program',
     };
     return labels[pkg] || pkg;
   };
@@ -50,7 +52,7 @@ export function SponsorIntakeList({ records }: SponsorIntakeListProps) {
               </p>
             </div>
             <span className={`badge ${getStatusBadge(record.status)} text-sm px-3 py-1`}>
-              {record.status.replace('_', ' ')}
+              {record.status.replace(/_/g, ' ')}
             </span>
           </div>
 
@@ -171,20 +173,10 @@ export function SponsorIntakeList({ records }: SponsorIntakeListProps) {
             </p>
             
             {record.status === 'pending_review' && (
-              <div className="flex gap-2">
-                <button 
-                  className="btn-secondary text-sm"
-                  onClick={() => alert('Approve functionality coming soon. For now, update directly in Supabase.')}
-                >
-                  Approve
-                </button>
-                <button 
-                  className="btn-secondary text-sm"
-                  onClick={() => alert('Decline functionality coming soon. For now, update directly in Supabase.')}
-                >
-                  Decline
-                </button>
-              </div>
+              <IntakeReviewActions
+                intakeId={record.id}
+                label={`${record.tool_name} (${record.company_name})`}
+              />
             )}
           </div>
         </div>

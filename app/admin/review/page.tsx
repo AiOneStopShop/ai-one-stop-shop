@@ -110,12 +110,12 @@ export default async function AdminReviewPage() {
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
               <span className="text-2xl" aria-hidden="true">✨</span>
-              <span className="font-dm-sans font-bold text-lg text-ink">
+              <span className="font-fraunces font-bold text-lg text-ink">
                 AI One Stop Shop
               </span>
             </Link>
             <span className="text-soft" aria-hidden="true">/</span>
-            <h1 className="font-dm-sans font-semibold text-lg text-ink">
+            <h1 className="font-fraunces font-semibold text-lg text-ink">
               Admin Review
             </h1>
           </div>
@@ -156,7 +156,7 @@ export default async function AdminReviewPage() {
                         <span aria-hidden="true"> ↗</span>
                       </a>
                     </div>
-                    <span className="badge bg-yellow-50 text-yellow-700 border border-yellow-200">
+                    <span className="badge bg-amber-50 text-yellow-700 border border-amber-200">
                       Pending
                     </span>
                   </div>
@@ -212,7 +212,7 @@ export default async function AdminReviewPage() {
                       name="review_notes"
                       defaultValue={tool.review_notes || ''}
                       rows={3}
-                      className="w-full px-3 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white"
+                      className="w-full px-3 py-2 border border-soft rounded-lg focus-ring bg-white"
                     />
                     <button type="submit" className="btn-secondary">Save notes</button>
                   </form>
@@ -253,7 +253,7 @@ export default async function AdminReviewPage() {
                         <span aria-hidden="true"> ↗</span>
                       </a>
                     </div>
-                    <span className="badge bg-gray-100 text-gray-700 border border-gray-200">
+                    <span className="badge bg-cream-2 text-soft border border-line">
                       Draft
                     </span>
                   </div>
@@ -276,7 +276,7 @@ export default async function AdminReviewPage() {
                       }}>
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors text-sm font-medium"
+                          className="px-4 py-2 bg-green text-white rounded-lg hover:bg-green transition-colors text-sm font-medium"
                         >
                           Publish
                           <span className="sr-only"> {tool.name}</span>

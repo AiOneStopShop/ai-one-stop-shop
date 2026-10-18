@@ -70,7 +70,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
               />
               <span>
                 <span className="font-medium">{persona.name}</span>
-                <span className="text-[#5B657B]"> — {persona.title}</span>
+                <span className="text-soft"> — {persona.title}</span>
               </span>
             </label>
           ))}
@@ -106,7 +106,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
               max={10000}
               step={1}
               defaultValue={presetMatch ? '' : query.budget}
-              className="w-32 px-3 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white"
+              className="w-32 px-3 py-2 border border-soft rounded-lg focus-ring bg-white"
               aria-label="Custom monthly budget in US dollars"
             />
             <span>/month</span>
@@ -128,7 +128,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
               />
               <span>
                 <span className="font-medium">{goal.label}</span>
-                <span className="block text-sm text-[#5B657B]">{goal.blurb}</span>
+                <span className="block text-sm text-soft">{goal.blurb}</span>
               </span>
             </label>
           ))}
@@ -137,7 +137,7 @@ export function BudgetForm({ query }: { query: BudgetQuery }) {
 
       <fieldset>
         <legend className="heading-3 mb-3">Must-haves</legend>
-        <p className="text-sm text-[#5B657B] mb-3">
+        <p className="text-sm text-soft mb-3">
           We fill these slots first when the budget is tight.
         </p>
         <div className="grid gap-2 sm:grid-cols-2">

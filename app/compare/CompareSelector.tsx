@@ -57,7 +57,7 @@ export function CompareSelector({ tools }: { tools: Tool[] }) {
   const selectedCount = knownSlugsInOrder(selectedSlugs, tools).length;
 
   return (
-    <div className="bg-white border border-[#E5E1DC] rounded-lg p-6">
+    <div className="bg-white border border-line rounded-lg p-6">
       <h2 className="heading-3 mb-4">Select tools to compare</h2>
       
       {error && (
@@ -78,14 +78,14 @@ export function CompareSelector({ tools }: { tools: Tool[] }) {
       <div className="space-y-4 mb-6">
         {selectedSlugs.map((slug, index) => (
           <div key={index}>
-            <label htmlFor={`tool-${index}`} className="block text-sm font-medium text-[#171C26] mb-2">
-              Tool {index + 1} {index === 0 && <span className="text-[#5B657B]">(required)</span>}
+            <label htmlFor={`tool-${index}`} className="block text-sm font-medium text-ink mb-2">
+              Tool {index + 1} {index === 0 && <span className="text-soft">(required)</span>}
             </label>
             <select
               id={`tool-${index}`}
               value={slug}
               onChange={(e) => handleSlotChange(index, e.target.value)}
-              className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+              className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
               aria-label={`Select tool ${index + 1}`}
             >
               <option value="">Select a tool...</option>

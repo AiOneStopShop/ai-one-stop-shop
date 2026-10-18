@@ -1,6 +1,7 @@
 import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
 import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
+import { PageIntro } from '@/components/PageIntro';
 
 export const metadata = {
   title: 'How We Rank AI Tools',
@@ -11,12 +12,15 @@ export const metadata = {
 export default function HowWeRankPage() {
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        title="How we choose and rank AI tools"
+        accent="scales"
+        lead={<>What we check, how the order is decided, and what money can never change.</>}
+      />
+      <section className="py-12 md:py-16">
         <div className="container-max max-w-3xl">
-          <h1 className="heading-1 mb-8">How we choose and rank AI tools</h1>
-
-          <div className="prose prose-lg max-w-none space-y-8 text-ink">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <div className="guide-prose">
+            <div className="bg-cream-2 border border-line rounded-lg p-6">
               <p className="text-lg font-semibold mb-2">The short version</p>
               <p>
                 We review each tool&apos;s public pricing and features, we write down what we find in plain English, and we put the tool we&apos;d actually suggest first. Money never changes that order.
@@ -47,12 +51,12 @@ export default function HowWeRankPage() {
               <h2 className="heading-2 mb-4">What we actually check</h2>
               <p>For every tool, we look at:</p>
               <ul className="space-y-2 mt-4">
-                <li>✓ What it really does (in one or two plain sentences)</li>
-                <li>✓ Who it&apos;s built for</li>
-                <li>✓ Real pricing (with the date we checked)</li>
-                <li>✓ How hard it is to get started, from public docs</li>
-                <li>✓ Notes from the vendor&apos;s own feature and pricing pages</li>
-                <li>✓ Good alternatives</li>
+                <li>What it really does (in one or two plain sentences)</li>
+                <li>Who it&apos;s built for</li>
+                <li>Real pricing (with the date we checked)</li>
+                <li>How hard it is to get started, from public docs</li>
+                <li>Notes from the vendor&apos;s own feature and pricing pages</li>
+                <li>Good alternatives</li>
               </ul>
             </div>
 
@@ -89,10 +93,10 @@ export default function HowWeRankPage() {
             <div>
               <h2 className="heading-2 mb-4">What we don&apos;t do</h2>
               <ul className="space-y-2">
-                <li>• We don&apos;t review every AI tool, only the ones whose public pricing and features we check</li>
-                <li>• We don&apos;t run formal security audits</li>
-                <li>• We are not the seller or maker of the tools listed here</li>
-                <li>• We don&apos;t offer legal, financial, or tax advice about tools</li>
+                <li>We don&apos;t review every AI tool, only the ones whose public pricing and features we check</li>
+                <li>We don&apos;t run formal security audits</li>
+                <li>We are not the seller or maker of the tools listed here</li>
+                <li>We don&apos;t offer legal, financial, or tax advice about tools</li>
               </ul>
             </div>
 
@@ -106,7 +110,7 @@ export default function HowWeRankPage() {
               </p>
             </div>
 
-            <div className="bg-card border border-green rounded-lg p-6">
+            <div className="note">
               <h2 className="heading-3 mb-3">Spotted a mistake?</h2>
               <p>
                 Please tell us. Prices change and we&apos;re human.

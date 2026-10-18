@@ -165,21 +165,21 @@ export default function FinderClient({
           </div>
 
           {!showResults ? (
-            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl border border-[#E5E1DC]">
+            <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-xl border border-line">
               <fieldset ref={firstQuestionRef} tabIndex={-1} className="border-0 p-0 m-0 focus:outline-none">
-                <legend className="block text-sm font-medium text-[#171C26] mb-3">
+                <legend className="block text-sm font-medium text-ink mb-3">
                   What will you mainly use it for? <span className="text-red-600" aria-hidden="true">*</span>
                 </legend>
                 <div className="space-y-2">
                   {useCaseOptions.map(option => (
-                    <label key={option.value} className="flex items-center gap-3 p-3 border border-[#5B657B] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors">
+                    <label key={option.value} className="flex items-center gap-3 p-3 border border-soft rounded-lg cursor-pointer hover:bg-cream transition-colors">
                       <input
                         type="radio"
                         name="useCase"
                         value={option.value}
                         checked={useCase === option.value}
                         onChange={(e) => setUseCase(e.target.value as UseCase)}
-                        className="w-6 h-6 text-[#6C39EF] focus-ring"
+                        className="w-6 h-6 text-green focus-ring"
                         required
                       />
                       <span>
@@ -192,7 +192,7 @@ export default function FinderClient({
               </fieldset>
 
               <fieldset className="border-0 p-0 m-0">
-                <legend className="block text-sm font-medium text-[#171C26] mb-3">
+                <legend className="block text-sm font-medium text-ink mb-3">
                   What's your budget? <span className="text-red-600" aria-hidden="true">*</span>
                 </legend>
                 <div className="space-y-2">
@@ -202,14 +202,14 @@ export default function FinderClient({
                     { value: 'medium', label: '$15-30/month' },
                     { value: 'high', label: '$30+ per month' },
                   ].map(option => (
-                    <label key={option.value} className="flex items-center gap-3 p-3 border border-[#5B657B] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors">
+                    <label key={option.value} className="flex items-center gap-3 p-3 border border-soft rounded-lg cursor-pointer hover:bg-cream transition-colors">
                       <input
                         type="radio"
                         name="budget"
                         value={option.value}
                         checked={budget === option.value}
                         onChange={(e) => setBudget(e.target.value as Budget)}
-                        className="w-6 h-6 text-[#6C39EF] focus-ring"
+                        className="w-6 h-6 text-green focus-ring"
                         required
                       />
                       <span>{option.label}</span>
@@ -219,7 +219,7 @@ export default function FinderClient({
               </fieldset>
 
               <fieldset className="border-0 p-0 m-0">
-                <legend className="block text-sm font-medium text-[#171C26] mb-3">
+                <legend className="block text-sm font-medium text-ink mb-3">
                   How would you describe your experience with AI tools? <span className="text-red-600" aria-hidden="true">*</span>
                 </legend>
                 <div className="space-y-2">
@@ -228,14 +228,14 @@ export default function FinderClient({
                     { value: 'intermediate', label: "Intermediate - I've used a few" },
                     { value: 'advanced', label: "Advanced - I'm very familiar with AI tools" },
                   ].map(option => (
-                    <label key={option.value} className="flex items-center gap-3 p-3 border border-[#5B657B] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors">
+                    <label key={option.value} className="flex items-center gap-3 p-3 border border-soft rounded-lg cursor-pointer hover:bg-cream transition-colors">
                       <input
                         type="radio"
                         name="experience"
                         value={option.value}
                         checked={experience === option.value}
                         onChange={(e) => setExperience(e.target.value as Experience)}
-                        className="w-6 h-6 text-[#6C39EF] focus-ring"
+                        className="w-6 h-6 text-green focus-ring"
                         required
                       />
                       <span>{option.label}</span>
@@ -258,7 +258,7 @@ export default function FinderClient({
                 >
                   Based on your answers:
                 </h2>
-                <p className="text-[#5B657B]">
+                <p className="text-soft">
                   {useCase === 'coding' && "You're looking for coding tools"}
                   {useCase === 'writing' && "You're looking for writing tools"}
                   {useCase === 'design' && "You're looking for design tools"}
@@ -283,13 +283,13 @@ export default function FinderClient({
                   <li key={rec.slug} className="card">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl font-bold text-[#6C39EF]" aria-hidden="true">
+                        <span className="text-2xl font-bold text-green" aria-hidden="true">
                           #{index + 1}
                         </span>
                         <h3 className="heading-3">{rec.name}</h3>
                       </div>
                     </div>
-                    <p className="text-[#5B657B] mb-4">{rec.why}</p>
+                    <p className="text-soft mb-4">{rec.why}</p>
                     <div className="flex flex-wrap gap-3 items-start">
                       <PaidVisitLink
                         slug={rec.slug}
@@ -323,7 +323,7 @@ export default function FinderClient({
             </div>
           )}
 
-          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-[#171C26]">
+          <div className="mt-8 p-4 bg-cream-2 border border-line rounded-lg text-sm text-ink">
             <strong>Note:</strong> These are general recommendations based on common use cases. Always check the full tool details to make sure it fits your specific needs.
           </div>
         </div>

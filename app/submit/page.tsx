@@ -200,22 +200,22 @@ export default function SubmitPage() {
             Know an AI tool we should look at? Submit it here.
           </p>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+          <div className="bg-cream-2 border border-line rounded-lg p-6 mb-8">
             <p className="text-sm text-ink">
               <strong>What happens next:</strong> Your submission goes into our review queue. A person will check it out and decide whether to add it. We don't auto-publish submissions.
             </p>
           </div>
 
           {status === 'success' ? (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center" role="status">
+            <div className="bg-leaf border border-leaf-line rounded-lg p-8 text-center" role="status">
               <h2
                 ref={successRef}
                 tabIndex={-1}
-                className="heading-2 mb-2 text-green-900 focus:outline-none"
+                className="heading-2 mb-2 text-green focus:outline-none"
               >
                 Submitted!
               </h2>
-              <p className="text-green-800 mb-6">
+              <p className="text-green mb-6">
                 Thanks for the suggestion. We'll take a look and reach out if we have questions.
               </p>
               <Link href="/tools" className="btn-primary inline-block">
@@ -283,7 +283,7 @@ export default function SubmitPage() {
                   autoComplete="organization"
                   value={formData.toolName}
                   onChange={(e) => setFormData({ ...formData, toolName: e.target.value })}
-                  className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                   placeholder="e.g., ChatGPT"
                   aria-invalid={fieldErrors.toolName ? true : undefined}
                   aria-describedby={describedBy('toolName')}
@@ -307,7 +307,7 @@ export default function SubmitPage() {
                   autoComplete="url"
                   value={formData.websiteUrl}
                   onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
-                  className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                   placeholder="https://..."
                   aria-invalid={fieldErrors.websiteUrl ? true : undefined}
                   aria-describedby={describedBy('websiteUrl')}
@@ -331,7 +331,7 @@ export default function SubmitPage() {
                   autoComplete="email"
                   value={formData.contactEmail}
                   onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
-                  className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                   placeholder="you@example.com"
                   aria-invalid={fieldErrors.contactEmail ? true : undefined}
                   aria-describedby={describedBy('contactEmail', 'email-hint')}
@@ -357,7 +357,7 @@ export default function SubmitPage() {
                   autoComplete="off"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                   placeholder="Tell us what this tool does..."
                   aria-invalid={fieldErrors.description ? true : undefined}
                   aria-describedby={describedBy('description')}
@@ -370,7 +370,7 @@ export default function SubmitPage() {
               </div>
 
               {process.env.NEXT_PUBLIC_LEGAL_V2 === 'true' && (
-                <div className="border-t border-gray-200 pt-6">
+                <div className="border-t border-line pt-6">
                   <div className="flex items-start gap-3">
                     <input
                       type="checkbox"
@@ -378,7 +378,7 @@ export default function SubmitPage() {
                       name="rightsConfirmed"
                       checked={formData.rightsConfirmed}
                       onChange={(e) => setFormData({ ...formData, rightsConfirmed: e.target.checked })}
-                      className="mt-1 h-5 w-5 rounded border-[#5B657B] text-green focus:ring-2 focus:ring-[#6C39EF] focus:ring-offset-2"
+                      className="mt-1 h-5 w-5 rounded border-soft text-green focus:ring-2 focus:ring-green focus:ring-offset-2"
                       aria-invalid={fieldErrors.rightsConfirmed ? true : undefined}
                       aria-describedby={describedBy('rightsConfirmed', 'rights-description')}
                     />

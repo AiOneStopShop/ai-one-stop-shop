@@ -19,7 +19,7 @@ export function PaidVisitLink({
   return (
     <span className={className}>
       {paid ? (
-        <span id={noteId} className="block text-sm font-semibold text-[#C62810] mb-1">
+        <span id={noteId} className="block text-sm font-semibold text-orange-ink mb-1">
           Paid link: we may earn a commission if you sign up.{' '}
           <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
             How we make money

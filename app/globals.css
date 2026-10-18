@@ -98,6 +98,12 @@
     @apply heading-1;
   }
 
+  /* Inner-page H1: a step below the home hero */
+  .heading-page {
+    @apply font-fraunces font-bold text-green leading-[1.05];
+    font-size: clamp(2.3rem, 1.5rem + 3vw, 4rem);
+  }
+
   .heading-2 {
     @apply text-[clamp(2rem,1.4rem+2vw,3rem)] font-fraunces font-bold text-green;
   }
@@ -160,15 +166,48 @@
   }
 
   .badge-sponsored {
-    @apply badge bg-[#FFF5F2] text-[#C62810] border border-[#FB6851];
+    @apply badge bg-[#FDEBE3] text-orange-ink border border-[#F0B9A3];
   }
 
   .badge-made-by-us {
-    @apply badge bg-[#F3EFFF] text-[#4A2D86] border border-[#6C39EF];
+    @apply badge bg-[#DCEBD9] text-green border border-[#9FBFA6];
   }
 
   .badge-category {
-    @apply badge bg-[#F3EFFF] text-[#4A2D86] border border-[#6C39EF];
+    @apply badge bg-cream-2 text-green border border-line;
+  }
+
+  /* Soft callout on cream */
+  .note {
+    @apply bg-cream-2 border border-line rounded-2xl p-5 md:p-6 text-ink;
+  }
+
+  /* Long-form reading: legal pages, about, disclosure */
+  .guide-prose {
+    @apply text-[1.075rem] leading-[1.7] text-ink;
+    max-width: 68ch;
+  }
+  .guide-prose > * + * {
+    margin-top: 1rem;
+  }
+  .guide-prose h2 {
+    @apply font-fraunces font-bold text-green;
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
+    margin-top: 2.75rem;
+    margin-bottom: 0.25rem;
+  }
+  .guide-prose h3 {
+    @apply font-fraunces font-bold text-green text-[1.3rem];
+    margin-top: 2rem;
+  }
+  .guide-prose ul {
+    @apply list-disc pl-6 space-y-2;
+  }
+  .guide-prose ol {
+    @apply list-decimal pl-6 space-y-2;
+  }
+  .guide-prose strong {
+    @apply text-ink font-semibold;
   }
 
   /* Orange swoosh decoration (never for text) */
@@ -183,15 +222,15 @@
 
   /* Legacy headings for backward compat */
   .heading-large {
-    @apply text-4xl md:text-5xl font-dm-sans font-bold text-navy leading-tight;
+    @apply heading-page;
   }
 
   .heading-medium {
-    @apply text-3xl md:text-4xl font-dm-sans font-bold text-navy leading-snug;
+    @apply heading-2;
   }
 
   .heading-small {
-    @apply text-2xl md:text-3xl font-dm-sans font-semibold text-navy;
+    @apply heading-3;
   }
 
   .link-paid {
@@ -208,7 +247,7 @@
 
   /* Skip link */
   .skip-link {
-    @apply absolute left-[-999px] top-2 bg-green text-white px-4 py-2 rounded z-50;
+    @apply absolute left-[-999px] top-2 bg-green text-white px-4 py-3 rounded-lg z-50 font-semibold;
   }
 
   .skip-link:focus {
@@ -218,7 +257,7 @@
 
 /* Unlayered overrides */
 mark {
-  background-color: #F3EFFF;
+  background-color: #F7E3B5;
   color: inherit;
   padding: 0 0.15em;
   border-radius: 0.2em;
@@ -246,7 +285,8 @@ mark {
 /* M15: links inside running text are underlined, not colour-only */
 footer p a,
 main p a,
-.prose a {
+.prose a,
+.guide-prose a {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -255,7 +295,8 @@ main p a,
 p a,
 li a,
 article a,
-.prose a {
+.prose a,
+.guide-prose a {
   text-decoration: underline;
   text-underline-offset: 2px;
 }

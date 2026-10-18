@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail, isAffiliateLive } from '@/lib/site-config';
+import { PageIntro } from '@/components/PageIntro';
 
 export const metadata = {
   title: 'Partner with AI One Stop Shop',
@@ -11,15 +12,14 @@ export const metadata = {
 export default function PartnersPage() {
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        title="Partner with AI One Stop Shop"
+        accent="mug"
+        lead={<>Three ways to work with us</>}
+      />
+      <section className="py-12 md:py-16">
         <div className="container-max max-w-3xl">
-          <h1 className="heading-1 mb-8">Partner with AI One Stop Shop</h1>
-
-          <p className="text-lead text-soft mb-12">
-            Three ways to work with us
-          </p>
-
-          <div className="prose prose-lg max-w-none space-y-8 text-ink">
+          <div className="guide-prose">
             <div>
               <h2 className="heading-2 mb-4">Who we are</h2>
               <p>
@@ -47,7 +47,7 @@ export default function PartnersPage() {
                 <div className="card">
                   <h3 className="heading-3 mb-3">1. Affiliate or partner programs</h3>
                   <p className="mb-4">
-                    If you have a partner or affiliate program, we may add a referral link to your tool's page. Every paid link is clearly marked <strong className="text-[#C62810]">"Paid link"</strong> right next to it, and we use <code>rel="sponsored nofollow noopener"</code> so search engines know it's a commercial relationship.
+                    If you have a partner or affiliate program, we may add a referral link to your tool's page. Every paid link is clearly marked <strong className="text-orange-ink">"Paid link"</strong> right next to it, and we use <code>rel="sponsored nofollow noopener"</code> so search engines know it's a commercial relationship.
                   </p>
                   <p className="mb-4">
                     We don't promise placements, coverage, reviews or a better rank. A commission pays for referrals, not for a review or a listing, and joining your program won't change what we write. If we add a referral link, it's because your program terms work for us and our readers.
@@ -95,10 +95,10 @@ export default function PartnersPage() {
             <div>
               <h2 className="heading-2 mb-4">What we look for</h2>
               <ul className="space-y-2">
-                <li>✓ AI tools that help people get real work done</li>
-                <li>✓ Clear, honest pricing on your site</li>
-                <li>✓ No deceptive claims or dark patterns</li>
-                <li>✓ Not aimed at children under 13</li>
+                <li>AI tools that help people get real work done</li>
+                <li>Clear, honest pricing on your site</li>
+                <li>No deceptive claims or dark patterns</li>
+                <li>Not aimed at children under 13</li>
               </ul>
               <p className="mt-4">
                 If your tool fits, we're happy to review it for the directory. If you want to work with us on a paid placement or referral link, tell us about your program below.
@@ -121,7 +121,7 @@ export default function PartnersPage() {
             </div>
 
             {getSiteContactEmail() && (
-              <div className="bg-card border border-green rounded-lg p-6">
+              <div className="note">
                 <h2 className="heading-2 mb-3">Questions?</h2>
                 <p>
                   Email{' '}

@@ -116,7 +116,7 @@ export default async function ComparePage(props: {
 
           {/* Comparison Table */}
           {hasPaidLinks && (
-            <p className="text-sm font-semibold text-[#C62810] mb-4 text-center">
+            <p className="text-sm font-semibold text-orange-ink mb-4 text-center">
               Paid link: Some tools below have paid links that may earn us a commission.
             </p>
           )}
@@ -195,7 +195,7 @@ export default async function ComparePage(props: {
                     return (
                       <td key={tool.id} className="p-4 border border-line align-top">
                         {paid ? (
-                          <p className="text-sm font-semibold text-[#C62810] mb-2">
+                          <p className="text-sm font-semibold text-orange-ink mb-2">
                             Paid link: we may earn a commission if you sign up.
                           </p>
                         ) : null}

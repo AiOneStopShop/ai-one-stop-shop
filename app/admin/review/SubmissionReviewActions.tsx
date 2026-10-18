@@ -33,7 +33,7 @@ export function SubmissionReviewActions({
           <button
             type="submit"
             disabled={busy}
-            className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors text-sm font-medium disabled:opacity-50"
+            className="px-4 py-2 bg-green text-white rounded-lg hover:bg-green transition-colors text-sm font-medium disabled:opacity-50"
           >
             Approve & Create Draft
             <span className="sr-only"> {toolName}</span>

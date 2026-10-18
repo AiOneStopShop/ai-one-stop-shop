@@ -117,7 +117,7 @@ function LoginForm() {
         <div>
           <Link href="/" className="flex items-center justify-center gap-2 mb-8">
             <span className="text-4xl" aria-hidden="true">✨</span>
-            <span className="font-dm-sans font-bold text-2xl text-ink">
+            <span className="font-fraunces font-bold text-2xl text-ink">
               AI One Stop Shop
             </span>
           </Link>
@@ -137,7 +137,7 @@ function LoginForm() {
               aria-pressed={mode === 'signin'}
               className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                 mode === 'signin'
-                  ? 'bg-[#6C39EF] text-white'
+                  ? 'bg-green text-white'
                   : 'bg-card text-green hover:bg-[#E5D9FF]'
               }`}
             >
@@ -149,7 +149,7 @@ function LoginForm() {
               aria-pressed={mode === 'magic'}
               className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                 mode === 'magic'
-                  ? 'bg-[#6C39EF] text-white'
+                  ? 'bg-green text-white'
                   : 'bg-card text-green hover:bg-[#E5D9FF]'
               }`}
             >
@@ -164,7 +164,7 @@ function LoginForm() {
           )}
 
           {success && (
-            <div className="mb-4 bg-green-50 border border-green-200 text-green-800 rounded-lg p-3 text-sm" role="status">
+            <div className="mb-4 bg-leaf border border-leaf-line text-green rounded-lg p-3 text-sm" role="status">
               {success}
             </div>
           )}
@@ -182,7 +182,7 @@ function LoginForm() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 placeholder="admin@example.com"
               />
             </div>
@@ -200,7 +200,7 @@ function LoginForm() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                   placeholder="••••••••"
                 />
               </div>

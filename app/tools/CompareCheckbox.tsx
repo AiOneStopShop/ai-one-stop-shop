@@ -66,9 +66,9 @@ export function CompareCheckbox({ toolSlug, toolName }: { toolSlug: string; tool
         type="checkbox"
         checked={selected}
         onChange={handleToggle}
-        className="w-6 h-6 rounded border-[#5B657B] text-[#6C39EF] focus:ring-2 focus:ring-[#6C39EF] focus:ring-offset-2"
+        className="w-6 h-6 rounded border-soft text-green focus:ring-2 focus:ring-green focus:ring-offset-2"
       />
-      <span className="text-sm text-[#5B657B]">
+      <span className="text-sm text-soft">
         Compare<span className="sr-only"> {toolName}</span>
       </span>
     </label>

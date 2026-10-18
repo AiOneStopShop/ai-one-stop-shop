@@ -147,14 +147,14 @@ export function ToolsClient({
 
         <div className="flex flex-wrap gap-4 items-end">
           <div>
-            <label htmlFor="category-filter" className="block text-sm font-medium text-[#171C26] mb-2">
+            <label htmlFor="category-filter" className="block text-sm font-medium text-ink mb-2">
               Category
             </label>
             <select
               id="category-filter"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white min-h-11"
+              className="px-4 py-2 border border-soft rounded-lg focus-ring bg-white min-h-11"
             >
               <option value="all">All categories</option>
               {categories.map((cat: any) => (
@@ -166,14 +166,14 @@ export function ToolsClient({
           </div>
 
           <div>
-            <label htmlFor="sort-filter" className="block text-sm font-medium text-[#171C26] mb-2">
+            <label htmlFor="sort-filter" className="block text-sm font-medium text-ink mb-2">
               Sort
             </label>
             <select
               id="sort-filter"
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="px-4 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white min-h-11"
+              className="px-4 py-2 border border-soft rounded-lg focus-ring bg-white min-h-11"
             >
               <option value="relevance">Relevance</option>
               <option value="free">Free first</option>
@@ -182,14 +182,14 @@ export function ToolsClient({
           </div>
 
           <div>
-            <label htmlFor="price-filter" className="block text-sm font-medium text-[#171C26] mb-2">
+            <label htmlFor="price-filter" className="block text-sm font-medium text-ink mb-2">
               Pricing
             </label>
             <select
               id="price-filter"
               value={priceFilter}
               onChange={(e) => setPriceFilter(e.target.value)}
-              className="px-4 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white min-h-11"
+              className="px-4 py-2 border border-soft rounded-lg focus-ring bg-white min-h-11"
             >
               <option value="all">All pricing</option>
               <option value="free">Free</option>
@@ -199,12 +199,12 @@ export function ToolsClient({
             </select>
           </div>
 
-          <label className="flex items-center gap-2 px-4 py-2 border border-[#5B657B] rounded-lg cursor-pointer hover:bg-[#F9F8F5] transition-colors min-h-11">
+          <label className="flex items-center gap-2 px-4 py-2 border border-soft rounded-lg cursor-pointer hover:bg-cream transition-colors min-h-11">
             <input
               type="checkbox"
               checked={hasFreeTier}
               onChange={(e) => setHasFreeTier(e.target.checked)}
-              className="w-6 h-6 text-[#6C39EF] focus-ring rounded border-[#5B657B]"
+              className="w-6 h-6 text-green focus-ring rounded border-soft"
             />
             <span className="text-sm">Has free tier</span>
           </label>
@@ -213,7 +213,7 @@ export function ToolsClient({
             <button
               type="button"
               onClick={clearFilters}
-              className="flex items-center gap-2 px-4 py-2 text-[#5B657B] hover:text-[#171C26] transition-colors focus-ring rounded-lg min-h-11"
+              className="flex items-center gap-2 px-4 py-2 text-soft hover:text-ink transition-colors focus-ring rounded-lg min-h-11"
             >
               <X className="h-4 w-4" aria-hidden="true" />
               Clear filters
@@ -223,7 +223,7 @@ export function ToolsClient({
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p
-            className="text-sm text-[#5B657B]"
+            className="text-sm text-soft"
             role="status"
             aria-live="polite"
             aria-atomic="true"

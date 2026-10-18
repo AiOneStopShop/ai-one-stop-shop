@@ -50,7 +50,7 @@ export default function PricingPage() {
                 </ul>
               </div>
 
-              <div className="bg-card border border-green rounded-lg p-6">
+              <div className="note">
                 <h3 className="heading-3 mb-3">How we make money</h3>
                 <p>
                   Some links may be paid (affiliate) links. If you sign up through one, we may earn a commission. We don't add any fee. We also have a separate section for our own products (like ApproveGate).

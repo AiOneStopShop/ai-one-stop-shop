@@ -119,7 +119,7 @@ export default function SponsorTermsPage() {
             </div>
 
             {getSiteContactEmail() && (
-              <div className="bg-card border border-green rounded-lg p-6">
+              <div className="note">
                 <h2 className="heading-3 mb-3">Questions about these terms?</h2>
                 <p>
                   Email{' '}

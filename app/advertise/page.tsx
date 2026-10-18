@@ -185,7 +185,7 @@ export default function AdvertisePage() {
 
             {/* Questions */}
             {getSiteContactEmail() && (
-              <div className="bg-card border border-green rounded-lg p-6">
+              <div className="note">
                 <h2 className="heading-2 mb-3">Questions?</h2>
                 <p>
                   Email{' '}

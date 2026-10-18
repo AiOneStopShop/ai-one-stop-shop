@@ -191,7 +191,7 @@ function IntakeFormContent() {
                 maxLength={100}
                 value={formData.companyName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
@@ -208,7 +208,7 @@ function IntakeFormContent() {
                 maxLength={100}
                 value={formData.contactName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
@@ -225,7 +225,7 @@ function IntakeFormContent() {
                 maxLength={255}
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
@@ -243,7 +243,7 @@ function IntakeFormContent() {
                 maxLength={100}
                 value={formData.toolName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
@@ -261,7 +261,7 @@ function IntakeFormContent() {
                 placeholder="https://"
                 value={formData.toolUrl}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
@@ -277,7 +277,7 @@ function IntakeFormContent() {
                 required
                 value={formData.package}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring bg-white"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring bg-white"
                 disabled={status === 'submitting'}
               >
                 <option value="">Select a package...</option>
@@ -301,7 +301,7 @@ function IntakeFormContent() {
                 value={formData.preferredStartDate}
                 onChange={handleChange}
                 min={new Date().toISOString().split('T')[0]}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
               />
             </div>
@@ -318,7 +318,7 @@ function IntakeFormContent() {
                   required
                   value={formData.categorySlug}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring bg-white"
+                  className="w-full px-4 py-3 border border-soft rounded-lg focus-ring bg-white"
                   disabled={status === 'submitting'}
                 >
                   <option value="">Select a category...</option>
@@ -344,7 +344,7 @@ function IntakeFormContent() {
                 maxLength={240}
                 value={formData.blurb}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 placeholder="Describe your tool in plain English. We may edit for clarity."
                 disabled={status === 'submitting'}
               />
@@ -371,7 +371,7 @@ function IntakeFormContent() {
                     placeholder="https://example.com/logo.png"
                     value={formData.logoUrl}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                    className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                     disabled={status === 'submitting'}
                   />
                 </div>
@@ -386,7 +386,7 @@ function IntakeFormContent() {
                     name="logoFile"
                     accept=".png,.svg,image/png,image/svg+xml"
                     onChange={handleFileChange}
-                    className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                    className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                     disabled={status === 'submitting'}
                   />
                 </div>
@@ -407,7 +407,7 @@ function IntakeFormContent() {
                 placeholder="https://yourtool.com/signup"
                 value={formData.destinationUrl}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
               />
               <p className="text-sm text-soft mt-1">Where should the sponsored link go?</p>

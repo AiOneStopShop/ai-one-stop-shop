@@ -4,7 +4,7 @@ export function ChangeSelectionLink() {
   return (
     <a
       href="#compare-selector"
-      className="text-[#6C39EF] hover:underline text-sm focus-ring rounded"
+      className="text-green hover:underline text-sm focus-ring rounded"
       onClick={(event) => {
         event.preventDefault();
         const selector = document.getElementById('compare-selector');

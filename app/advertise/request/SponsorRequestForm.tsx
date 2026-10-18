@@ -109,11 +109,11 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
       <section className="section-spacing">
         <div className="container-max max-w-2xl">
           <div className="mb-8">
-            <Link href="/advertise" className="text-[#6C39EF] hover:underline focus-ring rounded mb-4 inline-block">
+            <Link href="/advertise" className="text-green hover:underline focus-ring rounded mb-4 inline-block">
               ← Back to sponsorship options
             </Link>
             <h1 className="heading-1 mb-4">Request a sponsored spot</h1>
-            <p className="text-lg text-[#5B657B]">
+            <p className="text-lg text-soft">
               Tell us about your tool. We'll review your request (usually within 2 business days) and email you next steps.
             </p>
           </div>
@@ -152,7 +152,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={100}
                 value={formData.companyName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('Company name'))}
               />
@@ -170,7 +170,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={100}
                 value={formData.contactName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('Your name'))}
               />
@@ -188,7 +188,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={100}
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('Email'))}
               />
@@ -207,7 +207,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={200}
                 value={formData.toolName}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('Tool name'))}
               />
@@ -225,7 +225,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={500}
                 value={formData.toolUrl}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 placeholder="https://"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('Tool website URL'))}
@@ -243,7 +243,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 required
                 value={formData.package}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
                 disabled={status === 'submitting'}
                 aria-invalid={validationErrors.some(e => e.includes('package'))}
               >
@@ -268,7 +268,7 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
                 maxLength={1000}
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#5B657B] rounded-lg focus-ring resize-none"
+                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring resize-none"
                 placeholder="Any special requests, preferred dates, or questions?"
                 disabled={status === 'submitting'}
               />
@@ -305,9 +305,9 @@ export function SponsorRequestForm({ preselectedPackage = '' }: SponsorRequestFo
               {status === 'submitting' ? 'Submitting...' : 'Submit request'}
             </button>
 
-            <p className="text-sm text-[#5B657B] text-center">
+            <p className="text-sm text-soft text-center">
               Requesting a spot is free and doesn't commit you to anything. We'll use these details only to review your request and reply to you. See our{' '}
-              <Link href="/privacy" className="text-[#6C39EF] hover:underline focus-ring rounded">
+              <Link href="/privacy" className="text-green hover:underline focus-ring rounded">
                 Privacy page
               </Link>
               .

@@ -160,7 +160,7 @@ export default async function CategoryPage(props: {
             <form method="get" className="card mb-8 grid gap-4 md:grid-cols-3">
               <div>
                 <label htmlFor="sort" className="block text-sm font-medium mb-2">Sort</label>
-                <select id="sort" name="sort" defaultValue={sort} className="w-full px-3 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white min-h-11">
+                <select id="sort" name="sort" defaultValue={sort} className="w-full px-3 py-2 border border-soft rounded-lg focus-ring bg-white min-h-11">
                   <option value="relevance">Relevance</option>
                   <option value="free">Free first</option>
                   <option value="newest">Newest</option>
@@ -168,7 +168,7 @@ export default async function CategoryPage(props: {
               </div>
               <div>
                 <label htmlFor="price" className="block text-sm font-medium mb-2">Pricing</label>
-                <select id="price" name="price" defaultValue={price || 'all'} className="w-full px-3 py-2 border border-[#5B657B] rounded-lg focus-ring bg-white min-h-11">
+                <select id="price" name="price" defaultValue={price || 'all'} className="w-full px-3 py-2 border border-soft rounded-lg focus-ring bg-white min-h-11">
                   <option value="all">All pricing</option>
                   <option value="free">Free</option>
                   <option value="subscription">Subscription</option>
@@ -200,7 +200,7 @@ export default async function CategoryPage(props: {
                         </h2>
                       </div>
                       {tool.has_free_tier && (
-                        <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">Free</span>
+                        <span className="badge bg-leaf text-green border border-leaf-line text-xs">Free</span>
                       )}
                     </div>
                     {tool.tagline && <p className="text-soft mb-3 line-clamp-2">{tool.tagline}</p>}

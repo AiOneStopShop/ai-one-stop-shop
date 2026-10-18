@@ -31,7 +31,7 @@ export default function OurKitsPage() {
               <p className="text-lead mb-6">
                 Packs and kits we made ourselves. Clearly marked, and never part of our rankings.
               </p>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="bg-cream-2 border border-line rounded-lg p-4">
                 <p className="text-sm text-ink">
                   <strong>Full disclosure:</strong> We made these and earn money if you buy them. They're kept separate from our tool directory and never appear in ranked lists.{' '}
                   <Link href="/disclosure" className="text-green hover:underline focus-ring rounded">
@@ -52,11 +52,11 @@ export default function OurKitsPage() {
                   </p>
                 </div>
 
-                <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <p className="text-sm font-medium text-yellow-900">
+                <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p className="text-sm font-medium text-amber-900">
                     ⏱ Status: In testing
                   </p>
-                  <p className="text-sm text-yellow-800 mt-1">
+                  <p className="text-sm text-amber-900 mt-1">
                     Free sample coming soon. Join the list to hear when it's ready.
                   </p>
                 </div>

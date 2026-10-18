@@ -90,10 +90,11 @@ test.describe('Affiliate flag and partners page', () => {
     await page.goto('/partners', { waitUntil: 'domcontentloaded' });
     
     // Should use aionestopshop25@gmail.com
-    const emailLink = page.getByRole('link', { name: /aionestopshop25@gmail\.com/i });
+    const emailLink = page.locator('main').getByRole('link', { name: /aionestopshop25@gmail\.com/i });
     if (await emailLink.count() > 0) {
-      await expect(emailLink).toBeVisible();
+      await expect(emailLink.first()).toBeVisible();
     }
+    expect(await page.content()).not.toContain('hello@aionestop.shop');
   });
 
   test('footer has Partners link', async ({ page }) => {

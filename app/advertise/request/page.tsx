@@ -30,7 +30,7 @@ export default async function AdvertiseRequestPage({
       fallback={
         <div className="mx-auto max-w-3xl px-4 py-8">
           <h1 className="text-3xl font-bold mb-8">Request Sponsorship</h1>
-          <p className="text-gray-600 mb-8">
+          <p className="text-soft mb-8">
             Loading form...
           </p>
         </div>

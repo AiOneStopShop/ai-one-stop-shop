@@ -53,14 +53,14 @@ export function ToolsResults({
                   <h2 className="heading-3 mb-2">
                     <Link
                       href={`/tools/${tool.slug}`}
-                      className="group-hover:text-[#6C39EF] transition-colors focus-ring rounded"
+                      className="group-hover:text-green transition-colors focus-ring rounded"
                     >
                       <HighlightedText text={tool.name} query={query} />
                     </Link>
                   </h2>
 
                   {tool.tagline && (
-                    <p className="text-[#5B657B] mb-3 line-clamp-2">
+                    <p className="text-soft mb-3 line-clamp-2">
                       <HighlightedText text={tool.tagline} query={query} />
                     </p>
                   )}
@@ -75,14 +75,14 @@ export function ToolsResults({
                       </span>
                     )}
                     {tool.has_free_tier && (
-                      <span className="badge bg-green-50 text-green-700 border border-green-200 text-xs">
+                      <span className="badge bg-leaf text-green border border-leaf-line text-xs">
                         Free tier
                       </span>
                     )}
                   </div>
 
                   {tool.pricing_summary && (
-                    <p className="text-sm text-[#6C39EF] font-medium mt-auto">
+                    <p className="text-sm text-green font-medium mt-auto">
                       {tool.pricing_summary}
                     </p>
                   )}
@@ -105,29 +105,29 @@ export function ToolsResults({
 
   return (
     <div className="text-center py-12 max-w-xl mx-auto">
-      <p className="text-[#171C26] text-lg font-medium mb-2">
+      <p className="text-ink text-lg font-medium mb-2">
         No tools match{query ? ` “${query}”` : ' those filters'}
       </p>
       {didYouMean ? (
-        <p className="text-[#5B657B] mb-6">
+        <p className="text-soft mb-6">
           Did you mean{' '}
           <Link
             href={buildToolsHref(didYouMean.name, selectedCategory, priceFilter, hasFreeTier)}
-            className="text-[#6C39EF] hover:underline focus-ring rounded"
+            className="text-green hover:underline focus-ring rounded"
           >
             {didYouMean.name}
           </Link>
           ?
         </p>
       ) : (
-        <p className="text-[#5B657B] mb-6">
+        <p className="text-soft mb-6">
           Try a different word, or browse a popular category.
         </p>
       )}
 
       {popularCategories.length > 0 && (
         <div className="mb-8">
-          <p className="text-sm font-medium text-[#171C26] mb-3">Popular categories</p>
+          <p className="text-sm font-medium text-ink mb-3">Popular categories</p>
           <ul className="flex flex-wrap justify-center gap-2">
             {popularCategories.map((category) => (
               <li key={category.id}>

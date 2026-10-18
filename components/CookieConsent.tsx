@@ -64,7 +64,7 @@ export function CookieConsent() {
       ref={bannerRef}
       role="region"
       aria-label="Cookie notice"
-      className="cookie-banner fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-[#5B657B] shadow-lg"
+      className="cookie-banner fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-soft shadow-lg"
     >
       <div className="container-max py-2 sm:py-2.5">
         <div className="flex flex-row items-center justify-between gap-2 sm:gap-4">

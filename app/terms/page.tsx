@@ -1,6 +1,7 @@
 import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
 import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
+import { PageIntro } from '@/components/PageIntro';
 
 export const metadata = {
   title: 'Terms of Service',
@@ -11,11 +12,14 @@ export const metadata = {
 export default function TermsPage() {
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        title="Terms of Service"
+        accent="notebook"
+        lead={<>The plain rules for using this site and submitting a tool.</>}
+      />
+      <section className="py-12 md:py-16">
         <div className="container-max max-w-3xl">
-          <h1 className="heading-1 mb-8">Terms of Service</h1>
-
-          <div className="prose prose-lg max-w-none space-y-6 text-ink">
+          <div className="guide-prose">
             <p className="text-sm text-soft">
               Last updated: {PRICE_CHECKED_LONG}
             </p>

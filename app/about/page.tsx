@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { BrandName } from '@/components/BrandName';
 import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
+import { PageIntro } from '@/components/PageIntro';
 
 export const metadata = {
   title: 'About',
@@ -12,13 +13,16 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        title="About AI One Stop Shop"
+        accent="books"
+        lead={<>We are oneTomorrow. We keep a short, honest list of AI tools, with real prices, so you can pick what helps and skip what doesn&apos;t.</>}
+      />
+      <section className="py-12 md:py-16">
         <div className="container-max max-w-3xl">
-          <h1 className="heading-1 mb-8">About AI One Stop Shop</h1>
-
-          <div className="prose prose-lg max-w-none space-y-6">
+          <div className="guide-prose">
             <p className="text-xl text-ink leading-relaxed">
-              We are oneTomorrow. We run AI One Stop Shop from Washington State.
+              We run AI One Stop Shop from Washington State.
             </p>
 
             <h2 className="heading-2 mt-12">Why this exists</h2>

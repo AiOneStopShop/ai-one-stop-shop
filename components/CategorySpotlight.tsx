@@ -14,7 +14,7 @@ interface CategorySpotlightProps {
  */
 export function CategorySpotlight({ placement }: CategorySpotlightProps) {
   return (
-    <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 rounded-xl p-6 mb-8 relative">
+    <div className="bg-gradient-to-r from-amber-50 to-amber-50 border-2 border-amber-200 rounded-xl p-6 mb-8 relative">
       <ImpressionTracker placementId={placement.id} />
       <div className="flex items-start gap-4">
         {placement.logo_url && (

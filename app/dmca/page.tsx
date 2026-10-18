@@ -2,6 +2,7 @@ import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
 import { LEGAL_DMCA_UPDATED } from '@/lib/site-dates';
 import { notFound } from 'next/navigation';
+import { PageIntro } from '@/components/PageIntro';
 
 export const metadata = {
   title: 'Copyright & DMCA',
@@ -43,11 +44,14 @@ export default function DmcaPage() {
 
   return (
     <div className="scroll-mt-16">
-      <section className="section-spacing">
+      <PageIntro
+        title={<>Copyright &amp; DMCA</>}
+        accent="envelope"
+        lead={<>How to tell us about content you believe uses your work without permission.</>}
+      />
+      <section className="py-12 md:py-16">
         <div className="container-max max-w-3xl">
-          <h1 className="heading-1 mb-8">Copyright &amp; DMCA</h1>
-
-          <div className="prose prose-lg max-w-none space-y-6 text-ink">
+          <div className="guide-prose">
             <p className="text-sm text-soft">
               Last updated: {LEGAL_DMCA_UPDATED}
             </p>
@@ -91,7 +95,7 @@ export default function DmcaPage() {
 
             <div>
               <h2 className="heading-2 mb-4">Designated Agent Contact Information</h2>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+              <div className="bg-cream-2 border border-line rounded-lg p-6">
                 {agentInfo.name && agentInfo.address && agentInfo.email && agentInfo.phone ? (
                   <>
                     <p className="font-medium mb-2">{agentInfo.name}</p>

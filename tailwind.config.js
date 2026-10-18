@@ -18,6 +18,7 @@ module.exports = {
         orange: '#E2562B',
         'orange-ink': '#B8360F',
         card: '#FFFDF8',
+        leaf: { DEFAULT: '#DCEBD9', line: '#9FBFA6' },
         // Legacy colors for backward compat
         purple: '#6C39EF',
         'deep-purple': '#4A2D86',

@@ -131,7 +131,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                       <Link
                         key={cat.id}
                         href={`/category/${cat.slug}`}
-                        className="badge bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors focus-ring rounded"
+                        className="badge bg-cream-2 text-ink border border-line hover:bg-cream-2 transition-colors focus-ring rounded"
                       >
                         {cat.icon ? <span aria-hidden="true">{cat.icon} </span> : null}
                         {cat.name}
@@ -149,7 +149,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
 
                 {/* Editorial Why */}
                 {tool.editorial_why && (
-                  <div className="bg-card border border-green rounded-lg p-6 mb-8">
+                  <div className="note mb-8">
                     <h2 className="heading-3 mb-2">Why we picked this</h2>
                     <p className="text-ink">{tool.editorial_why}</p>
                   </div>
@@ -176,7 +176,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     <h2 className="heading-3 mb-3">Available on</h2>
                     <div className="flex flex-wrap gap-2">
                       {tool.platforms.map((platform: string, idx: number) => (
-                        <span key={idx} className="badge bg-gray-100 text-gray-700 border border-gray-300">
+                        <span key={idx} className="badge bg-cream-2 text-soft border border-line">
                           {platform}
                         </span>
                       ))}
@@ -199,7 +199,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     )}
                     
                     {tool.has_free_tier === true && (
-                      <span className="badge bg-green-50 text-green-700 border border-green-200 mb-4 inline-block">
+                      <span className="badge bg-leaf text-green border border-leaf-line mb-4 inline-block">
                         <span aria-hidden="true">✓ </span>Free tier available
                       </span>
                     )}
@@ -223,7 +223,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
 
                     {/* Paid link disclosure - must appear immediately ABOVE the Visit button */}
                     {isAffiliate && (
-                      <p id="paid-note" className="text-sm text-[#C62810] mb-2">
+                      <p id="paid-note" className="text-sm text-orange-ink mb-2">
                         Paid link: we may earn a commission.{' '}
                         <Link href="/disclosure#paid-links" className="underline hover:text-[#A02010]">
                           How we make money

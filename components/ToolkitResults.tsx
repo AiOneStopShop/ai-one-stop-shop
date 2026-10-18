@@ -71,7 +71,7 @@ export function ToolkitResults({
             <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
               <h3 className="heading-3">{row.slot.label}</h3>
               {row.mustHave && (
-                <span className="badge bg-card text-[#4A2D86] border border-green">
+                <span className="badge bg-card text-green-2 border border-green">
                   Must-have
                 </span>
               )}

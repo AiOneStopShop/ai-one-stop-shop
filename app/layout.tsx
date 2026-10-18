@@ -4,6 +4,7 @@ import './globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CookieConsent } from '@/components/CookieConsent';
+import { GlobalSearchShortcut } from '@/components/GlobalSearchShortcut';
 import { getBrandUrl, getSiteUrl } from '@/lib/site-config';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -69,6 +70,7 @@ export default function RootLayout({
           }}
         />
         <CookieConsent />
+        <GlobalSearchShortcut />
         <Header />
         <main id="main" tabIndex={-1} className="min-h-screen focus:outline-none">
           {children}

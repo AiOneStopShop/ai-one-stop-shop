@@ -35,7 +35,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'cleanup_failed' }, { status: 500 });
     }
 
-    return NextResponse.json(data ?? { success: true });
+    // Search query logs (migration 026) share the same 90-day retention. Best effort: a missing
+    // function (migration not yet applied) must not fail the click cleanup.
+    const { data: searchDeleted, error: searchError } = await supabase.rpc('delete_old_search_queries');
+    if (searchError) console.warn('Search log cleanup skipped:', searchError.code);
+
+    return NextResponse.json({ ...(data && typeof data === 'object' ? data : { success: true }), search_queries_deleted: searchError ? null : searchDeleted });
   } catch (error) {
     console.error('Click cleanup error:', error);
     return NextResponse.json({ error: 'cleanup_failed' }, { status: 500 });

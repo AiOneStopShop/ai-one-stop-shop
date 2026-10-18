@@ -89,6 +89,27 @@ export function ToolsClient({
     }
   }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, sort, pathname, router]);
 
+  // Privacy-safe analytics: once a query has settled, send only its text and result count.
+  const loggedQueries = useRef(new Set<string>());
+  useEffect(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (q.length < 2 || loggedQueries.current.has(q)) return undefined;
+    const timer = window.setTimeout(() => {
+      loggedQueries.current.add(q);
+      const payload = JSON.stringify({ q, count: resultCount });
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/search/log', new Blob([payload], { type: 'application/json' }));
+        } else {
+          void fetch('/api/search/log', { method: 'POST', body: payload, keepalive: true, headers: { 'Content-Type': 'application/json' } });
+        }
+      } catch {
+        /* logging is best effort */
+      }
+    }, 1500);
+    return () => window.clearTimeout(timer);
+  }, [searchQuery, resultCount]);
+
   const hasActiveFilters = Boolean(searchQuery) || selectedCategory !== 'all' || priceFilter !== 'all' || hasFreeTier;
   const resultText = resultCount === 0
     ? 'No tools found matching your filters'

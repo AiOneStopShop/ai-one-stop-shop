@@ -1,3 +1,4 @@
+import synonymSeed from './search-synonyms.seed.json';
 import { INTENT_CATEGORY_SLUGS, normalizeCategorySlug } from '@/lib/taxonomy';
 
 export const SEARCH_QUERY_MAX = 100;
@@ -7,43 +8,18 @@ export const SEARCH_MIN_SCORE = 1.5;
 export const SHORT_QUERY_MAX = 4;
 
 const AUDIO_SYNONYMS = ['voice', 'audio', 'speech', 'tts', 'cloning', 'text to speech'] as const;
-const WRITING_SYNONYMS = ['write', 'writing', 'copy', 'content', 'grammar', 'copywriting', 'copywriter'] as const;
-const CHAT_SYNONYMS = ['chat', 'chatbot', 'assistant', 'llm', 'conversation', 'chatgpt', 'claude', 'gemini'] as const;
-const MUSIC_SYNONYMS = ['music', 'audio', 'song', 'soundtrack', 'voice', 'speech'] as const;
+// Synonyms live in the database table public.search_synonyms (migration 026), which search_tools()
+// reads. This JSON is the same seed, used only by the in-memory fallback when Supabase is
+// unreachable. Edit the table (and refresh this seed) rather than adding a list here.
+const SYNONYM_SEED = synonymSeed as Record<string, string[]>;
 
-export const SEARCH_PHRASES: Array<{ phrase: string; terms: readonly string[] }> = [
-  { phrase: 'text to speech', terms: AUDIO_SYNONYMS },
-];
+export const SEARCH_PHRASES: Array<{ phrase: string; terms: readonly string[] }> = Object.entries(SYNONYM_SEED)
+  .filter(([term]) => term.includes(' '))
+  .map(([phrase, terms]) => ({ phrase, terms }));
 
-export const SEARCH_SYNONYMS: Record<string, readonly string[]> = {
-  writing: WRITING_SYNONYMS,
-  write: WRITING_SYNONYMS,
-  copy: ['writing', 'write', 'content', 'copywriting'],
-  content: ['writing', 'write', 'copy'],
-  grammar: ['writing', 'write'],
-  image: ['art', 'generation', 'generate', 'generator', 'images', 'design'],
-  art: ['image', 'generation', 'generate', 'generator', 'images', 'design'],
-  code: ['coding', 'developer', 'development', 'copilot', 'programmer'],
-  coding: ['code', 'developer', 'development', 'copilot', 'programmer'],
-  video: ['film', 'podcast', 'recording'],
-  voice: AUDIO_SYNONYMS,
-  audio: AUDIO_SYNONYMS,
-  speech: AUDIO_SYNONYMS,
-  tts: AUDIO_SYNONYMS,
-  music: MUSIC_SYNONYMS,
-  chat: CHAT_SYNONYMS,
-  chatbot: CHAT_SYNONYMS,
-  assistant: CHAT_SYNONYMS,
-  llm: CHAT_SYNONYMS,
-  design: ['design', 'creative', 'image', 'art', 'canva'],
-  research: ['analysis', 'document', 'knowledge', 'search'],
-  notes: ['note', 'notebook', 'workspace', 'knowledge', 'notion'],
-  note: ['notes', 'notebook', 'workspace', 'knowledge', 'notion'],
-  agent: ['agents', 'autonomous', 'orchestration'],
-  automate: ['automation', 'agent', 'agents', 'autonomous', 'workflow'],
-  slides: ['presentation', 'deck', 'template', 'canva'],
-  email: ['copy', 'copywriting', 'marketing'],
-};
+export const SEARCH_SYNONYMS: Record<string, readonly string[]> = Object.fromEntries(
+  Object.entries(SYNONYM_SEED).filter(([term]) => !term.includes(' ')),
+);
 
 export const KNOWN_INTENT_TOKENS = new Set([
   'image', 'art', 'images',

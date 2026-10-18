@@ -3,6 +3,7 @@ import { getServiceSupabase } from '@/lib/supabase';
 import { sponsorRequestRateLimit } from '@/lib/rate-limit';
 import { getClientKey } from '@/lib/client-ip';
 import { sendNotificationEmail } from '@/lib/notify-email';
+import { buildSponsorRequestEmail } from '@/lib/sponsor-request-email';
 import { getSiteContactEmail, getSiteUrl } from '@/lib/site-config';
 
 interface RequestBody {
@@ -111,40 +112,25 @@ export async function POST(request: NextRequest) {
     const contactEmail = getSiteContactEmail() ?? '';
 
     {
-      const packageLabels: Record<string, string> = {
-        'featured-tool': 'Featured Tool ($39)',
-        'category-spotlight': 'Category Spotlight ($69)',
-        'newsletter': 'Newsletter Sponsor ($29)',
-        'founding-bundle': 'Founding Bundle ($99)',
-        'partner-program': 'Partner Program',
-      };
-
-      // HTML-escape helper
-      const escapeHtml = (text: string) => 
-        text.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+      const { subject, html, text } = buildSponsorRequestEmail({
+        companyName: body.companyName,
+        contactName: body.contactName,
+        email: body.email,
+        toolName: body.toolName,
+        toolUrl: body.toolUrl,
+        package: body.package,
+        message: body.message,
+        submittedAt: new Date().toISOString(),
+        siteUrl: getSiteUrl(),
+      });
 
       await sendNotificationEmail({
-        context: 'sponsor-request',
+        context: body.package === 'partner-program' ? 'partner-request' : 'sponsor-request',
         to: contactEmail,
         replyTo: body.email,
-        subject: `New sponsor request: ${escapeHtml(body.toolName)} (${packageLabels[body.package] || body.package})`,
-        html: `
-          <h2>New Sponsor Request</h2>
-          <p><strong>Company:</strong> ${escapeHtml(body.companyName)}</p>
-          <p><strong>Contact:</strong> ${escapeHtml(body.contactName)}</p>
-          <p><strong>Email:</strong> ${escapeHtml(body.email)}</p>
-          <p><strong>Tool:</strong> ${escapeHtml(body.toolName)}</p>
-          <p><strong>URL:</strong> <a href="${escapeHtml(body.toolUrl)}">${escapeHtml(body.toolUrl)}</a></p>
-          <p><strong>Package:</strong> ${packageLabels[body.package] || body.package}</p>
-          ${body.message ? `<p><strong>Message:</strong><br>${escapeHtml(body.message).replace(/\n/g, '<br>')}</p>` : ''}
-          <hr>
-          <p><small>Submitted at ${new Date().toISOString()}</small></p>
-          <p><small>Review in admin: <a href="${getSiteUrl().replace(/\/$/, '')}/admin/sponsors">/admin/sponsors</a></small></p>
-        `,
+        subject,
+        html,
+        text,
       });
     }
 

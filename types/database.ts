@@ -53,7 +53,7 @@ export interface ToolSubmission {
 
 // Sponsor types
 export type SponsorPackage = 'featured_tool' | 'category_spotlight' | 'newsletter';
-export type SponsorIntakePackage = SponsorPackage | 'founding_bundle' | 'request';
+export type SponsorIntakePackage = SponsorPackage | 'founding_bundle' | 'request' | 'partner_program';
 export type PlacementStatus = 'pending' | 'approved' | 'live' | 'ended' | 'declined';
 export type SponsorIntakeStatus = 'pending_review' | 'approved' | 'declined' | 'processing';
 export type PlacementEventType = 'impression' | 'click';

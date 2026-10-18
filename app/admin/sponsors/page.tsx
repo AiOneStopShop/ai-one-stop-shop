@@ -68,7 +68,7 @@ export default async function AdminSponsorsPage() {
             <div>
               <h1 className="heading-1 mb-2">Sponsor Management</h1>
               <p className="text-soft">
-                Review sponsor requests and intake forms
+                Review sponsor and partner requests
               </p>
             </div>
             <Link href="/admin/review" className="btn-secondary">
@@ -78,7 +78,7 @@ export default async function AdminSponsorsPage() {
 
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8">
             <p className="text-sm text-amber-900">
-              <strong>Note:</strong> This is a minimal admin interface for launch. Approve/decline actions, payment marking, and placement creation will be added in the next iteration.
+              <strong>Note:</strong> Approve and Decline update the request status. Payment marking and placement creation are still done by hand.
             </p>
           </div>
 

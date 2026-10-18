@@ -32,6 +32,8 @@ export type NotificationEmail = {
   to: string;
   subject: string;
   html: string;
+  /** Plain-text part. If omitted, Resend derives one from the HTML. */
+  text?: string;
   replyTo?: string;
   /** Short label for logs, e.g. "sponsor-request". */
   context: string;
@@ -64,6 +66,7 @@ export async function sendNotificationEmail(email: NotificationEmail): Promise<N
         ...(email.replyTo ? { reply_to: email.replyTo } : {}),
         subject: email.subject,
         html: email.html,
+        ...(email.text ? { text: email.text } : {}),
       }),
     });
 

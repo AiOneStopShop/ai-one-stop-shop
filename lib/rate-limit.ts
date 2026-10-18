@@ -169,3 +169,15 @@ export async function dedupe(key: string, ttlSeconds: number): Promise<boolean> 
   
   return true; // First occurrence
 }
+
+/**
+ * Undo a dedupe() claim, e.g. when the event it guarded failed to persist,
+ * so the next occurrence is counted instead of being dropped as a duplicate.
+ */
+export async function releaseDedupe(key: string): Promise<void> {
+  if (redis) {
+    await redis.del(key);
+    return;
+  }
+  memoryDedupe.delete(key);
+}

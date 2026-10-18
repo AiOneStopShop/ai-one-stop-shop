@@ -22,6 +22,10 @@ async function getServerSupabase() {
 }
 
 async function checkAuth() {
+  // Without a database there is no one to sign in; send people to the login page, which explains that.
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    redirect('/admin/login?next=/admin/sponsors');
+  }
   const supabase = await getServerSupabase();
   const { data: { user }, error } = await supabase.auth.getUser();
   

@@ -4,6 +4,8 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createBrowserClient } from '@supabase/ssr';
+import { DeskAccent } from '@/components/DeskAccents';
+import { OrangeSwoosh } from '@/components/OrangeSwoosh';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -39,10 +41,14 @@ function LoginForm() {
   // Only create client if env vars are set
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream p-4">
-        <div className="text-center">
-          <h1 className="heading-2 mb-4">Supabase Not Configured</h1>
-          <p className="text-soft">Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to enable admin login.</p>
+      <div className="flex items-center justify-center bg-cream py-16 px-4">
+        <div className="card max-w-md w-full text-center !p-8">
+          <h1 className="heading-2 mb-3 text-balance">Team sign&#8209;in is off here</h1>
+          <p className="text-soft">
+            This copy of the site isn&apos;t connected to our database, so there&apos;s nothing to sign in to. Set
+            NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to turn it on.
+          </p>
+          <Link href="/" className="btn-secondary mt-6 inline-flex">Back to the guide</Link>
         </div>
       </div>
     );
@@ -112,33 +118,27 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <Link href="/" className="flex items-center justify-center gap-2 mb-8">
-            <span className="text-4xl" aria-hidden="true">✨</span>
-            <span className="font-fraunces font-bold text-2xl text-ink">
-              AI One Stop Shop
-            </span>
-          </Link>
-          <h1 className="mt-6 text-center heading-2">
-            Admin Login
-          </h1>
-          <p className="mt-2 text-center text-sm text-soft">
-            Sign in with your admin account
+    <div className="flex items-center justify-center bg-cream py-12 md:py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-6">
+        <div className="text-center">
+          <DeskAccent name="key" className="w-24 h-auto mx-auto mb-2" />
+          <h1 className="heading-2">Team sign&#8209;in</h1>
+          <OrangeSwoosh className="swoosh mx-auto" />
+          <p className="text-soft">
+            For the people who review and publish tools. Visitors don&apos;t need an account to use the guide.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-line p-8">
-          <div className="flex gap-2 mb-6" role="group" aria-label="Sign-in method">
+        <div className="card !p-6 md:!p-8">
+          <div className="grid grid-cols-2 gap-1 p-1 mb-6 rounded-xl bg-cream-2 border border-line" role="group" aria-label="Sign-in method">
             <button
               type="button"
               onClick={() => setMode('signin')}
               aria-pressed={mode === 'signin'}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+              className={`min-h-11 px-4 rounded-lg text-sm font-semibold transition-colors focus-ring ${
                 mode === 'signin'
-                  ? 'bg-green text-white'
-                  : 'bg-card text-green hover:bg-[#E5D9FF]'
+                  ? 'bg-card text-green shadow-[0_2px_6px_-3px_rgba(30,59,44,0.5)]'
+                  : 'text-soft hover:text-green'
               }`}
             >
               Password
@@ -147,13 +147,13 @@ function LoginForm() {
               type="button"
               onClick={() => setMode('magic')}
               aria-pressed={mode === 'magic'}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+              className={`min-h-11 px-4 rounded-lg text-sm font-semibold transition-colors focus-ring ${
                 mode === 'magic'
-                  ? 'bg-green text-white'
-                  : 'bg-card text-green hover:bg-[#E5D9FF]'
+                  ? 'bg-card text-green shadow-[0_2px_6px_-3px_rgba(30,59,44,0.5)]'
+                  : 'text-soft hover:text-green'
               }`}
             >
-              Magic Link
+              Email me a link
             </button>
           </div>
 
@@ -182,7 +182,7 @@ function LoginForm() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-soft rounded-lg focus-ring"
+                className="w-full px-4 py-3 border border-soft rounded-lg bg-white focus-ring"
                 placeholder="admin@example.com"
               />
             </div>
@@ -211,19 +211,19 @@ function LoginForm() {
               disabled={loading}
               className="w-full btn-primary"
             >
-              {loading ? 'Loading...' : mode === 'signin' ? 'Sign In' : 'Send Magic Link'}
+              {loading ? 'One moment…' : mode === 'signin' ? 'Sign in' : 'Email me a sign-in link'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <Link href="/" className="text-sm text-green hover:underline focus-ring rounded">
-              ← Back to home
+            <Link href="/" className="text-sm text-green underline underline-offset-2 focus-ring rounded">
+              Back to the guide
             </Link>
           </div>
         </div>
 
-        <p className="text-center text-xs text-soft">
-          Admin access only. Unauthorized access attempts are logged.
+        <p className="text-center text-sm text-soft">
+          Only team accounts can sign in. We don&apos;t create accounts from this page.
         </p>
       </div>
     </div>
@@ -233,8 +233,8 @@ function LoginForm() {
 export default function AdminLoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-cream">
-        <div className="text-soft">Loading...</div>
+      <div className="flex items-center justify-center bg-cream py-24">
+        <div className="text-soft">One moment…</div>
       </div>
     }>
       <LoginForm />

@@ -47,7 +47,7 @@ export function AdminActions({ tool }: { tool: any }) {
         <button
           onClick={handleApprove}
           disabled={loading}
-          className="px-4 py-2 bg-green text-white font-medium rounded-lg hover:bg-[#5A2FD0] transition-colors disabled:opacity-50"
+          className="px-4 py-2 bg-green text-white font-medium rounded-lg hover:bg-green-2 transition-colors disabled:opacity-50"
         >
           {loading ? 'Processing...' : 'Approve'}
           <span className="sr-only"> {tool.name}</span>

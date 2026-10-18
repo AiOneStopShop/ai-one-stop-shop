@@ -22,6 +22,11 @@ async function continueRequest(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl
 
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    // Fail closed without a database: no session can exist, so go to the login page (which explains it).
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+
     let response = NextResponse.next({
       request: {
         headers: request.headers,

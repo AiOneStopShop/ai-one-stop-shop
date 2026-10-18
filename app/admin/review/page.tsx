@@ -21,6 +21,10 @@ async function getServerSupabase() {
 }
 
 async function checkAuth() {
+  // Without a database there is no one to sign in; send people to the login page, which explains that.
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    redirect('/admin/login');
+  }
   const supabase = await getServerSupabase();
   const { data: { user }, error } = await supabase.auth.getUser();
   
@@ -105,7 +109,7 @@ export default async function AdminReviewPage() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <header className="border-b border-line bg-white">
+      <header className="border-b border-line bg-cream-2/50">
         <div className="container-max py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
@@ -276,7 +280,7 @@ export default async function AdminReviewPage() {
                       }}>
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-green text-white rounded-lg hover:bg-green transition-colors text-sm font-medium"
+                          className="px-4 py-2 bg-green text-white rounded-lg hover:bg-green-2 transition-colors text-sm font-medium"
                         >
                           Publish
                           <span className="sr-only"> {tool.name}</span>

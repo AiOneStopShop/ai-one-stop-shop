@@ -18,7 +18,7 @@ export const metadata = {
 };
 
 export default async function ToolsPage(props: {
-  searchParams: Promise<{ q?: string; category?: string; price?: string; free?: string; page?: string; sort?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; price?: string; free?: string; page?: string; sort?: string; exact?: string }>;
 }) {
   const searchParams = await props.searchParams;
   const query = sanitizeSearchQuery(searchParams.q);
@@ -27,10 +27,12 @@ export default async function ToolsPage(props: {
   const free = searchParams.free === '1';
   const page = parsePage(searchParams.page);
   const sort = parseCategorySort(searchParams.sort);
+  const exact = searchParams.exact === '1';
 
   const [catalog, categories, publishedPool, affiliates] = await Promise.all([
     searchPublishedCatalog({
       q: query,
+      exact,
       category,
       price,
       freeOnly: free,
@@ -47,6 +49,9 @@ export default async function ToolsPage(props: {
     ? suggestDidYouMean(query, publishedPool)
     : null;
   const didYouMean = suggested?.name ? { name: suggested.name } : null;
+  const correctedQuery = 'correctedQuery' in catalog && typeof catalog.correctedQuery === 'string' && catalog.correctedQuery !== query
+    ? catalog.correctedQuery
+    : null;
   const popularCategories = [...categories]
     .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
     .slice(0, 8);
@@ -105,6 +110,7 @@ export default async function ToolsPage(props: {
               resultCount={catalog.total}
               publishedCount={publishedPool.length}
               initialSort={sort}
+              initialExact={exact}
             >
               <ToolsResults
                 tools={catalog.tools}
@@ -113,6 +119,7 @@ export default async function ToolsPage(props: {
                 priceFilter={price}
                 hasFreeTier={free}
                 didYouMean={didYouMean}
+                correctedQuery={correctedQuery}
                 popularCategories={popularCategories}
                 affiliates={affiliates}
               />
@@ -124,6 +131,7 @@ export default async function ToolsPage(props: {
               hrefForPage={(nextPage) => {
                 const params = new URLSearchParams();
                 if (query) params.set('q', query);
+                if (query && exact) params.set('exact', '1');
                 if (category !== 'all') params.set('category', category);
                 if (price !== 'all') params.set('price', price);
                 if (free) params.set('free', '1');

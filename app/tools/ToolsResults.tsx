@@ -6,9 +6,10 @@ import { PaidVisitLink } from '@/components/PaidVisitLink';
 import type { AffiliateGoMap } from '@/lib/affiliate-links';
 import { toolHasAffiliate } from '@/lib/affiliate-links';
 
-function buildToolsHref(query: string, category: string, price: string, free: boolean): string {
+function buildToolsHref(query: string, category: string, price: string, free: boolean, exact = false): string {
   const params = new URLSearchParams();
   if (query) params.set('q', query);
+  if (exact) params.set('exact', '1');
   if (category !== 'all') params.set('category', category);
   if (price !== 'all') params.set('price', price);
   if (free) params.set('free', '1');
@@ -23,6 +24,7 @@ export function ToolsResults({
   priceFilter,
   hasFreeTier,
   didYouMean,
+  correctedQuery = null,
   popularCategories,
   affiliates = {},
 }: {
@@ -32,11 +34,28 @@ export function ToolsResults({
   priceFilter: string;
   hasFreeTier: boolean;
   didYouMean: { name: string } | null;
+  correctedQuery?: string | null;
   popularCategories: Array<{ id: string; slug: string; name: string }>;
   affiliates?: AffiliateGoMap;
 }) {
+  const highlightQuery = correctedQuery || query;
+  const correctionNote = correctedQuery ? (
+    <p className="mb-6 text-soft" role="status">
+      Showing results for <strong className="text-ink">{correctedQuery}</strong>.{' '}
+      Search instead for{' '}
+      <Link
+        href={buildToolsHref(query, selectedCategory, priceFilter, hasFreeTier, true)}
+        className="text-green underline focus-ring rounded"
+      >
+        {query}
+      </Link>
+    </p>
+  ) : null;
+
   if (tools.length > 0) {
     return (
+      <>
+      {correctionNote}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {tools.map((tool: any) => {
           const primaryCategory = tool.tool_categories?.find((tc: any) => tc.is_primary)?.categories;
@@ -55,13 +74,13 @@ export function ToolsResults({
                       href={`/tools/${tool.slug}`}
                       className="group-hover:text-green transition-colors focus-ring rounded"
                     >
-                      <HighlightedText text={tool.name} query={query} />
+                      <HighlightedText text={tool.name} query={highlightQuery} />
                     </Link>
                   </h2>
 
                   {tool.tagline && (
                     <p className="text-soft mb-3 line-clamp-2">
-                      <HighlightedText text={tool.tagline} query={query} />
+                      <HighlightedText text={tool.tagline} query={highlightQuery} />
                     </p>
                   )}
 
@@ -97,6 +116,7 @@ export function ToolsResults({
           );
         })}
       </div>
+      </>
     );
   }
 

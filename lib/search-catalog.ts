@@ -27,6 +27,8 @@ export const TOOL_LIST_COLUMNS = [
 
 export type CatalogSearchOptions = {
   q?: string;
+  /** Skip database typo correction ("Search instead for ..."). */
+  exact?: boolean;
   category?: string | null;
   price?: string | null;
   freeOnly?: boolean;
@@ -148,6 +150,7 @@ export async function searchPublishedCatalog(options: CatalogSearchOptions = {})
       free_only: freeOnly,
       limit,
       offset,
+      ...(options.exact ? { exact: true } : {}),
     });
 
     if (!error && Array.isArray(data)) {
@@ -157,6 +160,7 @@ export async function searchPublishedCatalog(options: CatalogSearchOptions = {})
         total: data[0]?.result_total ?? data.length,
         publishedCount: data[0]?.result_total ?? data.length,
         suggestionPool: tools,
+        correctedQuery: (typeof data[0]?.corrected_query === 'string' && data[0].corrected_query) || null,
       };
     }
   }

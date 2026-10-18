@@ -123,7 +123,10 @@ export default async function AdminReviewPage() {
               Admin Review
             </h1>
           </div>
-          <nav aria-label="Admin">
+          <nav aria-label="Admin" className="flex items-center gap-4">
+            <Link href="/admin/search" className="text-sm text-green hover:underline">
+              Search insights
+            </Link>
             <Link href="/" className="text-sm text-green hover:underline">
               View Site <span aria-hidden="true">→</span>
             </Link>

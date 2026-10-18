@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         <div className="container-max max-w-3xl">
           <div className="guide-prose">
             <p className="text-sm text-soft">
-              Last updated: October 17, 2026
+              Last updated: October 18, 2026
             </p>
 
             <div>
@@ -83,6 +83,17 @@ export default function PrivacyPage() {
                 If you join our newsletter list on the <Link href="/newsletter">Newsletter page</Link>, we store your email address in our database (Supabase), along with the date you joined. We use it only to send the newsletter. We keep it until you unsubscribe: reply &quot;unsubscribe&quot; to any issue or email us, and we delete it.
               </p>
 
+              <h3 className="heading-3 mb-3 mt-6">Search queries</h3>
+              <p>
+                When you search the tool catalog, we record the words you searched for, how many results came back, and when. We do not store your IP address, any account or user identifier, or your browser details with it. We use these anonymous counts to see what people look for and which tools are missing from the catalog. Please don&apos;t type personal information into the search box; queries that look like an email address or a long number are discarded.
+              </p>
+              <p className="mt-4">
+                Your recent searches are saved only in your own browser (local storage) so you can repeat them. They are never sent to us, and you can clear them from the search box at any time.
+              </p>
+              <p className="text-sm text-soft mt-2">
+                <strong>Retention:</strong> Search query logs are automatically deleted after 90 days.
+              </p>
+
               <h3 className="heading-3 mb-3 mt-6">Visit-link click logs</h3>
               <p>
                 When you click any "Visit" link (paid or not), we log the following for tracking performance and preventing abuse:
@@ -118,7 +129,7 @@ export default function PrivacyPage() {
                 We don't use analytics, advertising, or tracking cookies, and visitors who browse aren't given cookies by us.
               </p>
               <p className="mt-4">
-                Your browser's local storage keeps two small things on your own device: the tools you add to your compare list, and whether you've dismissed our cookie notice. You can clear them anytime in your browser settings.
+                Your browser's local storage keeps three small things on your own device: the tools you add to your compare list, your last few searches, and whether you've dismissed our cookie notice. You can clear them anytime in your browser settings.
               </p>
               <p className="mt-4">
                 If you're a site admin who signs in, we use login cookies so you stay signed in. Those are needed for the admin area to work.
@@ -165,6 +176,7 @@ export default function PrivacyPage() {
               <h2 className="heading-2 mb-4">Data retention</h2>
               <ul className="space-y-2">
                 <li><strong>Click logs:</strong> Automatically deleted after 90 days</li>
+                <li><strong>Search query logs:</strong> Automatically deleted after 90 days</li>
                 <li><strong>Tool submissions:</strong> Deleted after review (approved or rejected)</li>
                 <li><strong>Sponsor requests:</strong> 6 months if declined or not booked; records of paid sponsorships: 5 years (tax records), then deleted</li>
                 <li><strong>Newsletter emails:</strong> Kept until you unsubscribe, then deleted</li>

@@ -1,0 +1,241 @@
+{
+  "writing": [
+    "write",
+    "writing",
+    "copy",
+    "content",
+    "grammar",
+    "copywriting",
+    "copywriter"
+  ],
+  "write": [
+    "write",
+    "writing",
+    "copy",
+    "content",
+    "grammar",
+    "copywriting",
+    "copywriter"
+  ],
+  "copy": [
+    "writing",
+    "write",
+    "content",
+    "copywriting"
+  ],
+  "content": [
+    "writing",
+    "write",
+    "copy"
+  ],
+  "grammar": [
+    "writing",
+    "write"
+  ],
+  "image": [
+    "image",
+    "art",
+    "generation",
+    "generate",
+    "generator",
+    "images",
+    "design"
+  ],
+  "images": [
+    "image",
+    "art",
+    "generation",
+    "generate",
+    "generator",
+    "design"
+  ],
+  "art": [
+    "image",
+    "art",
+    "generation",
+    "generate",
+    "generator",
+    "images",
+    "design"
+  ],
+  "code": [
+    "code",
+    "coding",
+    "developer",
+    "development",
+    "copilot",
+    "programmer"
+  ],
+  "coding": [
+    "code",
+    "coding",
+    "developer",
+    "development",
+    "copilot",
+    "programmer"
+  ],
+  "video": [
+    "video",
+    "film",
+    "podcast",
+    "recording"
+  ],
+  "voice": [
+    "voice",
+    "audio",
+    "speech",
+    "tts",
+    "cloning",
+    "music",
+    "song",
+    "soundtrack"
+  ],
+  "audio": [
+    "voice",
+    "audio",
+    "speech",
+    "tts",
+    "cloning",
+    "music",
+    "song",
+    "soundtrack"
+  ],
+  "speech": [
+    "voice",
+    "audio",
+    "speech",
+    "tts",
+    "cloning",
+    "music",
+    "song",
+    "soundtrack"
+  ],
+  "tts": [
+    "voice",
+    "audio",
+    "speech",
+    "tts",
+    "cloning",
+    "music",
+    "song",
+    "soundtrack"
+  ],
+  "music": [
+    "voice",
+    "audio",
+    "speech",
+    "tts",
+    "cloning",
+    "music",
+    "song",
+    "soundtrack"
+  ],
+  "text to speech": [
+    "voice",
+    "audio",
+    "speech",
+    "tts",
+    "cloning"
+  ],
+  "chat": [
+    "chat",
+    "chatbot",
+    "assistant",
+    "conversation",
+    "llm",
+    "chatgpt",
+    "claude",
+    "gemini"
+  ],
+  "chatbot": [
+    "chat",
+    "chatbot",
+    "assistant",
+    "conversation",
+    "llm",
+    "chatgpt",
+    "claude",
+    "gemini"
+  ],
+  "assistant": [
+    "chat",
+    "chatbot",
+    "assistant",
+    "conversation",
+    "llm",
+    "chatgpt",
+    "claude",
+    "gemini"
+  ],
+  "llm": [
+    "chat",
+    "chatbot",
+    "assistant",
+    "conversation",
+    "llm",
+    "chatgpt",
+    "claude",
+    "gemini"
+  ],
+  "design": [
+    "design",
+    "creative",
+    "image",
+    "art",
+    "canva"
+  ],
+  "research": [
+    "analysis",
+    "document",
+    "knowledge",
+    "search"
+  ],
+  "notes": [
+    "note",
+    "notes",
+    "notebook",
+    "workspace",
+    "knowledge",
+    "notion"
+  ],
+  "note": [
+    "note",
+    "notes",
+    "notebook",
+    "workspace",
+    "knowledge",
+    "notion"
+  ],
+  "agent": [
+    "agent",
+    "agents",
+    "autonomous",
+    "orchestration"
+  ],
+  "automate": [
+    "automate",
+    "automation",
+    "agent",
+    "agents",
+    "autonomous",
+    "workflow"
+  ],
+  "slides": [
+    "slides",
+    "presentation",
+    "deck",
+    "template",
+    "canva"
+  ],
+  "email": [
+    "email",
+    "copy",
+    "copywriting",
+    "marketing"
+  ],
+  "gen": [
+    "generation",
+    "generate",
+    "generator"
+  ]
+}

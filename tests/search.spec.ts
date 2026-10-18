@@ -9,9 +9,9 @@ import {
 
 const published = fallbackTools.filter((tool) => tool.status === 'published');
 
-test('audio synonyms include voice, tts, speech, and text to speech', () => {
+test('audio synonyms include voice, tts and speech; text to speech expands as a phrase', () => {
   expect(expandSearchTerms('voice')).toEqual(
-    expect.arrayContaining(['voice', 'audio', 'speech', 'tts', 'text to speech'])
+    expect.arrayContaining(['voice', 'audio', 'speech', 'tts'])
   );
   expect(expandSearchTerms('text to speech')).toEqual(
     expect.arrayContaining(['voice', 'speech', 'tts'])

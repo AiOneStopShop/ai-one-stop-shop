@@ -36,7 +36,7 @@ const packages = [
     name: 'Founding Bundle',
     price: '$99',
     duration: '30 days',
-    description: 'Featured Tool + Category Spotlight + 2 newsletter slots (once the newsletter launches). Limited to 5.',
+    description: 'Featured Tool + Category Spotlight + 2 newsletter slots (once the newsletter launches; if it hasn't launched within 48 hours of the promised launch time, you can move your newsletter slots to a later issue or get a refund for the unused portion of your $99 Bundle). Limited to 5.',
     package: 'founding-bundle',
   },
 ];

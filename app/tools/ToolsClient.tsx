@@ -9,9 +9,10 @@ import { SEARCH_DEBOUNCE_MS } from '@/lib/search-tools';
 
 type Category = any;
 
-function buildToolsHref(query: string, category: string, price: string, free: boolean, sort = 'relevance'): string {
+function buildToolsHref(query: string, category: string, price: string, free: boolean, sort = 'relevance', exact = false): string {
   const params = new URLSearchParams();
   if (query) params.set('q', query);
+  if (query && exact) params.set('exact', '1');
   if (category !== 'all') params.set('category', category);
   if (price !== 'all') params.set('price', price);
   if (free) params.set('free', '1');
@@ -29,6 +30,7 @@ export function ToolsClient({
   resultCount,
   publishedCount,
   initialSort = 'relevance',
+  initialExact = false,
   children,
 }: {
   categories: Category[];
@@ -39,6 +41,7 @@ export function ToolsClient({
   resultCount: number;
   publishedCount: number;
   initialSort?: string;
+  initialExact?: boolean;
   children: ReactNode;
 }) {
   const router = useRouter();
@@ -70,7 +73,8 @@ export function ToolsClient({
   }, [draftQuery]);
 
   useEffect(() => {
-    const next = buildToolsHref(searchQuery, selectedCategory, priceFilter, hasFreeTier, sort);
+    // Keep ?exact=1 ("Search instead for ...") only while the query is unchanged.
+    const next = buildToolsHref(searchQuery, selectedCategory, priceFilter, hasFreeTier, sort, initialExact && searchQuery === initialQuery);
     const current = `${pathname}${window.location.search}`;
     if (next === current) {
       if (historyMode.current === 'push') {
@@ -87,7 +91,7 @@ export function ToolsClient({
     } else {
       router.replace(next, { scroll: false });
     }
-  }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, sort, pathname, router]);
+  }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, sort, pathname, router, initialExact, initialQuery]);
 
   // Privacy-safe analytics: once a query has settled, send only its text and result count.
   const loggedQueries = useRef(new Set<string>());

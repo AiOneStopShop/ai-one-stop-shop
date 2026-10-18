@@ -15,7 +15,9 @@
     "seed": "tsx scripts/seed-database.ts",
     "import": "tsx scripts/import-pipeline.ts",
     "enrich": "tsx scripts/enrichment-job.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test:search": "playwright test tests/search-golden.spec.ts",
+    "test:search:fallback": "playwright test tests/search.spec.ts -g \"fallback|synonym expansion\""
   },
   "dependencies": {
     "@next/env": "15.5.27",
@@ -36,6 +38,7 @@
   "devDependencies": {
     "@axe-core/cli": "^4.13.0",
     "@axe-core/playwright": "^4.13.0",
+    "@electric-sql/pglite": "^0.5.10",
     "@playwright/test": "^1.64.0",
     "@types/node": "^20.0.0",
     "@types/react": "19.3.0",

@@ -39,7 +39,7 @@ export default function HowWeRankPage() {
                 We run AI One Stop Shop from Washington State, and we review each tool&apos;s public pricing and features: what it claims to do, what it costs, and who it appears to be for.
               </p>
               <p>
-                We use AI helpers for research, like gathering pricing pages and summarizing changelogs. They work alongside us. A person decides whether a tool gets listed and where it ranks.
+                We use AI helpers for research, like gathering pricing pages and summarizing changelogs. They work alongside us. A person sets the rules and reviews what's listed.
               </p>
             </div>
 

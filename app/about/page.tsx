@@ -32,7 +32,7 @@ export default function AboutPage() {
 
             <h2 className="heading-2 mt-12">How we work</h2>
             <p>
-              We review each tool&apos;s public pricing and features. We use AI helpers for research, like gathering pricing pages and summarizing changelogs. They work alongside us. A person decides whether a tool gets listed and where it ranks.
+              We review each tool&apos;s public pricing and features. We use AI helpers for research, like gathering pricing pages and summarizing changelogs. They work alongside us. A person sets the rules and reviews what's listed.
             </p>
 
             <h2 className="heading-2 mt-12">The numbers you see</h2>

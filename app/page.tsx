@@ -49,7 +49,7 @@ async function getFeaturedTools(): Promise<Tool[]> {
 
 export const metadata = {
   title: 'AI One Stop Shop - Honest AI Tools Directory',
-  description: 'AI tools we\'ve actually tried and would suggest to a friend. No fake ratings, no paid rankings. Find the right tool for your work and budget.',
+  description: 'Curated AI tools directory. No fake ratings, no paid rankings. Find the right tool for your work and budget.',
   alternates: { canonical: '/' },
 };
 

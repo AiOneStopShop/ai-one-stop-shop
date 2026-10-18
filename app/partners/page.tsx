@@ -30,7 +30,7 @@ export default function PartnersPage() {
               </p>
             </div>
 
-            <div className="bg-[#4A2D86] text-white rounded-lg p-8">
+            <div className="panel-honest">
               <h2 className="heading-2 mb-4">The rule</h2>
               <p className="text-lg font-semibold mb-4">
                 Payments never change how we rank tools.

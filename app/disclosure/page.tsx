@@ -67,7 +67,7 @@ export default function DisclosurePage() {
               </div>
             </div>
 
-            <div className="bg-[#4A2D86] text-white rounded-lg p-8 my-8">
+            <div className="panel-honest my-8">
               <h3 className="heading-3 mb-4">What payments never buy</h3>
               <ul className="space-y-2 text-lg">
                 <li>✓ A higher rank</li>

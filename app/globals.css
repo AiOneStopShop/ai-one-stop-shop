@@ -93,6 +93,11 @@
     @apply text-[clamp(2.9rem,1.6rem+4.4vw,5.4rem)] font-fraunces font-bold text-green leading-[1.05];
   }
 
+  /* Kept for pages that still use the old name (H7). Same scale as .heading-1. */
+  .heading-hero {
+    @apply heading-1;
+  }
+
   .heading-2 {
     @apply text-[clamp(2rem,1.4rem+2vw,3rem)] font-fraunces font-bold text-green;
   }
@@ -114,6 +119,20 @@
 
   .btn-primary:hover {
     transform: translateY(-1px);
+  }
+
+  /* M16: dark ring with a cream gap so it reads at >3:1 on cream, cards and green */
+  .btn-primary:focus-visible,
+  .btn-secondary:focus-visible {
+    outline: 3px solid var(--green);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px var(--cream), 0 0 0 6px var(--green);
+  }
+
+  /* Honesty panel: deep green box with cream text. Headings stay light (H6). */
+  .panel-honest {
+    @apply bg-green rounded-2xl p-8;
+    color: #F3EEE2;
   }
 
   .btn-secondary {
@@ -203,6 +222,33 @@ mark {
   color: inherit;
   padding: 0 0.15em;
   border-radius: 0.2em;
+}
+
+/* H6: headings and links inside dark panels must not inherit the dark green */
+.panel-honest h1,
+.panel-honest h2,
+.panel-honest h3,
+.panel-honest h4,
+.panel-honest .heading-2,
+.panel-honest .heading-3 {
+  color: #FFFFFF;
+}
+
+.panel-honest a {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+.panel-honest :focus-visible {
+  outline-color: #F3EEE2;
+}
+
+/* M15: links inside running text are underlined, not colour-only */
+footer p a,
+main p a,
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* Ensure links in text blocks are distinguishable */

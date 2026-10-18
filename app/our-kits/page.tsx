@@ -150,7 +150,7 @@ export default function OurKitsPage() {
             </div>
 
             {/* Why These Aren't in the Directory */}
-            <div className="bg-[#4A2D86] text-white rounded-xl p-8">
+            <div className="panel-honest">
               <h2 className="heading-2 mb-4">Why you won't find these in our tool rankings</h2>
               <p className="text-lg mb-4">
                 Our main promise is that <strong>paying us never moves a tool up the list</strong>. That includes our own products.

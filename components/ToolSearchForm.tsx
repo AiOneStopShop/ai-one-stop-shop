@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useRef, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react';
 import { Search } from 'lucide-react';
 
 type ToolSearchFormProps = {
@@ -52,12 +52,40 @@ export function ToolSearchForm({
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [shortcut]);
 
+  const composingRef = useRef(false);
+
+  // Enter submits the form natively. Guard two cases: an IME composition being
+  // confirmed with Enter (must not submit), and an empty/whitespace query.
+  const handleKeyDown = (event: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') return;
+    if (composingRef.current || event.nativeEvent.isComposing || event.keyCode === 229) {
+      event.preventDefault();
+    }
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    if (composingRef.current) {
+      event.preventDefault();
+      return;
+    }
+    const raw = inputRef.current?.value ?? '';
+    if (!raw.trim()) {
+      event.preventDefault();
+      inputRef.current?.focus();
+      return;
+    }
+    if (inputRef.current && raw !== raw.trim() && !isControlled) {
+      inputRef.current.value = raw.trim();
+    }
+    onSearchSubmit?.(event);
+  };
+
   return (
     <form
       role="search"
       action="/tools"
       method="get"
-      onSubmit={onSearchSubmit}
+      onSubmit={handleSubmit}
       className={className}
     >
       <label htmlFor={id} className="block text-sm font-medium text-ink mb-2">
@@ -80,6 +108,9 @@ export function ToolSearchForm({
             placeholder="Search tools by name, job, or category..."
             autoComplete="off"
             enterKeyHint="search"
+            onKeyDown={handleKeyDown}
+            onCompositionStart={() => { composingRef.current = true; }}
+            onCompositionEnd={() => { composingRef.current = false; }}
             inputMode="search"
             maxLength={100}
             className="w-full pl-10 pr-4 py-3 text-base border border-soft rounded-xl focus-ring bg-white min-h-11"

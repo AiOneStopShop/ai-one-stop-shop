@@ -53,7 +53,7 @@ export default function SponsorTermsPage() {
             <div>
               <h2 className="heading-2 mb-4">2. Payment and Pricing</h2>
               <p className="text-soft italic">
-                [To be completed: One-time payment terms, no auto-renewal, sales tax application, founding sponsor pricing for re-bookings (up to 3 more times within 6 months of the first placement's start date), payment processor (Stripe).]
+                [To be completed: One-time payment terms, no auto-renewal, sales tax application, Founding Bundle re-booking at $99 (Bundle buyers only, up to 3 more times within 6 months of the first placement's start date; re-bookings don't count toward the 20 Founding Bundle limit), payment processor (Stripe).]
               </p>
             </div>
 

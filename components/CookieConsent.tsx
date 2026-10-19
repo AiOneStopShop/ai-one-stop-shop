@@ -2,7 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { CONSENT_OPEN_EVENT, readConsent, writeConsent, type ConsentChoice } from '@/lib/cookie-consent';
+import { CONSENT_OPEN_EVENT, hasGpcSignal, readConsent, readStoredConsent, writeConsent, type ConsentChoice } from '@/lib/cookie-consent';
+
+// Both choices share one style so neither is nudged (equal prominence).
+const CHOICE_BUTTON_CLASS = 'btn-secondary text-xs sm:text-sm px-3 py-2 min-h-[44px] min-w-[44px]';
 
 // Asks once whether we may count visits with Vercel Web Analytics. Analytics stays
 // off until the visitor picks "Allow analytics" (see components/ConsentedAnalytics.tsx).
@@ -10,6 +13,8 @@ import { CONSENT_OPEN_EVENT, readConsent, writeConsent, type ConsentChoice } fro
 // visitors see the banner once more and get the real choice.
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(true);
+  // Set when reopened from Cookie settings, so we can show the current choice.
+  const [current, setCurrent] = useState<{ on: boolean; gpc: boolean } | null>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -19,6 +24,7 @@ export function CookieConsent() {
     const reopen = () => {
       // globals.css hides the banner while this class is set (it stops a flash on load).
       document.documentElement.classList.remove('cookie-consent-given');
+      setCurrent({ on: readConsent() === 'accepted', gpc: !readStoredConsent() && hasGpcSignal() });
       setShowBanner(true);
     };
     window.addEventListener(CONSENT_OPEN_EVENT, reopen);
@@ -29,6 +35,7 @@ export function CookieConsent() {
     writeConsent(choice);
     document.documentElement.classList.add('cookie-consent-given');
     setShowBanner(false);
+    setCurrent(null);
   }, []);
 
   useEffect(() => {
@@ -87,19 +94,25 @@ export function CookieConsent() {
             <Link href="/privacy#cookies" className="text-green underline hover:no-underline focus-ring rounded">
               Privacy
             </Link>
+            {current && (
+              <span className="block mt-1" data-testid="cookie-current-choice" aria-live="polite">
+                Analytics is currently <strong>{current.on ? 'on' : 'off'}</strong>
+                {current.gpc ? ' (your browser sent a Global Privacy Control signal)' : ''}.
+              </span>
+            )}
           </p>
           <div className="flex flex-row gap-2 shrink-0" role="group" aria-labelledby="cookie-banner-text">
             <button
               type="button"
               onClick={() => choose('declined')}
-              className="btn-secondary text-xs sm:text-sm px-3 py-2 min-h-[44px] min-w-[44px]"
+              className={CHOICE_BUTTON_CLASS}
             >
               No thanks
             </button>
             <button
               type="button"
               onClick={() => choose('accepted')}
-              className="btn-primary text-xs sm:text-sm px-3 py-2 min-h-[44px] min-w-[44px]"
+              className={CHOICE_BUTTON_CLASS}
             >
               Allow analytics
             </button>

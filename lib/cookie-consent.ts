@@ -7,13 +7,31 @@ export const CONSENT_OPEN_EVENT = 'cookie-consent-open';
 
 export type ConsentChoice = 'accepted' | 'declined';
 
-export function readConsent(): ConsentChoice | null {
+/** True when the browser sends a Global Privacy Control signal. */
+export function hasGpcSignal(): boolean {
+  try {
+    return (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true;
+  } catch {
+    return false;
+  }
+}
+
+/** The visitor's explicit choice, if they made one. */
+export function readStoredConsent(): ConsentChoice | null {
   try {
     const v = window.localStorage.getItem(CONSENT_KEY);
     return v === 'accepted' || v === 'declined' ? v : null;
   } catch {
     return null;
   }
+}
+
+/**
+ * Effective choice. An explicit choice wins; otherwise a Global Privacy Control
+ * signal counts as "No thanks" (and we don't prompt). No choice and no GPC: null.
+ */
+export function readConsent(): ConsentChoice | null {
+  return readStoredConsent() ?? (hasGpcSignal() ? 'declined' : null);
 }
 
 export function writeConsent(choice: ConsentChoice): void {

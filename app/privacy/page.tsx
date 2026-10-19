@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail, getOperatorLegalName } from '@/lib/site-config';
+
+// Shown even if NEXT_PUBLIC_SITE_CONTACT_EMAIL is unset, so the policy always has a contact.
+const FALLBACK_CONTACT_EMAIL = 'aionestopshop25@gmail.com';
 import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
 import { PageIntro } from '@/components/PageIntro';
 import { CookieSettingsButton } from '@/components/CookieSettingsButton';
@@ -31,13 +34,16 @@ export default function PrivacyPage() {
               <p>
                 AI One Stop Shop is operated by <strong>{getOperatorLegalName()}</strong>, a Washington limited liability company doing business as AI One Stop Shop. We are oneTomorrow.
               </p>
-              {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS ? (
+              <p className="bg-cream-2 border border-line rounded px-4 py-3 text-sm">
+                <strong>Contact:</strong> Email us at{' '}
+                <a href={`mailto:${getSiteContactEmail() ?? FALLBACK_CONTACT_EMAIL}`} className="text-green underline hover:no-underline">
+                  {getSiteContactEmail() ?? FALLBACK_CONTACT_EMAIL}
+                </a>
+                .
+              </p>
+              {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS && (
                 <p className="bg-cream-2 border border-line rounded px-4 py-3 text-sm whitespace-pre-line">
-                  <strong>Contact:</strong> {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS}
-                </p>
-              ) : (
-                <p className="bg-amber-50 border border-amber-200 rounded px-4 py-3 text-sm">
-                  <strong>Contact:</strong> Contact information will be added before any marketing emails are sent.
+                  <strong>Postal address:</strong> {process.env.NEXT_PUBLIC_SITE_POSTAL_ADDRESS}
                 </p>
               )}
             </div>
@@ -133,7 +139,7 @@ export default function PrivacyPage() {
                 Your browser's local storage keeps three small things on your own device: the tools you add to your compare list, your last few searches, and your analytics choice from our cookie banner. You can clear them anytime in your browser settings.
               </p>
               <p className="mt-4" id="analytics">
-                <strong>Optional analytics (off unless you opt in).</strong> If you choose "Allow analytics" in our cookie banner, we load Vercel Web Analytics to count page visits. It doesn't use cookies. According to Vercel&apos;s documentation, each page view can include: the time, the page address and route (we remove search terms and other query text before it is sent), the referring page, an approximate location (country, region, city) derived from your connection, your device type, operating system and browser with versions, and the analytics script version. Vercel tells visits apart with a hash made from the incoming request, rather than a cookie, and discards it after 24 hours. We see only aggregate counts. We never load it on admin pages. If you choose "No thanks", close the banner with Escape, or make no choice, it isn&apos;t loaded at all. See <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel&apos;s Web Analytics privacy notes</a>.
+                <strong>Optional analytics (off unless you opt in).</strong> If you choose "Allow analytics" in our cookie banner, we load Vercel Web Analytics to count page visits. It doesn't use cookies. According to Vercel&apos;s documentation, each page view can include: the time, the page address and route (we remove search terms and other query text before it is sent), the referring page, an approximate location (country, region, city) derived from your connection, your device type, operating system and browser with versions, and the analytics script version. Vercel tells visits apart with a hash made from the incoming request, rather than a cookie, and discards it after 24 hours. We see only aggregate counts. We never load it on admin pages. If you choose "No thanks", close the banner with Escape, or make no choice, it isn&apos;t loaded at all. If your browser sends a Global Privacy Control signal, we treat it as &quot;No thanks&quot; for analytics. See <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel&apos;s Web Analytics privacy notes</a>.
               </p>
               <p className="mt-4">
                 <strong>Changing your choice:</strong> you can change it anytime with the button below (also under &quot;Cookie settings&quot; in the footer). If you switch analytics off, we stop sending page views right away. Clearing this site&apos;s data in your browser also resets your choice.
@@ -157,7 +163,7 @@ export default function PrivacyPage() {
               <ul className="space-y-2">
                 <li><strong>Tool submissions:</strong> To review and potentially list your submitted tool</li>
                 <li><strong>Sponsor intake:</strong> To evaluate sponsorship requests, communicate with sponsors, and fulfill sponsorship placements</li>
-                <li><strong>Waitlist emails:</strong> To send updates about new tools and site improvements (you can unsubscribe anytime)</li>
+                <li><strong>Newsletter:</strong> To send the newsletter you signed up for (unsubscribe anytime)</li>
                 <li><strong>Click logs:</strong> To track affiliate link performance, prevent fraud, and earn commissions from tool makers</li>
                 <li><strong>Placement metrics:</strong> To provide sponsors with end-of-term reports showing impression and click counts</li>
               </ul>

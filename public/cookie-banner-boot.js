@@ -2,7 +2,7 @@
 // Keep both in sync with lib/cookie-consent.ts.
 try {
   var c = localStorage.getItem('cookieConsent');
-  if (c === 'accepted' || c === 'declined') {
+  if (c === 'accepted' || c === 'declined' || navigator.globalPrivacyControl === true) {
     document.documentElement.classList.add('cookie-consent-given');
   } else {
     document.documentElement.classList.add('has-cookie-banner');

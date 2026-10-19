@@ -7,6 +7,13 @@ import {
   normalizeCategorySlug,
   type CategorySort,
 } from '@/lib/taxonomy';
+import {
+  computeFacets,
+  facetsFromRows,
+  platformGroup,
+  type SearchFacets,
+  type ToolSort,
+} from '@/lib/search-facets';
 
 export const TOOL_LIST_COLUMNS = [
   'id',
@@ -32,7 +39,9 @@ export type CatalogSearchOptions = {
   category?: string | null;
   price?: string | null;
   freeOnly?: boolean;
-  sort?: CategorySort;
+  /** Platform facet group (see lib/search-facets.ts). */
+  platform?: string | null;
+  sort?: CategorySort | ToolSort;
   limit?: number;
   offset?: number;
 };
@@ -100,6 +109,17 @@ function sortTools(tools: any[], sort: CategorySort | undefined) {
   return copy;
 }
 
+function sortCatalog(tools: any[], sort: CatalogSearchOptions['sort'], hasQuery: boolean) {
+  const copy = [...tools];
+  const byName = (a: any, b: any) => (a.name || '').localeCompare(b.name || '');
+  const time = (v: unknown) => (v ? new Date(String(v)).getTime() : 0);
+  if (sort === 'name') return copy.sort(byName);
+  if (sort === 'newest') return copy.sort((a, b) => time(b.created_at) - time(a.created_at) || byName(a, b));
+  if (sort === 'verified') return copy.sort((a, b) => time(b.last_verified_at) - time(a.last_verified_at) || byName(a, b));
+  if (sort === 'free') return copy.sort((a, b) => Number(Boolean(b.has_free_tier)) - Number(Boolean(a.has_free_tier)));
+  return hasQuery ? copy : sortTools(copy, 'relevance');
+}
+
 async function searchPublishedInMemory(options: CatalogSearchOptions) {
   const { data } = await supabase
     .from('tools')
@@ -115,8 +135,9 @@ async function searchPublishedInMemory(options: CatalogSearchOptions) {
     category: options.category || undefined,
     price: options.price || undefined,
     freeOnly: options.freeOnly,
-  });
-  const sorted = options.q ? matched : sortTools(matched, options.sort);
+  }).filter((tool: any) => !options.platform
+    || (tool.platforms || []).some((p: string) => platformGroup(p) === options.platform));
+  const sorted = sortCatalog(matched, options.sort, Boolean(options.q));
   const offset = Math.max(options.offset ?? 0, 0);
   const limit = Math.min(Math.max(options.limit ?? CATALOG_PAGE_SIZE, 1), 50);
 
@@ -136,13 +157,12 @@ export async function searchPublishedCatalog(options: CatalogSearchOptions = {})
   const limit = Math.min(Math.max(options.limit ?? CATALOG_PAGE_SIZE, 1), 50);
   const offset = Math.max(options.offset ?? 0, 0);
   const sort = options.sort || 'relevance';
+  const platform = options.platform && options.platform !== 'all' ? options.platform : null;
 
-  if (!q && supabaseConfigured()) {
-    const listed = await listPublishedTools({ category, price, freeOnly, sort, limit, offset });
-    if (listed) return listed;
-  }
-
-  if (q && supabaseConfigured()) {
+  if (supabaseConfigured()) {
+    // One code path for browsing and searching: search_tools() (migration 028) ranks, filters,
+    // sorts and paginates. Optional args are only sent when used, so older function versions
+    // keep working for plain searches.
     const { data, error } = await supabase.rpc('search_tools', {
       q,
       category,
@@ -151,6 +171,8 @@ export async function searchPublishedCatalog(options: CatalogSearchOptions = {})
       limit,
       offset,
       ...(options.exact ? { exact: true } : {}),
+      ...(platform ? { platform } : {}),
+      ...(sort !== 'relevance' ? { sort } : {}),
     });
 
     if (!error && Array.isArray(data)) {
@@ -163,9 +185,13 @@ export async function searchPublishedCatalog(options: CatalogSearchOptions = {})
         correctedQuery: (typeof data[0]?.corrected_query === 'string' && data[0].corrected_query) || null,
       };
     }
+    if (!q && !platform && (sort === 'relevance' || sort === 'free' || sort === 'newest')) {
+      const listed = await listPublishedTools({ category, price, freeOnly, sort, limit, offset });
+      if (listed) return listed;
+    }
   }
 
-  return searchPublishedInMemory({ q, category, price, freeOnly, sort, limit, offset });
+  return searchPublishedInMemory({ q, category, price, freeOnly, platform, sort, limit, offset });
 }
 
 export async function listPublishedTools(options: {
@@ -245,4 +271,34 @@ export async function getCategoryBySlug(slug: string) {
 
   if (data) return data;
   return taxonomyFallbackCategories().find((category) => category.slug === normalized) || null;
+}
+
+/** Live facet counts for the current query and filters (search_tool_facets, migration 028). */
+export async function getSearchFacets(options: CatalogSearchOptions = {}): Promise<SearchFacets | null> {
+  const q = sanitizeSearchQuery(options.q);
+  const category = normalizeCategorySlug(options.category);
+  const price = options.price && options.price !== 'all' ? options.price : null;
+  const platform = options.platform && options.platform !== 'all' ? options.platform : null;
+  const freeOnly = Boolean(options.freeOnly);
+
+  if (supabaseConfigured()) {
+    const { data, error } = await supabase.rpc('search_tool_facets', {
+      q,
+      category,
+      price,
+      free_only: freeOnly,
+      platform,
+      exact: Boolean(options.exact),
+    });
+    if (!error && Array.isArray(data)) return facetsFromRows(data);
+    if (error) return null; // migration 028 not applied yet: hide counts rather than show wrong ones
+  }
+
+  const pool = fallbackTools.filter((tool) => tool.status === 'published').map(applyFallbackTaxonomy);
+  const matched = q ? searchTools(pool, { q }) : pool;
+  return computeFacets(
+    matched as any[],
+    { category: category || 'all', price: price || 'all', free: freeOnly, platform: platform || 'all' },
+    taxonomyFallbackCategories().map((c: any) => ({ slug: c.slug, name: c.name })),
+  );
 }

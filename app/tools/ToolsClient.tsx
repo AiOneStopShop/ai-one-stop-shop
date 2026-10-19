@@ -1,21 +1,32 @@
 'use client';
 
-import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, useTransition, type FormEvent, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { X } from 'lucide-react';
+import { SlidersHorizontal, X } from 'lucide-react';
 import { CompareSelectedButton } from './CompareCheckbox';
 import { ToolSearchForm } from '@/components/ToolSearchForm';
 import { SEARCH_DEBOUNCE_MS } from '@/lib/search-tools';
+import { TOOL_SORTS, TOOL_SORT_LABELS, type SearchFacets } from '@/lib/search-facets';
+import { FacetPanel, type FacetState } from './FacetPanel';
 
 type Category = any;
 
-function buildToolsHref(query: string, category: string, price: string, free: boolean, sort = 'relevance', exact = false): string {
+function buildToolsHref(
+  query: string,
+  category: string,
+  price: string,
+  free: boolean,
+  sort = 'relevance',
+  exact = false,
+  platform = 'all',
+): string {
   const params = new URLSearchParams();
   if (query) params.set('q', query);
   if (query && exact) params.set('exact', '1');
   if (category !== 'all') params.set('category', category);
   if (price !== 'all') params.set('price', price);
   if (free) params.set('free', '1');
+  if (platform !== 'all') params.set('platform', platform);
   if (sort !== 'relevance') params.set('sort', sort);
   const next = params.toString();
   return next ? `/tools?${next}` : '/tools';
@@ -31,6 +42,8 @@ export function ToolsClient({
   publishedCount,
   initialSort = 'relevance',
   initialExact = false,
+  initialPlatform = 'all',
+  facets = null,
   children,
 }: {
   categories: Category[];
@@ -42,6 +55,8 @@ export function ToolsClient({
   publishedCount: number;
   initialSort?: string;
   initialExact?: boolean;
+  initialPlatform?: string;
+  facets?: SearchFacets | null;
   children: ReactNode;
 }) {
   const router = useRouter();
@@ -54,6 +69,9 @@ export function ToolsClient({
   const [priceFilter, setPriceFilter] = useState(initialPrice);
   const [hasFreeTier, setHasFreeTier] = useState(initialFree);
   const [sort, setSort] = useState(initialSort);
+  const [platform, setPlatform] = useState(initialPlatform);
+  const [isPending, startTransition] = useTransition();
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [announcedCount, setAnnouncedCount] = useState('');
 
   useEffect(() => {
@@ -63,7 +81,8 @@ export function ToolsClient({
     setPriceFilter(initialPrice);
     setHasFreeTier(initialFree);
     setSort(initialSort);
-  }, [initialQuery, initialCategory, initialPrice, initialFree, initialSort]);
+    setPlatform(initialPlatform);
+  }, [initialQuery, initialCategory, initialPrice, initialFree, initialSort, initialPlatform]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -74,7 +93,7 @@ export function ToolsClient({
 
   useEffect(() => {
     // Keep ?exact=1 ("Search instead for ...") only while the query is unchanged.
-    const next = buildToolsHref(searchQuery, selectedCategory, priceFilter, hasFreeTier, sort, initialExact && searchQuery === initialQuery);
+    const next = buildToolsHref(searchQuery, selectedCategory, priceFilter, hasFreeTier, sort, initialExact && searchQuery === initialQuery, platform);
     const current = `${pathname}${window.location.search}`;
     if (next === current) {
       if (historyMode.current === 'push') {
@@ -86,12 +105,15 @@ export function ToolsClient({
     const leavingUnfilteredTools = current === '/tools' && next !== '/tools';
     const mode = leavingUnfilteredTools ? 'push' : historyMode.current;
     historyMode.current = 'replace';
-    if (mode === 'push') {
-      router.push(next, { scroll: false });
-    } else {
-      router.replace(next, { scroll: false });
-    }
-  }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, sort, pathname, router, initialExact, initialQuery]);
+    // Soft navigation: the server re-renders results and facet counts without a full reload.
+    startTransition(() => {
+      if (mode === 'push') {
+        router.push(next, { scroll: false });
+      } else {
+        router.replace(next, { scroll: false });
+      }
+    });
+  }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, sort, platform, pathname, router, initialExact, initialQuery]);
 
   // Privacy-safe analytics: once a query has settled, send only its text and result count.
   const loggedQueries = useRef(new Set<string>());
@@ -114,7 +136,8 @@ export function ToolsClient({
     return () => window.clearTimeout(timer);
   }, [searchQuery, resultCount]);
 
-  const hasActiveFilters = Boolean(searchQuery) || selectedCategory !== 'all' || priceFilter !== 'all' || hasFreeTier;
+  const activeFilterCount = [selectedCategory !== 'all', priceFilter !== 'all', hasFreeTier, platform !== 'all'].filter(Boolean).length;
+  const hasActiveFilters = Boolean(searchQuery) || activeFilterCount > 0;
   const resultText = resultCount === 0
     ? 'No tools found matching your filters'
     : `Showing ${resultCount} ${resultCount === 1 ? 'tool' : 'tools'}${hasActiveFilters ? ` (filtered from ${publishedCount})` : ''}`;
@@ -133,14 +156,25 @@ export function ToolsClient({
     setSelectedCategory('all');
     setPriceFilter('all');
     setHasFreeTier(false);
+    setPlatform('all');
     setSort('relevance');
   };
+
+  // Facet changes push a history entry so Back undoes them one at a time.
+  const applyFacets = (next: Partial<FacetState>) => {
+    historyMode.current = 'push';
+    if (next.category !== undefined) setSelectedCategory(next.category);
+    if (next.price !== undefined) setPriceFilter(next.price);
+    if (next.free !== undefined) setHasFreeTier(next.free);
+    if (next.platform !== undefined) setPlatform(next.platform);
+  };
+  const facetState: FacetState = { category: selectedCategory, price: priceFilter, free: hasFreeTier, platform };
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const submitted = new FormData(event.currentTarget).get('q');
     const query = typeof submitted === 'string' ? submitted.trim() : '';
-    const next = buildToolsHref(query, selectedCategory, priceFilter, hasFreeTier, sort);
+    const next = buildToolsHref(query, selectedCategory, priceFilter, hasFreeTier, sort, false, platform);
     const current = `${pathname}${typeof window !== 'undefined' ? window.location.search : ''}`;
     if (next === current) {
       window.history.pushState(window.history.state ?? {}, '', current);
@@ -168,72 +202,34 @@ export function ToolsClient({
             <input type="hidden" name="price" value={priceFilter} />
           ) : null}
           {hasFreeTier ? <input type="hidden" name="free" value="1" /> : null}
+          {platform !== 'all' ? <input type="hidden" name="platform" value={platform} /> : null}
         </ToolSearchForm>
 
-        <div className="flex flex-wrap gap-4 items-end">
-          <div>
-            <label htmlFor="category-filter" className="block text-sm font-medium text-ink mb-2">
-              Category
-            </label>
-            <select
-              id="category-filter"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 border border-soft rounded-lg focus-ring bg-white min-h-11"
-            >
-              <option value="all">All categories</option>
-              {categories.map((cat: any) => (
-                <option key={cat.id} value={cat.slug}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
+        <div className="flex flex-wrap items-end gap-3">
+          <button
+            type="button"
+            className="btn-secondary inline-flex items-center gap-2 lg:hidden min-h-11"
+            aria-haspopup="dialog"
+            onClick={() => dialogRef.current?.showModal()}
+          >
+            <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+            Filters{activeFilterCount ? ` (${activeFilterCount})` : ''}
+          </button>
           <div>
             <label htmlFor="sort-filter" className="block text-sm font-medium text-ink mb-2">
-              Sort
+              Sort by
             </label>
             <select
               id="sort-filter"
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
+              onChange={(e) => { historyMode.current = 'push'; setSort(e.target.value); }}
               className="px-4 py-2 border border-soft rounded-lg focus-ring bg-white min-h-11"
             >
-              <option value="relevance">Relevance</option>
-              <option value="free">Free first</option>
-              <option value="newest">Newest</option>
+              {TOOL_SORTS.map((value) => (
+                <option key={value} value={value}>{TOOL_SORT_LABELS[value]}</option>
+              ))}
             </select>
           </div>
-
-          <div>
-            <label htmlFor="price-filter" className="block text-sm font-medium text-ink mb-2">
-              Pricing
-            </label>
-            <select
-              id="price-filter"
-              value={priceFilter}
-              onChange={(e) => setPriceFilter(e.target.value)}
-              className="px-4 py-2 border border-soft rounded-lg focus-ring bg-white min-h-11"
-            >
-              <option value="all">All pricing</option>
-              <option value="free">Free</option>
-              <option value="subscription">Subscription</option>
-              <option value="one-time">One-time purchase</option>
-              <option value="pay-per-use">Pay per use</option>
-            </select>
-          </div>
-
-          <label className="flex items-center gap-2 px-4 py-2 border border-soft rounded-lg cursor-pointer hover:bg-cream transition-colors min-h-11">
-            <input
-              type="checkbox"
-              checked={hasFreeTier}
-              onChange={(e) => setHasFreeTier(e.target.checked)}
-              className="w-6 h-6 text-green focus-ring rounded border-soft"
-            />
-            <span className="text-sm">Has free tier</span>
-          </label>
-
           {hasActiveFilters && (
             <button
               type="button"
@@ -259,7 +255,39 @@ export function ToolsClient({
         </div>
       </div>
 
-      {children}
+      <dialog
+        ref={dialogRef}
+        aria-labelledby="filters-title"
+        className="m-0 ml-auto h-full max-h-full w-full max-w-sm overflow-y-auto bg-white p-0 backdrop:bg-black/40"
+        onClick={(event) => { if (event.target === dialogRef.current) dialogRef.current?.close(); }}
+      >
+        <div className="flex items-center justify-between border-b border-line px-4 py-3">
+          <h2 id="filters-title" className="heading-3 m-0">Filters</h2>
+          <button type="button" className="rounded p-2 focus-ring" aria-label="Close filters" onClick={() => dialogRef.current?.close()}>
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+        <div className="px-4 py-4">
+          <FacetPanel idPrefix="m" facets={facets} categories={categories} state={facetState} onChange={applyFacets} />
+        </div>
+        <div className="sticky bottom-0 flex gap-2 border-t border-line bg-white px-4 py-3">
+          {activeFilterCount ? (
+            <button type="button" className="btn-secondary flex-1" onClick={clearFilters}>Clear</button>
+          ) : null}
+          <button type="button" className="btn-primary flex-1" onClick={() => dialogRef.current?.close()}>
+            Show {facets ? facets.total : resultCount} {(facets ? facets.total : resultCount) === 1 ? 'tool' : 'tools'}
+          </button>
+        </div>
+      </dialog>
+
+      <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8">
+        <aside aria-label="Filters" className="hidden lg:block">
+          <FacetPanel idPrefix="d" facets={facets} categories={categories} state={facetState} onChange={applyFacets} />
+        </aside>
+        <div aria-busy={isPending} className={isPending ? 'opacity-60 transition-opacity' : 'transition-opacity'}>
+          {children}
+        </div>
+      </div>
     </>
   );
 }

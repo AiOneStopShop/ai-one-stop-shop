@@ -58,10 +58,11 @@ export async function createSearchDb(migrations: string[]): Promise<PGlite> {
   for (const t of fixture.tools) {
     await db.query(
       `INSERT INTO public.tools (id, slug, name, tagline, description, pricing_model, has_free_tier, platforms, features, tags,
-        editorial_score, search_categories, search_features, is_sponsored)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`,
+        editorial_score, search_categories, search_features, is_sponsored, created_at, last_verified_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,COALESCE($15::timestamptz, now()),$16::timestamptz)`,
       [t.id, t.slug, t.name, t.tagline, t.description, t.pricing_model, t.has_free_tier, t.platforms, t.features, t.tags,
-        t.editorial_score, t.search_categories ?? '', t.search_features ?? '', t.is_sponsored ?? false],
+        t.editorial_score, t.search_categories ?? '', t.search_features ?? '', t.is_sponsored ?? false,
+        t.created_at ?? null, t.last_verified_at ?? null],
     );
   }
   for (const tc of fixture.tool_categories) {
@@ -83,17 +84,45 @@ export async function createSearchDb(migrations: string[]): Promise<PGlite> {
 
 export type SearchRow = { slug: string; name: string; search_rank: number; result_total: number; corrected_query?: string | null };
 
-export async function runSearch(db: PGlite, q: string, opts: { exact?: boolean; limit?: number; freeOnly?: boolean } = {}): Promise<SearchRow[]> {
-  const hasExact = (await db.query<{ n: number }>(
-    "SELECT pronargs AS n FROM pg_proc WHERE proname = 'search_tools' ORDER BY pronargs DESC LIMIT 1",
-  )).rows[0]?.n === 7;
-  const sql = hasExact
-    ? 'SELECT * FROM public.search_tools(q => $1, free_only => $2, "limit" => $3, exact => $4)'
-    : 'SELECT * FROM public.search_tools(q => $1, free_only => $2, "limit" => $3)';
-  const params = hasExact ? [q, opts.freeOnly ?? false, opts.limit ?? 50, opts.exact ?? false] : [q, opts.freeOnly ?? false, opts.limit ?? 50];
-  // Run as anon, like the website's Supabase client.
+export type SearchOptions = {
+  exact?: boolean;
+  limit?: number;
+  offset?: number;
+  freeOnly?: boolean;
+  category?: string;
+  price?: string;
+  platform?: string;
+  sort?: string;
+};
+
+async function asAnon<T>(db: PGlite, sql: string, params: unknown[]): Promise<T[]> {
+  // Run as anon, like the website's Supabase client, with production column grants.
   return db.transaction(async (tx) => {
     await tx.exec('SET LOCAL ROLE anon');
-    return (await tx.query<SearchRow>(sql, params)).rows;
+    return (await tx.query<T>(sql, params)).rows;
   });
+}
+
+export async function runSearch(db: PGlite, q: string, opts: SearchOptions = {}): Promise<SearchRow[]> {
+  const nargs = (await db.query<{ n: number }>(
+    "SELECT max(pronargs) AS n FROM pg_proc WHERE proname = 'search_tools'",
+  )).rows[0]?.n ?? 6;
+  const args: string[] = ['q => $1', 'free_only => $2', '"limit" => $3', 'category => $4', 'price => $5', '"offset" => $6'];
+  const params: unknown[] = [q, opts.freeOnly ?? false, opts.limit ?? 50, opts.category ?? null, opts.price ?? null, opts.offset ?? 0];
+  if (nargs >= 7) { args.push(`exact => $${params.length + 1}`); params.push(opts.exact ?? false); }
+  if (nargs >= 9) {
+    args.push(`platform => $${params.length + 1}`); params.push(opts.platform ?? null);
+    args.push(`sort => $${params.length + 1}`); params.push(opts.sort ?? 'relevance');
+  }
+  return asAnon<SearchRow>(db, `SELECT * FROM public.search_tools(${args.join(', ')})`, params);
+}
+
+export type FacetRow = { facet: string; value: string; label: string; tool_count: number };
+
+export async function runFacets(db: PGlite, q: string, opts: SearchOptions = {}): Promise<FacetRow[]> {
+  return asAnon<FacetRow>(
+    db,
+    'SELECT * FROM public.search_tool_facets(q => $1, category => $2, price => $3, free_only => $4, platform => $5, exact => $6)',
+    [q, opts.category ?? null, opts.price ?? null, opts.freeOnly ?? false, opts.platform ?? null, opts.exact ?? false],
+  );
 }

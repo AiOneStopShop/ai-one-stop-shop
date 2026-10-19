@@ -13,7 +13,7 @@ test.describe.configure({ mode: 'serial' });
 test.setTimeout(120_000);
 
 test.beforeAll(async () => {
-  db = await createSearchDb(['026_search_phase1.sql', '027_search_phase2_ranking.sql']);
+  db = await createSearchDb(['026_search_phase1.sql', '027_search_phase2_ranking.sql', '028_search_phase3_facets.sql']);
 });
 
 test.afterAll(async () => {

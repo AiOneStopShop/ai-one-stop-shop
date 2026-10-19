@@ -6,10 +6,11 @@ import { PaidVisitLink } from '@/components/PaidVisitLink';
 import type { AffiliateGoMap } from '@/lib/affiliate-links';
 import { toolHasAffiliate } from '@/lib/affiliate-links';
 
-function buildToolsHref(query: string, category: string, price: string, free: boolean, exact = false): string {
+function buildToolsHref(query: string, category: string, price: string, free: boolean, exact = false, platform = 'all'): string {
   const params = new URLSearchParams();
   if (query) params.set('q', query);
   if (exact) params.set('exact', '1');
+  if (platform !== 'all') params.set('platform', platform);
   if (category !== 'all') params.set('category', category);
   if (price !== 'all') params.set('price', price);
   if (free) params.set('free', '1');
@@ -25,6 +26,8 @@ export function ToolsResults({
   hasFreeTier,
   didYouMean,
   correctedQuery = null,
+  platform = 'all',
+  activeFilterLabels = { category: '', price: '', platform: '' },
   popularCategories,
   affiliates = {},
 }: {
@@ -35,6 +38,8 @@ export function ToolsResults({
   hasFreeTier: boolean;
   didYouMean: { name: string } | null;
   correctedQuery?: string | null;
+  platform?: string;
+  activeFilterLabels?: { category: string; price: string; platform: string };
   popularCategories: Array<{ id: string; slug: string; name: string }>;
   affiliates?: AffiliateGoMap;
 }) {
@@ -44,7 +49,7 @@ export function ToolsResults({
       Showing results for <strong className="text-ink">{correctedQuery}</strong>.{' '}
       Search instead for{' '}
       <Link
-        href={buildToolsHref(query, selectedCategory, priceFilter, hasFreeTier, true)}
+        href={buildToolsHref(query, selectedCategory, priceFilter, hasFreeTier, true, platform)}
         className="text-green underline focus-ring rounded"
       >
         {query}
@@ -120,6 +125,34 @@ export function ToolsResults({
     );
   }
 
+  const removals = [
+    selectedCategory !== 'all' && {
+      key: 'category',
+      label: `Category: ${activeFilterLabels.category || selectedCategory}`,
+      href: buildToolsHref(query, 'all', priceFilter, hasFreeTier, false, platform),
+    },
+    priceFilter !== 'all' && {
+      key: 'price',
+      label: `Pricing: ${activeFilterLabels.price || priceFilter}`,
+      href: buildToolsHref(query, selectedCategory, 'all', hasFreeTier, false, platform),
+    },
+    hasFreeTier && {
+      key: 'free',
+      label: 'Has a free tier',
+      href: buildToolsHref(query, selectedCategory, priceFilter, false, false, platform),
+    },
+    platform !== 'all' && {
+      key: 'platform',
+      label: `Platform: ${activeFilterLabels.platform || platform}`,
+      href: buildToolsHref(query, selectedCategory, priceFilter, hasFreeTier, false, 'all'),
+    },
+    query && (selectedCategory !== 'all' || priceFilter !== 'all' || hasFreeTier || platform !== 'all') && {
+      key: 'all-filters',
+      label: `All filters (keep “${query}”)`,
+      href: buildToolsHref(query, 'all', 'all', false),
+    },
+  ].filter(Boolean) as Array<{ key: string; label: string; href: string }>;
+
   return (
     <div className="text-center py-12 max-w-xl mx-auto">
       <p className="text-ink text-lg font-medium mb-2">
@@ -129,7 +162,7 @@ export function ToolsResults({
         <p className="text-soft mb-6">
           Did you mean{' '}
           <Link
-            href={buildToolsHref(didYouMean.name, selectedCategory, priceFilter, hasFreeTier)}
+            href={buildToolsHref(didYouMean.name, selectedCategory, priceFilter, hasFreeTier, false, platform)}
             className="text-green hover:underline focus-ring rounded"
           >
             {didYouMean.name}
@@ -141,6 +174,21 @@ export function ToolsResults({
           Try a different word, or browse a popular category.
         </p>
       )}
+
+      {removals.length > 0 ? (
+        <div className="mb-8">
+          <p className="text-sm font-medium text-ink mb-3">Try removing a filter</p>
+          <ul className="flex flex-wrap justify-center gap-2">
+            {removals.map((removal) => (
+              <li key={removal.key}>
+                <Link href={removal.href} className="btn-secondary inline-flex items-center gap-1 min-h-11">
+                  <span aria-hidden="true">×</span> {removal.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       {popularCategories.length > 0 && (
         <div className="mb-8">

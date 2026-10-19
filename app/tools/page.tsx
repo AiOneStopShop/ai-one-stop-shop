@@ -4,9 +4,10 @@ import { isAffiliateLive } from '@/lib/site-config';
 import { CatalogPager } from '@/components/CatalogPager';
 import { generateItemListSchema, generateBreadcrumbSchema, safeJsonLd } from '@/lib/json-ld';
 import { getActiveAffiliateGoSlugs } from '@/lib/affiliate-links';
-import { getCategories, getPublishedSuggestionPool, searchPublishedCatalog } from '@/lib/search-catalog';
+import { getCategories, getPublishedSuggestionPool, getSearchFacets, searchPublishedCatalog } from '@/lib/search-catalog';
+import { parsePlatform, parseToolSort, PLATFORM_LABELS, PRICING_LABELS } from '@/lib/search-facets';
 import { sanitizeSearchQuery, suggestDidYouMean } from '@/lib/search-tools';
-import { CATALOG_PAGE_SIZE, parseCategorySort, parsePage } from '@/lib/taxonomy';
+import { CATALOG_PAGE_SIZE, parsePage } from '@/lib/taxonomy';
 import { ToolsClient } from './ToolsClient';
 import { ToolsResults } from './ToolsResults';
 import { StickyCompareButton } from './CompareCheckbox';
@@ -18,7 +19,7 @@ export const metadata = {
 };
 
 export default async function ToolsPage(props: {
-  searchParams: Promise<{ q?: string; category?: string; price?: string; free?: string; page?: string; sort?: string; exact?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; price?: string; free?: string; page?: string; sort?: string; exact?: string; platform?: string }>;
 }) {
   const searchParams = await props.searchParams;
   const query = sanitizeSearchQuery(searchParams.q);
@@ -26,13 +27,15 @@ export default async function ToolsPage(props: {
   const price = searchParams.price || 'all';
   const free = searchParams.free === '1';
   const page = parsePage(searchParams.page);
-  const sort = parseCategorySort(searchParams.sort);
+  const sort = parseToolSort(searchParams.sort);
+  const platform = parsePlatform(searchParams.platform);
   const exact = searchParams.exact === '1';
 
-  const [catalog, categories, publishedPool, affiliates] = await Promise.all([
+  const [catalog, categories, publishedPool, affiliates, facets] = await Promise.all([
     searchPublishedCatalog({
       q: query,
       exact,
+      platform,
       category,
       price,
       freeOnly: free,
@@ -43,6 +46,7 @@ export default async function ToolsPage(props: {
     getCategories(),
     getPublishedSuggestionPool(),
     getActiveAffiliateGoSlugs(),
+    getSearchFacets({ q: query, exact, category, price, freeOnly: free, platform }),
   ]);
 
   const suggested = catalog.tools.length === 0 && query
@@ -111,6 +115,8 @@ export default async function ToolsPage(props: {
               publishedCount={publishedPool.length}
               initialSort={sort}
               initialExact={exact}
+              initialPlatform={platform}
+              facets={facets}
             >
               <ToolsResults
                 tools={catalog.tools}
@@ -120,6 +126,12 @@ export default async function ToolsPage(props: {
                 hasFreeTier={free}
                 didYouMean={didYouMean}
                 correctedQuery={correctedQuery}
+                platform={platform}
+                activeFilterLabels={{
+                  category: categories.find((c: any) => c.slug === category)?.name ?? category,
+                  price: PRICING_LABELS[price] ?? price,
+                  platform: platform === 'all' ? '' : PLATFORM_LABELS[platform],
+                }}
                 popularCategories={popularCategories}
                 affiliates={affiliates}
               />
@@ -135,6 +147,7 @@ export default async function ToolsPage(props: {
                 if (category !== 'all') params.set('category', category);
                 if (price !== 'all') params.set('price', price);
                 if (free) params.set('free', '1');
+                if (platform !== 'all') params.set('platform', platform);
                 if (sort !== 'relevance') params.set('sort', sort);
                 if (nextPage > 1) params.set('page', String(nextPage));
                 const qs = params.toString();

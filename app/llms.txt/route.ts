@@ -3,13 +3,22 @@ import { PRICE_CHECKED_ISO, PRICE_CHECKED_LABEL } from '@/lib/site-dates';
 import { getOperatorLegalName, isAffiliateLive } from '@/lib/site-config';
 
 export async function GET() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aionestop.shop';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.aionestop.shop';
 
   // Get tool count
   const { count } = await supabase
     .from('tools')
     .select('id', { count: 'exact', head: true })
     .eq('status', 'published');
+
+  // Most recent catalog change, so "Last updated" reflects real data.
+  const { data: latest } = await supabase
+    .from('tools')
+    .select('updated_at')
+    .eq('status', 'published')
+    .order('updated_at', { ascending: false })
+    .limit(1);
+  const lastUpdated = (latest?.[0]?.updated_at || PRICE_CHECKED_ISO).slice(0, 10);
 
   const content = `# AI One Stop Shop
 
@@ -33,6 +42,9 @@ ${isAffiliateLive()
 - ${count || 0} curated AI tools across chat, writing, image, video, audio, music, coding, agents, research, email, slides, design, marketing, productivity, and local models
 - Pricing information (price checked ${PRICE_CHECKED_LABEL})
 - Editorial picks and explanations of who each tool is best for
+- Browse by category ("best AI tools for writing, coding, video" and more): ${siteUrl}/categories
+- AI Tool Finder (answer a few questions, get suggestions): ${siteUrl}/finder
+- Compare tools side by side: ${siteUrl}/compare
 - Personas with live starter toolkits: ${siteUrl}/personas
 - Budget calculator (toolkit builder): ${siteUrl}/budget
 - No fake ratings or review counts
@@ -41,7 +53,6 @@ ${isAffiliateLive()
 
 - Full catalog: ${siteUrl}/api/v1/tools
 - Categories: ${siteUrl}/api/v1/categories
-- OpenAPI spec: ${siteUrl}/openapi.json (planned)
 
 GET /api/v1/tools returns public fields only: name, slug, tagline, description, category, pricing_model, has_free_tier, pricing_summary, website_url, logo_url, go_url, paid_link, disclosure, and updated_at. Search with ?q= (normalized lowercase). Responses are cached for 5 minutes (stale-while-revalidate 10 minutes).
 
@@ -57,7 +68,7 @@ GET /api/v1/tools returns public fields only: name, slug, tagline, description, 
 
 ## Last updated
 
-${PRICE_CHECKED_ISO}
+Catalog: ${lastUpdated}. Prices last checked: ${PRICE_CHECKED_ISO}.
 `;
 
   return new Response(content, {

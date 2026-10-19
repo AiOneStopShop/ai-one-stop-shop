@@ -8,6 +8,7 @@ import { isToolSponsored } from '@/lib/sponsor-placements';
 import { SponsoredLabel } from '@/components/SponsoredLabel';
 import { ArrowLeft, Check, ExternalLink } from 'lucide-react';
 import { OrangeSwoosh } from '@/components/OrangeSwoosh';
+import { NewsletterSignup } from '@/components/NewsletterSignup';
 
 async function getTool(slug: string) {
   const { data } = await supabase
@@ -278,6 +279,10 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                   )}
                 </div>
               </div>
+            </div>
+
+            <div className="mt-12">
+              <NewsletterSignup variant="compact" source="tool_page" />
             </div>
 
             {/* Back to tools */}

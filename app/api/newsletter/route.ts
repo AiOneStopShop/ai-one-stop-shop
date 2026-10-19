@@ -6,7 +6,12 @@ import { getClientKey } from '@/lib/client-ip';
 
 const schema = z.object({
   email: z.string().trim().email().max(254),
+  // The client runs the age check before sending anything. The birth year itself is never
+  // sent or stored; the client only confirms the check passed and consent was given.
+  age_ok: z.literal(true),
+  consent: z.literal(true),
   website: z.string().optional(), // honeypot
+  source: z.enum(['newsletter_page', 'home', 'tool_page', 'tools_list']).optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -36,7 +41,7 @@ export async function POST(request: NextRequest) {
     const supabase = getServiceSupabase();
     const { error } = await supabase
       .from('newsletter_signups')
-      .insert({ email: parsed.data.email.toLowerCase(), source: 'newsletter_page' });
+      .insert({ email: parsed.data.email.toLowerCase(), source: parsed.data.source ?? 'newsletter_page' });
 
     // 23505 = already on the list. Same answer, so the form can't be used to test addresses.
     if (error && error.code !== '23505') {

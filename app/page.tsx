@@ -9,6 +9,7 @@ import { OrangeSwoosh } from '@/components/OrangeSwoosh';
 import { HomeSponsoredRow } from '@/components/HomeSponsoredRow';
 import { isAffiliateLive } from '@/lib/site-config';
 import { ToolSearchForm } from '@/components/ToolSearchForm';
+import { NewsletterSignup } from '@/components/NewsletterSignup';
 
 // Revalidate every 60 seconds so sponsored placements appear/disappear on time
 export const revalidate = 60;
@@ -173,6 +174,13 @@ export default async function HomePage() {
             <p className="text-soft mb-4">Search by tool name, a job like &ldquo;writing&rdquo;, or a category.</p>
             <ToolSearchForm id="home-search" shortcut={false} />
           </div>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="py-12 md:py-16">
+        <div className="container-max">
+          <NewsletterSignup variant="full" source="home" />
         </div>
       </section>
 

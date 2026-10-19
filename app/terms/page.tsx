@@ -40,6 +40,13 @@ export default function TermsPage() {
               </div>
             )}
 
+            <div id="newsletter-eligibility">
+              <h2 className="heading-2 mb-4">Newsletter eligibility</h2>
+              <p>
+                <strong>Eligibility.</strong> You must be at least 16 years old to subscribe to the AI One Stop Shop newsletter. By subscribing, you confirm that you meet this age requirement. If we learn that a subscriber is under 16, we will remove them and delete their information.
+              </p>
+            </div>
+
             <div>
               <h2 className="heading-2 mb-4">What this site provides</h2>
               <p>

@@ -136,7 +136,7 @@ export default function PrivacyPage() {
                 We don't use advertising or tracking cookies, and visitors who browse aren't given cookies by us.
               </p>
               <p className="mt-4">
-                Your browser's local storage keeps three small things on your own device: the tools you add to your compare list, your last few searches, and your analytics choice from our cookie banner. You can clear them anytime in your browser settings.
+                Your browser's local storage keeps three small things on your own device: the tools you add to your compare list, your last few searches, and your analytics choice from our cookie banner. You can clear them anytime in your browser settings. If a newsletter signup can&apos;t go ahead, we also keep a short-lived note (a timestamp only, no email or age) for about 24 hours, in local storage or, if that isn&apos;t available, a first-party cookie named aios_ns_block. See <a href="#children" className="text-green hover:underline">Children</a>.
               </p>
               <p className="mt-4" id="analytics">
                 <strong>Optional analytics (off unless you opt in).</strong> If you choose "Allow analytics" in our cookie banner, we load Vercel Web Analytics to count page visits. It doesn't use cookies. According to Vercel&apos;s documentation, each page view can include: the time, the page address and route (we remove search terms and other query text before it is sent), the referring page, an approximate location (country, region, city) derived from your connection, your device type, operating system and browser with versions, and the analytics script version. Vercel tells visits apart with a hash made from the incoming request, rather than a cookie, and discards it after 24 hours. We see only aggregate counts. We never load it on admin pages. If you choose "No thanks", close the banner with Escape, or make no choice, it isn&apos;t loaded at all. If your browser sends a Global Privacy Control signal, we treat it as &quot;No thanks&quot; for analytics. See <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel&apos;s Web Analytics privacy notes</a>.
@@ -219,9 +219,18 @@ export default function PrivacyPage() {
             </div>
 
             <div>
-              <h2 className="heading-2 mb-4">Children under 13</h2>
+              <h2 className="heading-2 mb-4" id="children">Children</h2>
               <p>
-                This site is not intended for children under 13. We do not knowingly collect information from children under 13. If you believe we have collected information from a child under 13, please contact us immediately and we will delete it.
+                AI One Stop Shop is a general-audience website about AI tools and is not directed to children. Our newsletter is only for people <strong>16 and older</strong>. We ask for your birth year when you sign up so we can check this. If the year shows you are under 16, we do not save the email address you entered. We may store a small temporary note in your browser, which doesn&apos;t include your email or age, for about 24 hours so the signup form isn&apos;t shown again. We do not save your birth year. We only record that the age check was passed.
+              </p>
+              <p className="mt-4">
+                We do not knowingly collect personal information from children under 13, and we do not sell or share the personal information of anyone we know is under 16.
+              </p>
+              <p className="mt-4">
+                If you believe someone under 16 has signed up for our newsletter, please email <strong>aionestopshop25@gmail.com</strong>. We will delete their information from our email list and records, usually within 5 business days.
+              </p>
+              <p className="mt-4">
+                Operator: TrgovinaCo LLC d/b/a AI One Stop Shop, Washington, USA. Contact: aionestopshop25@gmail.com.
               </p>
             </div>
 

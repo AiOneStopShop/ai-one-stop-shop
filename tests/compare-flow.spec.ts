@@ -12,7 +12,7 @@ test.describe('Compare Flow', () => {
     });
 
     await page.addInitScript(() => {
-      localStorage.setItem('cookieConsent', 'accepted');
+      localStorage.setItem('cookieConsent', 'declined');
       localStorage.removeItem('compareList');
     });
   });
@@ -113,7 +113,7 @@ test.describe('Compare Flow', () => {
 });
 
 test.describe('Compare button vs cookie banner', () => {
-  test('sticky Compare sits above Got it at 768px while the banner is visible', async ({ page }) => {
+  test('sticky Compare sits above the cookie buttons at 768px while the banner is visible', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 800 });
     await page.addInitScript(() => {
       localStorage.removeItem('cookieConsent');
@@ -122,7 +122,7 @@ test.describe('Compare button vs cookie banner', () => {
 
     await page.goto('/tools', { waitUntil: 'domcontentloaded' });
 
-    const gotIt = page.getByRole('button', { name: 'Got it' });
+    const gotIt = page.getByRole('button', { name: 'Allow analytics' });
     await expect(gotIt).toBeVisible({ timeout: 10000 });
     await expect(page.locator('html')).toHaveClass(/has-cookie-banner/);
 
@@ -145,7 +145,7 @@ test.describe('Compare button vs cookie banner', () => {
       compareBox!.y + compareBox!.height <= gotItBox!.y ||
       gotItBox!.y + gotItBox!.height <= compareBox!.y
     );
-    expect(overlap, 'Compare button must not cover the cookie Got it button').toBe(false);
+    expect(overlap, 'Compare button must not cover the cookie banner buttons').toBe(false);
     expect(compareBox!.y + compareBox!.height).toBeLessThanOrEqual(gotItBox!.y);
   });
 });

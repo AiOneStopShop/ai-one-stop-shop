@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ContactEmail } from '@/components/ContactEmail';
+import { CookieSettingsButton } from '@/components/CookieSettingsButton';
 import { getSiteContactEmail, isAffiliateLive } from '@/lib/site-config';
 
 type FooterLink = { href: string; label: string };
@@ -64,6 +65,11 @@ export function Footer() {
                     </Link>
                   </li>
                 ))}
+                {group.title === 'Legal' && (
+                  <li>
+                    <CookieSettingsButton className={`${linkClass} text-left`}>Cookie settings</CookieSettingsButton>
+                  </li>
+                )}
                 {group.title === 'Work with us' && siteContactEmail && (
                   <li>
                     <ContactEmail className={linkClass}>Contact</ContactEmail>

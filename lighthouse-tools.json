@@ -2770,7 +2770,7 @@
                       "width": 50,
                       "height": 17
                     },
-                    "snippet": "<a href=\"mailto:hello@aionestop.shop\" class=\"text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded\">",
+                    "snippet": "<a href=\"mailto:aionestopshop25@gmail.com\" class=\"text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded\">",
                     "nodeLabel": "Contact"
                   }
                 }
@@ -2791,7 +2791,7 @@
                 "width": 50,
                 "height": 17
               },
-              "snippet": "<a href=\"mailto:hello@aionestop.shop\" class=\"text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded\">",
+              "snippet": "<a href=\"mailto:aionestopshop25@gmail.com\" class=\"text-sm text-gray-300 hover:text-white transition-colors focus-ring rounded\">",
               "nodeLabel": "Contact",
               "explanation": "Fix any of the following:\n  Target has insufficient size (49.8px by 17px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of 13.4px instead of at least 24px."
             },

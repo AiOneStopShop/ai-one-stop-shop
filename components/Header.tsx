@@ -41,11 +41,11 @@ export function Header() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/logo-wordmark-light.svg"
+                src="/logo-header.svg"
                 alt="AI One Stop Shop"
-                width={200}
+                width={238}
                 height={40}
-                className="h-9 w-auto md:h-10"
+                className="h-8 w-auto md:h-10"
               />
             </Link>
 

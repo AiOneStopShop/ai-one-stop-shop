@@ -22,36 +22,14 @@ const nextConfig = {
       },
     ];
 
-    // CSP on HTML pages only. Applying it to /_next/static caused 400s and
-    // MIME mismatches that blocked hydration in real Chrome / Playwright.
-    const scriptSrc = [
-      "'self'",
-      "'unsafe-inline'",
-      ...(process.env.NODE_ENV === 'development' ? ["'unsafe-eval'"] : []),
-    ].join(' ');
+    // The Content-Security-Policy header is set per request in middleware.ts
+    // (nonce-based script-src, no 'unsafe-inline'). See lib/csp.ts.
 
-    // One anti-framing pair: CSP frame-ancestors none + X-Frame-Options DENY.
-    // Each header is set once — XFO on all paths, CSP only on HTML routes.
+    // One anti-framing pair: CSP frame-ancestors none (middleware.ts) + X-Frame-Options DENY.
     const xFrameOptions = {
       key: 'X-Frame-Options',
       value: 'DENY'
     };
-    const pageCsp = {
-      key: 'Content-Security-Policy',
-      value: [
-        "default-src 'self'",
-        `script-src ${scriptSrc}`,
-        "style-src 'self' 'unsafe-inline'",
-        "img-src 'self' data: https:",
-        "font-src 'self' data:",
-        "connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com",
-        "object-src 'none'",
-        "base-uri 'self'",
-        "form-action 'self'",
-        "frame-ancestors 'none'"
-      ].join('; ')
-    };
-
     return [
       {
         // Apply on every path, including /_next/*
@@ -71,7 +49,7 @@ const nextConfig = {
       {
         // HTML routes only — do not attach CSP to hashed /_next/static assets
         source: '/((?!_next/).*)',
-        headers: [...securityHeaders, pageCsp],
+        headers: securityHeaders,
       },
     ];
   },

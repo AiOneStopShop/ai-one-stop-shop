@@ -6,6 +6,7 @@ import {
   isCanonicalHost,
   shouldBlockProductionAlias,
 } from '@/lib/site-config'
+import { buildCsp, generateNonce, isCrossOriginServerAction } from '@/lib/csp'
 
 function hostOf(request: NextRequest): string | null {
   return request.headers.get('host')
@@ -18,7 +19,7 @@ function withNonCanonicalRobots(response: NextResponse, host: string | null): Ne
   return response
 }
 
-async function continueRequest(request: NextRequest): Promise<NextResponse> {
+async function continueRequest(request: NextRequest, requestHeaders: Headers): Promise<NextResponse> {
   const { pathname } = request.nextUrl
 
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
@@ -29,7 +30,7 @@ async function continueRequest(request: NextRequest): Promise<NextResponse> {
 
     let response = NextResponse.next({
       request: {
-        headers: request.headers,
+        headers: requestHeaders,
       },
     })
 
@@ -43,18 +44,20 @@ async function continueRequest(request: NextRequest): Promise<NextResponse> {
           },
           set(name: string, value: string, options: any) {
             request.cookies.set({ name, value, ...options })
+            requestHeaders.set('cookie', request.cookies.toString())
             response = NextResponse.next({
               request: {
-                headers: request.headers,
+                headers: requestHeaders,
               },
             })
             response.cookies.set({ name, value, ...options })
           },
           remove(name: string, options: any) {
             request.cookies.set({ name, value: '', ...options })
+            requestHeaders.set('cookie', request.cookies.toString())
             response = NextResponse.next({
               request: {
-                headers: request.headers,
+                headers: requestHeaders,
               },
             })
             response.cookies.set({ name, value: '', ...options })
@@ -92,12 +95,17 @@ async function continueRequest(request: NextRequest): Promise<NextResponse> {
     return response
   }
 
-  return NextResponse.next()
+  return NextResponse.next({ request: { headers: requestHeaders } })
 }
 
 export async function middleware(request: NextRequest) {
   const host = hostOf(request)
   const { pathname } = request.nextUrl
+
+  // Cross-origin server-action POSTs: answer 403 instead of letting Next throw a 500.
+  if (isCrossOriginServerAction({ method: request.method, headers: request.headers, host: request.nextUrl.host })) {
+    return new NextResponse(null, { status: 403 })
+  }
 
   if (shouldBlockProductionAlias(process.env.VERCEL_ENV, host, pathname)) {
     return new NextResponse('Not Found', {
@@ -123,7 +131,16 @@ export async function middleware(request: NextRequest) {
     return withNonCanonicalRobots(NextResponse.next(), host)
   }
 
-  const response = await continueRequest(request)
+  // Per-request nonce CSP. Next.js reads the nonce from the request's CSP header
+  // and adds it to its own scripts; app/layout.tsx reads x-nonce for ours.
+  const nonce = generateNonce()
+  const csp = buildCsp(nonce)
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-nonce', nonce)
+  requestHeaders.set('Content-Security-Policy', csp)
+
+  const response = await continueRequest(request, requestHeaders)
+  response.headers.set('Content-Security-Policy', csp)
   return withNonCanonicalRobots(response, host)
 }
 

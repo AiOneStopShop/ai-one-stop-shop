@@ -1,9 +1,13 @@
-import { supabase } from './supabase';
+import 'server-only';
+import { getServiceSupabase } from './supabase';
 import type { PublicLivePlacement, SponsorPackage } from '@/types/database';
 
 /**
  * Fetch live sponsor placements from the public view.
  * Only returns placements that are currently active (within date range and status=live).
+ *
+ * Server-only: the view is readable by service_role only (migration 029), so this
+ * uses the service client and must never be imported into a client component.
  */
 export async function getLivePlacements(
   filters?: {
@@ -13,7 +17,10 @@ export async function getLivePlacements(
   }
 ): Promise<PublicLivePlacement[]> {
   try {
-    let query = supabase.from('public_live_placements').select('*');
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return [];
+    }
+    let query = getServiceSupabase().from('public_live_placements').select('*');
 
     if (filters?.package) {
       query = query.eq('package', filters.package);

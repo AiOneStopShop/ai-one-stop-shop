@@ -75,3 +75,66 @@ test('cross-origin server action POST gets 403, not 500', async ({ request }) =>
   });
   expect(res.status()).toBe(403);
 });
+
+test('both banner buttons share one identical visual style', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' });
+  const styleOf = (name: string) =>
+    page.getByRole('button', { name }).evaluate((el) => {
+      const s = getComputedStyle(el);
+      const r = el.getBoundingClientRect();
+      return {
+        className: el.className,
+        color: s.color, background: s.backgroundColor, border: `${s.borderTopWidth} ${s.borderTopStyle} ${s.borderTopColor}`,
+        fontSize: s.fontSize, fontWeight: s.fontWeight, boxShadow: s.boxShadow, borderRadius: s.borderRadius,
+        padding: s.padding, height: Math.round(r.height),
+      };
+    });
+  expect(await styleOf('Allow analytics')).toEqual(await styleOf('No thanks'));
+});
+
+test.describe('Global Privacy Control', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => Object.defineProperty(Navigator.prototype, 'globalPrivacyControl', { get: () => true, configurable: true }));
+  });
+
+  test('GPC counts as No thanks: no prompt, no analytics', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page.getByRole('button', { name: 'Allow analytics' })).toHaveCount(0);
+    await expect(page.locator('html')).not.toHaveClass(/has-cookie-banner/);
+    await expect(analyticsScripts(page)).toHaveCount(0);
+  });
+
+  test('Cookie settings shows "off" under GPC, and an explicit Allow still wins', async ({ page }) => {
+    await page.goto('/privacy', { waitUntil: 'networkidle' });
+    await expect(async () => {
+      await page.getByRole('main').getByRole('button', { name: 'Cookie settings' }).click();
+      await expect(page.getByTestId('cookie-current-choice')).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: 10_000 });
+    await expect(page.getByTestId('cookie-current-choice')).toContainText('currently off');
+    await expect(page.getByTestId('cookie-current-choice')).toContainText('Global Privacy Control');
+    await page.getByRole('button', { name: 'Allow analytics' }).click();
+    await expect(analyticsScripts(page).first()).toBeAttached({ timeout: 10_000 });
+  });
+});
+
+test('reopened banner shows the current choice', async ({ page }) => {
+  await page.addInitScript(() => { if (!sessionStorage.getItem('seeded')) { localStorage.setItem('cookieConsent', 'accepted'); sessionStorage.setItem('seeded', '1'); } });
+  await page.goto('/privacy', { waitUntil: 'networkidle' });
+  await expect(async () => {
+    await page.getByRole('main').getByRole('button', { name: 'Cookie settings' }).click();
+    await expect(page.getByTestId('cookie-current-choice')).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 10_000 });
+  await expect(page.getByTestId('cookie-current-choice')).toContainText('currently on');
+  await page.getByRole('button', { name: 'No thanks' }).click();
+  await page.getByRole('main').getByRole('button', { name: 'Cookie settings' }).click();
+  await expect(page.getByTestId('cookie-current-choice')).toContainText('currently off');
+});
+
+test('privacy page lists a contact email and newsletter wording', async ({ page }) => {
+  await page.goto('/privacy');
+  await expect(page.getByText(/Email us at\s*aionestopshop25@gmail\.com\./)).toBeVisible();
+  const html = await page.content();
+  expect(html).not.toContain('Contact information will be added');
+  expect(html).not.toContain('Waitlist emails');
+  expect(html).not.toContain('hello@aionestop.shop');
+});

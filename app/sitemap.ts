@@ -2,8 +2,11 @@ import { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase';
 import { TAXONOMY } from '@/lib/taxonomy';
 
+// Regenerate hourly so tools published after the last deploy are listed.
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://aionestop.shop';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.aionestop.shop';
 
   const { data: tools } = await supabase
     .from('tools')

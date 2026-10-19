@@ -39,20 +39,18 @@ export const metadata: Metadata = {
   authors: brandUrl ? [{ name: 'oneTomorrow', url: brandUrl }] : [{ name: 'oneTomorrow' }],
   creator: 'oneTomorrow',
   publisher: 'AI One Stop Shop',
+  // Title, description and URL are left out on purpose so every page's own
+  // title/description flow into og:* and twitter:* tags (Next.js inherits them).
+  // Share images must be raster: X, Facebook, LinkedIn and Slack ignore SVG.
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: '/',
     siteName: 'AI One Stop Shop',
-    title: 'AI One Stop Shop - Honest AI Tools Directory',
-    description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
-    images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'AI One Stop Shop' }],
+    images: [{ url: '/og-image.png', width: 1200, height: 630, type: 'image/png', alt: 'AI One Stop Shop, honest AI tools directory' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AI One Stop Shop',
-    description: 'Curated AI tools directory. No fake ratings, no paid rankings.',
-    images: ['/og-image.svg'],
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'AI One Stop Shop, honest AI tools directory' }],
   },
 };
 

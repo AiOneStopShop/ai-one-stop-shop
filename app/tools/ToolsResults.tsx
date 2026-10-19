@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { CompareCheckbox } from './CompareCheckbox';
 import { HighlightedText } from '@/components/HighlightedText';
 import { PaidVisitLink } from '@/components/PaidVisitLink';
+import { NewsletterSignup } from '@/components/NewsletterSignup';
 import type { AffiliateGoMap } from '@/lib/affiliate-links';
 import { toolHasAffiliate } from '@/lib/affiliate-links';
 
@@ -62,7 +63,7 @@ export function ToolsResults({
       <>
       {correctionNote}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tools.map((tool: any) => {
+        {tools.map((tool: any, index: number) => {
           const primaryCategory = tool.tool_categories?.find((tc: any) => tc.is_primary)?.categories;
 
           return (
@@ -117,6 +118,11 @@ export function ToolsResults({
                   </div>
                 </div>
               </article>
+              {index === 11 ? (
+                <div className="md:col-span-2 lg:col-span-3">
+                  <NewsletterSignup variant="compact" source="tools_list" />
+                </div>
+              ) : null}
             </Fragment>
           );
         })}

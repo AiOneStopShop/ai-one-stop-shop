@@ -339,3 +339,42 @@ a.card,
 a.card * {
   text-decoration: none;
 }
+
+/* Newsletter signup box (spec v2, 2026-10-19) */
+.nl{background:#F4EAD6;border:1px solid #E3D6BC;border-left:4px solid #E2562B;border-radius:12px;padding:24px 32px;max-width:640px;color:#22201B}
+.nl--compact{padding:16px 24px;max-width:none}
+.nl-h{font-family:var(--font-fraunces),Georgia,serif;font-weight:600;font-size:26px;line-height:1.15;color:#1E3B2C;margin:0 0 4px}
+.nl--compact .nl-h{font-size:21px;margin-bottom:12px}
+.nl-sub{margin:0 0 16px;font-size:16px}
+.nl-row{display:flex;gap:12px;align-items:flex-start}
+.nl-row2{display:flex;gap:24px;align-items:flex-start;margin-top:12px}
+.nl-row2>div{flex:1}
+.nl-field{flex:1;display:flex;flex-direction:column;min-width:0}
+.nl-field.nl-f-year{flex:0 0 132px}
+.nl-label{font-weight:600;font-size:15px;margin-bottom:4px}
+.nl-input{height:48px;font-size:17px;color:#22201B;background:#fff;border:1.5px solid #7A6F5C;border-radius:8px;padding:0 14px;width:100%}
+.nl-input::placeholder{color:#6B6253}
+.nl-year{letter-spacing:.06em}
+.nl-input:focus-visible,.nl-btn:focus-visible,.nl-consent input:focus-visible+span,.nl a:focus-visible,.nl-msg:focus-visible{outline:3px solid #2E5A43;outline-offset:2px}
+.nl-input:focus{border-color:#1E3B2C}
+.nl-input.nl-inv{border:2px solid #B8360F}
+.nl-err{display:flex;gap:6px;align-items:flex-start;color:#B8360F;font-weight:600;font-size:15px;margin:0}
+.nl-err:not(:empty){margin-top:8px}
+.nl-ic{width:18px;height:18px;flex:none;margin-top:1px}
+.nl-consent{display:flex;align-items:flex-start;gap:10px;min-height:44px;font-size:15px;line-height:1.4;cursor:pointer}
+.nl-consent input{width:24px;height:24px;flex:none;margin:0;accent-color:#1E3B2C;border:2px solid #7A6F5C;border-radius:5px;cursor:pointer}
+.nl-consent input:focus-visible{outline:3px solid #2E5A43;outline-offset:2px}
+.nl-consent.nl-inv input{outline:2px solid #B8360F;outline-offset:1px}
+.nl a{color:#1E3B2C;font-weight:600;text-decoration:underline}
+.nl-btn{height:48px;min-width:140px;padding:0 22px;background:#1E3B2C;color:#fff;border:0;border-radius:8px;font-weight:700;font-size:17px;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;cursor:pointer}
+.nl-btn.nl-busy{background:#2E5A43;cursor:progress}
+.nl-spin{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:nl-spin .8s linear infinite}
+@keyframes nl-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.nl-spin{animation:none}}
+.nl-privacy{font-size:14px;color:#4A4336;margin:4px 0 0}
+.nl-msg{font-size:17px;line-height:1.4;background:#fff;border:1.5px solid #2E5A43;border-radius:8px;padding:12px 16px;margin-top:12px}
+.nl-msg--info{border-color:#7A6F5C}
+.nl-msg-title{font-weight:700;margin:0 0 4px}
+.nl-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media (max-width:767px){.nl--compact .nl-row,.nl--compact .nl-row2{flex-direction:column;align-items:stretch}.nl--compact .nl-f-year{flex:none;width:140px}}
+@media (max-width:480px){.nl{padding:24px 16px}.nl-h{font-size:23px}.nl-row,.nl-row2{flex-direction:column;align-items:stretch}.nl-field.nl-f-year{flex:none;width:140px}.nl-btn{width:100%}}

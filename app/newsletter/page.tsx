@@ -3,7 +3,7 @@ import { Check } from 'lucide-react';
 import { PageIntro } from '@/components/PageIntro';
 import { ContactEmail } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
-import { NewsletterForm } from './NewsletterForm';
+import { NewsletterSignup } from '@/components/NewsletterSignup';
 
 export const metadata = {
   title: 'Newsletter',
@@ -30,7 +30,7 @@ export default function NewsletterPage() {
 
       <div className="container-max py-12 md:py-16 grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-10 lg:gap-16 items-start">
         <div className="max-w-xl">
-          <NewsletterForm />
+          <NewsletterSignup variant="full" source="newsletter_page" />
           {hasEmail ? (
             <p className="text-soft mt-5">
               Prefer email? Write to <ContactEmail subject="Newsletter" /> with &quot;Newsletter&quot; in the subject and we&apos;ll add you.

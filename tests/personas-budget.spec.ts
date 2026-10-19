@@ -101,7 +101,7 @@ test('free-first counts a free tier as $0 instead of inventing a paid price', ()
 test.describe('persona and budget pages', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('cookieConsent', 'accepted');
+      localStorage.setItem('cookieConsent', 'declined');
     });
   });
 

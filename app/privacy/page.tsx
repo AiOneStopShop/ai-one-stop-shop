@@ -3,6 +3,7 @@ import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail, getOperatorLegalName } from '@/lib/site-config';
 import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
 import { PageIntro } from '@/components/PageIntro';
+import { CookieSettingsButton } from '@/components/CookieSettingsButton';
 
 export const metadata = {
   title: 'Privacy Policy',
@@ -22,7 +23,7 @@ export default function PrivacyPage() {
         <div className="container-max max-w-3xl">
           <div className="guide-prose">
             <p className="text-sm text-soft">
-              Last updated: October 18, 2026
+              Last updated: October 19, 2026
             </p>
 
             <div>
@@ -117,19 +118,28 @@ export default function PrivacyPage() {
               <h2 className="heading-2 mb-4">What we don't collect</h2>
               <ul className="space-y-2">
                 <li><strong>Raw IP addresses:</strong> We hash IPs immediately and do not store the original</li>
-                <li><strong>Analytics or tracking cookies:</strong> We do not use Google Analytics, Facebook Pixel, or similar tracking services</li>
+                <li><strong>Analytics or tracking cookies:</strong> We do not use Google Analytics, Facebook Pixel, or similar tracking services. Our only analytics is the optional, cookieless Vercel Web Analytics described below, and it stays off unless you opt in</li>
                 <li><strong>Advertising data:</strong> We do not track you across websites</li>
-                <li><strong>Precise location:</strong> We do not collect or store geolocation data</li>
+                <li><strong>Precise location:</strong> We do not collect or store precise geolocation. If you opt in to analytics, Vercel derives an approximate country, region and city from your connection for aggregate counts</li>
               </ul>
             </div>
 
             <div id="cookies" className="scroll-mt-20">
               <h2 className="heading-2 mb-4">Cookies and local storage</h2>
               <p>
-                We don't use analytics, advertising, or tracking cookies, and visitors who browse aren't given cookies by us.
+                We don't use advertising or tracking cookies, and visitors who browse aren't given cookies by us.
               </p>
               <p className="mt-4">
-                Your browser's local storage keeps three small things on your own device: the tools you add to your compare list, your last few searches, and whether you've dismissed our cookie notice. You can clear them anytime in your browser settings.
+                Your browser's local storage keeps three small things on your own device: the tools you add to your compare list, your last few searches, and your analytics choice from our cookie banner. You can clear them anytime in your browser settings.
+              </p>
+              <p className="mt-4" id="analytics">
+                <strong>Optional analytics (off unless you opt in).</strong> If you choose "Allow analytics" in our cookie banner, we load Vercel Web Analytics to count page visits. It doesn't use cookies. According to Vercel&apos;s documentation, each page view can include: the time, the page address and route (we remove search terms and other query text before it is sent), the referring page, an approximate location (country, region, city) derived from your connection, your device type, operating system and browser with versions, and the analytics script version. Vercel tells visits apart with a hash made from the incoming request, rather than a cookie, and discards it after 24 hours. We see only aggregate counts. We never load it on admin pages. If you choose "No thanks", close the banner with Escape, or make no choice, it isn&apos;t loaded at all. See <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel&apos;s Web Analytics privacy notes</a>.
+              </p>
+              <p className="mt-4">
+                <strong>Changing your choice:</strong> you can change it anytime with the button below (also under &quot;Cookie settings&quot; in the footer). If you switch analytics off, we stop sending page views right away. Clearing this site&apos;s data in your browser also resets your choice.
+              </p>
+              <p className="mt-2">
+                <CookieSettingsButton />
               </p>
               <p className="mt-4">
                 If you're a site admin who signs in, we use login cookies so you stay signed in. Those are needed for the admin area to work.
@@ -162,7 +172,7 @@ export default function PrivacyPage() {
               <ul className="space-y-2">
                 <li><strong>Supabase:</strong> Database and authentication (see <a href="https://supabase.com/privacy" className="text-green hover:underline" rel="noopener">Supabase Privacy Policy</a>)</li>
                 <li><strong>Vercel:</strong> Hosting and CDN (see <a href="https://vercel.com/legal/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel Privacy Policy</a>)</li>
-                <li><strong>Vercel Web Analytics:</strong> Cookieless aggregate page view counts. No personal data or cookies. (see <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel Analytics Privacy</a>)</li>
+                <li><strong>Vercel Web Analytics (only if you opt in):</strong> Cookieless, aggregate page view counts. Off by default; see <a href="#analytics" className="text-green hover:underline">Optional analytics</a> for what it collects (see <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel Analytics Privacy</a>)</li>
                 <li><strong>Upstash:</strong> Blocking spam and abuse. It briefly processes your IP address when you submit a form or click a sponsored link. (see <a href="https://upstash.com/trust/privacy.pdf" className="text-green hover:underline" rel="noopener">Upstash Privacy Policy</a>)</li>
                 <li><strong>Gmail (Google):</strong> Our team mailbox for inquiries and sponsor emails (see <a href="https://policies.google.com/privacy" className="text-green hover:underline" rel="noopener">Google Privacy Policy</a>)</li>
                 <li><strong>Resend:</strong> Transactional email delivery (sponsor notifications) (see <a href="https://resend.com/legal/privacy-policy" className="text-green hover:underline" rel="noopener">Resend Privacy Policy</a>)</li>

@@ -6,7 +6,7 @@ const routes = ['/', '/tools', '/categories', '/finder', '/submit', '/compare', 
 test.describe('Dolly a11y routes', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('cookieConsent', 'accepted');
+      localStorage.setItem('cookieConsent', 'declined');
     });
   });
 

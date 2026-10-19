@@ -159,7 +159,7 @@ test.describe('Sponsorship feature', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.setItem('cookieConsent', 'accepted');
+      localStorage.setItem('cookieConsent', 'declined');
     });
   });
 

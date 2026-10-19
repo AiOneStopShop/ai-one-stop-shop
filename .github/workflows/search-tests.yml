@@ -1,0 +1,38 @@
+name: Search tests
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/**'
+      - 'lib/search-*'
+      - 'lib/search-synonyms.seed.json'
+      - 'tests/search*'
+      - 'tests/helpers/**'
+      - 'tests/fixtures/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/search-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+      - 'lib/search-*'
+      - 'tests/search*'
+
+permissions:
+  contents: read
+
+jobs:
+  golden-queries:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Runs public.search_tools() in an in-process Postgres (PGlite) against a catalog snapshot.
+      - run: npm run test:search
+      - run: npm run test:search:fallback

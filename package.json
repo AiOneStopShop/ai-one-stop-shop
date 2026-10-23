@@ -20,7 +20,7 @@
     "test:search:fallback": "playwright test tests/search.spec.ts -g \"fallback|synonym expansion\""
   },
   "dependencies": {
-    "@next/env": "15.5.27",
+    "@next/env": "15.5.28",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.55.0",
     "@upstash/ratelimit": "^2.2.0",
@@ -28,7 +28,7 @@
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.0",
     "lucide-react": "1.55.0",
-    "next": "15.5.27",
+    "next": "15.5.28",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "server-only": "^0.0.1",

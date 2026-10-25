@@ -1,3 +1,4 @@
+import { PageJsonLd } from '@/components/PageJsonLd';
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { PageIntro } from '@/components/PageIntro';
@@ -81,6 +82,7 @@ export default async function ComparePage(props: {
   if (tools.length < 2) {
     return (
       <div className="scroll-mt-16">
+        <PageJsonLd path="/compare" name="Compare AI Tools" description="Compare AI tools side by side: pricing, free tiers and features." type="WebApplication" />
         <PageIntro
           title="Compare AI tools"
           accent="scales"

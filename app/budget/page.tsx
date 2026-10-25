@@ -1,3 +1,4 @@
+import { PageJsonLd } from '@/components/PageJsonLd';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BudgetForm } from '@/app/budget/BudgetForm';
@@ -35,6 +36,7 @@ export default async function BudgetPage(props: {
 
   return (
     <div className="scroll-mt-16">
+      <PageJsonLd path="/budget" name="AI Tools Budget Calculator" description="Enter a monthly budget and see which AI tools fit, using public prices." type="WebApplication" />
       <PageIntro
         narrow
         accent="jar"

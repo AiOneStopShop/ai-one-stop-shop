@@ -1,3 +1,4 @@
+import { PageJsonLd } from '@/components/PageJsonLd';
 import { ContactEmailText } from '@/components/ContactEmail';
 import { getSiteContactEmail } from '@/lib/site-config';
 import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
@@ -12,6 +13,7 @@ export const metadata = {
 export default function HowWeRankPage() {
   return (
     <div className="scroll-mt-16">
+      <PageJsonLd path="/how-we-rank" name="How We Rank AI Tools" description="Our methodology for choosing and ranking AI tools, with public prices and no fake ratings." type="WebPage" />
       <PageIntro
         title="How we choose and rank AI tools"
         accent="scales"

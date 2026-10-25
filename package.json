@@ -16,6 +16,7 @@
     "import": "tsx scripts/import-pipeline.ts",
     "enrich": "tsx scripts/enrichment-job.ts",
     "type-check": "tsc --noEmit",
+    "indexnow": "node scripts/indexnow.mjs",
     "test:search": "playwright test tests/search-golden.spec.ts tests/search-facets.spec.ts tests/search-migration-history.spec.ts",
     "test:search:fallback": "playwright test tests/search.spec.ts -g \"fallback|synonym expansion\""
   },

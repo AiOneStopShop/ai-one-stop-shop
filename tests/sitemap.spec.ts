@@ -84,3 +84,18 @@ test('helpers', () => {
   expect(slugSegment('  ')).toBeNull();
   expect(slugSegment('notion-ai')).toBe('notion-ai');
 });
+
+test('audience guides are listed in the sitemap', () => {
+  const xml = resolveSitemap(buildSitemap({ baseUrl: BASE, tools: null, categories: null, now: NOW }));
+  const urls = locs(xml);
+  expect(urls).toContain(`${BASE}/guides`);
+  for (const slug of [
+    'best-ai-tools-for-teachers',
+    'best-ai-tools-for-small-business',
+    'best-ai-tools-for-writers',
+    'best-ai-tools-for-students',
+    'ai-tools-under-20-a-month',
+    'free-ai-tools',
+  ]) expect(urls).toContain(`${BASE}/guides/${slug}`);
+  expect(urls.some((u) => /monica|musicgpt|chatllm/i.test(u))).toBe(false);
+});

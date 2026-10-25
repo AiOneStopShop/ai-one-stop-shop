@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { TAXONOMY } from './taxonomy';
+import { GUIDES } from './guides';
 
 /**
  * Sitemap building, kept separate from app/sitemap.ts so it can be unit tested.
@@ -38,6 +39,8 @@ export const STATIC_SITEMAP_ROUTES = [
   '/advertise/request',
   '/partners',
   '/newsletter',
+  '/guides',
+  ...GUIDES.map((guide) => `/guides/${guide.slug}`),
 ] as const;
 
 export type SitemapToolRow = { slug?: unknown; updated_at?: unknown; last_verified_at?: unknown };

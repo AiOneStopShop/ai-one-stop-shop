@@ -1,17 +1,8 @@
 name: Search tests
 
 on:
+  # Runs on every PR so the required 'golden-queries' check never hangs on PRs that don't touch search files.
   pull_request:
-    paths:
-      - 'supabase/migrations/**'
-      - 'lib/search-*'
-      - 'lib/search-synonyms.seed.json'
-      - 'tests/search*'
-      - 'tests/helpers/**'
-      - 'tests/fixtures/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/search-tests.yml'
   push:
     branches: [main]
     paths:

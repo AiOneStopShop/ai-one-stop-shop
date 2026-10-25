@@ -1,3 +1,4 @@
+import { PageJsonLd } from '@/components/PageJsonLd';
 import Link from 'next/link';
 import { BrandName } from '@/components/BrandName';
 import { ContactEmailText } from '@/components/ContactEmail';
@@ -13,6 +14,7 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="scroll-mt-16">
+      <PageJsonLd path="/about" name="About AI One Stop Shop" description="Who runs AI One Stop Shop, how we pick AI tools, and what we do and do not do yet." type="AboutPage" />
       <PageIntro
         title="About AI One Stop Shop"
         accent="books"

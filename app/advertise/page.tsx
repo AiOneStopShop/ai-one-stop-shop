@@ -1,3 +1,4 @@
+import { PageJsonLd } from '@/components/PageJsonLd';
 import Link from 'next/link';
 import { PageIntro } from '@/components/PageIntro';
 import { ContactEmailText } from '@/components/ContactEmail';
@@ -44,6 +45,7 @@ const packages = [
 export default function AdvertisePage() {
   return (
     <div className="scroll-mt-16">
+      <PageJsonLd path="/advertise" name="Sponsor AI One Stop Shop" description="Clearly labeled sponsored spots on an honest, curated AI tools directory." type="WebPage" />
       <PageIntro
         title="Sponsor AI One Stop Shop"
         accent="mug"

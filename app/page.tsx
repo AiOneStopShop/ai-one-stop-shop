@@ -1,3 +1,4 @@
+import { GUIDES } from '@/lib/guides';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -167,6 +168,19 @@ export default async function HomePage() {
             </Link>
             <span className="text-soft">Or browse <Link href="/tools" className="text-green hover:underline focus-ring rounded">all {toolsCount} tools</Link></span>
           </div>
+
+          <nav aria-label="Guides" className="mt-8">
+            <p className="text-soft mb-2">Popular guides:</p>
+            <ul className="flex flex-wrap gap-2 list-none m-0 p-0">
+              {GUIDES.map((guide) => (
+                <li key={guide.slug}>
+                  <Link href={`/guides/${guide.slug}`} className="inline-flex items-center rounded-full border border-line bg-white px-3 py-2 text-sm text-ink hover:border-green focus-ring min-h-[44px]">
+                    {guide.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           <div className="mt-12 pb-12 max-w-2xl">
             <h2 className="heading-3 mb-2">Already know what you need?</h2>

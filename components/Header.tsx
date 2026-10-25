@@ -70,6 +70,12 @@ export function Header() {
                 Personas
               </Link>
               <Link 
+                href="/guides" 
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded-full px-3 py-2 inline-flex items-center min-h-[44px]"
+              >
+                Guides
+              </Link>
+              <Link 
                 href="/budget" 
                 className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded-full px-3 py-2 inline-flex items-center min-h-[44px]"
               >
@@ -142,6 +148,13 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Personas
+              </Link>
+              <Link 
+                href="/guides" 
+                className="text-ink hover:bg-cream-2 transition-colors focus-ring rounded px-3 py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Guides
               </Link>
               <Link 
                 href="/budget" 

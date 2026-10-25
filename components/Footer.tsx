@@ -13,6 +13,7 @@ const GROUPS: { title: string; links: FooterLink[] }[] = [
       { href: '/categories', label: 'Categories' },
       { href: '/finder', label: 'Tool finder' },
       { href: '/personas', label: 'Toolkits by role' },
+      { href: '/guides', label: 'Guides' },
       { href: '/budget', label: 'Budget planner' },
     ],
   },

@@ -46,16 +46,15 @@ export const metadata: Metadata = {
   publisher: 'AI One Stop Shop',
   // Title, description and URL are left out on purpose so every page's own
   // title/description flow into og:* and twitter:* tags (Next.js inherits them).
-  // Share images must be raster: X, Facebook, LinkedIn and Slack ignore SVG.
+  // Share images come from app/opengraph-image.tsx + twitter-image.tsx (PNG via
+  // next/og); guides get their own in app/guides/[slug]/. X/Facebook ignore SVG.
   openGraph: {
     type: 'website',
     locale: 'en_US',
     siteName: 'AI One Stop Shop',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, type: 'image/png', alt: 'AI One Stop Shop, honest AI tools directory' }],
   },
   twitter: {
     card: 'summary_large_image',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'AI One Stop Shop, honest AI tools directory' }],
   },
 };
 

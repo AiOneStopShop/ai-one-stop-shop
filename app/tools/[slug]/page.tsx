@@ -75,7 +75,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
 
   const toolSchema = generateToolSchema(tool, categories);
 
-  const visitUrl = `/go/${affiliateSlug || tool.slug}`;
+  const visitUrl = `/go/${affiliateSlug || tool.slug}?from=${encodeURIComponent(`/tools/${tool.slug}`)}`;
   const isAffiliate = !!affiliateSlug;
 
   return (

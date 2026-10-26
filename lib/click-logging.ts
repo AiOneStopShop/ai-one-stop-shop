@@ -37,8 +37,8 @@ export async function logAffiliateClick(
     toolId: string | null;
     linkId: string | null;
     userAgent: string | null;
-    referrerOrigin: string;
-    referrerPathname: string;
+    referrer: string;
+    pagePath: string;
     isBot: boolean;
   },
   deps: ClickLogDeps
@@ -71,8 +71,8 @@ export async function logAffiliateClick(
     tool_id: input.toolId,
     ip_hash: ipHash,
     user_agent: input.userAgent ? input.userAgent.substring(0, 255) : null,
-    referrer: input.referrerOrigin + input.referrerPathname,
-    page_path: input.referrerPathname,
+    referrer: input.referrer,
+    page_path: input.pagePath,
     is_bot: input.isBot,
   };
 

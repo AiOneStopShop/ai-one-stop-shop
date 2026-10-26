@@ -109,7 +109,7 @@ test.describe('L1/L2 sponsor request email', () => {
 });
 
 test.describe('click logging reliability', () => {
-  const input = { ip: '203.0.113.9', toolId: 't1', linkId: null, userAgent: 'UA', referrerOrigin: 'https://www.aionestop.shop', referrerPathname: '/tools/x', isBot: false };
+  const input = { ip: '203.0.113.9', toolId: 't1', linkId: null, userAgent: 'UA', referrer: 'https://www.aionestop.shop/tools/x', pagePath: '/tools/x', isBot: false };
 
   function deps(over: Partial<ClickLogDeps> & { insertResults?: Array<{ code?: string; message?: string } | null> } = {}) {
     const results = over.insertResults ?? [null];

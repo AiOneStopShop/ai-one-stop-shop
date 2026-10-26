@@ -157,3 +157,37 @@ export function generatePersonaPageSchema(persona: {
     ),
   };
 }
+
+export function generateFaqSchema(items: Array<{ question: string; answer: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+}
+
+/** CollectionPage for a guide, with dateModified = newest last-checked price date among its picks. */
+export function generateGuidePageSchema(guide: {
+  slug: string;
+  title: string;
+  description: string;
+  dateModified?: string | null;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: guide.title,
+    description: guide.description,
+    url: `${SITE_URL}/guides/${guide.slug}`,
+    ...(guide.dateModified ? { dateModified: guide.dateModified } : {}),
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+    publisher: { '@id': `${SITE_URL}/#organization` },
+  };
+}

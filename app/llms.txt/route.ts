@@ -1,6 +1,8 @@
 import { supabase } from '@/lib/supabase';
 import { PRICE_CHECKED_ISO, PRICE_CHECKED_LABEL } from '@/lib/site-dates';
 import { getOperatorLegalName, isAffiliateLive } from '@/lib/site-config';
+import { GUIDES } from '@/lib/guides';
+import { llmsGuidesSection } from '@/lib/guide-content';
 
 export async function GET() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.aionestop.shop';
@@ -48,6 +50,8 @@ ${isAffiliateLive()
 - Personas with live starter toolkits: ${siteUrl}/personas
 - Budget calculator (toolkit builder): ${siteUrl}/budget
 - No fake ratings or review counts
+
+${llmsGuidesSection(GUIDES, siteUrl)}
 
 ## Machine-readable catalog
 

@@ -4,6 +4,7 @@ import { supabase as publicSupabase, getServiceSupabase } from '@/lib/supabase';
 import { affiliateRedirectRateLimit, dedupe, releaseDedupe } from '@/lib/rate-limit';
 import { logAffiliateClick } from '@/lib/click-logging';
 import { getClientKey } from '@/lib/client-ip';
+import { clickContext, isBotRequest } from '@/lib/click-context';
 import crypto from 'crypto';
 
 // Hash IP address for privacy
@@ -13,13 +14,6 @@ function hashIP(ip: string): string {
     throw new Error('AFFILIATE_CLICK_SECRET not configured');
   }
   return crypto.createHmac('sha256', secret).update(ip).digest('hex');
-}
-
-// Simple bot detection
-function isBot(userAgent: string | null): boolean {
-  if (!userAgent) return true;
-  const botPatterns = /bot|crawler|spider|scraper|curl|wget|python-requests/i;
-  return botPatterns.test(userAgent);
 }
 
 export async function GET(
@@ -76,21 +70,12 @@ export async function GET(
 
     const userAgent = request.headers.get('user-agent');
     
-    // Parse referrer safely
-    const referrer = request.headers.get('referer') || '';
-    let referrerOrigin = '';
-    let referrerPathname = '';
-    
-    if (referrer) {
-      try {
-        const referrerUrl = new URL(referrer);
-        referrerOrigin = referrerUrl.origin;
-        referrerPathname = referrerUrl.pathname;
-      } catch (err) {
-        // Malformed referrer, ignore
-        console.warn('Malformed referrer:', referrer);
-      }
-    }
+    // Page the click came from + trimmed referrer (origin + path, no query/PII).
+    const { referrer, pagePath } = clickContext(
+      request.headers.get('referer'),
+      request.nextUrl.searchParams.get('from'),
+      request.headers.get('x-forwarded-host')?.split(',')[0]?.trim() || request.headers.get('host')
+    );
 
     // Only redirect to absolute http(s) URLs that came from the database.
     let safeDestination: URL;
@@ -112,9 +97,9 @@ export async function GET(
           toolId,
           linkId,
           userAgent,
-          referrerOrigin,
-          referrerPathname,
-          isBot: isBot(userAgent),
+          referrer,
+          pagePath,
+          isBot: isBotRequest(userAgent, request.headers.get('accept-language')),
         },
         {
           hashIp: hashIP,

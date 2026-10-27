@@ -6,6 +6,11 @@ import {
   guideFaq,
   guideTaskRows,
   lastReviewedIso,
+  priceCheckRange,
+  priceCheckRangeLabel,
+  faqAnswerText,
+  faqAnswerSchemaText,
+  GUIDE_DISCLOSURE,
   llmsGuidesSection,
   priceFrom,
   type GuideEntry,
@@ -49,6 +54,8 @@ test('answer block names the top picks and last reviewed is the newest valid dat
   expect(answer).toContain('2 of the 4 picks list a free plan');
   expect(lastReviewedIso(list)).toBe('2026-10-26');
   expect(lastReviewedIso([])).toBeNull();
+  expect(priceCheckRange(list)).toEqual({ oldest: '2026-10-20', newest: '2026-10-26' });
+  expect(priceCheckRangeLabel(list)).toBe('Oct 20, 2026\u2013Oct 26, 2026');
   expect(guideAnswer(teachers, [])).toBeNull();
 });
 
@@ -67,7 +74,10 @@ test('FAQ has 3-5 entries that only restate stored facts, and valid FAQPage JSON
   expect(faq.length).toBeLessThanOrEqual(5);
   const text = faq.map((f) => `${f.question} ${f.answer}`).join(' ');
   expect(text).toContain('Free forever for teachers; Plus $12.99/mo');
-  expect(text).toContain('last checked Oct 26, 2026');
+  expect(text).toContain('last checked between Oct 20, 2026 and Oct 26, 2026');
+  expect(text).toContain('when we last checked');
+  expect(text).toContain(GUIDE_DISCLOSURE);
+  expect(text).not.toMatch(/never/i);
   expect(text).toMatch(/student names/);
   expect(text).not.toMatch(/we tested|users|rated|\d+(\.\d+)? stars|#1/i);
 
@@ -100,4 +110,30 @@ test('llms.txt guides section lists the index and every guide', () => {
   }
   const extra = llmsGuidesSection([...GUIDES, { ...GUIDES[0], slug: 'future-guide', title: 'Future guide' }], BASE);
   expect(extra).toContain(`- Future guide: ${BASE}/guides/future-guide`);
+});
+
+test('FAQ JSON-LD answer text equals the visible FAQ text', () => {
+  const faq = guideFaq(teachers, entries());
+  const parsed = JSON.parse(safeJsonLd(generateFaqSchema(faq.map((f) => ({ question: f.question, answer: faqAnswerSchemaText(f, BASE) })))));
+  faq.forEach((item, i) => {
+    expect(parsed.mainEntity[i].name).toBe(item.question);
+    const stripped = parsed.mainEntity[i].acceptedAnswer.text.replace(/<[^>]+>/g, '');
+    expect(stripped).toBe(faqAnswerText(item));
+  });
+  const how = parsed.mainEntity.find((q: { name: string }) => q.name === 'How did you choose these tools?');
+  expect(how.acceptedAnswer.text).toContain(`<a href="${BASE}/disclosure">How we make money</a>`);
+});
+
+test('guide copy has no unverified claims flagged in legal review', () => {
+  const copy = teachers.picks.map((p) => p.why).join(' ');
+  expect(copy).not.toMatch(/small team of working teachers|ready to print|Weekly/);
+});
+
+test('visible guide FAQ matches FAQPage JSON-LD on the rendered page', async ({ page }) => {
+  test.skip(!process.env.PLAYWRIGHT_BASE_URL, 'needs a running server');
+  await page.goto('/guides/best-ai-tools-for-teachers');
+  const visible = (await page.getByTestId('guide-faq').locator('[data-testid="guide-faq-answer"]').allTextContents()).map((t) => t.trim());
+  const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+  const faqLd = blocks.map((b) => JSON.parse(b)).find((b) => b['@type'] === 'FAQPage');
+  expect(faqLd.mainEntity.map((q: any) => q.acceptedAnswer.text.replace(/<[^>]+>/g, ''))).toEqual(visible);
 });

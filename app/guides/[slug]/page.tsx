@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { PageIntro } from '@/components/PageIntro';
+import { getSiteUrl } from '@/lib/site-config';
 import { supabase } from '@/lib/supabase';
 import {
   generateBreadcrumbSchema,
@@ -18,6 +19,12 @@ import {
   guideFaq,
   guideTaskRows,
   lastReviewedIso,
+  priceCheckRange,
+  priceCheckRangeLabel,
+  PRICE_NOT_CHECKED,
+  GUIDE_DISCLOSURE,
+  GUIDE_DISCLOSURE_LINK,
+  faqAnswerSchemaText,
   type GuideCatalogTool,
 } from '@/lib/guide-content';
 
@@ -72,7 +79,8 @@ export default async function GuidePage(props: { params: Promise<{ slug: string 
     picks.map(({ pick, tool }) => ({ name: tool.name, url: `/tools/${tool.slug}`, description: pick.why }))
   );
   const reviewedIso = lastReviewedIso(picks);
-  const reviewedLabel = formatGuideDate(reviewedIso);
+  const range = priceCheckRange(picks);
+  const reviewedLabel = priceCheckRangeLabel(picks);
   const answer = guideAnswer(guide, picks);
   const taskRows = guideTaskRows(picks);
   const faq = guideFaq(guide, picks);
@@ -89,7 +97,7 @@ export default async function GuidePage(props: { params: Promise<{ slug: string 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(list) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(pageSchema) }} />
       {faq.length > 0 && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(generateFaqSchema(faq)) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(generateFaqSchema(faq.map((item) => ({ question: item.question, answer: faqAnswerSchemaText(item, getSiteUrl()) })))) }} />
       )}
       <PageIntro
         title={guide.title}
@@ -116,7 +124,14 @@ export default async function GuidePage(props: { params: Promise<{ slug: string 
               </p>
               {reviewedLabel && (
                 <p className="m-0 mt-2 text-sm text-soft" data-testid="guide-last-reviewed">
-                  Last reviewed <time dateTime={reviewedIso!}>{reviewedLabel}</time> (the newest price check among these picks)
+                  Prices last checked{' '}
+                  {range && range.oldest !== range.newest ? (
+                    <>
+                      <time dateTime={range.oldest}>{formatGuideDate(range.oldest)}</time>{'\u2013'}<time dateTime={range.newest}>{formatGuideDate(range.newest)}</time>
+                    </>
+                  ) : (
+                    <time dateTime={range?.newest}>{reviewedLabel}</time>
+                  )}
                 </p>
               )}
             </div>
@@ -182,7 +197,7 @@ export default async function GuidePage(props: { params: Promise<{ slug: string 
                     <p className="text-sm">
                       <strong>Price:</strong> {tool.pricing_summary || 'See the pricing page'}
                       {tool.has_free_tier ? ' · Has a free plan' : ''}
-                      {checked ? <span className="text-soft"> (last checked {checked})</span> : null}
+                      {checked ? <span className="text-soft"> (last checked {checked})</span> : <span className="text-soft"> ({PRICE_NOT_CHECKED})</span>}
                     </p>
                     <Link href={`/tools/${tool.slug}`} className="inline-flex items-center gap-1 mt-3 text-green font-medium hover:underline focus-ring rounded">
                       See {tool.name} details <ArrowRight className="w-4 h-4" aria-hidden="true" />
@@ -196,8 +211,10 @@ export default async function GuidePage(props: { params: Promise<{ slug: string 
           <div className="guide-prose mt-10">
             <h2 className="heading-2">How we picked</h2>
             <p>
-              Every pick is a published tool in our catalog. Prices come from each tool&apos;s own pricing page and can change, so check before you buy.
-              No tool paid to be on this list. Read <Link href="/how-we-rank">how we rank</Link> and our <Link href="/disclosure">disclosure</Link>.
+              <span data-testid="guide-disclosure">
+                {GUIDE_DISCLOSURE} <Link href={GUIDE_DISCLOSURE_LINK.href}>{GUIDE_DISCLOSURE_LINK.label}</Link>
+              </span>{' '}
+              Prices come from each tool&apos;s own pricing page and can change, so check the tool&apos;s site before you buy. Read <Link href="/how-we-rank">how we rank</Link>.
             </p>
             {faq.length > 0 && (
               <section aria-labelledby="guide-faq" data-testid="guide-faq">
@@ -205,7 +222,15 @@ export default async function GuidePage(props: { params: Promise<{ slug: string 
                 {faq.map((item) => (
                   <div key={item.question}>
                     <h3>{item.question}</h3>
-                    <p>{item.answer}</p>
+                    <p data-testid="guide-faq-answer">
+                      {item.answer}
+                      {item.link ? (
+                        <>
+                          {' '}
+                          <Link href={item.link.href}>{item.link.label}</Link>
+                        </>
+                      ) : null}
+                    </p>
                   </div>
                 ))}
               </section>

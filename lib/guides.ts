@@ -8,7 +8,7 @@
  */
 /** task: the short job this pick is for, shown in the "Pick by task" table. */
 export type GuidePick = { slug: string; task: string; why: string };
-export type GuideFaq = { question: string; answer: string };
+export type GuideFaq = { question: string; answer: string; link?: { href: string; label: string } };
 export type Guide = {
   slug: string;
   audience: string;
@@ -41,11 +41,11 @@ export const GUIDES: Guide[] = [
     ],
     picks: [
       { slug: 'magicschool', task: 'Lesson plans, worksheets and quizzes', why: 'A large set of teacher tools for lesson plans, worksheets, quizzes and writing feedback, plus student tools that you set up and share.' },
-      { slug: 'brisk-teaching', task: 'Lessons and feedback inside your browser', why: 'A Chrome and Edge extension that turns an article, video, PDF or doc you already have open into lessons, feedback and student practice. You review and adapt what it drafts.' },
+      { slug: 'brisk-teaching', task: 'Lessons and feedback inside your browser', why: 'A Chrome and Edge extension that helps you create lessons, feedback and differentiated practice from content you already have open. You review and adapt what it drafts.' },
       { slug: 'khanmigo', task: 'Lesson plans and rubrics', why: 'Built by Khan Academy for classrooms. It helps draft lesson plans, rubrics and exit tickets, and its pricing page lists it as free for teachers.' },
-      { slug: 'diffit', task: 'Reading passages at different levels', why: 'Adapts a topic, article or text into reading passages at different levels, with questions and activities ready to print or share.' },
-      { slug: 'eduaide', task: 'Planning and differentiating materials', why: 'Helps create lesson plans, activities and assessments, and revise or differentiate them. Built by a small team of working teachers.' },
-      { slug: 'curipod', task: 'Weekly writing practice', why: 'Weekly writing practice with instant feedback for students, and a view for you of how they are doing so you can guide the next step.' },
+      { slug: 'diffit', task: 'Reading passages at different levels', why: 'Adapts a topic, article or text into reading passages at different levels, with questions and activities you can share with students.' },
+      { slug: 'eduaide', task: 'Planning and differentiating materials', why: 'Helps create lesson plans, activities and assessments, and revise, differentiate and align them to standards.' },
+      { slug: 'curipod', task: 'Writing practice with feedback', why: 'Writing practice with instant AI feedback for students, and a view for you of how they are doing.' },
       { slug: 'gemini-notebook', task: 'Study guides from your own materials', why: 'Upload your own readings or notes and ask questions grounded in them, or turn them into study guides for your class.' },
       { slug: 'google-gemini', task: 'Parent emails and explanations', why: 'A general helper for drafting parent emails, explaining a topic three ways, or brainstorming activities. Many schools already use Google accounts.' },
       { slug: 'ahaslides', task: 'Live polls and quizzes', why: 'Live polls, quizzes and word clouds that students answer from their phones, with education plans listed.' },
@@ -60,7 +60,7 @@ export const GUIDES: Guide[] = [
       {
         question: 'Can I use these AI tools with student information?',
         answer:
-          'Check your school or district\u2019s approved-tool list first. Don\u2019t paste student names or other personal information into a tool that isn\u2019t approved. You stay in charge: review anything a tool drafts before you share it with students.',
+          'Check your school or district\u2019s approved-tool list first. Don\u2019t paste student names or other personal information into a tool that isn\u2019t approved. You stay in charge: review anything a tool drafts before you share it with students. Your school\u2019s rules and privacy laws decide which tools are allowed. This guide isn\u2019t legal advice.',
       },
     ],
     related: [

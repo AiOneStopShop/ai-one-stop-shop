@@ -1,3 +1,4 @@
+import { recordFormSuccess } from '@/lib/site-stats';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { sponsorRequestRateLimit } from '@/lib/rate-limit';
@@ -100,7 +101,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Database error storing sponsor request:', error);
+      console.error('Database error storing sponsor request:', error.code);
       return NextResponse.json(
         { error: 'Failed to save your request. Please try again.' },
         { status: 500 }
@@ -134,6 +135,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    await recordFormSuccess('sponsor_request');
     return NextResponse.json({ success: true, id: data.id });
   } catch (err) {
     console.error('Unexpected error in sponsor request:', err);

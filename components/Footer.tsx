@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ContactEmail } from '@/components/ContactEmail';
 import { CookieSettingsButton } from '@/components/CookieSettingsButton';
+import { consentBannerNeeded } from '@/lib/cookie-consent';
 import { getSiteContactEmail, isAffiliateLive } from '@/lib/site-config';
 
 type FooterLink = { href: string; label: string };
@@ -66,7 +67,7 @@ export function Footer() {
                     </Link>
                   </li>
                 ))}
-                {group.title === 'Legal' && (
+                {group.title === 'Legal' && consentBannerNeeded() && (
                   <li>
                     <CookieSettingsButton className={`${linkClass} text-left`}>Cookie settings</CookieSettingsButton>
                   </li>

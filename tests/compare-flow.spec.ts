@@ -1,3 +1,4 @@
+import { consentBannerNeeded } from '../lib/cookie-consent';
 import { test, expect } from '@playwright/test';
 
 test.describe('Compare Flow', () => {
@@ -113,6 +114,8 @@ test.describe('Compare Flow', () => {
 });
 
 test.describe('Compare button vs cookie banner', () => {
+  // The banner renders only while a cookie-setting/tracking tool needs consent (lib/cookie-consent.ts).
+  test.skip(!consentBannerNeeded(), 'no consent-gated tools configured, so no banner');
   test('sticky Compare sits above the cookie buttons at 768px while the banner is visible', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 800 });
     await page.addInitScript(() => {

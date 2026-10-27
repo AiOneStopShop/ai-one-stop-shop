@@ -6,7 +6,6 @@ import { getSiteContactEmail, getOperatorLegalName } from '@/lib/site-config';
 const FALLBACK_CONTACT_EMAIL = 'aionestopshop25@gmail.com';
 import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
 import { PageIntro } from '@/components/PageIntro';
-import { CookieSettingsButton } from '@/components/CookieSettingsButton';
 
 export const metadata = {
   title: 'Privacy Policy',
@@ -26,7 +25,7 @@ export default function PrivacyPage() {
         <div className="container-max max-w-3xl">
           <div className="guide-prose">
             <p className="text-sm text-soft">
-              Last updated: October 19, 2026
+              Last updated: October 27, 2026
             </p>
 
             <div>
@@ -92,28 +91,28 @@ export default function PrivacyPage() {
 
               <h3 className="heading-3 mb-3 mt-6">Search queries</h3>
               <p>
-                When you search the tool catalog, we record the words you searched for, how many results came back, and when. We do not store your IP address, any account or user identifier, or your browser details with it. We use these anonymous counts to see what people look for and which tools are missing from the catalog. Please don&apos;t type personal information into the search box; queries that look like an email address or a long number are discarded.
+                When you search the tool catalog, we add one to a daily count for the category filter and a rough result range (for example &quot;no results&quot; or &quot;6 to 20 results&quot;). Separately, we keep the words you searched for, how many results came back, and when, so we can see which tools are missing from the catalog. Before saving, we remove anything that looks like an email address or phone number and cut the text to 60 characters; queries that look like an email address or a long number are discarded. We do not store your IP address, any account or user identifier, or your browser details with any of it. Please don&apos;t type personal information into the search box.
               </p>
               <p className="mt-4">
                 Your recent searches are saved only in your own browser (local storage) so you can repeat them. They are never sent to us, and you can clear them from the search box at any time.
               </p>
               <p className="text-sm text-soft mt-2">
-                <strong>Retention:</strong> Search query logs are automatically deleted after 90 days.
+                <strong>Retention:</strong> Search words are automatically deleted after 30 days. Daily counts hold no personal data and are kept for trend reporting.
               </p>
 
               <h3 className="heading-3 mb-3 mt-6">Visit-link click logs</h3>
               <p>
-                When you click any "Visit" link (paid or not), we log the following for tracking performance and preventing abuse:
+                When you click any "Visit" link (paid or not), we log the following to count visits and paid referrals:
               </p>
               <ul className="space-y-2">
-                <li><strong>Hashed IP address:</strong> We hash your IP address using a secret key. Raw IP addresses are not stored.</li>
-                <li><strong>Browser type (user agent):</strong> Up to 255 characters of your browser's user-agent string</li>
-                <li><strong>Referrer:</strong> The page you came from (address without query details)</li>
+                <li><strong>Page:</strong> The page on our site you clicked from (address without query details)</li>
+                <li><strong>Referring site:</strong> Only the site name (for example https://example.com) if you came from another site</li>
+                <li><strong>Likely automated:</strong> A yes/no flag so we can leave out bots and crawlers</li>
                 <li><strong>Timestamp:</strong> When you clicked the link</li>
                 <li><strong>Tool and link identifiers:</strong> Which tool link you clicked</li>
               </ul>
               <p className="mt-4">
-                Paid links may pass through an affiliate network (for example PartnerStack, Impact, Rewardful or Dub, depending on the program) and may add tracking codes to the address so the partner can credit the referral.
+                We don't store your IP address (raw or hashed), your browser details, or any session or cookie identifier with a click. Paid links may pass through an affiliate network (for example PartnerStack, Impact, Rewardful or Dub, depending on the program) and may add tracking codes to the address so the partner can credit the referral.
               </p>
               <p className="text-sm text-soft mt-2">
                 <strong>Retention:</strong> Click logs are automatically deleted after 90 days.
@@ -123,35 +122,39 @@ export default function PrivacyPage() {
             <div>
               <h2 className="heading-2 mb-4">What we don't collect</h2>
               <ul className="space-y-2">
-                <li><strong>Raw IP addresses:</strong> We hash IPs immediately and do not store the original</li>
-                <li><strong>Analytics or tracking cookies:</strong> We do not use Google Analytics, Facebook Pixel, or similar tracking services. Our only analytics is the optional, cookieless Vercel Web Analytics described below, and it stays off unless you opt in</li>
+                <li><strong>IP addresses:</strong> We don't store your IP address, raw or hashed, with any count or click. Our hosting and spam-protection providers briefly process it to deliver pages and block abuse</li>
+                <li><strong>Analytics or tracking cookies:</strong> We do not use Google Analytics, Facebook Pixel, or similar tracking services. Our only analytics are cookieless Vercel Web Analytics and our own server-side counts, described under <a href="#site-analytics" className="text-green hover:underline">Site analytics</a></li>
                 <li><strong>Advertising data:</strong> We do not track you across websites</li>
-                <li><strong>Precise location:</strong> We do not collect or store precise geolocation. If you opt in to analytics, Vercel derives an approximate country, region and city from your connection for aggregate counts</li>
+                <li><strong>Precise location:</strong> We do not collect or store precise geolocation. Vercel Web Analytics derives general country information from your connection for aggregate counts</li>
               </ul>
+            </div>
+
+            <div id="site-analytics" className="scroll-mt-20">
+              <h2 className="heading-2 mb-4" id="analytics">Site analytics</h2>
+              <p>
+                We measure how our site is used so we can improve it. We use Vercel Web Analytics, which counts page views, referring sites and general device and country information without cookies and without storing IP addresses. We also count, on our own servers, clicks on outbound and affiliate links, use of our search and tool finder, form completions, and campaign tags in links (UTM codes). These counts are aggregate. We don&apos;t use them to identify you, build a profile of you, or track you across other sites.
+              </p>
+              <p className="mt-4">
+                For visitors in the EU and UK, we rely on our legitimate interest in understanding and improving our site. You can object by emailing <a href="mailto:aionestopshop25@gmail.com" className="text-green hover:underline">aionestopshop25@gmail.com</a>, or by using a browser setting or extension that blocks analytics scripts.
+              </p>
+              <p className="mt-4">
+                If we ever add tools that set cookies or track individuals, we&apos;ll ask for your consent first.
+              </p>
             </div>
 
             <div id="cookies" className="scroll-mt-20">
               <h2 className="heading-2 mb-4">Cookies and local storage</h2>
               <p>
-                We don't use advertising or tracking cookies, and visitors who browse aren't given cookies by us.
+                We don't use advertising or tracking cookies, and visitors who browse aren't given cookies by us. Our analytics don't use cookies, local storage or session storage.
               </p>
               <p className="mt-4">
-                Your browser's local storage keeps three small things on your own device: the tools you add to your compare list, your last few searches, and your analytics choice from our cookie banner. You can clear them anytime in your browser settings.
-              </p>
-              <p className="mt-4" id="analytics">
-                <strong>Optional analytics (off unless you opt in).</strong> If you choose "Allow analytics" in our cookie banner, we load Vercel Web Analytics to count page visits. It doesn't use cookies. According to Vercel&apos;s documentation, each page view can include: the time, the page address and route (we remove search terms and other query text before it is sent), the referring page, an approximate location (country, region, city) derived from your connection, your device type, operating system and browser with versions, and the analytics script version. Vercel tells visits apart with a hash made from the incoming request, rather than a cookie, and discards it after 24 hours. We see only aggregate counts. We never load it on admin pages. If you choose "No thanks", close the banner with Escape, or make no choice, it isn&apos;t loaded at all. If your browser sends a Global Privacy Control signal, we treat it as &quot;No thanks&quot; for analytics. See <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel&apos;s Web Analytics privacy notes</a>.
-              </p>
-              <p className="mt-4">
-                <strong>Changing your choice:</strong> you can change it anytime with the button below (also under &quot;Cookie settings&quot; in the footer). If you switch analytics off, we stop sending page views right away. Clearing this site&apos;s data in your browser also resets your choice.
-              </p>
-              <p className="mt-2">
-                <CookieSettingsButton />
+                Your browser's local storage keeps a few small things on your own device: the tools you add to your compare list and your last few searches (and, if you used our earlier cookie banner, the choice you made there). You can clear them anytime in your browser settings.
               </p>
               <p className="mt-4">
                 If you're a site admin who signs in, we use login cookies so you stay signed in. Those are needed for the admin area to work.
               </p>
               <p className="mt-4">
-                When you click a "Visit" link, we record the click (a hashed, not raw, version of your IP address, your browser type, and the page you came from) so we can count visits and paid referrals and stop abuse. After you land on the tool's site, that site, and any affiliate network it uses, may set its own cookies under its own privacy policy, which we don't control.
+                When you click a "Visit" link, we record the click (which tool, when, and the page you came from; no IP address or browser details) so we can count visits and paid referrals. After you land on the tool's site, that site, and any affiliate network it uses, may set its own cookies under its own privacy policy, which we don't control.
               </p>
               <p className="mt-4">
                 We delete click records after 90 days.
@@ -178,7 +181,7 @@ export default function PrivacyPage() {
               <ul className="space-y-2">
                 <li><strong>Supabase:</strong> Database and authentication (see <a href="https://supabase.com/privacy" className="text-green hover:underline" rel="noopener">Supabase Privacy Policy</a>)</li>
                 <li><strong>Vercel:</strong> Hosting and CDN (see <a href="https://vercel.com/legal/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel Privacy Policy</a>)</li>
-                <li><strong>Vercel Web Analytics (only if you opt in):</strong> Cookieless, aggregate page view counts. Off by default; see <a href="#analytics" className="text-green hover:underline">Optional analytics</a> for what it collects (see <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel Analytics Privacy</a>)</li>
+                <li><strong>Vercel Web Analytics:</strong> Cookieless, aggregate page view counts; see <a href="#site-analytics" className="text-green hover:underline">Site analytics</a> (see <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel Analytics Privacy</a>)</li>
                 <li><strong>Upstash:</strong> Blocking spam and abuse. It briefly processes your IP address when you submit a form or click a sponsored link. (see <a href="https://upstash.com/trust/privacy.pdf" className="text-green hover:underline" rel="noopener">Upstash Privacy Policy</a>)</li>
                 <li><strong>Gmail (Google):</strong> Our team mailbox for inquiries and sponsor emails (see <a href="https://policies.google.com/privacy" className="text-green hover:underline" rel="noopener">Google Privacy Policy</a>)</li>
                 <li><strong>Resend:</strong> Transactional email delivery (sponsor notifications) (see <a href="https://resend.com/legal/privacy-policy" className="text-green hover:underline" rel="noopener">Resend Privacy Policy</a>)</li>
@@ -192,7 +195,7 @@ export default function PrivacyPage() {
               <h2 className="heading-2 mb-4">Data retention</h2>
               <ul className="space-y-2">
                 <li><strong>Click logs:</strong> Automatically deleted after 90 days</li>
-                <li><strong>Search query logs:</strong> Automatically deleted after 90 days</li>
+                <li><strong>Search words:</strong> Automatically deleted after 30 days</li>
                 <li><strong>Tool submissions:</strong> Deleted after review (approved or rejected)</li>
                 <li><strong>Sponsor requests:</strong> 6 months if declined or not booked; records of paid sponsorships: 5 years (tax records), then deleted</li>
                 <li><strong>Newsletter emails:</strong> Kept until you unsubscribe, then deleted</li>

@@ -1,20 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { after } from 'next/server';
 import { supabase as publicSupabase, getServiceSupabase } from '@/lib/supabase';
-import { affiliateRedirectRateLimit, dedupe, releaseDedupe } from '@/lib/rate-limit';
+import { affiliateRedirectRateLimit } from '@/lib/rate-limit';
 import { logAffiliateClick } from '@/lib/click-logging';
 import { getClientKey } from '@/lib/client-ip';
 import { clickContext, isBotRequest } from '@/lib/click-context';
-import crypto from 'crypto';
-
-// Hash IP address for privacy
-function hashIP(ip: string): string {
-  const secret = process.env.AFFILIATE_CLICK_SECRET;
-  if (!secret) {
-    throw new Error('AFFILIATE_CLICK_SECRET not configured');
-  }
-  return crypto.createHmac('sha256', secret).update(ip).digest('hex');
-}
 
 export async function GET(
   request: NextRequest,
@@ -23,7 +13,8 @@ export async function GET(
   const params = await props.params;
   const { slug } = params;
 
-  // Rate limiting with Upstash
+  // Rate limiting with Upstash. The client key is used only for this check and
+  // is never stored with the click or logged.
   const ip = getClientKey(request);
   const { success: rateLimitOk } = await affiliateRedirectRateLimit.limit(ip);
   
@@ -70,7 +61,7 @@ export async function GET(
 
     const userAgent = request.headers.get('user-agent');
     
-    // Page the click came from + trimmed referrer (origin + path, no query/PII).
+    // Page the click came from + referring site (origin only for other sites; no query/PII).
     const { referrer, pagePath } = clickContext(
       request.headers.get('referer'),
       request.nextUrl.searchParams.get('from'),
@@ -93,18 +84,13 @@ export async function GET(
     after(() =>
       logAffiliateClick(
         {
-          ip,
           toolId,
           linkId,
-          userAgent,
           referrer,
           pagePath,
           isBot: isBotRequest(userAgent, request.headers.get('accept-language')),
         },
         {
-          hashIp: hashIP,
-          dedupe,
-          releaseDedupe,
           insert: async (row) => {
             const { error } = await getServiceSupabase().from('affiliate_clicks').insert(row);
             return { error };
@@ -115,7 +101,7 @@ export async function GET(
 
     return NextResponse.redirect(safeDestination, 302);
   } catch (error) {
-    console.error('Error in /go redirect:', error);
+    console.error('Error in /go redirect:', error instanceof Error ? error.name : 'unknown');
     return NextResponse.redirect(new URL('/', request.url), 302);
   }
 }

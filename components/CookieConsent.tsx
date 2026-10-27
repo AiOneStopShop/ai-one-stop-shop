@@ -7,8 +7,9 @@ import { CONSENT_OPEN_EVENT, hasGpcSignal, readConsent, readStoredConsent, write
 // Both choices share one style so neither is nudged (equal prominence).
 const CHOICE_BUTTON_CLASS = 'btn-secondary text-xs sm:text-sm px-3 py-2 min-h-[44px] min-w-[44px]';
 
-// Asks once whether we may count visits with Vercel Web Analytics. Analytics stays
-// off until the visitor picks "Allow analytics" (see components/ConsentedAnalytics.tsx).
+// Asks once whether we may turn on optional tools that set cookies or track a
+// person (lib/cookie-consent.ts CONSENT_GATED_TOOLS). Rendered only while that
+// list is non-empty; cookieless Vercel Web Analytics does not need it.
 // The old info-only "Got it" value ('dismissed') never counted as consent, so those
 // visitors see the banner once more and get the real choice.
 export function CookieConsent() {
@@ -90,7 +91,7 @@ export function CookieConsent() {
       <div className="container-max py-2 sm:py-2.5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
           <p id="cookie-banner-text" className="text-xs sm:text-sm text-ink leading-snug min-w-0">
-            <strong>We keep it simple.</strong> No ad or tracking cookies. With your OK, we&apos;d count page visits with Vercel Web Analytics (no cookies, no profile of you) to learn what&apos;s useful. It stays off unless you say yes, and you can change your mind anytime.{process.env.NEXT_PUBLIC_AFFILIATE_LIVE === 'true' ? ' Some links may be paid links.' : ''} Any site you visit from here may set its own cookies after you click.{' '}
+            <strong>We keep it simple.</strong> No ad cookies. With your OK, we&apos;d turn on optional tools that set cookies or measure visits in more detail. They stay off unless you say yes, and you can change your mind anytime.{process.env.NEXT_PUBLIC_AFFILIATE_LIVE === 'true' ? ' Some links may be paid links.' : ''} Any site you visit from here may set its own cookies after you click.{' '}
             <Link href="/privacy#cookies" className="text-green underline hover:no-underline focus-ring rounded">
               Privacy
             </Link>

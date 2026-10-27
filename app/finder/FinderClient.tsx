@@ -44,6 +44,17 @@ export default function FinderClient({
     e.preventDefault();
     if (useCase && budget && experience) {
       setShowResults(true);
+      // Aggregate count only: the three answers (fixed choices) and a result-count bucket.
+      try {
+        const payload = JSON.stringify({ event: 'finder', useCase, budget, experience, count: getRecommendations().length });
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/stats', new Blob([payload], { type: 'application/json' }));
+        } else {
+          void fetch('/api/stats', { method: 'POST', body: payload, keepalive: true, headers: { 'Content-Type': 'application/json' } });
+        }
+      } catch {
+        /* counting is best effort */
+      }
     }
   };
 

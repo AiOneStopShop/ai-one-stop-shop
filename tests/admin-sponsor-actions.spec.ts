@@ -108,62 +108,43 @@ test.describe('L1/L2 sponsor request email', () => {
   });
 });
 
-test.describe('click logging reliability', () => {
-  const input = { ip: '203.0.113.9', toolId: 't1', linkId: null, userAgent: 'UA', referrer: 'https://www.aionestop.shop/tools/x', pagePath: '/tools/x', isBot: false };
+test.describe('click logging reliability and privacy', () => {
+  const input = { toolId: 't1', linkId: null, referrer: 'https://www.aionestop.shop/tools/x', pagePath: '/tools/x', isBot: false };
 
   function deps(over: Partial<ClickLogDeps> & { insertResults?: Array<{ code?: string; message?: string } | null> } = {}) {
     const results = over.insertResults ?? [null];
-    const state = { inserts: 0, released: [] as string[], logs: [] as string[] };
+    const state = { inserts: 0, rows: [] as unknown[], logs: [] as string[] };
     const d: ClickLogDeps = {
-      hashIp: () => 'hash',
-      dedupe: async () => true,
-      releaseDedupe: async (k) => { state.released.push(k); },
-      insert: async () => ({ error: results[Math.min(state.inserts++, results.length - 1)] }),
+      insert: async (row) => { state.rows.push(row); return { error: results[Math.min(state.inserts++, results.length - 1)] }; },
       log: (m) => state.logs.push(m),
-      now: fixedNow,
       ...over,
     };
     return { d, state };
   }
 
-  test('logs one row on success', async () => {
+  test('logs one row on success, with no IP, hash or user agent', async () => {
     const { d, state } = deps();
     expect(await logAffiliateClick(input, d)).toBe('logged');
     expect(state.inserts).toBe(1);
+    expect(Object.keys(state.rows[0] as object).sort()).toEqual(['is_bot', 'link_id', 'page_path', 'referrer', 'tool_id']);
   });
 
   test('retries a failed insert once', async () => {
     const { d, state } = deps({ insertResults: [{ code: '57014', message: 'timeout' }, null] });
     expect(await logAffiliateClick(input, d)).toBe('logged');
     expect(state.inserts).toBe(2);
-    expect(state.released).toHaveLength(0);
   });
 
-  test('releases the dedupe key when the insert keeps failing', async () => {
-    const { d, state } = deps({ insertResults: [{ code: 'PGRST301', message: 'JWT' }] });
+  test('persistent failure logs only the error code', async () => {
+    const { d, state } = deps({ insertResults: [{ code: 'PGRST301', message: 'row 203.0.113.9 detail' }] });
     expect(await logAffiliateClick(input, d)).toBe('failed');
-    expect(state.released).toEqual(['dedupe:click:hash:t1:2026-10-18']);
-    expect(state.logs.join(' ')).toContain('insert failed after retry');
+    expect(state.logs.join(' ')).toContain('insert failed after retry: PGRST301');
+    expect(state.logs.join(' ')).not.toContain('203.0.113.9');
   });
 
-  test('thrown insert (e.g. missing service key) is caught and logged', async () => {
-    const { d, state } = deps({ insert: async () => { throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY'); } });
+  test('thrown insert is caught and logged without its message', async () => {
+    const { d, state } = deps({ insert: async () => { throw new Error('secret detail'); } });
     expect(await logAffiliateClick(input, d)).toBe('failed');
-    expect(state.released).toHaveLength(1);
-  });
-
-  test('duplicate in the same day is not inserted', async () => {
-    const { d, state } = deps({ dedupe: async () => false });
-    expect(await logAffiliateClick(input, d)).toBe('duplicate');
-    expect(state.inserts).toBe(0);
-  });
-
-  test('missing secret or dedupe outage logs and skips the insert', async () => {
-    const a = deps({ hashIp: () => { throw new Error('AFFILIATE_CLICK_SECRET not configured'); } });
-    expect(await logAffiliateClick(input, a.d)).toBe('failed');
-    expect(a.state.logs[0]).toContain('AFFILIATE_CLICK_SECRET');
-    const b = deps({ dedupe: async () => { throw new Error('Upstash down'); } });
-    expect(await logAffiliateClick(input, b.d)).toBe('failed');
-    expect(b.state.inserts).toBe(0);
+    expect(state.logs.join(' ')).not.toContain('secret detail');
   });
 });

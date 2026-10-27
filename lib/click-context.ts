@@ -1,8 +1,8 @@
 // Where an outbound /go click came from, without PII.
 // - page_path: the on-site page the visitor clicked from (same-origin Referer
 //   pathname, or a validated ?from=/path fallback). Never a query string.
-// - referrer: Referer trimmed to origin + pathname (no query, no fragment, no
-//   credentials). Cross-origin referrers are kept as origin + path too.
+// - referrer: same-site Referer trimmed to origin + pathname; other sites keep
+//   only their origin (no path, query, fragment or credentials).
 
 const MAX_LEN = 300;
 
@@ -30,9 +30,10 @@ export function clickContext(
     try {
       const u = new URL(refererHeader);
       if (u.protocol === 'https:' || u.protocol === 'http:') {
-        referrer = (u.origin + u.pathname).slice(0, MAX_LEN);
         const sameSite =
           !!siteHost && u.host.replace(/^www\./, '').toLowerCase() === siteHost.replace(/^www\./, '').toLowerCase();
+        // Our own pages keep their path; other sites keep only their origin.
+        referrer = (sameSite ? u.origin + u.pathname : u.origin).slice(0, MAX_LEN);
         if (sameSite) pagePath = u.pathname.slice(0, MAX_LEN);
       }
     } catch {

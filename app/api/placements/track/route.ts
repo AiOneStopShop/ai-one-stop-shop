@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
       }
     } catch (err) {
       // In production without Redis, dedupe throws - fail the request
-      console.error('Deduplication error:', err);
+      console.error('Deduplication error:', err instanceof Error ? err.name : 'unknown');
       return NextResponse.json(
         { error: 'Service unavailable' },
         { status: 503 }
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ tracked: true });
   } catch (err) {
-    console.error('Placement tracking error:', err);
+    console.error('Placement tracking error:', err instanceof Error ? err.name : 'unknown');
     // Don't fail loudly - tracking is best-effort
     return NextResponse.json({ tracked: false }, { status: 200 });
   }

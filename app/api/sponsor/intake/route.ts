@@ -1,3 +1,4 @@
+import { recordFormSuccess } from '@/lib/site-stats';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { submitToolRateLimit } from '@/lib/rate-limit';
@@ -216,7 +217,7 @@ export async function POST(request: NextRequest) {
           });
 
         if (uploadError) {
-          console.error('Logo upload error:', uploadError);
+          console.error('Logo upload error:', uploadError.message);
           return NextResponse.json(
             { error: 'Failed to upload logo. Please try again.' },
             { status: 500 }
@@ -259,7 +260,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Database error storing sponsor intake:', error);
+      console.error('Database error storing sponsor intake:', error.code);
       return NextResponse.json(
         { error: 'Failed to save your submission. Please try again.' },
         { status: 500 }
@@ -312,6 +313,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    await recordFormSuccess('sponsor_intake');
     return NextResponse.json({ success: true, id: data.id });
   } catch (err) {
     console.error('Unexpected error in sponsor intake:', err);

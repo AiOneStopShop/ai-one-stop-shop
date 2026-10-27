@@ -61,13 +61,13 @@ export async function GET(
       });
     } catch (trackError) {
       // Log but don't fail the redirect
-      console.error('Failed to track sponsor click:', trackError);
+      console.error('Failed to track sponsor click:', trackError instanceof Error ? trackError.name : 'unknown');
     }
 
     // Redirect to sponsor link
     return NextResponse.redirect(placement.link_url, 302);
   } catch (err) {
-    console.error('Sponsor redirect error:', err);
+    console.error('Sponsor redirect error:', err instanceof Error ? err.name : 'unknown');
     return NextResponse.redirect(new URL('/', request.url), 302);
   }
 }

@@ -31,11 +31,11 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase.rpc('delete_old_affiliate_clicks_http');
 
     if (error) {
-      console.error('Click cleanup failed:', error);
+      console.error('Click cleanup failed:', error.code);
       return NextResponse.json({ error: 'cleanup_failed' }, { status: 500 });
     }
 
-    // Search query logs (migration 026) share the same 90-day retention. Best effort: a missing
+    // Search query logs keep 30 days (migration 032). Best effort: a missing
     // function (migration not yet applied) must not fail the click cleanup.
     const { data: searchDeleted, error: searchError } = await supabase.rpc('delete_old_search_queries');
     if (searchError) console.warn('Search log cleanup skipped:', searchError.code);

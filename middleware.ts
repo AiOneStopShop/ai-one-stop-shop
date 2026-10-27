@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextResponse, type NextFetchEvent, type NextRequest } from 'next/server'
+import { incrementViaRest, recordSiteEvent, utmDimensions } from '@/lib/site-stats'
 import {
   CRON_CLEANUP_PATH,
   disallowAllRobotsTxt,
@@ -98,7 +99,22 @@ async function continueRequest(request: NextRequest, requestHeaders: Headers): P
   return NextResponse.next({ request: { headers: requestHeaders } })
 }
 
-export async function middleware(request: NextRequest) {
+// Campaign tags: count utm_* values on page loads (daily aggregate). Every other
+// query parameter (fbclid, gclid, email...) is ignored, and nothing about the
+// visitor (IP, user agent, cookies) is stored or logged.
+function countUtm(request: NextRequest, event?: NextFetchEvent) {
+  if (request.method !== 'GET' || !event) return
+  const { pathname, searchParams } = request.nextUrl
+  if (pathname.startsWith('/api') || pathname.startsWith('/admin') || pathname.startsWith('/_next')) return
+  if (request.headers.get('next-router-prefetch') || request.headers.get('purpose') === 'prefetch') return
+  if (/bot|crawl|spider|headless|curl|wget/i.test(request.headers.get('user-agent') || '')) return
+  const dims = utmDimensions(searchParams)
+  if (dims.length === 0) return
+  event.waitUntil(Promise.all(dims.map((d) => recordSiteEvent('utm', d, incrementViaRest))).then(() => undefined))
+}
+
+export async function middleware(request: NextRequest, event?: NextFetchEvent) {
+  countUtm(request, event)
   const host = hostOf(request)
   const { pathname } = request.nextUrl
 

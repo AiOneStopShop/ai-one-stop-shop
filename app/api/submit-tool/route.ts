@@ -1,3 +1,4 @@
+import { recordFormSuccess } from '@/lib/site-stats';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { z } from 'zod';
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest) {
     const parsed = submitToolSchema.safeParse(body);
 
     if (!parsed.success) {
-      console.error('Validation failed:', parsed.error.issues);
+      console.error('Validation failed:', parsed.error.issues.map((i) => i.path.join('.')).join(','));
       return NextResponse.json(
         { errors: mapZodIssues(parsed.error.issues) },
         { status: 400 }
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
 
     // Honeypot: same success body as a real submit so bots cannot probe
     if (extra_ref) {
-      console.warn('Honeypot triggered', { ip });
+      console.warn('Honeypot triggered');
       return NextResponse.json(NEUTRAL_SUCCESS);
     }
 
@@ -110,16 +111,17 @@ export async function POST(request: NextRequest) {
       });
 
     if (error) {
-      console.error('Database insert error:', error);
+      console.error('Database insert error:', error.code);
       return NextResponse.json(
         { error: 'submit_failed' },
         { status: 500 }
       );
     }
 
+    await recordFormSuccess('submit_tool');
     return NextResponse.json(NEUTRAL_SUCCESS);
   } catch (error) {
-    console.error('Submit tool error:', error);
+    console.error('Submit tool error:', error instanceof Error ? error.name : 'unknown');
     return NextResponse.json(
       { error: 'submit_failed' },
       { status: 500 }

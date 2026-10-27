@@ -70,7 +70,7 @@ function createRateLimiter(requests: number, windowMinutes: number) {
     return new Ratelimit({
       redis,
       limiter: Ratelimit.slidingWindow(requests, `${windowMinutes} m`),
-      analytics: true,
+      analytics: false, // Upstash analytics would keep request identifiers (IPs) in Redis
     });
   } else {
     // Fail closed in production

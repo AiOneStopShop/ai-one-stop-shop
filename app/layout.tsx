@@ -6,7 +6,8 @@ import { Footer } from '@/components/Footer';
 import { CookieConsent } from '@/components/CookieConsent';
 import { GlobalSearchShortcut } from '@/components/GlobalSearchShortcut';
 import { getBrandUrl, getSiteUrl } from '@/lib/site-config';
-import { ConsentedAnalytics } from '@/components/ConsentedAnalytics';
+import { SiteAnalytics } from '@/components/SiteAnalytics';
+import { consentBannerNeeded } from '@/lib/cookie-consent';
 import { headers } from 'next/headers';
 
 // Nonce CSP needs every HTML page rendered per request: a prerendered page would
@@ -71,22 +72,28 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${sourceSans3.variable}`}>
       <body className="min-h-screen bg-[#FBF4E6] text-[#22201B] font-source-sans antialiased">
-        {/* Sets the banner offset class before paint. Allowed by the per-request CSP nonce
-            (no 'unsafe-inline'). Same logic as public/cookie-banner-boot.js. */}
-        <script
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html: "try{var c=localStorage.getItem('cookieConsent');if(c==='accepted'||c==='declined'||navigator.globalPrivacyControl===true){document.documentElement.classList.add('cookie-consent-given')}else{document.documentElement.classList.add('has-cookie-banner')}}catch(e){document.documentElement.classList.add('has-cookie-banner')}",
-          }}
-        />
-        <CookieConsent />
+        {/* Consent banner only while a cookie-setting or tracking tool is configured
+            (lib/cookie-consent.ts CONSENT_GATED_TOOLS). */}
+        {consentBannerNeeded() && (
+          <>
+            {/* Sets the banner offset class before paint. Allowed by the per-request CSP nonce
+              (no 'unsafe-inline'). Same logic as public/cookie-banner-boot.js. */}
+          <script
+            nonce={nonce}
+            dangerouslySetInnerHTML={{
+              __html: "try{var c=localStorage.getItem('cookieConsent');if(c==='accepted'||c==='declined'||navigator.globalPrivacyControl===true){document.documentElement.classList.add('cookie-consent-given')}else{document.documentElement.classList.add('has-cookie-banner')}}catch(e){document.documentElement.classList.add('has-cookie-banner')}",
+            }}
+          />
+          <CookieConsent />
+          </>
+        )}
         <GlobalSearchShortcut />
         <Header />
         <main id="main" tabIndex={-1} className="min-h-screen focus:outline-none">
           {children}
         </main>
         <Footer />
-        <ConsentedAnalytics />
+        <SiteAnalytics />
       </body>
     </html>
   );

@@ -92,7 +92,7 @@ export default async function AdminSearchInsightsPage(props: { searchParams: Pro
           <div>
             <h1 className="heading-1 mb-2">Search insights</h1>
             <p className="text-soft">
-              Anonymous query text and result counts only. Logs are deleted after 90 days.
+              Scrubbed query text (emails and phone numbers removed, 60 characters max) and result counts only, with no visitor details. Logs are deleted after 30 days.
             </p>
           </div>
           <Link href="/admin/review" className="btn-secondary">Back to admin</Link>

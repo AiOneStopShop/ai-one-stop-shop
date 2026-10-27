@@ -11,9 +11,9 @@ test('same-origin Referer gives page_path and trimmed referrer', () => {
   expect(clickContext('https://aionestop.shop/tools/a', null, HOST).pagePath).toBe('/tools/a');
 });
 
-test('cross-origin Referer: referrer kept (no query), page_path falls back to ?from', () => {
+test('cross-origin Referer: only the origin is kept, page_path falls back to ?from', () => {
   expect(clickContext('https://u:p@news.example.com/a/b?email=me@x.com', '/tools/chatgpt', HOST)).toEqual({
-    referrer: 'https://news.example.com/a/b',
+    referrer: 'https://news.example.com',
     pagePath: '/tools/chatgpt',
   });
 });

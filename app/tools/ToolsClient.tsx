@@ -115,14 +115,14 @@ export function ToolsClient({
     });
   }, [searchQuery, selectedCategory, priceFilter, hasFreeTier, sort, platform, pathname, router, initialExact, initialQuery]);
 
-  // Privacy-safe analytics: once a query has settled, send only its text and result count.
+  // Privacy-safe analytics: once a query has settled, send only its text (scrubbed server-side), result count and category filter.
   const loggedQueries = useRef(new Set<string>());
   useEffect(() => {
     const q = searchQuery.trim().toLowerCase();
     if (q.length < 2 || loggedQueries.current.has(q)) return undefined;
     const timer = window.setTimeout(() => {
       loggedQueries.current.add(q);
-      const payload = JSON.stringify({ q, count: resultCount });
+      const payload = JSON.stringify({ q, count: resultCount, category: selectedCategory });
       try {
         if (navigator.sendBeacon) {
           navigator.sendBeacon('/api/search/log', new Blob([payload], { type: 'application/json' }));
@@ -134,7 +134,7 @@ export function ToolsClient({
       }
     }, 1500);
     return () => window.clearTimeout(timer);
-  }, [searchQuery, resultCount]);
+  }, [searchQuery, resultCount, selectedCategory]);
 
   const activeFilterCount = [selectedCategory !== 'all', priceFilter !== 'all', hasFreeTier, platform !== 'all'].filter(Boolean).length;
   const hasActiveFilters = Boolean(searchQuery) || activeFilterCount > 0;

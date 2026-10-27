@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { apiMemoryBurst, apiRateLimit, isUpstashConfigured } from '@/lib/rate-limit';
 import { getClientKey } from '@/lib/client-ip';
 import { parseSearchLogPayload } from '@/lib/search-log';
+import { parseStatsPayload, recordSiteEvent } from '@/lib/site-stats';
 
 function supabaseConfigured(): boolean {
   return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
@@ -26,6 +27,12 @@ export async function POST(request: NextRequest) {
     body = JSON.parse(await request.text());
   } catch {
     return new NextResponse(null, { status: 204 });
+  }
+
+  // Aggregate count first: result bucket + category filter, never the text.
+  const b = body && typeof body === 'object' ? (body as Record<string, unknown>) : {};
+  for (const { event, dimension } of parseStatsPayload({ event: 'search', count: b.count, category: b.category })) {
+    await recordSiteEvent(event, dimension);
   }
 
   const row = parseSearchLogPayload(body);

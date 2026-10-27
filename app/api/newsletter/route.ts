@@ -1,3 +1,4 @@
+import { recordFormSuccess } from '@/lib/site-stats';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getServiceSupabase } from '@/lib/supabase';
@@ -53,5 +54,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  await recordFormSuccess('newsletter');
   return NextResponse.json({ success: true });
 }

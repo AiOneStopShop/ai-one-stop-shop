@@ -4,7 +4,13 @@ import { supabase as publicSupabase, getServiceSupabase } from '@/lib/supabase';
 import { affiliateRedirectRateLimit } from '@/lib/rate-limit';
 import { logAffiliateClick } from '@/lib/click-logging';
 import { getClientKey } from '@/lib/client-ip';
-import { clickContext, isBotRequest } from '@/lib/click-context';
+import { clickContext, isBotClick, isInternalCheck, GO_NOINDEX_HEADERS } from '@/lib/click-context';
+
+function redirect(to: URL | string) {
+  const res = NextResponse.redirect(to, 302);
+  for (const [k, v] of Object.entries(GO_NOINDEX_HEADERS)) res.headers.set(k, v);
+  return res;
+}
 
 export async function GET(
   request: NextRequest,
@@ -19,7 +25,7 @@ export async function GET(
   const { success: rateLimitOk } = await affiliateRedirectRateLimit.limit(ip);
   
   if (!rateLimitOk) {
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: GO_NOINDEX_HEADERS });
   }
 
   try {
@@ -53,14 +59,12 @@ export async function GET(
         .maybeSingle();
 
       if (!tool?.website_url) {
-        return NextResponse.redirect(new URL('/', request.url), 302);
+        return redirect(new URL('/', request.url));
       }
       destination = tool.website_url;
       toolId = tool.id;
     }
 
-    const userAgent = request.headers.get('user-agent');
-    
     // Page the click came from + referring site (origin only for other sites; no query/PII).
     const { referrer, pagePath } = clickContext(
       request.headers.get('referer'),
@@ -73,14 +77,21 @@ export async function GET(
     try {
       safeDestination = new URL(destination as string);
     } catch {
-      return NextResponse.redirect(new URL('/', request.url), 302);
+      return redirect(new URL('/', request.url));
     }
     if (safeDestination.protocol !== 'https:' && safeDestination.protocol !== 'http:') {
-      return NextResponse.redirect(new URL('/', request.url), 302);
+      return redirect(new URL('/', request.url));
     }
 
     // Log the click after the response is sent. after() runs the callback inside
     // the platform's waitUntil, so the function stays alive until it settles.
+    // Our own checks (HEAD requests, or GET with the internal-check header) are
+    // never logged. Everything else is logged with a bot flag computed from
+    // request headers; the user agent itself is never stored.
+    if (isInternalCheck(request.method, request.headers)) {
+      return redirect(safeDestination);
+    }
+
     after(() =>
       logAffiliateClick(
         {
@@ -88,7 +99,7 @@ export async function GET(
           linkId,
           referrer,
           pagePath,
-          isBot: isBotRequest(userAgent, request.headers.get('accept-language')),
+          isBot: isBotClick(request.headers),
         },
         {
           insert: async (row) => {
@@ -99,9 +110,12 @@ export async function GET(
       ).then(() => undefined)
     );
 
-    return NextResponse.redirect(safeDestination, 302);
+    return redirect(safeDestination);
   } catch (error) {
     console.error('Error in /go redirect:', error instanceof Error ? error.name : 'unknown');
-    return NextResponse.redirect(new URL('/', request.url), 302);
+    return redirect(new URL('/', request.url));
   }
 }
+
+// HEAD (link checkers, uptime monitors, our own routines): same redirect, never logged.
+export const HEAD = GET;

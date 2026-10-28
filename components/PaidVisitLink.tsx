@@ -28,7 +28,7 @@ export function PaidVisitLink({
       ) : null}
       <a
         href={href}
-        rel={paid ? 'sponsored nofollow noopener' : 'noopener'}
+        rel={paid ? 'sponsored nofollow noopener' : 'nofollow noopener'}
         className={paid ? 'link-paid inline-flex items-center min-h-11' : 'inline-flex items-center min-h-11 text-green hover:underline focus-ring rounded'}
         aria-describedby={paid ? noteId : undefined}
       >

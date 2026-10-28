@@ -50,7 +50,7 @@ export function SponsoredToolCard({ placement, tool }: SponsoredToolCardProps) {
         <a
           href={`/go/s/${placement.id}`}
           target="_blank"
-          rel="sponsored noopener"
+          rel="sponsored nofollow noopener"
           className="btn-primary w-full block text-center"
         >
           Learn more

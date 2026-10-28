@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { affiliateRedirectRateLimit } from '@/lib/rate-limit';
 import { getClientKey } from '@/lib/client-ip';
+import { isBotClick, isInternalCheck, GO_NOINDEX_HEADERS } from '@/lib/click-context';
+
+function redirect(to: URL | string) {
+  const res = NextResponse.redirect(to, 302);
+  for (const [k, v] of Object.entries(GO_NOINDEX_HEADERS)) res.headers.set(k, v);
+  return res;
+}
 
 /**
  * Sponsor link redirect with click tracking.
@@ -24,7 +31,7 @@ export async function GET(
     if (!success) {
       return NextResponse.json(
         { error: 'Too many requests' },
-        { status: 429 }
+        { status: 429, headers: GO_NOINDEX_HEADERS }
       );
     }
 
@@ -37,7 +44,7 @@ export async function GET(
       .single();
 
     if (error || !placement) {
-      return NextResponse.redirect(new URL('/', request.url), 302);
+      return redirect(new URL('/', request.url));
     }
 
     // Verify placement is live and within date range
@@ -50,11 +57,11 @@ export async function GET(
       now < startsAt ||
       now > endsAt
     ) {
-      return NextResponse.redirect(new URL('/', request.url), 302);
+      return redirect(new URL('/', request.url));
     }
 
-    // Increment click count (using the helper function)
-    try {
+    // Increment click count; bots, prefetches and our own checks don't count.
+    if (!isInternalCheck(request.method, request.headers) && !isBotClick(request.headers)) try {
       await supabase.rpc('increment_placement_event', {
         p_placement_id: placementId,
         p_event_type: 'click',
@@ -65,9 +72,12 @@ export async function GET(
     }
 
     // Redirect to sponsor link
-    return NextResponse.redirect(placement.link_url, 302);
+    return redirect(placement.link_url);
   } catch (err) {
     console.error('Sponsor redirect error:', err instanceof Error ? err.name : 'unknown');
-    return NextResponse.redirect(new URL('/', request.url), 302);
+    return redirect(new URL('/', request.url));
   }
 }
+
+// HEAD (link checkers, our own routines): same redirect, never counted.
+export const HEAD = GET;

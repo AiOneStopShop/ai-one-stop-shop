@@ -42,7 +42,7 @@ export function CategorySpotlight({ placement }: CategorySpotlightProps) {
           <a
             href={`/go/s/${placement.id}`}
             target="_blank"
-            rel="sponsored noopener"
+            rel="sponsored nofollow noopener"
             className="btn-primary inline-flex"
           >
             Learn more

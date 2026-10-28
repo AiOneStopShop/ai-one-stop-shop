@@ -239,7 +239,7 @@ export default async function ToolPage(props: { params: Promise<{ slug: string }
                     <a
                       href={visitUrl}
                       target="_blank"
-                      rel={isAffiliate ? 'sponsored nofollow noopener' : 'noopener'}
+                      rel={isAffiliate ? 'sponsored nofollow noopener' : 'nofollow noopener'}
                       className="btn-primary w-full flex items-center justify-center gap-2"
                       aria-describedby={isAffiliate ? 'paid-note' : undefined}
                     >

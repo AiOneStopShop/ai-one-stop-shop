@@ -53,10 +53,9 @@ export function isAdminPath(pathname: string | null | undefined): boolean {
 
 /**
  * Tools that set cookies or track an individual and therefore need opt-in
- * consent (GPC counts as "No thanks"). Vercel Web Analytics is not one of
- * them: it is cookieless and stores nothing in the browser, so it loads for
- * everyone. Add an entry here before adding any such tool, and gate it with
- * hasAnalyticsConsent(); the banner and "Cookie settings" reappear automatically.
+ * consent (GPC counts as "No thanks"). Vercel Web Analytics is opt-in
+ * (decision 2026-10-29): it loads only after "Allow analytics" (see
+ * components/SiteAnalytics.tsx). Gate any new tool with hasAnalyticsConsent().
  */
-export const CONSENT_GATED_TOOLS: readonly string[] = [];
+export const CONSENT_GATED_TOOLS: readonly string[] = ['Vercel Web Analytics'];
 export const consentBannerNeeded = (): boolean => CONSENT_GATED_TOOLS.length > 0;

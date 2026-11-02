@@ -22,6 +22,21 @@ export async function GET() {
     .limit(1);
   const lastUpdated = (latest?.[0]?.updated_at || PRICE_CHECKED_ISO).slice(0, 10);
 
+  // Live category list, so new categories show up here without a code change.
+  const { data: cats } = await supabase
+    .from('categories')
+    .select('slug, name')
+    .order('sort_order', { ascending: true });
+  const categoryNames = (cats || []).map((c: { name: string }) => c.name.toLowerCase());
+  const categoryPhrase = categoryNames.length
+    ? categoryNames.length > 1
+      ? `${categoryNames.slice(0, -1).join(', ')}, and ${categoryNames[categoryNames.length - 1]}`
+      : categoryNames[0]
+    : 'chat, writing, image, video, audio, music, coding, agents, research, email, slides, design, marketing, productivity, and local models';
+  const categoryLinks = (cats || [])
+    .map((c: { slug: string; name: string }) => `- ${c.name}: ${siteUrl}/category/${c.slug}`)
+    .join('\n');
+
   const content = `# AI One Stop Shop
 
 ## What this site is
@@ -41,7 +56,7 @@ ${isAffiliateLive()
 
 ## What you can find here
 
-- ${count || 0} curated AI tools across chat, writing, image, video, audio, music, coding, agents, research, email, slides, design, marketing, productivity, and local models
+- ${count || 0} curated AI tools across ${categoryPhrase}
 - Pricing information (price checked ${PRICE_CHECKED_LABEL})
 - Editorial picks and explanations of who each tool is best for
 - Browse by category ("best AI tools for writing, coding, video" and more): ${siteUrl}/categories
@@ -51,7 +66,7 @@ ${isAffiliateLive()
 - Budget calculator (toolkit builder): ${siteUrl}/budget
 - No fake ratings or review counts
 
-${llmsGuidesSection(GUIDES, siteUrl)}
+${categoryLinks ? `## Categories\n\n${categoryLinks}\n\n` : ''}${llmsGuidesSection(GUIDES, siteUrl)}
 
 ## Machine-readable catalog
 

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { categoryTitle } from '@/lib/category-title';
 import { PageIntro } from '@/components/PageIntro';
 import { notFound, redirect } from 'next/navigation';
 import { CatalogPager } from '@/components/CatalogPager';
@@ -42,7 +43,7 @@ export async function generateMetadata(props: {
   const category = await getCategoryBySlug(slug);
   if (!category) return { title: 'Category Not Found' };
   return {
-    title: `Best ${category.name} AI Tools`,
+    title: categoryTitle(category),
     description: category.description || `Discover AI tools for ${category.name.toLowerCase()}`,
     alternates: { canonical: `/category/${category.slug}` },
   };
@@ -113,7 +114,7 @@ export default async function CategoryPage(props: {
   ]);
 
   const itemList = generateItemListSchema(
-    `Best ${category.name} AI Tools`,
+    categoryTitle(category),
     category.description || '',
     listed.tools.map((tool: any) => ({
       name: tool.name,
@@ -144,7 +145,7 @@ export default async function CategoryPage(props: {
               </ol>
             </nav>
           }
-          title={<>Best {category.name} AI tools</>}
+          title={<>{categoryTitle(category)}</>}
           accent="notebook"
           lead={<>{category.description ? <>{category.description} </> : null}<span className="text-soft">{listed.total} {listed.total === 1 ? 'tool' : 'tools'}</span></>}
         />

@@ -147,3 +147,46 @@ test('privacy page: site analytics section, contact email, no forbidden words', 
   expect(html).not.toContain('Contact information will be added');
   expect(html).not.toContain('hello@aionestop.shop');
 });
+
+test('Escape on first visit does not record a consent choice', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' });
+  await expect(page.getByRole('button', { name: 'Allow analytics' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: 'Allow analytics' })).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem('cookieConsent'))).toBeNull();
+  await expect(analyticsScripts(page)).toHaveCount(0);
+});
+
+test('Escape in Cookie settings closes without changing the stored choice', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('cookieConsent', 'accepted'));
+  await page.goto('/privacy', { waitUntil: 'networkidle' });
+  await expect(async () => {
+    await page.getByRole('main').getByRole('button', { name: 'Cookie settings' }).click();
+    await expect(page.getByTestId('cookie-current-choice')).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 10_000 });
+  await expect(page.getByTestId('cookie-current-choice')).toContainText('currently on');
+  // Focus is moved into the banner region; Escape dismisses without writing declined.
+  await page.getByRole('region', { name: 'Cookie and analytics choice' }).press('Escape');
+  await expect(page.getByRole('button', { name: 'Allow analytics' })).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem('cookieConsent'))).toBe('accepted');
+});
+
+test('Cookie settings moves focus into the banner and returns it after a choice', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('cookieConsent', 'declined'));
+  await page.goto('/privacy', { waitUntil: 'networkidle' });
+  const settings = page.getByRole('main').getByRole('button', { name: 'Cookie settings' });
+  await settings.click();
+  const banner = page.getByRole('region', { name: 'Cookie and analytics choice' });
+  await expect(banner).toBeVisible();
+  await expect(banner).toBeFocused();
+  await page.getByRole('button', { name: 'Allow analytics' }).click();
+  await expect(banner).toHaveCount(0);
+  await expect(settings).toBeFocused();
+  expect(await page.evaluate(() => localStorage.getItem('cookieConsent'))).toBe('accepted');
+});
+
+test('banner has a short Analytics choice heading and Privacy and cookies link', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' });
+  await expect(page.getByRole('heading', { name: 'Analytics choice' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Privacy and cookies' })).toBeVisible();
+});

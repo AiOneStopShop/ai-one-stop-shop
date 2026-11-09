@@ -16,12 +16,38 @@ export function CookieConsent() {
   // Set when reopened from Cookie settings, so we can show the current choice.
   const [current, setCurrent] = useState<{ on: boolean; gpc: boolean } | null>(null);
   const bannerRef = useRef<HTMLDivElement>(null);
+  // Element that opened the banner (Cookie settings). Returned to after choose/close.
+  const openerRef = useRef<HTMLElement | null>(null);
+  const settingsModeRef = useRef(false);
+
+  const restoreFocus = useCallback(() => {
+    const opener = openerRef.current;
+    openerRef.current = null;
+    if (opener && document.contains(opener)) {
+      opener.focus();
+      return;
+    }
+    const main = document.getElementById('main');
+    if (main instanceof HTMLElement) {
+      main.focus();
+    }
+  }, []);
+
+  const hideBanner = useCallback(() => {
+    setShowBanner(false);
+    setCurrent(null);
+    settingsModeRef.current = false;
+    requestAnimationFrame(() => restoreFocus());
+  }, [restoreFocus]);
 
   useEffect(() => {
     if (readConsent()) {
       setShowBanner(false);
     }
     const reopen = () => {
+      const active = document.activeElement;
+      openerRef.current = active instanceof HTMLElement ? active : null;
+      settingsModeRef.current = true;
       // globals.css hides the banner while this class is set (it stops a flash on load).
       document.documentElement.classList.remove('cookie-consent-given');
       setCurrent({ on: readConsent() === 'accepted', gpc: !readStoredConsent() && hasGpcSignal() });
@@ -34,9 +60,18 @@ export function CookieConsent() {
   const choose = useCallback((choice: ConsentChoice) => {
     writeConsent(choice);
     document.documentElement.classList.add('cookie-consent-given');
-    setShowBanner(false);
-    setCurrent(null);
-  }, []);
+    hideBanner();
+  }, [hideBanner]);
+
+  // Escape never writes a consent choice (Dolly a11y: must-fix 1).
+  // In settings mode it closes the banner and leaves the stored choice alone.
+  // On first visit Escape does nothing so search/menus keep working.
+  const dismissWithoutChoice = useCallback(() => {
+    if (readStoredConsent() || hasGpcSignal()) {
+      document.documentElement.classList.add('cookie-consent-given');
+    }
+    hideBanner();
+  }, [hideBanner]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -62,21 +97,26 @@ export function CookieConsent() {
     if (bannerRef.current) observer.observe(bannerRef.current);
     window.addEventListener('resize', applyOffset);
 
-    // Escape means "no thanks": closing the banner never turns analytics on.
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        choose('declined');
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
+    // Move focus into the banner after it opens (Dolly a11y: must-fix 3).
+    requestAnimationFrame(() => {
+      bannerRef.current?.focus();
+    });
 
     return () => {
       observer.disconnect();
       window.removeEventListener('resize', applyOffset);
-      document.removeEventListener('keydown', handleEscape);
       clearOffset();
     };
-  }, [showBanner, choose]);
+  }, [showBanner]);
+
+  const onBannerKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Escape') return;
+    // Only act when focus is inside the banner; never decline via Escape.
+    if (!settingsModeRef.current && current === null) return;
+    e.preventDefault();
+    e.stopPropagation();
+    dismissWithoutChoice();
+  };
 
   if (!showBanner) return null;
 
@@ -85,23 +125,30 @@ export function CookieConsent() {
       ref={bannerRef}
       role="region"
       aria-label="Cookie and analytics choice"
-      className="cookie-banner fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-soft shadow-lg"
+      tabIndex={-1}
+      onKeyDown={onBannerKeyDown}
+      className="cookie-banner fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-soft shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
     >
       <div className="container-max py-2 sm:py-2.5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
-          <p id="cookie-banner-text" className="text-xs sm:text-sm text-ink leading-snug min-w-0">
-            <strong>We keep it simple.</strong> No ad or tracking cookies. With your OK, we&apos;d count page visits with Vercel Web Analytics (no cookies, no profile of you) to learn what&apos;s useful. It stays off unless you say yes, and you can change your mind anytime.{process.env.NEXT_PUBLIC_AFFILIATE_LIVE === 'true' ? ' Some links may be paid links.' : ''} Any site you visit from here may set its own cookies after you click.{' '}
-            <Link href="/privacy#cookies" className="text-green underline hover:no-underline focus-ring rounded">
-              Privacy
-            </Link>
-            {current && (
-              <span className="block mt-1" data-testid="cookie-current-choice" aria-live="polite">
-                Analytics is currently <strong>{current.on ? 'on' : 'off'}</strong>
-                {current.gpc ? ' (your browser sent a Global Privacy Control signal)' : ''}.
-              </span>
-            )}
-          </p>
-          <div className="flex flex-row gap-2 shrink-0" role="group" aria-labelledby="cookie-banner-text">
+          <div className="min-w-0">
+            <h2 id="cookie-banner-heading" className="text-xs sm:text-sm font-semibold text-ink mb-0.5">
+              Analytics choice
+            </h2>
+            <p id="cookie-banner-text" className="text-xs sm:text-sm text-ink leading-snug">
+              Can we count page visits? We use Vercel Web Analytics. It doesn&apos;t use cookies or build a profile of you. It stays off unless you say yes. You can change this anytime in Cookie settings.{process.env.NEXT_PUBLIC_AFFILIATE_LIVE === 'true' ? ' Some links may be paid links.' : ''}{' '}
+              <Link href="/privacy#cookies" className="text-green underline hover:no-underline focus-ring rounded">
+                Privacy and cookies
+              </Link>
+              {current && (
+                <span className="block mt-1" data-testid="cookie-current-choice" aria-live="polite">
+                  Analytics is currently <strong>{current.on ? 'on' : 'off'}</strong>
+                  {current.gpc ? ' (your browser sent a Global Privacy Control signal)' : ''}.
+                </span>
+              )}
+            </p>
+          </div>
+          <div className="flex flex-row gap-2 shrink-0" role="group" aria-labelledby="cookie-banner-heading">
             <button
               type="button"
               onClick={() => choose('declined')}

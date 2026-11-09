@@ -6,6 +6,7 @@ import { getSiteContactEmail, getOperatorLegalName } from '@/lib/site-config';
 const FALLBACK_CONTACT_EMAIL = 'aionestopshop25@gmail.com';
 import { PRICE_CHECKED_LONG } from '@/lib/site-dates';
 import { PageIntro } from '@/components/PageIntro';
+import { CookieSettingsButton } from '@/components/CookieSettingsButton';
 
 export const metadata = {
   title: 'Privacy Policy',
@@ -123,7 +124,7 @@ export default function PrivacyPage() {
               <h2 className="heading-2 mb-4">What we don't collect</h2>
               <ul className="space-y-2">
                 <li><strong>IP addresses:</strong> We don't store your IP address, raw or hashed, with any count or click. Our hosting and spam-protection providers briefly process it to deliver pages and block abuse</li>
-                <li><strong>Analytics or tracking cookies:</strong> We do not use Google Analytics, Facebook Pixel, or similar tracking services. Our only analytics are cookieless Vercel Web Analytics and our own server-side counts, described under <a href="#site-analytics" className="text-green hover:underline">Site analytics</a></li>
+                <li><strong>Analytics or tracking cookies:</strong> We do not use Google Analytics, Facebook Pixel, or similar tracking services. Our only analytics are optional, cookieless Vercel Web Analytics (off unless you opt in) and our own server-side counts, described under <a href="#site-analytics" className="text-green hover:underline">Site analytics</a></li>
                 <li><strong>Advertising data:</strong> We do not track you across websites</li>
                 <li><strong>Precise location:</strong> We do not collect or store precise geolocation. Vercel Web Analytics derives general country information from your connection for aggregate counts</li>
               </ul>
@@ -135,7 +136,13 @@ export default function PrivacyPage() {
                 We measure how our site is used so we can improve it. We use Vercel Web Analytics, which counts page views, referring sites and general device and country information without cookies and without storing IP addresses. We also count, on our own servers, clicks on outbound and affiliate links, use of our search and tool finder, form completions, and campaign tags in links (UTM codes). These counts are aggregate. We don&apos;t use them to identify you, build a profile of you, or track you across other sites.
               </p>
               <p className="mt-4">
-                For visitors in the EU and UK, we rely on our legitimate interest in understanding and improving our site. You can object by emailing <a href="mailto:aionestopshop25@gmail.com" className="text-green hover:underline">aionestopshop25@gmail.com</a>, or by using a browser setting or extension that blocks analytics scripts.
+                <strong>Vercel Web Analytics is off unless you opt in.</strong> If you choose &quot;Allow analytics&quot; in our cookie banner, we load it to count page visits. It doesn&apos;t use cookies. We remove search terms and other query text from the page address before anything is sent, and we never load it on admin pages. If you choose &quot;No thanks&quot;, close the banner with Escape, or make no choice, it isn&apos;t loaded at all. If your browser sends a Global Privacy Control signal, we treat it as &quot;No thanks&quot;. See <a href="https://vercel.com/docs/analytics/privacy-policy" className="text-green hover:underline" rel="noopener">Vercel&apos;s Web Analytics privacy notes</a>.
+              </p>
+              <p className="mt-4">
+                <strong>Changing your choice:</strong> you can change it anytime with the button below (also under &quot;Cookie settings&quot; in the footer). If you switch analytics off, we stop sending page views right away. Clearing this site&apos;s data in your browser also resets your choice.
+              </p>
+              <p className="mt-2">
+                <CookieSettingsButton />
               </p>
               <p className="mt-4">
                 If we ever add tools that set cookies or track individuals, we&apos;ll ask for your consent first.
@@ -145,10 +152,10 @@ export default function PrivacyPage() {
             <div id="cookies" className="scroll-mt-20">
               <h2 className="heading-2 mb-4">Cookies and local storage</h2>
               <p>
-                We don't use advertising or tracking cookies, and visitors who browse aren't given cookies by us. Our analytics don't use cookies, local storage or session storage.
+                We don't use advertising or tracking cookies, and visitors who browse aren't given cookies by us.
               </p>
               <p className="mt-4">
-                Your browser's local storage keeps a few small things on your own device: the tools you add to your compare list and your last few searches (and, if you used our earlier cookie banner, the choice you made there). You can clear them anytime in your browser settings.
+                Your browser's local storage keeps a few small things on your own device: the tools you add to your compare list, your last few searches, and your analytics choice from our cookie banner. You can clear them anytime in your browser settings.
               </p>
               <p className="mt-4">
                 If you're a site admin who signs in, we use login cookies so you stay signed in. Those are needed for the admin area to work.

@@ -25,11 +25,11 @@
   }
 
   html.has-cookie-banner {
-    scroll-padding-bottom: 6.5rem;
+    scroll-padding-bottom: calc(var(--cookie-banner-height, 6.5rem) + 1rem);
   }
 
   html.has-cookie-banner body {
-    padding-bottom: 6.5rem;
+    padding-bottom: var(--cookie-banner-height, 6.5rem);
   }
 
   html.cookie-consent-given .cookie-banner {
@@ -338,4 +338,9 @@ html.has-cookie-banner .sticky-compare-btn {
 a.card,
 a.card * {
   text-decoration: none;
+}
+
+/* Cookie banner choice buttons: border >= 3:1 on white (Dolly N4) */
+.cookie-banner .btn-secondary {
+  border-color: var(--soft);
 }

@@ -190,3 +190,48 @@ test('banner has a short Analytics choice heading and Privacy and cookies link',
   await expect(page.getByRole('heading', { name: 'Analytics choice' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Privacy and cookies' })).toBeVisible();
 });
+
+test('at 375px on /tools, Tab to Filters is not covered by the cookie banner', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/tools', { waitUntil: 'networkidle' });
+  await expect(page.locator('.cookie-banner')).toBeVisible();
+
+  const filters = page.getByRole('button', { name: /Filters/i });
+  await expect(filters).toBeVisible();
+
+  // Tab until Filters receives focus (banner comes first in order).
+  let focused = false;
+  for (let i = 0; i < 40; i++) {
+    await page.keyboard.press('Tab');
+    focused = await filters.evaluate((el) => el === document.activeElement);
+    if (focused) break;
+  }
+  expect(focused, 'Filters should be reachable by Tab').toBe(true);
+
+  const overlap = await page.evaluate(() => {
+    const el = document.activeElement as HTMLElement | null;
+    const banner = document.querySelector('.cookie-banner') as HTMLElement | null;
+    if (!el || !banner) return true;
+    const a = el.getBoundingClientRect();
+    const b = banner.getBoundingClientRect();
+    const intersects = !(a.bottom <= b.top || a.top >= b.bottom || a.right <= b.left || a.left >= b.right);
+    return intersects;
+  });
+  expect(overlap, 'focused Filters must not intersect the cookie banner').toBe(false);
+});
+
+test('first page load does not auto-focus the cookie banner', async ({ page }) => {
+  await page.goto('/', { waitUntil: 'networkidle' });
+  await expect(page.locator('.cookie-banner')).toBeVisible();
+  const bannerFocused = await page.locator('.cookie-banner').evaluate((el) => el === document.activeElement);
+  expect(bannerFocused).toBe(false);
+});
+
+test('Cookie settings moves focus even when the first-visit banner is already open', async ({ page }) => {
+  await page.goto('/privacy', { waitUntil: 'networkidle' });
+  await expect(page.locator('.cookie-banner')).toBeVisible();
+  const settings = page.getByRole('main').getByRole('button', { name: 'Cookie settings' });
+  await settings.click();
+  const banner = page.getByRole('region', { name: 'Cookie and analytics choice' });
+  await expect(banner).toBeFocused();
+});

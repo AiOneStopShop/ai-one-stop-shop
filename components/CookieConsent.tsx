@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { CONSENT_OPEN_EVENT, hasGpcSignal, readConsent, readStoredConsent, writeConsent, type ConsentChoice } from '@/lib/cookie-consent';
 
 // Both choices share one style so neither is nudged (equal prominence).
-const CHOICE_BUTTON_CLASS = 'btn-secondary text-xs sm:text-sm px-3 py-2 min-h-[44px] min-w-[44px]';
+// text-sm (14px) on all widths; border darkened via .cookie-banner .btn-secondary in globals.css.
+const CHOICE_BUTTON_CLASS = 'btn-secondary text-sm px-3 py-2 min-h-[44px] min-w-[44px]';
 
 // Asks once whether we may count visits with Vercel Web Analytics. Analytics stays
 // off until the visitor picks "Allow analytics" (see components/SiteAnalytics.tsx).
@@ -52,6 +53,10 @@ export function CookieConsent() {
       document.documentElement.classList.remove('cookie-consent-given');
       setCurrent({ on: readConsent() === 'accepted', gpc: !readStoredConsent() && hasGpcSignal() });
       setShowBanner(true);
+      // N2: move focus even when the first-visit banner was already open (effect won't re-run).
+      requestAnimationFrame(() => {
+        bannerRef.current?.focus();
+      });
     };
     window.addEventListener(CONSENT_OPEN_EVENT, reopen);
     return () => window.removeEventListener(CONSENT_OPEN_EVENT, reopen);
@@ -78,7 +83,7 @@ export function CookieConsent() {
 
     const clearOffset = () => {
       root.classList.remove('has-cookie-banner');
-      root.style.removeProperty('--cookie-banner-height');
+      root.style.setProperty('--cookie-banner-height', '0px');
     };
 
     if (!showBanner) {
@@ -97,14 +102,33 @@ export function CookieConsent() {
     if (bannerRef.current) observer.observe(bannerRef.current);
     window.addEventListener('resize', applyOffset);
 
-    // Move focus into the banner after it opens (Dolly a11y: must-fix 3).
-    requestAnimationFrame(() => {
-      bannerRef.current?.focus();
-    });
+    // N1: only auto-focus the banner when reopened from Cookie settings, not on first load.
+    if (settingsModeRef.current) {
+      requestAnimationFrame(() => {
+        bannerRef.current?.focus();
+      });
+    }
+
+    // M-NEW-1: if Tab lands on a control hidden behind the banner, scroll it above.
+    // Instant scroll only (no smooth) so prefers-reduced-motion is respected.
+    const onFocusIn = (e: FocusEvent) => {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+      const banner = bannerRef.current;
+      if (!banner || banner.contains(target)) return;
+      if (!(target instanceof HTMLElement)) return;
+      const rect = target.getBoundingClientRect();
+      const bannerTop = banner.getBoundingClientRect().top;
+      if (rect.bottom > bannerTop - 8) {
+        window.scrollBy(0, rect.bottom - bannerTop + 16);
+      }
+    };
+    document.addEventListener('focusin', onFocusIn);
 
     return () => {
       observer.disconnect();
       window.removeEventListener('resize', applyOffset);
+      document.removeEventListener('focusin', onFocusIn);
       clearOffset();
     };
   }, [showBanner]);
@@ -132,10 +156,10 @@ export function CookieConsent() {
       <div className="container-max py-2 sm:py-2.5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
           <div className="min-w-0">
-            <h2 id="cookie-banner-heading" className="text-xs sm:text-sm font-semibold text-ink mb-0.5">
+            <h2 id="cookie-banner-heading" className="text-sm font-semibold text-ink mb-0.5">
               Analytics choice
             </h2>
-            <p id="cookie-banner-text" className="text-xs sm:text-sm text-ink leading-snug">
+            <p id="cookie-banner-text" className="text-sm text-ink leading-snug">
               Can we count page visits? We use Vercel Web Analytics. It doesn&apos;t use cookies or build a profile of you. It stays off unless you say yes. You can change this anytime in Cookie settings.{process.env.NEXT_PUBLIC_AFFILIATE_LIVE === 'true' ? ' Some links may be paid links.' : ''}{' '}
               <Link href="/privacy#cookies" className="text-green underline hover:no-underline focus-ring rounded">
                 Privacy and cookies

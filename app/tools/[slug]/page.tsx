@@ -8,6 +8,15 @@ import { isToolSponsored } from '@/lib/sponsor-placements';
 import { SponsoredLabel } from '@/components/SponsoredLabel';
 import { ArrowLeft, Check, ExternalLink } from 'lucide-react';
 import { OrangeSwoosh } from '@/components/OrangeSwoosh';
+import { getPublishedCatalogTools } from '@/lib/catalog-tools';
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const tools = await getPublishedCatalogTools();
+  return tools.map((tool) => ({ slug: tool.slug }));
+}
+
 
 async function getTool(slug: string) {
   const { data } = await supabase

@@ -7,11 +7,7 @@ import { CookieConsent } from '@/components/CookieConsent';
 import { GlobalSearchShortcut } from '@/components/GlobalSearchShortcut';
 import { getBrandUrl, getSiteUrl } from '@/lib/site-config';
 import { SiteAnalytics } from '@/components/SiteAnalytics';
-import { headers } from 'next/headers';
-
-// Nonce CSP needs every HTML page rendered per request: a prerendered page would
-// carry a stale nonce and the browser would block all of its scripts.
-export const dynamic = 'force-dynamic';
+import Script from 'next/script';
 
 const brandUrl = getBrandUrl();
 
@@ -58,27 +54,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Per-request CSP nonce set by middleware.ts. Reading headers() makes every page
-  // render per request, which nonce-based CSP requires (Next adds the nonce to its
-  // own scripts automatically).
-  const nonce = (await headers()).get('x-nonce') ?? undefined;
-
   return (
     <html lang="en" className={`${fraunces.variable} ${sourceSans3.variable}`}>
       <body className="min-h-screen bg-[#FBF4E6] text-[#22201B] font-source-sans antialiased">
-        {/* Sets the banner offset class before paint. Allowed by the per-request CSP nonce
-            (no 'unsafe-inline'). Same logic as public/cookie-banner-boot.js. */}
-        <script
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html: "try{var c=localStorage.getItem('cookieConsent');if(c==='accepted'||c==='declined'||navigator.globalPrivacyControl===true){document.documentElement.classList.add('cookie-consent-given')}else{document.documentElement.classList.add('has-cookie-banner')}}catch(e){document.documentElement.classList.add('has-cookie-banner')}",
-          }}
-        />
+        {/* Sets the banner offset class before paint. External file so static
+            pages can use a CSP without a per-request nonce. Same logic as before. */}
+        <Script src="/cookie-banner-boot.js" strategy="beforeInteractive" />
         <CookieConsent />
         <GlobalSearchShortcut />
         <Header />

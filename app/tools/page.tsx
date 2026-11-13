@@ -12,6 +12,8 @@ import { ToolsClient } from './ToolsClient';
 import { ToolsResults } from './ToolsResults';
 import { StickyCompareButton } from './CompareCheckbox';
 
+export const revalidate = 3600;
+
 export const metadata = {
   title: 'AI Tools Directory - All Tools',
   description: 'Browse our complete directory of AI tools. Each tool includes what it does, who it\'s for, and real pricing.',

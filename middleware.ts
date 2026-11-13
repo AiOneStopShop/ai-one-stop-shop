@@ -7,7 +7,7 @@ import {
   isCanonicalHost,
   shouldBlockProductionAlias,
 } from '@/lib/site-config'
-import { buildCsp, generateNonce, isCrossOriginServerAction } from '@/lib/csp'
+import { buildCsp, isCrossOriginServerAction } from '@/lib/csp'
 
 function hostOf(request: NextRequest): string | null {
   return request.headers.get('host')
@@ -147,12 +147,9 @@ export async function middleware(request: NextRequest, event?: NextFetchEvent) {
     return withNonCanonicalRobots(NextResponse.next(), host)
   }
 
-  // Per-request nonce CSP. Next.js reads the nonce from the request's CSP header
-  // and adds it to its own scripts; app/layout.tsx reads x-nonce for ours.
-  const nonce = generateNonce()
-  const csp = buildCsp(nonce)
+  // Static CSP (no nonce) so prerendered / ISR pages stay cacheable.
+  const csp = buildCsp()
   const requestHeaders = new Headers(request.headers)
-  requestHeaders.set('x-nonce', nonce)
   requestHeaders.set('Content-Security-Policy', csp)
 
   const response = await continueRequest(request, requestHeaders)

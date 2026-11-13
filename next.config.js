@@ -22,8 +22,8 @@ const nextConfig = {
       },
     ];
 
-    // The Content-Security-Policy header is set per request in middleware.ts
-    // (nonce-based script-src, no 'unsafe-inline'). See lib/csp.ts.
+    // The Content-Security-Policy header is set in middleware.ts (static
+    // policy, no per-request nonce). See lib/csp.ts.
 
     // One anti-framing pair: CSP frame-ancestors none (middleware.ts) + X-Frame-Options DENY.
     const xFrameOptions = {

@@ -1,15 +1,17 @@
-import { classify, SHIPPED_CATALOG } from '@forgemeshlabs/pay-per-crawl-core'
+import { classify } from '@/lib/vendor/pay-per-crawl-classify/classify'
+import { SHIPPED_CATALOG } from '@/lib/vendor/pay-per-crawl-classify/catalog'
 
 // Watch-only crawler logging. This file never returns a response, never
 // reads MODE / PAY_TO / PRO_KEY / CLASS_POLICY from the environment, and
-// never calls the package gate or discovery handlers — so it cannot 402,
+// never calls a payment gate or discovery handlers — so it cannot 402,
 // settle a payment, or override /llms.txt, /agents.txt, or /.well-known/x402.json.
+// The classifier is vendored in lib/vendor/pay-per-crawl-classify/ from
+// @forgemeshlabs/pay-per-crawl-core@0.1.3 (tag v0.1.3 / d81ad05).
 
 export const CRAWLER_WATCH_LOG_PREFIX = '[crawler-watch]'
 
-// Same default as @forgemeshlabs/pay-per-crawl-core (the named export is
-// missing from that package's 0.1.3 typings). Used only to compute a
-// would-have-paid figure; nothing is charged.
+// Same default class policy as @forgemeshlabs/pay-per-crawl-core@0.1.3.
+// Used only to compute a would-have-paid figure; nothing is charged.
 const DEFAULT_CLASS_POLICY: Record<string, 'free' | 'paid'> = {
   search: 'free',
   social: 'free',

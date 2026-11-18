@@ -51,6 +51,19 @@ const nextConfig = {
         source: '/((?!_next/).*)',
         headers: securityHeaders,
       },
+      {
+        // Category pages read searchParams (page/sort/filters), so Next renders them
+        // dynamically. They show only public catalog data, so let Vercel's CDN cache
+        // each URL (query string included) for 5 minutes. Vercel-CDN-Cache-Control
+        // applies only to Vercel's edge, not to browsers.
+        source: '/category/:slug',
+        headers: [
+          {
+            key: 'Vercel-CDN-Cache-Control',
+            value: 'max-age=300, stale-while-revalidate=3600'
+          },
+        ],
+      },
     ];
   },
 

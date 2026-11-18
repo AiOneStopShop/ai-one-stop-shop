@@ -1,5 +1,6 @@
-// Mirror of the inline boot script in app/layout.tsx (that one runs, with the CSP nonce).
-// Keep both in sync with lib/cookie-consent.ts.
+// Loaded from the root layout with next/script beforeInteractive so the banner
+// offset class is set before paint. Allowed by script-src 'self'. Keep in sync
+// with lib/cookie-consent.ts.
 try {
   var c = localStorage.getItem('cookieConsent');
   if (c === 'accepted' || c === 'declined' || navigator.globalPrivacyControl === true) {

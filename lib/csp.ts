@@ -1,23 +1,18 @@
-// Content-Security-Policy for HTML responses, built per request in middleware.ts.
-// Scripts need the per-request nonce; 'strict-dynamic' lets those trusted scripts
-// load their own chunks (Next.js) and the consented Vercel Analytics script.
-// 'unsafe-inline' stays out of script-src (tests/csp.spec.ts enforces this);
-// it remains in style-src for now (Next/Tailwind inline styles).
-export function generateNonce(): string {
-  const bytes = new Uint8Array(16);
-  crypto.getRandomValues(bytes);
-  let bin = '';
-  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-  return btoa(bin);
-}
-
-export function buildCsp(nonce: string, isDev = process.env.NODE_ENV === 'development'): string {
+// Static Content-Security-Policy for HTML responses, set in middleware.ts.
+// No per-request nonce, so catalog pages can be prerendered / ISR-cached.
+// script-src allows first-party scripts (Next chunks, /cookie-banner-boot.js)
+// and the consented Vercel Analytics host.
+//
+// 'unsafe-inline' is required: Next.js 15 prerendered HTML includes many
+// unique per-page inline `self.__next_f.push(...)` flight scripts. A single
+// hash-based policy cannot cover them, and a nonce would stale-mismatch on
+// cached pages. 'strict-dynamic' is omitted because it would ignore 'self'.
+// 'unsafe-inline' remains in style-src as well (Next/Tailwind inline styles).
+export function buildCsp(isDev = process.env.NODE_ENV === 'development'): string {
   const scriptSrc = [
     "'self'",
-    `'nonce-${nonce}'`,
-    "'strict-dynamic'",
-    // Fallback for very old browsers without strict-dynamic; ignored by modern ones.
-    'https:',
+    "'unsafe-inline'",
+    'https://va.vercel-scripts.com',
     ...(isDev ? ["'unsafe-eval'"] : []),
   ].join(' ');
 

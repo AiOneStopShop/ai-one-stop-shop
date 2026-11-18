@@ -1,28 +1,24 @@
-/** Unit checks for the per-request CSP and the cross-origin server-action guard (lib/csp.ts). */
+/** Unit checks for the static CSP and the cross-origin server-action guard (lib/csp.ts). */
 import { test, expect } from '@playwright/test';
-import { buildCsp, generateNonce, isCrossOriginServerAction } from '../lib/csp';
+import { buildCsp, isCrossOriginServerAction } from '../lib/csp';
 
 const directive = (csp: string, name: string) =>
   csp.split(';').map((d) => d.trim()).find((d) => d.startsWith(`${name} `)) ?? '';
 
-test('script-src never allows unsafe-inline, in prod or dev', () => {
+test('script-src is a static allowlist: self, unsafe-inline, analytics host', () => {
   for (const dev of [false, true]) {
-    const scriptSrc = directive(buildCsp('abc', dev), 'script-src');
-    expect(scriptSrc).toContain("'nonce-abc'");
-    expect(scriptSrc).toContain("'strict-dynamic'");
-    expect(scriptSrc).not.toContain('unsafe-inline');
+    const scriptSrc = directive(buildCsp(dev), 'script-src');
+    expect(scriptSrc).toContain("'self'");
+    expect(scriptSrc).toContain("'unsafe-inline'");
+    expect(scriptSrc).toContain('https://va.vercel-scripts.com');
+    expect(scriptSrc).not.toMatch(/nonce-/);
+    expect(scriptSrc).not.toContain('strict-dynamic');
   }
-  expect(directive(buildCsp('abc', false), 'script-src')).not.toContain('unsafe-eval');
+  expect(directive(buildCsp(false), 'script-src')).not.toContain('unsafe-eval');
+  expect(directive(buildCsp(true), 'script-src')).toContain('unsafe-eval');
 });
 
-test('nonces are random base64', () => {
-  const a = generateNonce();
-  const b = generateNonce();
-  expect(a).not.toBe(b);
-  expect(a).toMatch(/^[A-Za-z0-9+/]{22}==$/);
-});
-
-test('next.config.js no longer sets a second CSP with unsafe-inline', async () => {
+test('next.config.js does not set a second CSP header', async () => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const config = require('../next.config.js');
   const groups = await config.headers();

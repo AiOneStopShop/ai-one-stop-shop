@@ -1,6 +1,6 @@
 /**
  * Analytics consent: Vercel Web Analytics loads only after "Allow analytics", never on /admin,
- * and every page carries a nonce CSP without 'unsafe-inline' in script-src.
+ * and every page carries a static CSP (no per-request nonce).
  * Needs a running server (PLAYWRIGHT_BASE_URL, default http://localhost:3100).
  */
 import { test, expect, type Page } from '@playwright/test';
@@ -12,8 +12,10 @@ test('default: banner offers a real choice and no analytics loads', async ({ pag
   const res = await page.goto('/', { waitUntil: 'networkidle' });
   const csp = res?.headers()['content-security-policy'] ?? '';
   const scriptSrc = csp.split(';').find((d) => d.trim().startsWith('script-src')) ?? '';
-  expect(scriptSrc).toMatch(/'nonce-[A-Za-z0-9+/=]+'/);
-  expect(scriptSrc).not.toContain('unsafe-inline');
+  expect(scriptSrc).toContain("'self'");
+  expect(scriptSrc).toContain("'unsafe-inline'");
+  expect(scriptSrc).toContain('https://va.vercel-scripts.com');
+  expect(scriptSrc).not.toMatch(/nonce-/);
 
   const allow = page.getByRole('button', { name: 'Allow analytics' });
   const decline = page.getByRole('button', { name: 'No thanks' });

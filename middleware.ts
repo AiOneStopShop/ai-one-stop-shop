@@ -8,6 +8,7 @@ import {
   shouldBlockProductionAlias,
 } from '@/lib/site-config'
 import { buildCsp, isCrossOriginServerAction } from '@/lib/csp'
+import { logCrawlerWatch } from '@/lib/crawler-watch'
 
 function hostOf(request: NextRequest): string | null {
   return request.headers.get('host')
@@ -114,6 +115,11 @@ function countUtm(request: NextRequest, event?: NextFetchEvent) {
 }
 
 export async function middleware(request: NextRequest, event?: NextFetchEvent) {
+  // Watch-only crawler log (never 402s, never blocks). See lib/crawler-watch.ts.
+  const watch = logCrawlerWatch(request)
+  if (event?.waitUntil) event.waitUntil(watch)
+  else await watch
+
   countUtm(request, event)
   const host = hostOf(request)
   const { pathname } = request.nextUrl
